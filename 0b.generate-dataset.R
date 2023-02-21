@@ -2,6 +2,10 @@
 #Todo: create dataset
 #file to create the analysis dataset with all the routes run in each year and that includes the 0 values for when species r not seen
 #now let's work on creating a dataset from which we can incorporate 0's [where a route was run but the species was not counted on the route at all) into our averages
+
+#what this does
+#merges mbbs counties to mbbs all
+#creates survey.event dataset
 #---
 
 #load mbbs library
@@ -30,6 +34,18 @@ mbbs_all <- mbbs_all %>%
     route_num = route_num + county_factor #keep as route_num to be consistent with format and column names in the individual county plots
   )
 
+#now let's create a dataframe of unique combinations of route and year
+routeyear <- unique(mbbs_all[,c('year', 'route_num', 'mbbs_county')]) %>% arrange(year) %>% rename('county' = 'mbbs_county')
+
+#save this csv
+write.csv(routeyear, "data/survey.events.csv", row.names = F)
+
+
+#now apply the species and observer filters...
+
+
+
+
 #create list of all species seen in any of the counties
 allspecies <- unique(mbbs_all$common_name)
 
@@ -47,7 +63,10 @@ r <- length(allroutes)
 s <- length(allspecies)
 
 #now let's create a dataframe of unique combinations of route and year
-routeyear <- unique(mbbs_all[,c('year', 'route_num')]) %>% arrange(year)
+routeyear <- unique(mbbs_all[,c('year', 'route_num', 'mbbs_county')]) %>% arrange(year) %>% rename('county' = 'mbbs_county')
+
+#save this csv
+write.csv(routeyear, "data/survey.events.csv", row.names = F)
 
 #create dataframe with species repeated in every year and route that's been run.
 routeyearspecies <- data.frame(route_num = rep(routeyear$route_num, s), year = rep(routeyear$year, s), species = rep(allspecies, times = nrow(routeyear)))
@@ -66,7 +85,7 @@ df <- df %>% replace(is.na(count), 0)
 #filter out routes where not consistent ppl 
 #orange in 2011 
 
-#save dataset
+#save dataset [0-inflated]
 #save backup dataset
 #write.csv(mbbs_orange, file = sprintf(
  # "inst/analysis_data/mbbs_orange_%s.csv",
