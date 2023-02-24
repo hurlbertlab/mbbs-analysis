@@ -1,11 +1,11 @@
 #---
 #Todo: create dataset
-#file to create the analysis dataset with all the routes run in each year and that includes the 0 values for when species r not seen
-#now let's work on creating a dataset from which we can incorporate 0's [where a route was run but the species was not counted on the route at all) into our averages
 
 #what this does
 #merges mbbs counties to mbbs all
 #creates survey.event dataset
+#removes species with less than 10 sightings 
+#FUTURE: removes observations flaged by the mbbs for like, observer only participated once, too high/too low species counts, other things we talked about flagging etc. 
 #---
 
 #load mbbs library
@@ -34,60 +34,37 @@ mbbs_all <- mbbs_all %>%
     route_num = route_num + county_factor #keep as route_num to be consistent with format and column names in the individual county plots
   )
 
-#now let's create a dataframe of unique combinations of route and year
-routeyear <- unique(mbbs_all[,c('year', 'route_num', 'mbbs_county')]) %>% arrange(year) %>% rename('county' = 'mbbs_county')
 
+#now let's create a dataframe of unique combinations of route and year, we'll use this in later modeling with group_by() to divide by the number of routes run in that year (averages) or to add 0's when iterating on individual species
+routeyear <- unique(mbbs_all[,c('year', 'route_num', 'mbbs_county')]) %>% arrange(year) %>% rename('county' = 'mbbs_county')
 #save this csv
 write.csv(routeyear, "data/survey.events.csv", row.names = F)
+
+
+#filter out species that haven't been seen more than the min number of sightings (currently 10)
+occurances <- mbbs_all %>% count(common_name) %>% arrange(n) 
+min_sightings <- 10
+allspecies <- unique(mbbs_all$common_name)
+
+for (s in 1:length(allspecies)) {
+  if (occurances$n[s] < min_sightings) {
+    mbbs_all <- mbbs_all %>% filter(common_name != occurances$common_name[s])
+  }
+}
+#to check it worked you can rerun:
+#occurances <- mbbs_all %>% count(common_name) %>% arrange(n) 
+#and now there shouldn't be any species with less than 10 observations that make the list
 
 
 #now apply the species and observer filters...
+#remove routes with problems
+#orange rt 11 in 2012
 
 
-
-
-#create list of all species seen in any of the counties
-allspecies <- unique(mbbs_all$common_name)
-
-#create list of all possible routes
-allroutes <- sort(unique(mbbs_all$route_num)) #remember: route_num has been modified to differ between countys (+20 to Durham, +40 to Chatham)
-
-#create list of all possible years
-allyears <- sort(unique(mbbs_all$year))
-
-#y number of years
-y <- length(allyears)
-#r number of routes
-r <- length(allroutes)
-#s number of species
-s <- length(allspecies)
-
-#now let's create a dataframe of unique combinations of route and year
-routeyear <- unique(mbbs_all[,c('year', 'route_num', 'mbbs_county')]) %>% arrange(year) %>% rename('county' = 'mbbs_county')
-
-#save this csv
-write.csv(routeyear, "data/survey.events.csv", row.names = F)
-
-#create dataframe with species repeated in every year and route that's been run.
-routeyearspecies <- data.frame(route_num = rep(routeyear$route_num, s), year = rep(routeyear$year, s), species = rep(allspecies, times = nrow(routeyear)))
-
-#lets arrange that nicely so that we can check for problems easier
-routeyearspecies <- routeyearspecies %>% arrange(year, route_num, species)
-
-#Now, we'll join together the routeyearspecies dataset with the mbbs_all in order to create those 0's where the route was run, but the species was not seen
-df <- left_join(routeyearspecies, mbbs_all, by = c("species" = "common_name", "route_num" = 'route_num', "year" = "year"))
-
-#change NA's to 0s - not working yet 
-df <- df %>% replace(is.na(count), 0)
-
-#filter out species with not enough sightings
-
-#filter out routes where not consistent ppl 
-#orange in 2011 
-
-#save dataset [0-inflated]
+#save dataset 
+write.csv(mbbs_all, "data/analysis.df.csv", row.names = F)
 #save backup dataset
-#write.csv(mbbs_orange, file = sprintf(
- # "inst/analysis_data/mbbs_orange_%s.csv",
-  #format(Sys.Date(), "%Y%m%d")
-#))
+write.csv(mbbs_all, file = sprintf(
+  "data/versioncontrol/analysis.df_%s.csv",
+  format(Sys.Date(), "%Y%m%d")
+))
