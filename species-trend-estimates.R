@@ -7,6 +7,9 @@
 library(dplyr)
 library(beepr)
 
+#prevent scientific notation to make the trend table easier to read
+options(scipen=999)
+
 #read in data
 mbbs <- read.csv("data/analysis.df.csv", header = T)
 survey.events <- read.csv("data/survey.events.csv", header = T)
@@ -52,10 +55,6 @@ for (s in 1:length(species.list)) {
   
 }
 beep()
-trend_table <- format(trend_table, scientific = FALSE, digits = 4)
-trend_table$trend <- as.numeric(trend_table$trend)
-trend_table$pvalue <- as.numeric(trend_table$pvalue)
-trend_table$R2 <-  as.numeric(trend_table$R2)
 
 #save species trend table
 write.csv(trend_table, "data/trend-table.csv", row.names = F)
