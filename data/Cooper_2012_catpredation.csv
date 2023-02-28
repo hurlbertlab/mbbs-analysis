@@ -1,8 +1,8 @@
-Common.name,Genus.species,Cat.in.BNA,Cat.in.CS
+common.name,genus.species,cat.in.BNA,cat.in.CS
 Gray Partridge,Perdix perdix,1,0
 Ring-necked Pheasant,Phasianus colchicus,1,0
 California Quail,Callipepla californica,1,1
-Gambel’s Quail,Callipepla gambelii,–,1
+Gambel’s Quail,Callipepla gambelii,NA,1
 Rock Pigeon,Columba livia,1,1
 Eurasian Collared-Dove,Streptopelia decaocto,1,0
 White-winged Dove,Zenaida asiatica,1,0
@@ -32,21 +32,21 @@ Cliff Swallow,Petrochelidon pyrrhonota,1,0
 Barn Swallow,Hirundo rustica,1,0
 Carolina Chickadee,Poecile carolinensis,1,1
 Black-capped Chickadee,Poecile atricapilla,1,1
-Chestnut-backed Chickadee,Poecile rufescens,–,1
+Chestnut-backed Chickadee,Poecile rufescens,NA,1
 Oak Titmouse,Baeolophus inornatus,1,0
 Tufted Titmouse,Baeolophus bicolor,1,1
-White-breasted Nuthatch,Sitta carolinensis,–,1
-Pygmy Nuthatch,Sitta pygmaea,–,1
+White-breasted Nuthatch,Sitta carolinensis,NA,1
+Pygmy Nuthatch,Sitta pygmaea,NA,1
 Brown Creeper,Certhia americana,1,0
 Cactus Wren,Campylorhynchus brunneicapill,1,0
 Carolina Wren,Thryothorus ludovicianus,1,1
 Bewick’s Wren,Thryomanes bewickii,1,1
 House Wren,Troglodytes aedon,1,1
 Winter Wren,Troglodytes troglodytes,1,0
-Golden-crowned Kinglet,Regulus satrapa,–,1
+Golden-crowned Kinglet,Regulus satrapa,NA,1
 Eastern Bluebird,Sialia sialis,1,1
 Western Bluebird,Sialia mexicana,1,0
-Hermit Thrush,Catharus guttatus,–,1
+Hermit Thrush,Catharus guttatus,NA,1
 Wood Thrush,Hylocichla mustelina,1,0
 American Robin,Turdus migratorius,1,1
 Varied Thrush,Ixoreus naevius,1,1
@@ -56,28 +56,28 @@ Brown Thrasher,Toxostoma rufum,1,0
 California Thrasher,Toxostoma redivivum,1,0
 European Starling,Sturnus vulgaris,1,1
 Bohemian Waxwing,Bombycilla garrulus,1,0
-Cedar Waxwing,Bombycilla cedrorum,–,1
+Cedar Waxwing,Bombycilla cedrorum,NA,1
 Nashville Warbler,Vermivora ruficapilla,1,0
-Yellow-rumped Warbler,Dendroica coronata,–,1
+Yellow-rumped Warbler,Dendroica coronata,NA,1
 American Redstart,Setophaga ruticilla,1,0
-Common Yellowthroat,Geothlypis trichas,–,1
+Common Yellowthroat,Geothlypis trichas,NA,1
 Wilson’s Warbler,Wilsonia pusilla,1,0
-Scarlet Tanager,Piranga olivacea,–,1
+Scarlet Tanager,Piranga olivacea,NA,1
 Western Tanager,Piranga ludoviciana,1,0
-Spotted Towhee,Pipilo maculatus,–,1
-Eastern Towhee,Pipilo erythrophthalmus,–,1
+Spotted Towhee,Pipilo maculatus,NA,1
+Eastern Towhee,Pipilo erythrophthalmus,NA,1
 Canyon Towhee,Pipilo fuscus,1,0
-California Towhee,Pipilo crissalis,–,1
+California Towhee,Pipilo crissalis,NA,1
 Rufous-crowned Sparrow,Aimophila ruficeps,1,0
 American Tree Sparrow,Spizella arborea,1,1
 Chipping Sparrow,Spizella passerina,1,1
-Field Sparrow,Spizella pusilla,–,1
-Vesper Sparrow,Pooecetes gramineus,–,1
+Field Sparrow,Spizella pusilla,NA,1
+Vesper Sparrow,Pooecetes gramineus,NA,1
 Savannah Sparrow,Passerculus sandwichensis,1,0
-Fox Sparrow,Passerella iliaca,–,1
+Fox Sparrow,Passerella iliaca,NA,1
 Song Sparrow,Melospiza melodia,1,1
 Lincoln’s Sparrow,Melospiza lincolnii,1,0
-White-throated Sparrow,Zonotrichia albicollis,–,1
+White-throated Sparrow,Zonotrichia albicollis,NA,1
 Dark-eyed Junco,Junco hyemalis,1,1
 Northern Cardinal,Cardinalis cardinalis,1,1
 Rose-breasted Grosbeak,Pheucticus ludovicianus,1,1
@@ -85,7 +85,7 @@ Black-headed Grosbeak,Pheucticus melanocephalus,1,1
 Lazuli Bunting,Passerina amoena,1,0
 Dickcissel,Spiza americana,1,0
 Bobolink,Dolichonyx oryzivorus,1,0
-Red-winged Blackbird,Agelaius phoeniceus,–,1
+Red-winged Blackbird,Agelaius phoeniceus,NA,1
 Eastern Meadowlark,Sturnella magna,1,0
 Western Meadowlark,Sturnella neglecta,1,0
 Brewer’s Blackbird,Euphagus cyanocephalus,1,0
@@ -96,7 +96,7 @@ Purple Finch,Carpodacus purpureus,1,0
 House Finch,Carpodacus mexicanus,1,1
 Common Redpoll,Carduelis flammea,1,0
 Pine Siskin,Carduelis pinus,1,1
-Lesser Goldfinch,Carduelis psaltria,–,1
+Lesser Goldfinch,Carduelis psaltria,NA,1
 American Goldfinch,Carduelis tristis,1,1
 Evening Grosbeak,Coccothraustes vespertinus,1,0
 House Sparrow,Passer domesticus,1,1

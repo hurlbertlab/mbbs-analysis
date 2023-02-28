@@ -1,118 +1,118 @@
-english_common_name,binomial,aou,IOCOrder,BLFamilyLatin,BLFamilyEnglish,Diet_5Cat,BodyMass.Value,Breeding_Biome,Winter_Biome,bird_group,Migrate,Common.name,CatinBNA,Cat.in.CS
-Canada Goose,Branta canadensis,1720,Anseriformes,Anatidae,Ducks, geese and swans,PlantSeed,2811.68,Wetland,Temperate North America,waterfowl,M,NA,0
-Muscovy Duck,Cairina moschata,10210,Anseriformes,Anatidae,Ducks, geese and swans,Omnivore,2415.78,Introduced,Introduced,waterfowl,Introduced,NA,0
-Wood Duck,Aix sponsa,1440,Anseriformes,Anatidae,Ducks, geese and swans,PlantSeed,657.59,Wetland,Temperate North America,waterfowl,M,NA,0
-Mallard,Anas platyrhynchos,1320,Anseriformes,Anatidae,Ducks, geese and swans,Omnivore,843.42,Wetland,Widespread,waterfowl,M,NA,0
-Northern Bobwhite,Colinus virginianus,2890,Galliformes,Odontophoridae,New World quails,PlantSeed,171.89,Eastern Forest,Temperate North America,landbird,R,NA,0,NA
-Wild Turkey,Meleagris gallopavo,3100,Galliformes,Phasianidae,Grouse, pheasants and partridges,PlantSeed,5791.37,Forest Generalist,Temperate North America,landbird,R,NA,0
-Rock Pigeon,Columba livia,3131,Columbiformes,Columbidae,Doves and pigeons,PlantSeed,354.2,Introduced,Introduced,landbird,Introduced,Rock Pigeon,1,1
-Mourning Dove,Zenaida macroura,3160,Columbiformes,Columbidae,Doves and pigeons,PlantSeed,118.93,Habitat Generalist,Widespread,landbird,M,Mourning Dove,1,1
-Yellow-billed Cuckoo,Coccyzus americanus,3870,Cuculiformes,Cuculidae,Cuckoos,Invertebrate,64,Eastern Forest,South America,landbird,M,NA,0,NA
-Common Nighthawk,Chordeiles minor,4200,Caprimulgiformes,Caprimulgidae,Nightjars,Invertebrate,79.3,Habitat Generalist,South America,landbird,M,Common Nighthawk,1,0
-Chimney Swift,Chaetura pelagica,4230,Apodiformes,Apodidae,Swifts,Invertebrate,23.6,Eastern Forest,South America,landbird,M,NA,0,NA
-Ruby-throated Hummingbird,Archilochus colubris,4280,Apodiformes,Trochilidae,Hummingbirds,FruiNect,3.09,Eastern Forest,Mexico-Central America,landbird,M,Ruby-throated Hummingbird,1,1
-Killdeer,Charadrius vociferus,2730,Charadriiformes,Charadriidae,Plovers,Invertebrate,96.44,Habitat Generalist,Widespread,shorebird,M,NA,0,NA
-American Woodcock,Scolopax minor,2280,Charadriiformes,Scolopacidae,Sandpipers and allies,Invertebrate,196.32,Eastern Forest,Temperate North America,shorebird,M,NA,0,NA
-Ring-billed Gull,Larus delawarensis,540,Charadriiformes,Laridae,Gulls and terns,VertFishScav,516.31,Wetland,Temperate North America,waterbird,M,NA,0,NA
-Double-crested Cormorant,Phalacrocorax auritus,1200,Suliformes,Phalacrocoracidae,Cormorants,VertFishScav,1806.49,Wetland,Temperate North America,waterbird,M,NA,0,NA
-Great Blue Heron,Ardea herodias,1940,Pelecaniformes,Ardeidae,Herons and egrets,VertFishScav,2523.41,Wetland,Widespread,waterbird,M,NA,0,NA
-Green Heron,Butorides virescens,2010,Pelecaniformes,Ardeidae,Herons and egrets,VertFishScav,201.5,Wetland,Widespread,waterbird,M,NA,0,NA
-Yellow-crowned Night-Heron,Nyctanassa violacea,2030,Pelecaniformes,Ardeidae,Herons and egrets,VertFishScav,681.67,Coasts,Widespread,waterbird,M,NA,0,NA
-Glossy Ibis,Plegadis falcinellus,1860,Pelecaniformes,Threskiornithidae,Ibises and spoonbills,Invertebrate,626.61,Wetland,Widespread,waterbird,M,NA,0,NA
-Black Vulture,Coragyps atratus,3260,Accipitriformes,Cathartidae,New World vultures,VertFishScav,1881.69,Habitat Generalist,Widespread,landbird,R,NA,0,NA
-Turkey Vulture,Cathartes aura,3250,Accipitriformes,Cathartidae,New World vultures,VertFishScav,1518.24,Habitat Generalist,Widespread,landbird,M,NA,0,NA
-Osprey,Pandion haliaetus,3640,Accipitriformes,Accipitridae,Osprey, kites, hawks and eagles,VertFishScav,1483.2,Wetland,Widespread,landbird,M,NA
-Bald Eagle,Haliaeetus leucocephalus,3520,Accipitriformes,Accipitridae,Osprey, kites, hawks and eagles,VertFishScav,4700.58,Wetland,Temperate North America,landbird,M,NA
-Sharp-shinned Hawk,Accipiter striatus,3320,Accipitriformes,Accipitridae,Osprey, kites, hawks and eagles,VertFishScav,130.59,Forest Generalist,Widespread,landbird,M,NA
-Cooper's Hawk,Accipiter cooperii,3330,Accipitriformes,Accipitridae,Osprey, kites, hawks and eagles,VertFishScav,429.67,Forest Generalist,Widespread,landbird,M,NA
-Red-shouldered Hawk,Buteo lineatus,3390,Accipitriformes,Accipitridae,Osprey, kites, hawks and eagles,VertFishScav,603.72,Forest Generalist,Temperate North America,landbird,M,NA
-Broad-winged Hawk,Buteo platypterus,3430,Accipitriformes,Accipitridae,Osprey, kites, hawks and eagles,VertFishScav,453.65,Forest Generalist,Widespread Neotropical,landbird,M,NA
-Red-tailed Hawk,Buteo jamaicensis,3370,Accipitriformes,Accipitridae,Osprey, kites, hawks and eagles,VertFishScav,1101.16,Habitat Generalist,Widespread,landbird,M,NA
-Eastern Screech-Owl,Megascops asio,3730,Strigiformes,Strigidae,Owls,Omnivore,179.99,Eastern Forest,Temperate North America,landbird,R,NA,0,NA
-Great Horned Owl,Bubo virginianus,3750,Strigiformes,Strigidae,Owls,VertFishScav,1575.7,Habitat Generalist,Widespread,landbird,R,NA,0,NA
-Barred Owl,Strix varia,3680,Strigiformes,Strigidae,Owls,VertFishScav,711.49,Forest Generalist,Temperate North America,landbird,R,NA,0,NA
-Belted Kingfisher,Megaceryle alcyon,3900,Coraciiformes,Alcedinidae,Kingfishers,VertFishScav,148,Wetland,Widespread,landbird,M,NA,0,NA
-Red-headed Woodpecker,Melanerpes erythrocephalus,4060,Piciformes,Picidae,Woodpeckers,Invertebrate,71.6,Eastern Forest,Temperate North America,landbird,M,NA,0,NA
-Red-bellied Woodpecker,Melanerpes carolinus,4090,Piciformes,Picidae,Woodpeckers,Omnivore,69.5,Eastern Forest,Temperate North America,landbird,R,NA,0,NA
-Downy Woodpecker,Picoides pubescens,3940,Piciformes,Picidae,Woodpeckers,Invertebrate,25.55,Forest Generalist,Temperate North America,landbird,R,Downy Woodpecker,1,0
-Hairy Woodpecker,Picoides villosus,3930,Piciformes,Picidae,Woodpeckers,Invertebrate,62.65,Forest Generalist,Temperate North America,landbird,R,NA,0,NA
-Pileated Woodpecker,Dryocopus pileatus,4050,Piciformes,Picidae,Woodpeckers,Invertebrate,286.59,Eastern Forest,Temperate North America,landbird,R,NA,0,NA
-Eastern Wood-Pewee,Contopus virens,4610,Passeriformes,Tyrannidae,Tyrant-flycatchers,Invertebrate,13.9,Eastern Forest,South America,landbird,M,NA,0,NA
-Acadian Flycatcher,Empidonax virescens,4650,Passeriformes,Tyrannidae,Tyrant-flycatchers,Invertebrate,12.6,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Willow Flycatcher,Empidonax traillii,4660,Passeriformes,Tyrannidae,Tyrant-flycatchers,Invertebrate,13.39,Eastern Forest,Widespread Neotropical,landbird,M,Willow Flycatcher,1,0
-Eastern Phoebe,Sayornis phoebe,4560,Passeriformes,Tyrannidae,Tyrant-flycatchers,Invertebrate,19.7,Eastern Forest,Temperate North America,landbird,M,NA,0,NA
-Great Crested Flycatcher,Myiarchus crinitus,4520,Passeriformes,Tyrannidae,Tyrant-flycatchers,Invertebrate,32.1,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Eastern Kingbird,Tyrannus tyrannus,4440,Passeriformes,Tyrannidae,Tyrant-flycatchers,Invertebrate,39.85,Grassland,South America,landbird,M,NA,0,NA
-Loggerhead Shrike,Lanius ludovicianus,6220,Passeriformes,Laniidae,Shrikes,Invertebrate,51.59,Grassland,Temperate North America,landbird,M,Loggerhead Shrike,1,0
-White-eyed Vireo,Vireo griseus,6310,Passeriformes,Vireonidae,Vireos and allies,Invertebrate,11.4,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Yellow-throated Vireo,Vireo flavifrons,6280,Passeriformes,Vireonidae,Vireos and allies,Invertebrate,18,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Blue-headed Vireo,Vireo solitarius,6290,Passeriformes,Vireonidae,Vireos and allies,Invertebrate,15.3,Boreal Forest,Mexico-Central America,landbird,M,NA,0,NA
-Warbling Vireo,Vireo gilvus,6270,Passeriformes,Vireonidae,Vireos and allies,Invertebrate,12.67,Forest Generalist,Mexico-Central America,landbird,M,NA,0,NA
-Red-eyed Vireo,Vireo olivaceus,6240,Passeriformes,Vireonidae,Vireos and allies,Invertebrate,16.06,Forest Generalist,South America,landbird,M,NA,0,NA
-Blue Jay,Cyanocitta cristata,4770,Passeriformes,Corvidae,Crows and jays,Omnivore,88,Eastern Forest,Temperate North America,landbird,M,Blue Jay,1,1
-American Crow,Corvus brachyrhynchos,4880,Passeriformes,Corvidae,Crows and jays,Omnivore,448.76,Habitat Generalist,Temperate North America,landbird,M,American Crow,1,0
-Fish Crow,Corvus ossifragus,4900,Passeriformes,Corvidae,Crows and jays,Omnivore,284.6,Habitat Generalist,Temperate North America,landbird,R,NA,0,NA
-Horned Lark,Eremophila alpestris,4740,Passeriformes,Alaudidae,Larks,Omnivore,33.33,Grassland,Temperate North America,landbird,M,NA,0,NA
-Purple Martin,Progne subis,6110,Passeriformes,Hirundinidae,Swallows and martins,Invertebrate,53.79,Habitat Generalist,South America,landbird,M,Purple Martin,1,0
-Tree Swallow,Tachycineta bicolor,6140,Passeriformes,Hirundinidae,Swallows and martins,Invertebrate,21.2,Habitat Generalist,Widespread,landbird,M,Tree Swallow,1,0
-Northern Rough-winged Swallow,Stelgidopteryx serripennis,6170,Passeriformes,Hirundinidae,Swallows and martins,Invertebrate,15.69,Habitat Generalist,Widespread,landbird,M,NA,0,NA
-Cliff Swallow,Petrochelidon pyrrhonota,6120,Passeriformes,Hirundinidae,Swallows and martins,Invertebrate,21.6,Habitat Generalist,South America,landbird,M,Cliff Swallow,1,0
-Barn Swallow,Hirundo rustica,6130,Passeriformes,Hirundinidae,Swallows and martins,Invertebrate,17.91,Habitat Generalist,South America,landbird,M,Barn Swallow,1,0
-Tufted Titmouse,Baeolophus bicolor,7310,Passeriformes,Paridae,Tits and chickadees,Invertebrate,21.6,Eastern Forest,Temperate North America,landbird,R,Tufted Titmouse,1,1
-White-breasted Nuthatch,Sitta carolinensis,7270,Passeriformes,Sittidae,Nuthatches and Wallcreeper,Omnivore,21,Forest Generalist,Temperate North America,landbird,R,White-breasted Nuthatch,–,1
-Brown-headed Nuthatch,Sitta pusilla,7290,Passeriformes,Sittidae,Nuthatches and Wallcreeper,Invertebrate,10.2,Eastern Forest,Temperate North America,landbird,R,NA,0,NA
-House Wren,Troglodytes aedon,7210,Passeriformes,Troglodytidae,Wrens,Invertebrate,10.85,Forest Generalist,Temperate North America,landbird,M,House Wren,1,1
-Carolina Wren,Thryothorus ludovicianus,7180,Passeriformes,Troglodytidae,Wrens,Invertebrate,18.96,Eastern Forest,Temperate North America,landbird,R,Carolina Wren,1,1
-Blue-gray Gnatcatcher,Polioptila caerulea,7510,Passeriformes,Polioptilidae,Gnatcatchers,Invertebrate,5.8,Habitat Generalist,Widespread,landbird,M,NA,0,NA
-Eastern Bluebird,Sialia sialis,7660,Passeriformes,Turdidae,Thrushes,Invertebrate,27.5,Eastern Forest,Temperate North America,landbird,M,Eastern Bluebird,1,1
-Swainson's Thrush,Catharus ustulatus,7580,Passeriformes,Turdidae,Thrushes,Invertebrate,30.3,Forest Generalist,South America,landbird,M,NA,0,NA
-Wood Thrush,Hylocichla mustelina,7550,Passeriformes,Turdidae,Thrushes,Invertebrate,50.09,Eastern Forest,Mexico-Central America,landbird,M,Wood Thrush,1,0
-American Robin,Turdus migratorius,7610,Passeriformes,Turdidae,Thrushes,Omnivore,78.5,Forest Generalist,Temperate North America,landbird,M,American Robin,1,1
-Gray Catbird,Dumetella carolinensis,7040,Passeriformes,Mimidae,Mockingbirds and thrashers,Invertebrate,35.3,Eastern Forest,Mexico-Central America,landbird,M,Gray Catbird,1,1
-Brown Thrasher,Toxostoma rufum,7050,Passeriformes,Mimidae,Mockingbirds and thrashers,Omnivore,68.8,Eastern Forest,Temperate North America,landbird,M,Brown Thrasher,1,0
-Northern Mockingbird,Mimus polyglottos,7030,Passeriformes,Mimidae,Mockingbirds and thrashers,Omnivore,48.5,Habitat Generalist,Temperate North America,landbird,M,Northern Mockingbird,1,1
-European Starling,Sturnus vulgaris,4930,Passeriformes,Sturnidae,Starlings,Omnivore,77.14,Introduced,Introduced,landbird,Introduced,European Starling,1,1
-Cedar Waxwing,Bombycilla cedrorum,6190,Passeriformes,Bombycillidae,Waxwings,FruiNect,31.58,Forest Generalist,Temperate North America,landbird,M,Cedar Waxwing,–,1
-House Sparrow,Passer domesticus,6882,Passeriformes,Passeridae,Sparrows, snowfinches and allies,PlantSeed,26.51,Introduced,Introduced,landbird,Introduced,House Sparrow,1
-Ovenbird,Seiurus aurocapilla,6740,Passeriformes,Parulidae,New World warblers,Invertebrate,18.8,Eastern Forest,Widespread Neotropical,landbird,M,NA,0,NA
-Black-and-white Warbler,Mniotilta varia,6360,Passeriformes,Parulidae,New World warblers,Invertebrate,10.9,Eastern Forest,Widespread Neotropical,landbird,M,NA,0,NA
-Prothonotary Warbler,Protonotaria citrea,6370,Passeriformes,Parulidae,New World warblers,Invertebrate,14.3,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Common Yellowthroat,Geothlypis trichas,6810,Passeriformes,Parulidae,New World warblers,Invertebrate,9.54,Habitat Generalist,Widespread,landbird,M,Common Yellowthroat,–,1
-American Redstart,Setophaga ruticilla,6870,Passeriformes,Parulidae,New World warblers,Invertebrate,8.24,Eastern Forest,Widespread Neotropical,landbird,M,American Redstart,1,0
-Yellow-breasted Chat,Icteria virens,6830,Passeriformes,Parulidae,New World warblers,Invertebrate,24.89,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Eastern Towhee,Pipilo erythrophthalmus,5870,Passeriformes,Emberizidae,Buntings, American sparrows and allies,Omnivore,40.03,Eastern Forest,Temperate North America,landbird,M,Eastern Towhee,–
-Chipping Sparrow,Spizella passerina,5600,Passeriformes,Emberizidae,Buntings, American sparrows and allies,PlantSeed,12.2,Forest Generalist,Temperate North America,landbird,M,Chipping Sparrow,1
-Field Sparrow,Spizella pusilla,5630,Passeriformes,Emberizidae,Buntings, American sparrows and allies,PlantSeed,12.5,Eastern Forest,Temperate North America,landbird,M,Field Sparrow,–
-Grasshopper Sparrow,Ammodramus savannarum,5460,Passeriformes,Emberizidae,Buntings, American sparrows and allies,Invertebrate,17.61,Grassland,Temperate North America,landbird,M,NA,0
-Song Sparrow,Melospiza melodia,5810,Passeriformes,Emberizidae,Buntings, American sparrows and allies,Omnivore,21.91,Habitat Generalist,Temperate North America,landbird,M,Song Sparrow,1
-Summer Tanager,Piranga rubra,6100,Passeriformes,Cardinalidae,Grosbeaks, saltators and allies,Invertebrate,29.13,Eastern Forest,Widespread Neotropical,landbird,M,NA,0
-Scarlet Tanager,Piranga olivacea,6080,Passeriformes,Cardinalidae,Grosbeaks, saltators and allies,Invertebrate,28.2,Eastern Forest,South America,landbird,M,Scarlet Tanager,–
-Northern Cardinal,Cardinalis cardinalis,5930,Passeriformes,Cardinalidae,Grosbeaks, saltators and allies,PlantSeed,42.64,Eastern Forest,Temperate North America,landbird,R,Northern Cardinal,1
-Blue Grosbeak,Passerina caerulea,5970,Passeriformes,Emberizidae,Buntings, American sparrows and allies,Omnivore,27.39,Forest Generalist,Mexico-Central America,landbird,M,NA,0
-Indigo Bunting,Passerina cyanea,5980,Passeriformes,Emberizidae,Buntings, American sparrows and allies,PlantSeed,14.69,Eastern Forest,Mexico-Central America,landbird,M,NA,0
-Dickcissel,Spiza americana,6040,Passeriformes,Cardinalidae,Grosbeaks, saltators and allies,PlantSeed,26.18,Grassland,South America,landbird,M,Dickcissel,1
-Red-winged Blackbird,Agelaius phoeniceus,4980,Passeriformes,Icteridae,New World blackbirds,Omnivore,50.78,Habitat Generalist,Temperate North America,landbird,M,Red-winged Blackbird,–,1
-Eastern Meadowlark,Sturnella magna,5010,Passeriformes,Icteridae,New World blackbirds,Invertebrate,91.76,Grassland,Temperate North America,landbird,M,Eastern Meadowlark,1,0
-Common Grackle,Quiscalus quiscula,5110,Passeriformes,Icteridae,New World blackbirds,Omnivore,105.18,Habitat Generalist,Temperate North America,landbird,M,Common Grackle,1,1
-Brown-headed Cowbird,Molothrus ater,4950,Passeriformes,Icteridae,New World blackbirds,PlantSeed,40.26,Habitat Generalist,Temperate North America,landbird,M,NA,0,NA
-Orchard Oriole,Icterus spurius,5060,Passeriformes,Icteridae,New World blackbirds,Omnivore,19.44,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Baltimore Oriole,Icterus galbula,5070,Passeriformes,Icteridae,New World blackbirds,Invertebrate,32.83,Eastern Forest,Widespread Neotropical,landbird,M,Baltimore Oriole,1,1
-Northern Flicker,Colaptes auratus,4120,Piciformes,Picidae,Woodpeckers,Invertebrate,131.46,Forest Generalist,Widespread,landbird,M,Northern Flicker,0,1
-Chuck-will's-widow,Antrostomus carolinensis,4160,Caprimulgiformes,Caprimulgidae,Nightjars,Invertebrate,109,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Great Egret,Ardea alba,1960,Pelecaniformes,Ardeidae,Herons and egrets,VertFishScav,871.33,Wetland,Widespread,waterbird,M,NA,0,NA
-Carolina Chickadee,Poecile carolinensis,7360,Passeriformes,Paridae,Tits and chickadees,Invertebrate,9.99,Eastern Forest,Temperate North America,landbird,R,Carolina Chickadee,1,1
-House Finch,Haemorhous mexicanus,5190,Passeriformes,Fringillidae,Finches and Hawaiian honeycreepers,PlantSeed,21.4,Habitat Generalist,Widespread,landbird,R,NA,0,NA
-American Goldfinch,Spinus tristis,5290,Passeriformes,Fringillidae,Finches and Hawaiian honeycreepers,PlantSeed,12.79,Forest Generalist,Temperate North America,landbird,M,NA,0,NA
-Louisiana Waterthrush,Parkesia motacilla,6760,Passeriformes,Parulidae,New World warblers,Invertebrate,19.9,Eastern Forest,Widespread Neotropical,landbird,M,NA,0,NA
-Northern Waterthrush,Parkesia noveboracensis,6750,Passeriformes,Parulidae,New World warblers,Invertebrate,16.3,Boreal Forest,Widespread Neotropical,landbird,M,NA,0,NA
-Kentucky Warbler,Geothlypis formosa,6770,Passeriformes,Parulidae,New World warblers,Invertebrate,14,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Hooded Warbler,Setophaga citrina,6840,Passeriformes,Parulidae,New World warblers,Invertebrate,10.54,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
-Northern Parula,Setophaga americana,6480,Passeriformes,Parulidae,New World warblers,Invertebrate,7.84,Forest Generalist,Caribbean,landbird,M,NA,0,NA
-Magnolia Warbler,Setophaga magnolia,6570,Passeriformes,Parulidae,New World warblers,Invertebrate,8.14,Boreal Forest,Mexico-Central America,landbird,M,NA,0,NA
-Yellow Warbler,Setophaga petechia,6520,Passeriformes,Parulidae,New World warblers,Invertebrate,10.22,Forest Generalist,Widespread Neotropical,landbird,M,NA,0,NA
-Blackpoll Warbler,Setophaga striata,6610,Passeriformes,Parulidae,New World warblers,Invertebrate,11.84,Boreal Forest,South America,landbird,M,NA,0,NA
-Black-throated Blue Warbler,Setophaga caerulescens,6540,Passeriformes,Parulidae,New World warblers,Invertebrate,10.14,Boreal Forest,Caribbean,landbird,M,NA,0,NA
-Pine Warbler,Setophaga pinus,6710,Passeriformes,Parulidae,New World warblers,Invertebrate,11.79,Eastern Forest,Temperate North America,landbird,M,NA,0,NA
-Yellow-throated Warbler,Setophaga dominica,6630,Passeriformes,Parulidae,New World warblers,Invertebrate,9.69,Eastern Forest,Caribbean,landbird,M,NA,0,NA
-Prairie Warbler,Setophaga discolor,6730,Passeriformes,Parulidae,New World warblers,Invertebrate,7.64,Eastern Forest,Caribbean,landbird,M,NA,0,NA
-Eastern Whip-poor-will,Antrostomus vociferus,4170,Caprimulgiformes,Caprimulgidae,Nightjars,Invertebrate,53.4,Eastern Forest,Mexico-Central America,landbird,M,NA,0,NA
+"english_common_name","binomial","aou","IOCOrder","BLFamilyLatin","BLFamilyEnglish","Diet_5Cat","BodyMass.Value","Breeding_Biome","Winter_Biome","bird_group","Migrate","cat.in.BNA","cat.in.CS"
+"Canada Goose","Branta canadensis",1720,"Anseriformes","Anatidae","Ducks, geese and swans","PlantSeed",2811.68,"Wetland","Temperate North America","waterfowl","M",NA,NA
+"Muscovy Duck","Cairina moschata",10210,"Anseriformes","Anatidae","Ducks, geese and swans","Omnivore",2415.78,"Introduced","Introduced","waterfowl","Introduced",NA,NA
+"Wood Duck","Aix sponsa",1440,"Anseriformes","Anatidae","Ducks, geese and swans","PlantSeed",657.59,"Wetland","Temperate North America","waterfowl","M",NA,NA
+"Mallard","Anas platyrhynchos",1320,"Anseriformes","Anatidae","Ducks, geese and swans","Omnivore",843.42,"Wetland","Widespread","waterfowl","M",NA,NA
+"Northern Bobwhite","Colinus virginianus",2890,"Galliformes","Odontophoridae","New World quails","PlantSeed",171.89,"Eastern Forest","Temperate North America","landbird","R",NA,NA
+"Wild Turkey","Meleagris gallopavo",3100,"Galliformes","Phasianidae","Grouse, pheasants and partridges","PlantSeed",5791.37,"Forest Generalist","Temperate North America","landbird","R",NA,NA
+"Rock Pigeon","Columba livia",3131,"Columbiformes","Columbidae","Doves and pigeons","PlantSeed",354.2,"Introduced","Introduced","landbird","Introduced",1,1
+"Mourning Dove","Zenaida macroura",3160,"Columbiformes","Columbidae","Doves and pigeons","PlantSeed",118.93,"Habitat Generalist","Widespread","landbird","M",1,1
+"Yellow-billed Cuckoo","Coccyzus americanus",3870,"Cuculiformes","Cuculidae","Cuckoos","Invertebrate",64,"Eastern Forest","South America","landbird","M",NA,NA
+"Common Nighthawk","Chordeiles minor",4200,"Caprimulgiformes","Caprimulgidae","Nightjars","Invertebrate",79.3,"Habitat Generalist","South America","landbird","M",1,0
+"Chimney Swift","Chaetura pelagica",4230,"Apodiformes","Apodidae","Swifts","Invertebrate",23.6,"Eastern Forest","South America","landbird","M",NA,NA
+"Ruby-throated Hummingbird","Archilochus colubris",4280,"Apodiformes","Trochilidae","Hummingbirds","FruiNect",3.09,"Eastern Forest","Mexico-Central America","landbird","M",1,1
+"Killdeer","Charadrius vociferus",2730,"Charadriiformes","Charadriidae","Plovers","Invertebrate",96.44,"Habitat Generalist","Widespread","shorebird","M",NA,NA
+"American Woodcock","Scolopax minor",2280,"Charadriiformes","Scolopacidae","Sandpipers and allies","Invertebrate",196.32,"Eastern Forest","Temperate North America","shorebird","M",NA,NA
+"Ring-billed Gull","Larus delawarensis",540,"Charadriiformes","Laridae","Gulls and terns","VertFishScav",516.31,"Wetland","Temperate North America","waterbird","M",NA,NA
+"Double-crested Cormorant","Phalacrocorax auritus",1200,"Suliformes","Phalacrocoracidae","Cormorants","VertFishScav",1806.49,"Wetland","Temperate North America","waterbird","M",NA,NA
+"Great Blue Heron","Ardea herodias",1940,"Pelecaniformes","Ardeidae","Herons and egrets","VertFishScav",2523.41,"Wetland","Widespread","waterbird","M",NA,NA
+"Green Heron","Butorides virescens",2010,"Pelecaniformes","Ardeidae","Herons and egrets","VertFishScav",201.5,"Wetland","Widespread","waterbird","M",NA,NA
+"Yellow-crowned Night-Heron","Nyctanassa violacea",2030,"Pelecaniformes","Ardeidae","Herons and egrets","VertFishScav",681.67,"Coasts","Widespread","waterbird","M",NA,NA
+"Glossy Ibis","Plegadis falcinellus",1860,"Pelecaniformes","Threskiornithidae","Ibises and spoonbills","Invertebrate",626.61,"Wetland","Widespread","waterbird","M",NA,NA
+"Black Vulture","Coragyps atratus",3260,"Accipitriformes","Cathartidae","New World vultures","VertFishScav",1881.69,"Habitat Generalist","Widespread","landbird","R",NA,NA
+"Turkey Vulture","Cathartes aura",3250,"Accipitriformes","Cathartidae","New World vultures","VertFishScav",1518.24,"Habitat Generalist","Widespread","landbird","M",NA,NA
+"Osprey","Pandion haliaetus",3640,"Accipitriformes","Accipitridae","Osprey, kites, hawks and eagles","VertFishScav",1483.2,"Wetland","Widespread","landbird","M",NA,NA
+"Bald Eagle","Haliaeetus leucocephalus",3520,"Accipitriformes","Accipitridae","Osprey, kites, hawks and eagles","VertFishScav",4700.58,"Wetland","Temperate North America","landbird","M",NA,NA
+"Sharp-shinned Hawk","Accipiter striatus",3320,"Accipitriformes","Accipitridae","Osprey, kites, hawks and eagles","VertFishScav",130.59,"Forest Generalist","Widespread","landbird","M",NA,NA
+"Cooper's Hawk","Accipiter cooperii",3330,"Accipitriformes","Accipitridae","Osprey, kites, hawks and eagles","VertFishScav",429.67,"Forest Generalist","Widespread","landbird","M",NA,NA
+"Red-shouldered Hawk","Buteo lineatus",3390,"Accipitriformes","Accipitridae","Osprey, kites, hawks and eagles","VertFishScav",603.72,"Forest Generalist","Temperate North America","landbird","M",NA,NA
+"Broad-winged Hawk","Buteo platypterus",3430,"Accipitriformes","Accipitridae","Osprey, kites, hawks and eagles","VertFishScav",453.65,"Forest Generalist","Widespread Neotropical","landbird","M",NA,NA
+"Red-tailed Hawk","Buteo jamaicensis",3370,"Accipitriformes","Accipitridae","Osprey, kites, hawks and eagles","VertFishScav",1101.16,"Habitat Generalist","Widespread","landbird","M",NA,NA
+"Eastern Screech-Owl","Megascops asio",3730,"Strigiformes","Strigidae","Owls","Omnivore",179.99,"Eastern Forest","Temperate North America","landbird","R",NA,NA
+"Great Horned Owl","Bubo virginianus",3750,"Strigiformes","Strigidae","Owls","VertFishScav",1575.7,"Habitat Generalist","Widespread","landbird","R",NA,NA
+"Barred Owl","Strix varia",3680,"Strigiformes","Strigidae","Owls","VertFishScav",711.49,"Forest Generalist","Temperate North America","landbird","R",NA,NA
+"Belted Kingfisher","Megaceryle alcyon",3900,"Coraciiformes","Alcedinidae","Kingfishers","VertFishScav",148,"Wetland","Widespread","landbird","M",NA,NA
+"Red-headed Woodpecker","Melanerpes erythrocephalus",4060,"Piciformes","Picidae","Woodpeckers","Invertebrate",71.6,"Eastern Forest","Temperate North America","landbird","M",NA,NA
+"Red-bellied Woodpecker","Melanerpes carolinus",4090,"Piciformes","Picidae","Woodpeckers","Omnivore",69.5,"Eastern Forest","Temperate North America","landbird","R",NA,NA
+"Downy Woodpecker","Picoides pubescens",3940,"Piciformes","Picidae","Woodpeckers","Invertebrate",25.55,"Forest Generalist","Temperate North America","landbird","R",1,0
+"Hairy Woodpecker","Picoides villosus",3930,"Piciformes","Picidae","Woodpeckers","Invertebrate",62.65,"Forest Generalist","Temperate North America","landbird","R",NA,NA
+"Pileated Woodpecker","Dryocopus pileatus",4050,"Piciformes","Picidae","Woodpeckers","Invertebrate",286.59,"Eastern Forest","Temperate North America","landbird","R",NA,NA
+"Eastern Wood-Pewee","Contopus virens",4610,"Passeriformes","Tyrannidae","Tyrant-flycatchers","Invertebrate",13.9,"Eastern Forest","South America","landbird","M",NA,NA
+"Acadian Flycatcher","Empidonax virescens",4650,"Passeriformes","Tyrannidae","Tyrant-flycatchers","Invertebrate",12.6,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Willow Flycatcher","Empidonax traillii",4660,"Passeriformes","Tyrannidae","Tyrant-flycatchers","Invertebrate",13.39,"Eastern Forest","Widespread Neotropical","landbird","M",1,0
+"Eastern Phoebe","Sayornis phoebe",4560,"Passeriformes","Tyrannidae","Tyrant-flycatchers","Invertebrate",19.7,"Eastern Forest","Temperate North America","landbird","M",NA,1
+"Great Crested Flycatcher","Myiarchus crinitus",4520,"Passeriformes","Tyrannidae","Tyrant-flycatchers","Invertebrate",32.1,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Eastern Kingbird","Tyrannus tyrannus",4440,"Passeriformes","Tyrannidae","Tyrant-flycatchers","Invertebrate",39.85,"Grassland","South America","landbird","M",NA,NA
+"Loggerhead Shrike","Lanius ludovicianus",6220,"Passeriformes","Laniidae","Shrikes","Invertebrate",51.59,"Grassland","Temperate North America","landbird","M",1,0
+"White-eyed Vireo","Vireo griseus",6310,"Passeriformes","Vireonidae","Vireos and allies","Invertebrate",11.4,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Yellow-throated Vireo","Vireo flavifrons",6280,"Passeriformes","Vireonidae","Vireos and allies","Invertebrate",18,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Blue-headed Vireo","Vireo solitarius",6290,"Passeriformes","Vireonidae","Vireos and allies","Invertebrate",15.3,"Boreal Forest","Mexico-Central America","landbird","M",NA,NA
+"Warbling Vireo","Vireo gilvus",6270,"Passeriformes","Vireonidae","Vireos and allies","Invertebrate",12.67,"Forest Generalist","Mexico-Central America","landbird","M",NA,NA
+"Red-eyed Vireo","Vireo olivaceus",6240,"Passeriformes","Vireonidae","Vireos and allies","Invertebrate",16.06,"Forest Generalist","South America","landbird","M",NA,NA
+"Blue Jay","Cyanocitta cristata",4770,"Passeriformes","Corvidae","Crows and jays","Omnivore",88,"Eastern Forest","Temperate North America","landbird","M",1,1
+"American Crow","Corvus brachyrhynchos",4880,"Passeriformes","Corvidae","Crows and jays","Omnivore",448.76,"Habitat Generalist","Temperate North America","landbird","M",1,0
+"Fish Crow","Corvus ossifragus",4900,"Passeriformes","Corvidae","Crows and jays","Omnivore",284.6,"Habitat Generalist","Temperate North America","landbird","R",NA,NA
+"Horned Lark","Eremophila alpestris",4740,"Passeriformes","Alaudidae","Larks","Omnivore",33.33,"Grassland","Temperate North America","landbird","M",NA,NA
+"Purple Martin","Progne subis",6110,"Passeriformes","Hirundinidae","Swallows and martins","Invertebrate",53.79,"Habitat Generalist","South America","landbird","M",1,0
+"Tree Swallow","Tachycineta bicolor",6140,"Passeriformes","Hirundinidae","Swallows and martins","Invertebrate",21.2,"Habitat Generalist","Widespread","landbird","M",1,0
+"Northern Rough-winged Swallow","Stelgidopteryx serripennis",6170,"Passeriformes","Hirundinidae","Swallows and martins","Invertebrate",15.69,"Habitat Generalist","Widespread","landbird","M",NA,NA
+"Cliff Swallow","Petrochelidon pyrrhonota",6120,"Passeriformes","Hirundinidae","Swallows and martins","Invertebrate",21.6,"Habitat Generalist","South America","landbird","M",1,0
+"Barn Swallow","Hirundo rustica",6130,"Passeriformes","Hirundinidae","Swallows and martins","Invertebrate",17.91,"Habitat Generalist","South America","landbird","M",1,0
+"Tufted Titmouse","Baeolophus bicolor",7310,"Passeriformes","Paridae","Tits and chickadees","Invertebrate",21.6,"Eastern Forest","Temperate North America","landbird","R",1,1
+"White-breasted Nuthatch","Sitta carolinensis",7270,"Passeriformes","Sittidae","Nuthatches and Wallcreeper","Omnivore",21,"Forest Generalist","Temperate North America","landbird","R",NA,1
+"Brown-headed Nuthatch","Sitta pusilla",7290,"Passeriformes","Sittidae","Nuthatches and Wallcreeper","Invertebrate",10.2,"Eastern Forest","Temperate North America","landbird","R",NA,NA
+"House Wren","Troglodytes aedon",7210,"Passeriformes","Troglodytidae","Wrens","Invertebrate",10.85,"Forest Generalist","Temperate North America","landbird","M",1,1
+"Carolina Wren","Thryothorus ludovicianus",7180,"Passeriformes","Troglodytidae","Wrens","Invertebrate",18.96,"Eastern Forest","Temperate North America","landbird","R",1,1
+"Blue-gray Gnatcatcher","Polioptila caerulea",7510,"Passeriformes","Polioptilidae","Gnatcatchers","Invertebrate",5.8,"Habitat Generalist","Widespread","landbird","M",NA,NA
+"Eastern Bluebird","Sialia sialis",7660,"Passeriformes","Turdidae","Thrushes","Invertebrate",27.5,"Eastern Forest","Temperate North America","landbird","M",1,1
+"Swainson's Thrush","Catharus ustulatus",7580,"Passeriformes","Turdidae","Thrushes","Invertebrate",30.3,"Forest Generalist","South America","landbird","M",NA,NA
+"Wood Thrush","Hylocichla mustelina",7550,"Passeriformes","Turdidae","Thrushes","Invertebrate",50.09,"Eastern Forest","Mexico-Central America","landbird","M",1,0
+"American Robin","Turdus migratorius",7610,"Passeriformes","Turdidae","Thrushes","Omnivore",78.5,"Forest Generalist","Temperate North America","landbird","M",1,1
+"Gray Catbird","Dumetella carolinensis",7040,"Passeriformes","Mimidae","Mockingbirds and thrashers","Invertebrate",35.3,"Eastern Forest","Mexico-Central America","landbird","M",1,1
+"Brown Thrasher","Toxostoma rufum",7050,"Passeriformes","Mimidae","Mockingbirds and thrashers","Omnivore",68.8,"Eastern Forest","Temperate North America","landbird","M",1,0
+"Northern Mockingbird","Mimus polyglottos",7030,"Passeriformes","Mimidae","Mockingbirds and thrashers","Omnivore",48.5,"Habitat Generalist","Temperate North America","landbird","M",1,1
+"European Starling","Sturnus vulgaris",4930,"Passeriformes","Sturnidae","Starlings","Omnivore",77.14,"Introduced","Introduced","landbird","Introduced",1,1
+"Cedar Waxwing","Bombycilla cedrorum",6190,"Passeriformes","Bombycillidae","Waxwings","FruiNect",31.58,"Forest Generalist","Temperate North America","landbird","M",NA,1
+"House Sparrow","Passer domesticus",6882,"Passeriformes","Passeridae","Sparrows, snowfinches and allies","PlantSeed",26.51,"Introduced","Introduced","landbird","Introduced",1,1
+"Ovenbird","Seiurus aurocapilla",6740,"Passeriformes","Parulidae","New World warblers","Invertebrate",18.8,"Eastern Forest","Widespread Neotropical","landbird","M",NA,NA
+"Black-and-white Warbler","Mniotilta varia",6360,"Passeriformes","Parulidae","New World warblers","Invertebrate",10.9,"Eastern Forest","Widespread Neotropical","landbird","M",NA,NA
+"Prothonotary Warbler","Protonotaria citrea",6370,"Passeriformes","Parulidae","New World warblers","Invertebrate",14.3,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Common Yellowthroat","Geothlypis trichas",6810,"Passeriformes","Parulidae","New World warblers","Invertebrate",9.54,"Habitat Generalist","Widespread","landbird","M",NA,1
+"American Redstart","Setophaga ruticilla",6870,"Passeriformes","Parulidae","New World warblers","Invertebrate",8.24,"Eastern Forest","Widespread Neotropical","landbird","M",1,0
+"Yellow-breasted Chat","Icteria virens",6830,"Passeriformes","Parulidae","New World warblers","Invertebrate",24.89,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Eastern Towhee","Pipilo erythrophthalmus",5870,"Passeriformes","Emberizidae","Buntings, American sparrows and allies","Omnivore",40.03,"Eastern Forest","Temperate North America","landbird","M",NA,1
+"Chipping Sparrow","Spizella passerina",5600,"Passeriformes","Emberizidae","Buntings, American sparrows and allies","PlantSeed",12.2,"Forest Generalist","Temperate North America","landbird","M",1,1
+"Field Sparrow","Spizella pusilla",5630,"Passeriformes","Emberizidae","Buntings, American sparrows and allies","PlantSeed",12.5,"Eastern Forest","Temperate North America","landbird","M",NA,1
+"Grasshopper Sparrow","Ammodramus savannarum",5460,"Passeriformes","Emberizidae","Buntings, American sparrows and allies","Invertebrate",17.61,"Grassland","Temperate North America","landbird","M",NA,NA
+"Song Sparrow","Melospiza melodia",5810,"Passeriformes","Emberizidae","Buntings, American sparrows and allies","Omnivore",21.91,"Habitat Generalist","Temperate North America","landbird","M",1,1
+"Summer Tanager","Piranga rubra",6100,"Passeriformes","Cardinalidae","Grosbeaks, saltators and allies","Invertebrate",29.13,"Eastern Forest","Widespread Neotropical","landbird","M",NA,NA
+"Scarlet Tanager","Piranga olivacea",6080,"Passeriformes","Cardinalidae","Grosbeaks, saltators and allies","Invertebrate",28.2,"Eastern Forest","South America","landbird","M",NA,1
+"Northern Cardinal","Cardinalis cardinalis",5930,"Passeriformes","Cardinalidae","Grosbeaks, saltators and allies","PlantSeed",42.64,"Eastern Forest","Temperate North America","landbird","R",1,1
+"Blue Grosbeak","Passerina caerulea",5970,"Passeriformes","Emberizidae","Buntings, American sparrows and allies","Omnivore",27.39,"Forest Generalist","Mexico-Central America","landbird","M",NA,NA
+"Indigo Bunting","Passerina cyanea",5980,"Passeriformes","Emberizidae","Buntings, American sparrows and allies","PlantSeed",14.69,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Dickcissel","Spiza americana",6040,"Passeriformes","Cardinalidae","Grosbeaks, saltators and allies","PlantSeed",26.18,"Grassland","South America","landbird","M",1,0
+"Red-winged Blackbird","Agelaius phoeniceus",4980,"Passeriformes","Icteridae","New World blackbirds","Omnivore",50.78,"Habitat Generalist","Temperate North America","landbird","M",NA,1
+"Eastern Meadowlark","Sturnella magna",5010,"Passeriformes","Icteridae","New World blackbirds","Invertebrate",91.76,"Grassland","Temperate North America","landbird","M",1,0
+"Common Grackle","Quiscalus quiscula",5110,"Passeriformes","Icteridae","New World blackbirds","Omnivore",105.18,"Habitat Generalist","Temperate North America","landbird","M",1,1
+"Brown-headed Cowbird","Molothrus ater",4950,"Passeriformes","Icteridae","New World blackbirds","PlantSeed",40.26,"Habitat Generalist","Temperate North America","landbird","M",NA,NA
+"Orchard Oriole","Icterus spurius",5060,"Passeriformes","Icteridae","New World blackbirds","Omnivore",19.44,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Baltimore Oriole","Icterus galbula",5070,"Passeriformes","Icteridae","New World blackbirds","Invertebrate",32.83,"Eastern Forest","Widespread Neotropical","landbird","M",1,1
+"Northern Flicker","Colaptes auratus",4120,"Piciformes","Picidae","Woodpeckers","Invertebrate",131.46,"Forest Generalist","Widespread","landbird","M",0,1
+"Chuck-will's-widow","Antrostomus carolinensis",4160,"Caprimulgiformes","Caprimulgidae","Nightjars","Invertebrate",109,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Great Egret","Ardea alba",1960,"Pelecaniformes","Ardeidae","Herons and egrets","VertFishScav",871.33,"Wetland","Widespread","waterbird","M",NA,NA
+"Carolina Chickadee","Poecile carolinensis",7360,"Passeriformes","Paridae","Tits and chickadees","Invertebrate",9.99,"Eastern Forest","Temperate North America","landbird","R",1,1
+"House Finch","Haemorhous mexicanus",5190,"Passeriformes","Fringillidae","Finches and Hawaiian honeycreepers","PlantSeed",21.4,"Habitat Generalist","Widespread","landbird","R",1,1
+"American Goldfinch","Spinus tristis",5290,"Passeriformes","Fringillidae","Finches and Hawaiian honeycreepers","PlantSeed",12.79,"Forest Generalist","Temperate North America","landbird","M",1,1
+"Louisiana Waterthrush","Parkesia motacilla",6760,"Passeriformes","Parulidae","New World warblers","Invertebrate",19.9,"Eastern Forest","Widespread Neotropical","landbird","M",NA,NA
+"Northern Waterthrush","Parkesia noveboracensis",6750,"Passeriformes","Parulidae","New World warblers","Invertebrate",16.3,"Boreal Forest","Widespread Neotropical","landbird","M",NA,NA
+"Kentucky Warbler","Geothlypis formosa",6770,"Passeriformes","Parulidae","New World warblers","Invertebrate",14,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Hooded Warbler","Setophaga citrina",6840,"Passeriformes","Parulidae","New World warblers","Invertebrate",10.54,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
+"Northern Parula","Setophaga americana",6480,"Passeriformes","Parulidae","New World warblers","Invertebrate",7.84,"Forest Generalist","Caribbean","landbird","M",NA,NA
+"Magnolia Warbler","Setophaga magnolia",6570,"Passeriformes","Parulidae","New World warblers","Invertebrate",8.14,"Boreal Forest","Mexico-Central America","landbird","M",NA,NA
+"Yellow Warbler","Setophaga petechia",6520,"Passeriformes","Parulidae","New World warblers","Invertebrate",10.22,"Forest Generalist","Widespread Neotropical","landbird","M",NA,NA
+"Blackpoll Warbler","Setophaga striata",6610,"Passeriformes","Parulidae","New World warblers","Invertebrate",11.84,"Boreal Forest","South America","landbird","M",NA,NA
+"Black-throated Blue Warbler","Setophaga caerulescens",6540,"Passeriformes","Parulidae","New World warblers","Invertebrate",10.14,"Boreal Forest","Caribbean","landbird","M",NA,NA
+"Pine Warbler","Setophaga pinus",6710,"Passeriformes","Parulidae","New World warblers","Invertebrate",11.79,"Eastern Forest","Temperate North America","landbird","M",NA,NA
+"Yellow-throated Warbler","Setophaga dominica",6630,"Passeriformes","Parulidae","New World warblers","Invertebrate",9.69,"Eastern Forest","Caribbean","landbird","M",NA,NA
+"Prairie Warbler","Setophaga discolor",6730,"Passeriformes","Parulidae","New World warblers","Invertebrate",7.64,"Eastern Forest","Caribbean","landbird","M",NA,NA
+"Eastern Whip-poor-will","Antrostomus vociferus",4170,"Caprimulgiformes","Caprimulgidae","Nightjars","Invertebrate",53.4,"Eastern Forest","Mexico-Central America","landbird","M",NA,NA
