@@ -40,6 +40,7 @@ routeyear <- unique(mbbs_all[,c('year', 'route_num', 'mbbs_county')]) %>% arrang
 #save this csv
 write.csv(routeyear, "data/survey.events.csv", row.names = F)
 
+#filter out species that don't show up in enough years
 
 #filter out species that haven't been seen more than the min number of sightings (currently 10)
 occurances <- mbbs_all %>% count(common_name) %>% arrange(n) 
