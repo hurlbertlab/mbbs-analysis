@@ -14,3 +14,4 @@ traits_wcats <- left_join(traits, cats, by = c('english_common_name'='common.nam
 
 traits_wcats <- traits_wcats %>% select(!genus.species)
 
+write.csv(traits_wcats, "data/NC_species_traits_wcats.csv", row.names = F)
