@@ -1,0 +1,3 @@
+nice fancy code to pull the county from the name of the df that was passed to the function (ie function(mbbs_durham) will give "durham)
+
+selected_county <- sub('.*_', '', deparse(substitute(mbbs_county)))

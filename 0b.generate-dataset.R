@@ -6,6 +6,8 @@
 #creates survey.event dataset
 #removes species with less than 10 sightings 
 #FUTURE: removes observations flaged by the mbbs for like, observer only participated once, too high/too low species counts, other things we talked about flagging etc. 
+
+#TODO: Change from route_num unique format - preserve original route numbers and just group_by both county and route_num when working with the dataset. That's a better way to do things
 #---
 
 #load mbbs library
