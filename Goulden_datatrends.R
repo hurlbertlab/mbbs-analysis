@@ -43,7 +43,7 @@ p3 <- plot(1:10)
 p4 <- plot(1:10)
 
 #generate the pdf that we'll print to
-pdf(paste("inst/scratch/speciesplots_allcounties",".pdf", sep = ""), width = 12)
+pdf(paste("scratch/speciesplots_allcounties",".pdf", sep = ""), width = 12)
 
 #run the loop to create the plots for all species with more than 10 observations
 for(b in 1:length(species_list_allcounties)) {
@@ -101,7 +101,7 @@ plot_one_species_one_county <- function(mbbs_county, species, county_name) {
             #theme_bw()
     
     route_totals %>% ggplot(aes(x=year, y=sum)) +
-      xlim(1999,2022) +
+      xlim(1999,max(mbbs_county$year)) +
       geom_line(aes(group = route_num), color = "grey") +
       geom_line(data = ave, aes(x = year, y = mean)) +
       geom_point(data = ave, aes(x = year, y = mean)) +
@@ -135,7 +135,7 @@ plot_all_species_in_county <- function(mbbs_county) {
     #plot
     #plot each route, plot average across route (line + points), add trend line (lm), add species name and county to top of graph
     print(mbbs_county %>% filter(common_name == in_use_species) %>%  ggplot(aes(x = year, y = count)) +
-            xlim(1999,2022) +
+            xlim(1999,max(mbbs_county$year)) +
             geom_line(aes(group = route_num), color = "grey") +
             geom_line(data = ave, aes(x = year, y = mean)) +
             geom_point(data = ave, aes(x = year, y = mean)) +
