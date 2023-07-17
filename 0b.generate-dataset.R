@@ -24,18 +24,7 @@ mbbs_chatham <- mbbs_chatham
 mbbs_all <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham)
 
 #Fix potential error sources
-mbbs_all <- mbbs_all %>%
-  #16 observations in Wake county instead of Durham, lump those back into durham
-  mutate(county = str_replace(county, "Wake", "Durham"))  %>%
-  #route number is not unique within study, only country - lets create distinct route ID across county
-  mutate(
-    county_factor = case_when(
-      mbbs_county == "orange" ~ 0,
-      mbbs_county == "durham" ~ 20,
-      mbbs_county == "chatham" ~ 40,),
-    route_num = route_num + county_factor #keep as route_num to be consistent with format and column names in the individual county plots
-  )
-
+#not changing route number, use mbbs_county instead of county column
 
 #now let's create a dataframe of unique combinations of route and year, we'll use this in later modeling with group_by() to divide by the number of routes run in that year (averages) or to add 0's when iterating on individual species
 routeyear <- unique(mbbs_all[,c('year', 'route_num', 'mbbs_county')]) %>% arrange(year) %>% rename('county' = 'mbbs_county')
