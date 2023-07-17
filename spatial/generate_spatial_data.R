@@ -105,6 +105,7 @@ coords$official_lon <- coords$lon
     }
     
     
+    
   #and then remove duplicates, and they're going to have the same official lat/lon so we can just keep the first instance
   coords <- coords %>% distinct(route_num, stop_num, .keep_all = TRUE)
   
@@ -143,7 +144,8 @@ coords_sf <- coords_sf %>% mutate(
   dplyr::select(-county_factor) #remove county factor
 
 coords_sf <- coords_sf %>%
-  mutate(County_Route_Stop = paste(mbbs_county,as.character(route_num),as.character(stop_num), sep = "-")) %>% relocate(County_Route_Stop, mbbs_county)
+  mutate(County_Route_Stop = paste(mbbs_county,as.character(route_num),as.character(stop_num), sep = "-"),
+         County_Route = paste(mbbs_county, as.character(route_num), sep = "-")) %>% relocate(County_Route_Stop, mbbs_county) %>% relocate(County_Route, County_Route_Stop)
 
 
 coords_sf <- coords_sf %>% rename(WKT = geometry) #change name of geometry column for google
