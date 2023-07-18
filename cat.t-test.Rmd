@@ -6,7 +6,8 @@ title: "cat-t.test"
 
 ```{r}
 library(dplyr)
-library(ggplot)
+library(ggplot2)
+library(rstatix)
 ```
 
 ```{r}
