@@ -12,147 +12,76 @@ library(tmap) #this is the mapping
 library(ggplot2)
 library(tidyr)
 library(usmap)
+library(mapview)
+library(raster)
 
 #read in the dataset
 mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
 
-#how many coordinates should we expect?
-length(unique(mbbs$lon));length(unique(mbbs$lat)) #both 764
+  #generate a new spatial dataframe
+  #spatial.df <- remake.spatial(mbbs)
+  #or read in the spatial dataframe already in use
+  spatial.df <- read.csv("spatial/RouteStops.csv", header = TRUE) %>%
+    add.geometry() #and add geometry for mapping
 
-#let's take a look at lat/lons 
-#tidyr::expand() gives all combinations of values that appear in the data
-coords <- mbbs %>% group_by(mbbs_county, route_num, stop_num) %>% expand(nesting(lat, lon))
-
-#break out by year
-coods_year <- mbbs %>% group_by(mbbs_county, route_num, stop_num, year) %>% expand(nesting(lat,lon))
-
-#create official coordinates
-coords$official_lat <- coords$lat
-coords$official_lon <- coords$lon
-
-#Fix official coordinates that are in the wrong spot
-  #Chatham 13, original location is more accurate to route description than ebird location,   official 1st stop lat and lon based off stop_num == NA
-  coords$official_lat[coords$route_num ==53 & coords$stop_num == 1 & is.na(coords$stop_num) == FALSE] <- coords$lat[coords$route_num == 53 & is.na(coords$stop_num) == TRUE]
-  coords$official_lon[coords$route_num ==53 & coords$stop_num == 1 & is.na(coords$stop_num) == FALSE] <- coords$lon[coords$route_num == 53 & is.na(coords$stop_num) == TRUE]
+  #check for problems in the dataframe (all columns in the table should be 1s for the county/route combos that exist)
+  table(spatial.df$mbbs_county, spatial.df$stop_num, spatial.df$route_num)
   
-  #it perhaps introduces minor error, but I think it's perfectly okay to make the decision that starting points should be based on the new ebird points? In which case, at least any error is systematic. If we're going that we can just:
-  coords <- coords %>% filter(is.na(stop_num) == FALSE)
+  #make a 400m buffer
+  stop.buffer <- st_buffer(spatial.df, dist = 400) 
   
-  #now we can fix duplicates and decide on the official lat/lon
-  #doesn't really matter, WHICH one we pick, just that we pick one in most cases
-  #guide:
-  #look for most recent, pick the most recent points
-  #color-code by latest year, then I can tell them apart and assign (to do this, mapview coords_year_sf)
-    #Orange 7 stop 2
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 2] <- 36.13889
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 2] <- -79.22034
-    #Orange 7 stop 3
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 3] <- 36.14466
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 3] <- -79.21589
-    #Orange 7 stop 4
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 4] <- 36.14890
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 4] <- -79.20770
-    #Orange 7 stop 5
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 5] <- 36.15205
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 5] <- -79.20053
-    #Orange 7 stop 6
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 6] <- 36.15863
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 6] <- -79.19863
-    #Orange 7 stop 7
-    #these points are a little further apart let's average them
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 7] <- mean(36.16424,36.16648)
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 7] <- mean(-79.19681, -79.19614)
-    #Orange 7 stop 8
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 8] <- 36.17145
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 8] <- -79.19305
-    #Orange 7 stop 9
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 9] <- 36.17449
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 9] <- -79.18509
-    #O7,10
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 10] <- 36.17928
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 10] <- -79.17873
-    #o7,11
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 11] <- 36.18373
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 11] <- -79.17701
-    #o7, 12
-    coords$official_lat[coords$route_num == 7 & coords$stop_num == 12] <- coods_year$lat[coods_year$route_num == 7 & coods_year$stop_num == 12 & coods_year$year == 2022]
-    coords$official_lon[coords$route_num == 7 & coords$stop_num == 12] <- coods_year$lon[coods_year$route_num == 7 & coods_year$stop_num == 12 & coods_year$year == 2022]
-    #Orange 7, rest
-    for(i in 13:20) {
-      coords$official_lat[coords$route_num == 7 & coords$stop_num == i] <- coods_year$lat[coods_year$route_num == 7 & coods_year$stop_num == i & coods_year$year == 2022]
-      coords$official_lon[coords$route_num == 7 & coords$stop_num == i] <- coods_year$lon[coods_year$route_num == 7 & coods_year$stop_num == i & coods_year$year == 2022]
-    }
-    
-    #Orange rt 2 stop 14
-    for(i in 14) {
-      coords$official_lat[coords$route_num == 2 & coords$stop_num == i] <- coods_year$lat[coods_year$route_num == 2 & coods_year$stop_num == i & coods_year$year == 2022]
-      coords$official_lon[coords$route_num == 2 & coords$stop_num == i] <- coods_year$lon[coods_year$route_num == 2 & coods_year$stop_num == i & coods_year$year == 2022]
-    }
-    
-    #Orange rt 10
-    for(i in 1:20) {
-      coords$official_lat[coords$route_num == 10 & coords$stop_num == i] <- coods_year$lat[coods_year$route_num == 10 & coods_year$stop_num == i & coods_year$year == 2021]
-      coords$official_lon[coords$route_num == 10 & coords$stop_num == i] <- coods_year$lon[coods_year$route_num == 10 & coods_year$stop_num == i & coods_year$year == 2021]
-    }
-    
-    #Chatham rt 9 (49)
-    ##bigger issues lets leave for now
-    
-    #Chatham rt 8 (48)
-    for(i in 1:20) {
-      coords$official_lat[coords$route_num == 48 & coords$stop_num == i] <- coods_year$lat[coods_year$route_num == 48 & coods_year$stop_num == i & coods_year$year == 2022]
-      coords$official_lon[coords$route_num == 48 & coords$stop_num == i] <- coods_year$lon[coods_year$route_num == 48 & coods_year$stop_num == i & coods_year$year == 2022]
-    }
-    
-    
-    
-  #and then remove duplicates, and they're going to have the same official lat/lon so we can just keep the first instance
-  coords <- coords %>% distinct(route_num, stop_num, .keep_all = TRUE)
+  #take a look!
+  #mapview(stop.buffer) +
+  #  mapview(spatial.df)
   
-  #and we can actually remove the non-official lat/lon columns, change to official lat/lon
-  coords <- coords %>% mutate(lat = official_lat,
-                              lon = official_lon)
 
+  forest <- raster("Z:/GIS/LandCoverData/forest_3km.tif")
+  
+  indigolocal <- raster("Z:/GIS/LandCoverData/nlcd_local") #whole folder
+  mapview(indigolocal) +
+    mapview(mbbs_counties)
+  
+  plot(projectedforest)
+  projectedforest <- projectRaster(forest, crs = 5070)
+  
+  #clip raster - need something other than st join
+  nc_projectedforest <- st_join(x = projectedforest, y = mbbs_counties, join = st_within, left = FALSE)
+  
+  
+  
 
-#let's change that into a spatial dataset with geometry
-coords_sf <- st_as_sf(coords, coords = c('official_lon', 'official_lat'), crs = 4269) #now we've added geometry, and read it in in the right crs
+#' Create a spatial dataset of lat/lon with the latest point given to every stop
+#'
+#' @param analysis.df an mbbs dataframe-
+#' @return a `spatial.df` with the lat/lon of every county/route/stop combination
+#' @importFrom tidyr group_by expand drop_na filter ungroup slice_max "%>%"
+#to remake the dataset with the latest point given to every stop
+remake.spatial <- function(analysis.df) {
+  
+  #generate dataset of coordinates broken out by year
+  spatial.df <- analysis.df %>% 
+                  group_by(mbbs_county, route_num, stop_num, year) %>% 
+                  expand(nesting(lat,lon)) %>% #tidyr::expand() gives all combinations of values that appear in the data
+                  drop_na(stop_num) %>% #remove stop_nums that are NA (older data)
+                  filter(stop_num > 0) %>% #or where stop_num is 0 (precount) 
+                  ungroup() %>% group_by(mbbs_county,route_num,stop_num) %>% #ungroup and regroup
+                  slice_max(year) %>% #pick the row from each county/route/stop from the latest yr
+                  ungroup() #always ungroup at end
+    
+  return(spatial.df)
+}
 
-#change crs
-coords_sf <- st_transform(coords_sf, crs = 5070)
+#function to convert a spatial csv to like, a useable map thing for NC
+add.geometry <- function(spatial.df) {
+  
+  spatial.sf <- st_as_sf(spatial.df, coords = c('lon', 'lat'), crs = 4269) #now we've added geometry, and read it in in the right crs
+  
+  #change the crs to one that works really well for the triangle area of NC and is a coordinate system that is in meters. I just looked here for a coordinate reference system that covers North Carolina and uses meters https://epsg.io/5070 .
+  spatial.sf <- st_transform(spatial.sf, crs = 5070)
+  
+  return(spatial.sf)
+}
 
-#if needing to map coords_year
-#coods_year_sf <- st_as_sf(coods_year, coords = c('lon', 'lat'), crs = 4269)
-#coods_year_sf <- st_transform(coods_year_sf, crs = 5070)
-
-#?sf_buffer - create a buffer of 400 m around each of the points
-buffer <- st_buffer(coords_sf, dist = 400)
-#buff <- st_buffer(coods_year_sf, dist = 400)
-
-mapview(mbbs_counties) +
-  mapview(coords_sf) +
-  mapview(buffer)
-
-#manipulate to upload to google maps
-coords_sf <- coords_sf %>% mutate(
-  county_factor = case_when(
-    mbbs_county == "orange" ~0, #change route-nums back to original (not unique by county)
-    mbbs_county == "durham"~-20,
-    mbbs_county == "chatham" ~-40
-  ),
-  route_num = route_num + county_factor
-) %>%
-  dplyr::select(-county_factor) #remove county factor
-
-coords_sf <- coords_sf %>%
-  mutate(County_Route_Stop = paste(mbbs_county,as.character(route_num),as.character(stop_num), sep = "-"),
-         County_Route = paste(mbbs_county, as.character(route_num), sep = "-")) %>% relocate(County_Route_Stop, mbbs_county) %>% relocate(County_Route, County_Route_Stop)
-
-
-coords_sf <- coords_sf %>% rename(WKT = geometry) #change name of geometry column for google
-
-#export for google 
-write.csv(coords_sf, "spatial/GoogleMaps.csv", row.names = F)
-#instuctions: https://support.google.com/mymaps/answer/3024836?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Cstep-prepare-your-info
 
 
 

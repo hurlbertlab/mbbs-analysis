@@ -9,3 +9,5 @@ plot(trend.table$trend, trend.table22$trend) #so some change, but not a huge amo
 
 table(trend.table$significant, trend.table22$significant)
 #So for the most part both years agree on the trend, there's 3 that have beome significant and 1 that has become not significant, numberwise, there may be more switches than that). 
+
+#why don't we try, making a model that includes observers as a random effect now? Or getting the habitat data for the stops?
