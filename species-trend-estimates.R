@@ -1,10 +1,12 @@
 #---
 #Generate a species trend table
+#Re: Sauer 2011, the current best practices with bbs data is hierarchical modeling
 #GOAL: have a list of trends for all the species on the mbbs DONE
 #Things for the future: change from a simple lm to perhaps a poisson? or more complicated modeling methods, and then compare in a trend(lm):trend(poisson) x/y plot how different the two are - are they the same? are there some species that are much better modeled by other methods?
 #Other things for the future: change to funciton, add functionality to filter to a given county - ie: function(df, county) and if statement for the n.routes where survey event gets filtered to a county if county is specified 
 #---
 library(dplyr)
+library(lme4)
 library(beepr)
 
 #prevent scientific notation to make the trend table easier to read
@@ -36,7 +38,9 @@ for (s in 1:length(species.list)) {
   #filter mbbs
   filtered.mbbs <- mbbs %>% filter(common_name == current.species)
   #get average number of the species seen accross all routes in each year
-  ave <- filtered.mbbs %>% group_by(year, route_num) %>% summarize(sum = sum(count)) %>% group_by(year) %>% inner_join(n.routes, by = "year") %>% summarize(mean = sum(sum)/first(n.routes)) #average is mean by year divided by the number of routes run in that year
+  #ave <- filtered.mbbs %>% group_by(year, route_num) %>% summarize(sum = sum(count)) %>% group_by(year) %>% inner_join(n.routes, by = "year") %>% summarize(mean = sum(sum)/first(n.routes)) #average is mean by year divided by the number of routes run in that year
+  ave <- filtered.mbbs %>% group_by(year) %>% summarize(sum = sum(count)) %>% left_join(n.routes, by = "year") %>%
+    mutate(mean = sum/n.routes)
   #use first(n.routes) b/c without it the repeated n.routes values cause it to not come out right. spot checked and it's working as expected
   
   #run model - right now a simple linear regression of average count ~ year
