@@ -24,9 +24,18 @@ mbbs_chatham <- mbbs_chatham
 mbbs_all <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham)
 
 #Fix potential error sources
-#not changing route number, use mbbs_county instead of county column
+#keep route_num, but add a route variable that has a unique route for each county. 
 #let's actually REMOVE the county column so it doesn't get confusing, becuase mbbs_county is always correct and the county column from ebird is sometimes not (ie: routes right next to Wake county that ebird sorts into Wake)
-mbbs_all <- mbbs_all %>% select(-county)
+mbbs_all <- mbbs_all %>% select(-county) %>% 
+  mutate(
+    # The route number is not unique within the study
+    # (only within a county).
+    route = route_num + case_when(
+      mbbs_county == "orange" ~ 100L,
+      mbbs_county == "durham" ~ 200L,
+      mbbs_county == "chatham" ~ 300L,
+    )
+  )
 
 #now let's create a dataframe of unique combinations of route and year, we'll use this in later modeling with group_by() to divide by the number of routes run in that year (averages) or to add 0's when iterating on individual species
 routeyear <- unique(mbbs_all[,c('year', 'route_num', 'mbbs_county')]) %>% arrange(year) %>% rename('county' = 'mbbs_county')
