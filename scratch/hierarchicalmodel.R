@@ -19,13 +19,13 @@ species.list <- unique(mbbs$common_name)
 #trim species list
 species.sample <- c(species.list[6], species.list[14], species.list[66])
 
-sample <- mbbs %>% filter(common_name == species.sample[3])
+sample <- mbbs %>% filter(common_name == species.sample[2])
 sample.hierarchical <- lmer(count ~ year + (1|route) + (1|mbbs_county), data = mbbs)
 summary(sample.hierarchical)
 #okay! so, I removed the observer bc even when playing around it should really be combined with the primary observers, leftjoin that on the next time you come back. Investigate what boundary(singular) (console suggests help('isSingular')) rlly means. I think in this case, it's just that we've got multiple levels but county is not actually having an effect here. As you can see we used route rather than route_num b/c now route is distinct. This probably is not accounting well for sampling effect tho.
 #LOL!! We have to take the average of the counts (and within that account for sampling effort) b/c the data from 2019+ is by stop, and the data before that is by route. Now, you can probably still aggregate counts only at the route level, and not the stop level, but you DO have to aggregate for the data to be comprable.
-
-model <- lmer(math_score ~ gender + (1 | classroom_id) + (1 | school_id), data = data)
+#if county is singular and doesn't contribute significant variation, can I just leave it out? Do I still need a hierarchical model if all I'm really getting here is the amount of variation by route?
+#I'd like to test and see if that variation by route iss...........well yeah, presumably route variation and the observers are correlated, but not always. Hm, think about that. Same observer can do multiple routes w different habitat, yes they are different and need to be accounted for individually.
 
 for(i in 1:species.sample) {
   
