@@ -30,7 +30,7 @@ mbbs_all <- mbbs_all %>% select(-county) %>%
   mutate(
     # The route number is not unique within the study
     # (only within a county).
-    route = route_num + case_when(
+    route_ID = route_num + case_when(
       mbbs_county == "orange" ~ 100L,
       mbbs_county == "durham" ~ 200L,
       mbbs_county == "chatham" ~ 300L,

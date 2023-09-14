@@ -16,6 +16,18 @@ options(scipen=999)
 mbbs <- read.csv("data/analysis.df.csv", header = T)
 survey.events <- read.csv("data/survey.events.csv", header = T)
 
+#read in data messier before the observer branch is merged in git and I can update everything straight from package
+load("C:/git/mbbs_orange.rda")
+load("C:/git/mbbs_durham.rda")
+load("C:/git/mbbs_chatham.rda")
+load("C:/git/mbbs_survey_events.rda")
+mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>%
+  left_join(mbbs_survey_events, by = c("mbbs_county", "year", "route_num")) %>%
+  mutate(route_ID = route_num + case_when(
+    mbbs_county == "orange" ~ 100L,
+    mbbs_county == "durham" ~ 200L,
+    mbbs_county == "chatham" ~ 300L,))
+
 #create trend table to store results in
 trend_table <- as.data.frame(matrix(ncol = 5, nrow = 0))
 colnames(trend_table) <- c("species", "trend", "pvalue", "R2", "significant")
@@ -61,9 +73,9 @@ for (s in 1:length(species.list)) {
 beep()
 
 #save species trend table
-write.csv(trend_table, "data/trend-table.csv", row.names = F)
+write.csv(trend_table, "data/trend-table-negbinpoisson.csv", row.names = F)
 #save to rda file
-save(trend_table, file = "data/trend-table.rda")
+save(trend_table, file = "data/trend-table-negbinpoisson.rda")
 
 
 
