@@ -20,6 +20,7 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
 
   #generate a new spatial dataframe
   #spatial.df <- remake.spatial(mbbs)
+#^ so this is totally unnecessary b/c we don't need each of the mbbs datapoints to be mapped. We need a map, and then to extract the buffers with nlcd data, and then to get the %of pixels in each of those buffers that are the given landcover types at each point in time. And that's all we really need here to make things work with spatial data. Don't complicate it :) 
   #or read in the spatial dataframe already in use
   spatial.df <- read.csv("spatial/RouteStops.csv", header = TRUE) %>%
     add.geometry() #and add geometry for mapping
