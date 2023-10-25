@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --job-name NC_NLCD_clip
+#SBATCH -p general
+#SBATCH -N 1
+#SBATCH --mem=100
+##requesting 100MB
+#SBATCH --ntasks=1
+#SBATCH --time 0-00:10:00 
+#SBATCH --mail-user ijbg@unc.edu
+#SBATCH --mail-type BEGIN
+
+module add r
+
+Rscript /work/users/i/j/ijbg/longleaf_clipNLCD_NC.R
+
+##save as sh to run in longleaf, or copy and paste this into a new sh file in longleaf
