@@ -1,33 +1,74 @@
 #libraries
 library(dplyr)
 library(sf) #this is the spatial package
-library(tmap) #this is the mapping
 library(ggplot2)
 library(tidyr)
-library(usmap)
-library(mapview)
 library(raster)
 
-
-#read in the dataset
-#mbbs <- read.csv("proj/hurlbertlab/ijbgoulden/mbbs/analysis.df.csv", header = TRUE)
-#...from the library(mbbs yeah...)
-mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
-
-#okay, yeah I need to be on campus for this
+#paths
+path <- "/proj/hurlbertlab/ijbgoulden/"
+RouteStopcsv <- paste(path, "csv/RouteStops.csv", sep = "")
+nlcdclassificationscsv <- paste(path, "csv/nlcd_classifications.csv", sep="")
+nlcdpath <- "nc_nlcd/nc_nlcd_"
+nlcdfileextension <- ".grd"
 
 #NLCD data are 2001, 2004, 2006, 2008, 2011, 2013, 2016, 2019, 2021
+year <- c("2001", "2004", "2006", "2008", "2011", "2013", "2016", "2019", "2021")
 
-#prep the spatial dataset
-mbbs_buffers <- read.csv("spatial/RouteStops.csv", header = TRUE) %>%
-  dplyr::select(- c(notes)) 
+#load the spatial dataset (comes from mbbs-analysis, https://github.com/hurlbertlab/mbbs-analysis)
+mbbs_buffers <- read.csv(RouteStopcsv, header = TRUE) %>%
+  dplyr::select(- c(notes)) #remove notes column
 
-#apparently can't pipe set crs transformations, alas!
+#create 400m buffers from route stop points
+#convert lat/lon to points geometry
 mbbs_buffers <- st_as_sf(mbbs_buffers, coords = c('lon', 'lat'), crs = 4269) 
+#transform to a meters based crs
 mbbs_buffers <- st_transform(mbbs_buffers, crs = 5070) #meters, NC 
-mbbs_buffers <- st_buffer(mbbs_buffers, dist = 400) #buffer each point with 400m, now the geometry is all polygons 
+#buffer each point by 400m, now geometry is polygons
+mbbs_buffers <- st_buffer(mbbs_buffers, dist = 400) 
 
-#read in the NLCD
+#read in the NLCD files into a stack
+stackpath <- paste(path, "/nc_nlcd/", sep = "")
+rastlist <- list.files(path = stackpath, pattern = '.grd$', all.files=TRUE, full.name=TRUE)
+nlcdstack <- stack(rastlist)
+nlcdstack
+
+#load in the NLCD legend, colors, and descriptions
+classes <- read.csv(nlcdclassificationscsv, header = TRUE)
+
+##okay okay, just using one first
+freq(nlcdstack[[1]])
+
+
+
+
+filename <- paste(path, nlcdpath, year[1], nlcdfileextension, sep = "")
+
+nc_nlcd <- raster(filename)
+
+#put the buffers in the same projection as the nlcd
+mbbs_buffers <- st_transform(mbbs_buffers, crs(nc_nlcd))
+
+#clip raster
+buffers_nlcd <- raster::mask(nc_nlcd, mbbs_buffers)
+buffers_nlcd <- raster::crop(buffers_nlcd, mbbs_buffers)
+
+#check the clipped raster looks how it should
+pdffilename <- paste(path, "check_nlcdbuffers.pdf",sep="")
+pdf(file = pdffilename,
+    width = 10, # The width of the plot in inches
+    height = 10) # The height of the plot in inches
+plot(buffers_nlcd)
+dev.off()
+
+#and from here, if this is working ok we'll follow the tutorial we found
+
+
+
+
+
+
+
 nc_nlcd_2001 <- raster("spatial/shapefiles/nc_nlcd_2001/nc_nlcd_2001.grd")
 
 #put the buffers in the same projection as the nlcd
@@ -40,7 +81,15 @@ buffers_nlcd <- raster::crop(buffers_nlcd, mbbs_buffers)
 plot(buffers_nlcd) #gorgeous C:
 
 #save the buffers
-writeRaster(buffers_nlcd, "spatial/shapefiles/buffers_nlcd_2001/buffers_nlcd_2001", format = "raster", overwrite = TRUE)
+#writeRaster(buffers_nlcd, "spatial/shapefiles/buffers_nlcd_2001/buffers_nlcd_2001", format = "raster", overwrite = TRUE)
+
+buffers_nlcd <- raster("spatial/shapefiles/buffers_nlcd_2001/buffers_nlcd_2001.grd")
+
+extractedbuffers <- raster::extract(x= buffers_nlcd, y = mbbs_buffers, df = TRUE)
+
+lt_bybuff <-as.data.frame(table(extractedbuffers))
+#ID is going to be each buffer....not certain which order they're in. And then within that there's the information of landtype and it's frequency
+#yeah, but there's something wrong because there should be like 20 nlcd landcover types. Totally possible I got longleaf working but using the wrong 2001 dataset option..hm! Yeah, we need access to longleaf and let's update the nlcd listings available
   
 #clip raster - need something other than st join??? other option is to use extract like we did with the kestrel data
 #nc_projectedforest <- st_join(x = projectedforest, y = mbbs_counties, join = st_within, left = FALSE)

@@ -1,0 +1,21 @@
+class,code,description,color
+water,11,Open Water,#476BA0
+water,12,Perennial Ice/Snow,#D1DDF9
+developed,21,"Developed, Open Space",#DDC9C9
+developed,22,"Developed, Low Intensity",#D89382
+developed,23,"Developed, Medium Intensity",#ED0000
+developed,24,"Developed, High Intensity",#AA0000
+barren,31,Barren Land (Rock/Sand/Clay),#B2ADA3
+forest,41,Deciduous Forest,#68AA63
+forest,42,Evergreen Forest,#1C6330
+forest,43,Mixed Forest,#B5C98E
+shrubland,51,Dwarf Scrub,#A58C30
+shrubland,52,Scrub/Shrub,#CCBA7C
+herbaceous,71,Grassland/Herbaceous,#E2E2C1
+herbaceous,72,Sedge/Herbaceuous,#C9C977
+herbaceous,73,Lichens,#99C147
+herbaceous,74,Moss,#77AD93
+planted,81,Pasture/Hay,#DBD83D
+planted,82,Cultivated Crops,#AA7028
+wetlands,90,Woody Wetlands,#BAD8EA
+wetlands,95,Emergent Herbaceous Wetlands,#70A3BA
