@@ -36,9 +36,29 @@ nlcdstack
 #load in the NLCD legend, colors, and descriptions
 classes <- read.csv(nlcdclassificationscsv, header = TRUE)
 
-##okay okay, just using one first
-freq(nlcdstack[[1]])
+#put the buffers in the same projection as the nlcd
+mbbs_buffers <- st_transform(mbbs_buffers, crs(nlcdstack))
 
+#clip rasters
+bufferstack <- mask(nlcdstack, mbbs_buffers)
+bufferstack <- crop(bufferstack, mbbs_buffers)
+
+print("nc clipped to buffers")
+
+#save rasters
+for(i in 1:9) {
+  writeRaster(bufferstack[[i]], paste("/proj/hurlbertlab/ijbgoulden/buffer_nlcd_",year,sep=""), format = "GTiff", overwrite = TRUE) 
+}
+
+print('buffers saved')
+
+extractedbuffers <- extract(x = bufferstack, y = mbbs_buffers, df = TRUE)
+
+print("buffers extracted")
+
+write.csv(extractedbuffers, "/proj/hurlbertlab/ijbgoulden/extractedbuffers.csv")
+
+print("buffers saved")
 
 
 
@@ -46,12 +66,11 @@ filename <- paste(path, nlcdpath, year[1], nlcdfileextension, sep = "")
 
 nc_nlcd <- raster(filename)
 
-#put the buffers in the same projection as the nlcd
-mbbs_buffers <- st_transform(mbbs_buffers, crs(nc_nlcd))
+
 
 #clip raster
-buffers_nlcd <- raster::mask(nc_nlcd, mbbs_buffers)
-buffers_nlcd <- raster::crop(buffers_nlcd, mbbs_buffers)
+buffers_nlcd <- mask(nc_nlcd, mbbs_buffers)
+buffers_nlcd <- crop(buffers_nlcd, mbbs_buffers)
 
 #check the clipped raster looks how it should
 pdffilename <- paste(path, "check_nlcdbuffers.pdf",sep="")
@@ -74,7 +93,7 @@ nc_nlcd_2001 <- raster("spatial/shapefiles/nc_nlcd_2001/nc_nlcd_2001.grd")
 #put the buffers in the same projection as the nlcd
 mbbs_buffers <- st_transform(mbbs_buffers, crs(nc_nlcd_2001))
 
-#clip raster
+#clip rasters
 buffers_nlcd <- raster::mask(nc_nlcd_2001, mbbs_buffers)
 buffers_nlcd <- raster::crop(buffers_nlcd, mbbs_buffers)
 
