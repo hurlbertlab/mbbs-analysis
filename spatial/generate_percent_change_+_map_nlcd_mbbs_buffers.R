@@ -95,8 +95,48 @@ t <- landtype_byroute %>% filter(year == "2001", County_Route == "Chatham-01")
 sum(t$percent) #yep, sums to 100
 
 
+#What if we divide routes into 5 or 10? Let's make functions to make that easy. 
+#Create a df that reshapes landtype_bybuff longer, and adds new columns for what quarter and half-route the stop is in. 
+create_ltbypartialroute <- function(landtype_bybuff, nlcd_classif) {
+  
+  new_df <- landtype_bybuff %>%
+    pivot_longer(cols = freq2001:freq2021, names_to = "year", names_prefix = "freq", values_to = "frequency") %>%
+    select(-c(perc2001, perc2004, perc2006, perc2008, perc2011, perc2013, perc2016, perc2019, perc2021)) %>%
+    mutate(quarterroute = case_when(stop_num < 6 ~ 1,
+                                    stop_num < 11 ~ 2,
+                                    stop_num < 16 ~ 3,
+                                    stop_num > 15 ~ 4),
+           halfroute = case_when(quarterroute < 3 ~ 1,
+                                 quarterroute > 2 ~ 2)) 
+  return(new_df)
+}
 
-#okay..plotting?
+#Take a grouped dataframe and based on the grouping, calculate the frequency of each nlcd land type and the total number of pixels, then slim the dataset down to one row per grouping and get the percent of that land cover type. 
+calc_freq_remove_rows <- function(new_df) {
+  
+  #new_df should already be grouped
+  new_df <- new_df %>% transmute(frequency = sum(frequency),
+            totpix = sum(numpix)) %>%
+    distinct() %>% #remove now extraneous rows, we only need one from every half route 
+    ungroup() %>%
+    left_join(nlcd_classif, by = c("nlcd" = "code")) %>% #add back in nlcd information
+    mutate(percent = (frequency/totpix) * 100,
+           year = as.integer(year)) 
+  
+  return(new_df)
+}
+
+#get by halfroute
+landtype_byhalfroute <- create_ltbypartialroute(landtype_bybuff, nlcd_classif) %>%
+                        group_by(County_Route, nlcd, year, halfroute) %>%
+                        calc_freq_remove_rows()
+#get by quarterroute
+landtype_byquarterroute <- create_ltbypartialroute(landtype_bybuff, nlcd_classif) %>%
+                           group_by(County_Route, nlcd, year, quarterroute) %>%
+                           calc_freq_remove_rows()
+
+
+#Plot landcover change for all nlcd codes by Route
 cr <- unique(landtype_byroute$County_Route)
 nlcdcode <- unique(landtype_byroute$nlcd)
 #generate the pdf that we'll print to
@@ -129,20 +169,19 @@ lines(plot_df[plot_df$nlcd == nlcdcode[a],]$year,  plot_df[plot_df$nlcd == nlcdc
 dev.off()
 
 
-#ok. we need to collapse the nlcd codes..and do that again.
-landtype_byroutenclass <- landtype_byroute %>% group_by(County_Route, year, class) %>%
+#Plot landcover change for the grouped nlcd codes by route
+landtype_byroutenclass <- landtype_byroute %>% group_by(County_Route, year, ijbg_class) %>%
                           transmute(percent = sum(percent)) %>% distinct()
-#need to sum based on class. We can add percents here that's fine
-pdf(file = "spatial/Route_nlcdclass.pdf")
+pdf(file = "spatial/Route_entire_nlcdclass.pdf")
 for(i in 1:length(cr)) {
   
   crselect <- cr[i]
   plot_df <- filter(landtype_byroutenclass, County_Route == crselect)
-  nlcdclass <- unique(plot_df$class)
-  color = c("#476BA0", "#AA0000", "#B2ADA3", "#68AA63", "#A58C30", "#E2E2C1", "#DBD83D", "#BAD8EA")
+  nlcdclass <- unique(plot_df$ijbg_class)
+  color = c("#476BA0", "#AA0000", "#B2ADA3", "#68AA63", "#1C6330", "#B5C98E",  "#CCBA7C", "#77AD93", "#DBD83D", "#AA7028",  "#BAD8EA")
   
-  plot(plot_df[plot_df$class == nlcdclass[1],]$year, 
-       plot_df[plot_df$class == nlcdclass[1],]$percent, 
+  plot(plot_df[plot_df$ijbg_class == nlcdclass[1],]$year, 
+       plot_df[plot_df$ijbg_class == nlcdclass[1],]$percent, 
        type = "b",
        col = color[1],
        xlim = c(2001, 2021),
@@ -153,9 +192,50 @@ for(i in 1:length(cr)) {
        xaxt = "n", 
        lwd = 2)
   axis(1, at=seq(2001,2021,1))
-  legend("topleft", legend = unique(plot_df$class), col = color, lty = 1, ncol = 2, lwd = 4)
+  legend("topleft", legend = unique(plot_df$ijbg_class), col = color, lty = 1, ncol = 2, lwd = 4)
   for(a in 2:length(nlcdclass)) {
-    lines(plot_df[plot_df$class == nlcdclass[a],]$year,  plot_df[plot_df$class == nlcdclass[a],]$percent, type = "b", lwd = 2, col = color[a])
+    lines(plot_df[plot_df$ijbg_class == nlcdclass[a],]$year,  plot_df[plot_df$ijbg_class == nlcdclass[a],]$percent, type = "b", lwd = 2, col = color[a])
   }
 }
 dev.off()
+
+
+#Plot the quarter routes
+landtype_byroutenclass_q <- landtype_byquarterroute %>% group_by(County_Route, year, ijbg_class, quarterroute) %>%
+  transmute(percent = sum(percent)) %>% distinct()
+q <- unique(landtype_byquarterroute$quarterroute)
+pdf(file = "spatial/Route_quarter_nlcdclass.pdf",
+    width = 15)
+for(i in 1:length(cr)) {
+  
+  crselect <- cr[i]
+  par(mfrow = c(1,4))
+  
+  for(a in 1:length(q)) {
+    
+    qselect <- q[a]
+    
+  plot_df <- filter(landtype_byroutenclass_q, County_Route == crselect, quarterroute == qselect)
+  nlcdclass <- unique(plot_df$ijbg_class)
+  color = c("#476BA0", "#AA0000", "#B2ADA3", "#68AA63", "#1C6330", "#B5C98E",  "#CCBA7C", "#77AD93", "#DBD83D", "#AA7028",  "#BAD8EA")
+  
+  plot(plot_df[plot_df$ijbg_class == nlcdclass[1],]$year, 
+       plot_df[plot_df$ijbg_class == nlcdclass[1],]$percent, 
+       type = "b",
+       col = color[1],
+       xlim = c(2001, 2021),
+       ylim = c(0, 100), 
+       xlab = "Year",
+       ylab = "Percent Landcover",
+       main = crselect,
+       xaxt = "n", 
+       lwd = 2)
+  axis(1, at=seq(2001,2021,1))
+  legend("topleft", legend = unique(plot_df$ijbg_class), col = color, lty = 1, ncol = 2, lwd = 4)
+  for(a in 2:length(nlcdclass)) {
+    lines(plot_df[plot_df$ijbg_class == nlcdclass[a],]$year,  plot_df[plot_df$ijbg_class == nlcdclass[a],]$percent, type = "b", lwd = 2, col = color[a])
+  }
+  }
+}
+dev.off()
+
