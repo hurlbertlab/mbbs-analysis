@@ -57,36 +57,24 @@ numpixels <- numpixels %>%
 #number of pixels varries from 550 to 565, depends on how the exact edges of the 400m boundaries lined up with the nlcd 30x30m pixels
 
 #now here I can get the percent of each 400m buffer that's a given nlcd class
-landtype_bybuff <- landtype_bybuff %>% left_join(numpixels, by = "ID") %>%
-                    mutate(perc2001 = freq2001/numpix, 
-                           perc2004 = freq2004/numpix,
-                           perc2006 = freq2006/numpix,
-                           perc2008 = freq2008/numpix,
-                           perc2011 = freq2011/numpix,
-                           perc2013 = freq2013/numpix,
-                           perc2016 = freq2016/numpix,
-                           perc2019 = freq2019/numpix,
-                           perc2021 = freq2021/numpix)
+landtype_bybuff <- landtype_bybuff  %>% 
+  left_join(numpixels, by = "ID") %>%
+  pivot_longer(cols = freq2001:freq2021, names_to = "year", names_prefix = "freq", values_to = "frequency")
+  
+#let's rename this and save it
+landtype_byroutestop <- landtype_bybuff %>% 
+  mutate(percent = (frequency/numpix) * 100)
 
 #now, if we want to look at across routes instead of buffers
 landtype_byroute <- landtype_bybuff %>% 
-                    group_by(County_Route, nlcd) %>%
-                    transmute(freq2001 = sum(freq2001),
-                              freq2004 = sum(freq2004),
-                              freq2006 = sum(freq2006),
-                              freq2008 = sum(freq2008),
-                              freq2011 = sum(freq2011),
-                              freq2013 = sum(freq2013),
-                              freq2016 = sum(freq2016),
-                              freq2019 = sum(freq2019),
-                              freq2021 = sum(freq2021),
+                    group_by(County_Route, nlcd, year) %>%
+                    transmute(frequency = sum(frequency),
                               totpix = sum(numpix)) %>% 
                     distinct() %>% #this gives 510 rows, this is fine b/c land types 12,51,72,73,and 74 are all Alaska only land cover types and are removed for being 0s
     #table(landtype_byroute$County_Route, landtype_byroute$nlcd)
     #https://www.mrlc.gov/data/legends/national-land-cover-database-class-legend-and-description
                     left_join(nlcd_classif, by = c("nlcd" = "code")) %>% #add back in nlcd information
-                    pivot_longer(cols = freq2001:freq2021, names_to = "year", names_prefix = "freq", values_to = "frequency") %>% #turn this into a format we can use when plotting
-                    mutate(percent = (frequency/totpix) * 100,
+                    mutate(percent = ((frequency/totpix) * 100),
                            year = as.integer(year)) %>%
                     relocate(totpix, .after = frequency)
 
@@ -100,14 +88,12 @@ sum(t$percent) #yep, sums to 100
 create_ltbypartialroute <- function(landtype_bybuff, nlcd_classif) {
   
   new_df <- landtype_bybuff %>%
-    pivot_longer(cols = freq2001:freq2021, names_to = "year", names_prefix = "freq", values_to = "frequency") %>%
-    select(-c(perc2001, perc2004, perc2006, perc2008, perc2011, perc2013, perc2016, perc2019, perc2021)) %>%
-    mutate(quarterroute = case_when(stop_num < 6 ~ 1,
+    mutate(routequarter = case_when(stop_num < 6 ~ 1,
                                     stop_num < 11 ~ 2,
                                     stop_num < 16 ~ 3,
                                     stop_num > 15 ~ 4),
-           halfroute = case_when(quarterroute < 3 ~ 1,
-                                 quarterroute > 2 ~ 2)) 
+           routehalf = case_when(routequarter < 3 ~ 1,
+                                 routequarter > 2 ~ 2)) 
   return(new_df)
 }
 
@@ -126,15 +112,23 @@ calc_freq_remove_rows <- function(new_df) {
   return(new_df)
 }
 
-#get by halfroute
-landtype_byhalfroute <- create_ltbypartialroute(landtype_bybuff, nlcd_classif) %>%
-                        group_by(County_Route, nlcd, year, halfroute) %>%
+#get by routehalf
+landtype_byroutehalf <- create_ltbypartialroute(landtype_bybuff, nlcd_classif) %>%
+                        group_by(County_Route, nlcd, year, routehalf) %>%
                         calc_freq_remove_rows()
-#get by quarterroute
-landtype_byquarterroute <- create_ltbypartialroute(landtype_bybuff, nlcd_classif) %>%
-                           group_by(County_Route, nlcd, year, quarterroute) %>%
+#get by routequarter
+landtype_byroutequarter <- create_ltbypartialroute(landtype_bybuff, nlcd_classif) %>%
+                           group_by(County_Route, nlcd, year, routequarter) %>%
                            calc_freq_remove_rows()
 
+
+#-----------------------------------
+#Save csvs
+write.csv(landtype_byroutestop, "data/landtype_byroutestop.csv", row.names = FALSE)
+write.csv(landtype_byroute, "data/landtype_byroute.csv", row.names = FALSE)
+write.csv(landtype_byroutehalf, "data/landtype_byroutehalf.csv", row.names = FALSE)
+write.csv(landtype_byroutequarter, "data/landtype_byroutequarter.csv", row.names = FALSE)
+#-----------------------------------
 
 #Plot landcover change for all nlcd codes by Route
 cr <- unique(landtype_byroute$County_Route)
@@ -201,9 +195,9 @@ dev.off()
 
 
 #Plot the quarter routes
-landtype_byroutenclass_q <- landtype_byquarterroute %>% group_by(County_Route, year, ijbg_class, quarterroute) %>%
+landtype_byroutenclass_q <- landtype_byroutequarter %>% group_by(County_Route, year, ijbg_class, routequarter) %>%
   transmute(percent = sum(percent)) %>% distinct()
-q <- unique(landtype_byquarterroute$quarterroute)
+q <- unique(landtype_byroutequarter$routequarter)
 pdf(file = "spatial/Route_quarter_nlcdclass.pdf",
     width = 15)
 for(i in 1:length(cr)) {
@@ -215,7 +209,7 @@ for(i in 1:length(cr)) {
     
     qselect <- q[a]
     
-  plot_df <- filter(landtype_byroutenclass_q, County_Route == crselect, quarterroute == qselect)
+  plot_df <- filter(landtype_byroutenclass_q, County_Route == crselect, routequarter == qselect)
   nlcdclass <- unique(plot_df$ijbg_class)
   color = c("#476BA0", "#AA0000", "#B2ADA3", "#68AA63", "#1C6330", "#B5C98E",  "#CCBA7C", "#77AD93", "#DBD83D", "#AA7028",  "#BAD8EA")
   
