@@ -38,7 +38,7 @@ clipnlcd_nc <- function(filename, year, nc) {
   dev.off()
   
   #save the clipped NLCD that's now in the shape of NC
-  writeRaster(nc_nlcd, paste("/proj/hurlbertlab/ijbgoulden/nc_nlcd_",year,sep=""), format = "raster", overwrite = TRUE) #overwrites any other raster file named nc_nlcd_2001
+  writeRaster(nc_nlcd, paste("/proj/hurlbertlab/ijbgoulden/nc_nlcd_",year,sep=""), format = "GTiff", overwrite = TRUE) #overwrites any other raster file named nc_nlcd_2001
 }
 
 for(i in 1:length(filename)){
@@ -46,55 +46,3 @@ for(i in 1:length(filename)){
 }
 
 print("Complete :)")
-
-
-
-
-
-
-
-
-
-
-
-##scratch
-
-#load the NLCD files from the lab longleaf file
-nlcd_2001 <- raster("/proj/hurlbertlab/nlcd_landcover/NLCD_2001_Land_Cover_L48_20190424/NLCD_2001_Land_Cover_L48_20190424.ige") 
-
-print("raster loaded successfully")
-
-#ensure the nlcd loaded properly by printing a pdf
-pdf(file = "/proj/hurlbertlab/ijbgoulden/checknlcd_2001.pdf",   # The directory you want to save the file in
-    width = 10, # The width of the plot in inches
-    height = 10) # The height of the plot in inches
-plot(nlcd_2001)
-dev.off()
-
-#transform the nc boundary to match the projection of the NLCD
-nc <- st_transform(nc, crs(nlcd_2001))
-
-#ensure projection worked by plotting nc atop the nlcd
-pdf(file = "/proj/hurlbertlab/ijbgoulden/checkncnlcd_2001.pdf", 
-    width = 10, # The width of the plot in inches
-    height = 10) # The height of the plot in inches
-plot(nlcd_2001)
-plot(nc, add = TRUE)
-dev.off()
-
-#clip the NLCD to NC boundaries - both crop (to bounding box) and mask (make exact to boundaries)
-nc_nlcd_2001 <- raster::crop(nlcd_2001, nc)
-nc_nlcd_2001 <- raster::mask(nc_nlcd_2001, nc)
-
-#check the clipped raster looks how it should
-pdf(file = "/work/users/i/j/ijbg/checkncclipworked.pdf",
-    width = 10, # The width of the plot in inches
-    height = 10) # The height of the plot in inches
-plot(nc_nlcd_2001)
-dev.off()
-
-#save the clipped NLCD that's now in the shape of NC
-writeRaster(nc_nlcd_2001, "/work/users/i/j/ijbg/nc_nlcd_2001", format = "raster", overwrite = TRUE) #overwrites any other raster file named nc_nlcd_2001
-
-print("Complete :)")
-#easy to check that the output file ran the whole thing
