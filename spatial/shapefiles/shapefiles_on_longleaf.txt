@@ -1,0 +1,1 @@
+Longleaf has the spatial data for NLCD cut to both North Carolina and to the mbbs buffers for each year
