@@ -1,0 +1,81 @@
+---
+title: "cat-t.test"
+---
+
+#merge species trend estimate with cat BNA data, t-test for if the distribution of the trends is different
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(rstatix)
+```
+
+```{r}
+#read in datasets
+load("data/trend-table.rda")
+traits <- read.csv("data/NC_species_traits_wcats.csv", header = T)
+```
+
+```{r}
+#merge
+trend_table <- left_join(trend_table, traits, by = c('species' = 'english_common_name'))
+
+#NA's to 0's
+trend_table <- trend_table %>% replace(is.na(.), 0)
+```
+
+```{r}
+#histogram
+trend_table %>%
+  ggplot(aes(x = trend, fill = as.factor(cat.in.BNA))) +
+  geom_histogram(color="#e9ecef", alpha=0.6, position = 'identity') +
+  scale_fill_manual(values=c("#69b3a2", "#404080"))
+#these do essentially overlap.... I think we need to check assumptions. I'm going to convert this to a rmd for easier viewing
+```
+```{r}
+#summary statistics
+trend_table %>%
+  group_by(cat.in.BNA) %>%
+  get_summary_stats(trend, type = "mean_sd")
+```
+```{r}
+#boxplot
+library(ggpubr)
+bxp <- ggboxplot(
+  trend_table, x = "cat.in.BNA", y = "trend", 
+  ylab = "Trend", xlab = "Cat Predation", add = "jitter"
+  )
+bxp
+```
+
+
+```{r}
+#need to check assumptions
+#outliers?
+```
+
+```{r}
+#run a cat v not cat t test
+catt.test <- trend_table %>%
+  wilcox_test(trend ~ cat.in.BNA, detailed = T) %>%
+  add_significance()
+catt.test #p = 0.0364
+
+trend_table %>%  cohens_d(trend ~ cat.in.BNA, var.equal = FALSE)
+#cohen's d = 0.505, effect size is moderate
+#trends of birds that are not predated by cats are .5 standard deviations higher than birds that are predated by cats
+
+
+#let's remove the outlier of the species that's declining the most - the one with a trend in -0.4
+trend_table %>% filter(trend < -0.3) #just the common grackle, odd - double check there's not just smthing wrong with the trend math
+
+catt.test.wograckle <- trend_table %>% filter(!trend < -0.3) %>% t_test(trend ~ cat.in.BNA, detailed = T) %>%
+  add_significance()
+catt.test.wograckle
+#p-value is 0.06
+```
+
+```{r}
+x =rnorm(20,0,1)
+```
+
