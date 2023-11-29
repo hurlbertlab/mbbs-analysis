@@ -1,0 +1,11 @@
+NDVI Processing Workflow:
+
+Load MBBS Buffer NLCD files from longleaf into Google Earth Engine
+
+Run the forestpixelNDVI google earth engine code
+
+Tab over to 'Tasks' within GEE and 'Run' the Exports to export the TIFs of the NDVI values for the forest pixels
+
+Download the exports from google drive and upload them into RStudio
+
+Use R script <> to select out each of the buffer areas and get the average forest NDVI
