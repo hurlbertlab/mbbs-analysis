@@ -8,13 +8,15 @@ library(dplyr)
 library(lme4)
 library(beepr)
 library(MASS)
+library(stringr)
+library(tidyverse)
 
 #prevent scientific notation to make the trend table easier to read
 options(scipen=999)
 
 #read in data
-mbbs <- read.csv("data/analysis.df.csv", header = T)
-survey.events <- read.csv("data/survey.events.csv", header = T)
+#mbbs <- read.csv("data/analysis.df.csv", header = T)
+#survey.events <- read.csv("data/survey.events.csv", header = T)
 
 #read in data messier before the observer branch is merged in git and I can update everything straight from package
 load("C:/git/mbbs_orange.rda")
@@ -26,8 +28,10 @@ mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>%
   mutate(route_ID = route_num + case_when(
     mbbs_county == "orange" ~ 100L,
     mbbs_county == "durham" ~ 200L,
-    mbbs_county == "chatham" ~ 300L,)) %>%
-  filter(count > 0)
+    mbbs_county == "chatham" ~ 300L,),
+    common_name = str_remove_all(common_name, "[\r\n]")) %>%
+  filter(count > 0, common_name != "Buteo sp.") %>%
+  ungroup()
 
 #filter out species that haven't been seen more than the min number of sightings (currently 10)
 occurances <- mbbs %>% count(common_name) %>% arrange(n) 
@@ -39,6 +43,70 @@ for (s in 1:length(allspecies)) {
     mbbs <- mbbs %>% filter(common_name != occurances$common_name[s])
   }
 }
+
+#how many years is each species seen along each route?
+route_occurances <- mbbs %>% group_by(route_ID) %>% count(common_name, year)
+#this is just recreating the dataset.
+#I want route ID + years seen on that route
+#for each species:row
+
+#for each species, give me a route_ID column that calculates how many different years it was seen on
+test <- mbbs %>%
+  distinct(common_name, route_ID, year) %>% # Remove duplicate rows
+  group_by(common_name, route_ID) %>%  # Group by species and route
+  dplyr::summarize(Count = n()) %>%  # Count the number of years for each combination
+  pivot_wider(names_from = route_ID, values_from = Count, values_fill = 0) # Reshape data
+
+#select rows with at least 5 years for 10 routes
+filt.test <- test %>% group_by("common_name") %>% filter(rowSums(test[,c(2:35)]) >= 10)
+#not perfect yet.. need to also filter out like, Tree Swallow where all routes only have 1 or 2 years of data
+result <- apply(test, MARGIN = 1, function(row) sum(row >10) >= 20)
+rows_that_match <- test[result,]
+#filter rows that have fewer than 5 years of observations total = 63 species
+#8 = 52 species
+#10 = 48 species
+#15 = 40 species
+#20 routes = 36 species
+
+dataset <- as.data.frame(matrix(ncol = 3, nrow = 700))
+colnames(dataset) <- c("nyears", "nroutes", "nspecies")
+years <- 10
+i <- 1
+#for loop
+for(years in 10:20) {
+  for(columns in 10:25) {
+    result <- apply(test, MARGIN = 1, function(row) sum(row >years) >= columns)
+    rows_that_match <- test[result,]
+    dataset$nyears[i] <- years
+    dataset$nroutes[i] <- columns
+    dataset$nspecies[i] <- nrow(rows_that_match)
+    i <- i + 1
+  }
+}
+
+#yeah, there is something wrong with this. If years is lower than 5 suddenly there are 0 rows selected, when there should be >64 selected. This code needs a whole re-write, thanks ever much chatGPT
+
+test1 <- test[1,] #select first row
+test1[2:35] > 4 #BOOL
+sum(test1[2:35] > 4) #get number of TRUE columns for that row
+#if ^ > ie 10 (10 routes have enough years worth of data), add test1 to dataset
+#get nrow of dataset
+#making the dataset bc then we can easily pull out the specific one we want to look at. with a function to give the dataset with a specific combo of routes+years
+
+#for each row
+#check TRUE/FALSE for each column within the row (ie: >= 5 years species has been seen)
+#sum the number of TRUE values in that row
+#therefore: get the number of routes for which a given number of years have non-zero values for that species
+#if that number of routes meets the maximum (ie: >= 10 routes), keep the row
+#at end, get nrow to get the number of species that remain 
+
+
+#for loop
+nrow(rows_that_match)
+
+
+
+
 
 #create a histogram of the data to see if it can be modeled using a poisson distribution 
 hist(mbbs$count)
@@ -63,6 +131,8 @@ n.routes <- survey.events %>% group_by(year) %>% summarize(n.routes = n())
 
 #negative binomials are not working beautifully. Perhaps we should try poissons and THEN determine if a negative binomial is the proper modeling approach for this data.
 
+#"House\r Wren"
+
 #for lop to filter to species, then add species + trend + pvalue + R2 to trend table
 for (s in 1:length(species.list)) {
   #get species
@@ -74,7 +144,7 @@ for (s in 1:length(species.list)) {
     mutate(count = sum(count)) %>% #redo count to have the sum of all counts from that year on that route_ID
     distinct(route_ID, year, .keep_all = TRUE) #remove duplicate data points so there's one record per route_ID and year for each species
 
-  model <- glm.nb(count ~ year, data = filtered.mbbs) #should +n.routes b/c thats able to account for survey effort then
+  model <- glm(count ~ year + (1|route_ID) + (1|observer_ID), data = filtered.mbbs, family="poisson") #should +n.routes b/c thats able to account for survey effort then
   
   #store model results in trend_table
   trend_table[s, 1] <- current.species
