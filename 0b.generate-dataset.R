@@ -63,6 +63,7 @@ for (s in 1:length(allspecies)) {
 #remove routes with problems
 #orange rt 11 in 2012
 
+#fix the 2019 data, create a version of the dataset that groups everything to the route level.
 
 #save dataset 
 write.csv(mbbs_all, "data/analysis.df.csv", row.names = F)
