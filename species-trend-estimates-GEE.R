@@ -4,6 +4,7 @@ library(beepr)
 library(MASS)
 library(geepack)
 library(mbbs)
+library(broom) #extracts coefficient values out of models, works with geepack
 
 #prevent scientific notation to make a trend table easier to read, if we have one at the end
 options(scipen=999)
@@ -21,7 +22,7 @@ mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>%
   mutate(route_ID = route_num + case_when(
     mbbs_county == "orange" ~ 100L,
     mbbs_county == "durham" ~ 200L,
-    mbbs_county == "chatham" ~ 300L,)) %>%
+    mbbs_county == "chatham" ~ 300L)) %>%
   filter(count > 0) %>%
   ungroup()
 
@@ -75,7 +76,7 @@ mbbs_test_decrease <- mbbs %>% filter(common_name == "Chimney Swift") # should b
 
 
 #create trend table to store results in
-cols <- c("species", "trend", "error", "pvalue", "significant", "Waldtest")
+cols <- c("species", "logtrend", "trend", "error", "pvalue", "significant", "Waldtest")
 trend_table <- as.data.frame(matrix(ncol = length(cols), nrow = 0))
 colnames(trend_table) <- cols
 #get species list to filter through
@@ -89,7 +90,7 @@ current_species <- "NULL BIRD"
 filtered_mbbs <- mbbs %>% filter(common_name == "Eastern Bluebird")
 
 #formula we want to run
-formula = log(count) ~ year
+formula = count ~ year 
 
 #for lop to filter to species, then add species + trend + pvalue + R2 to trend table
   for(s in 1:length(species_list)) {
@@ -105,7 +106,8 @@ formula = log(count) ~ year
     
     
     trend_table$species[s] <- current_species
-    trend_table$trend[s] <- summary(model)$coefficients[2,1]
+    trend_table$logtrend[s] <- summary(model)$coefficients[2,1]
+    trend_table$trend[s] <- exp(trend_table$logtrend[s]) - 1
     trend_table$error[s] <- summary(model)$coefficients[2,2]
     trend_table$pvalue[s] <- summary(model)$coefficients[2,4]
     trend_table$Waldtest[s] <- summary(model)$coefficients[2,3]
