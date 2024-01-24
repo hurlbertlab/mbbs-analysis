@@ -62,7 +62,7 @@ temp_num <- n_distinct(temp_occurances$route_ID) #for use in for loop, really th
       mbbs <- mbbs %>% filter(common_name != temp_occurances$common_name[1]) #remove species from datatable
     }
   }
-  
+
 n_distinct(mbbs$common_name) #ok, 58 species rn make the cut with the borders set at 5 routes and 10 sightings on those routes. Nice!
 
 #GEE models from GEEpack assume that things are listed in order of cluster
