@@ -2,6 +2,7 @@
 
 library(dplyr)
 library(tidyr)
+library(stringr)
 
 #read in the raw terra:extracted table
 extractedbuffers <- read.csv("spatial/nlcd_extracted_buffers.csv", header = TRUE) %>%
@@ -15,7 +16,7 @@ extractedbuffers <- read.csv("spatial/nlcd_extracted_buffers.csv", header = TRUE
          nlcd2019 = NLCD.Land.Cover.Class.8,
          nlcd2021 = NLCD.Land.Cover.Class.9) %>%
   na.omit() %>%
-  select(-X)
+  dplyr::select(-X) 
 
 landtype_bybuff <- as.data.frame(table(extractedbuffers[,1:2])) %>% rename(freq2001 = Freq, nlcd = nlcd2001) 
 
@@ -37,7 +38,9 @@ RouteStops <- read.csv("spatial/RouteStops.csv", header = TRUE) %>%
               mutate(ID = row_number(),
                      ID = as.factor(ID)) %>%
               relocate(ID, .before = County_Route_Stop) %>%
-              select(-notes)
+              dplyr::select(-notes) 
+#make mbbs_county lowercase to be consistent with other data
+RouteStops$mbbs_county <- stringr::str_to_lower(RouteStops$mbbs_county)
 nlcd_classif <- read.csv("spatial/nlcd_classifications.csv", header = TRUE) %>% mutate(code = as.factor(code))
 
 #merge these with landtype_bybuff to make it way more interpretable
@@ -53,7 +56,7 @@ numpixels <- landtype_bybuff %>%
              summarize(sum(freq2001)) #number of pixels in each buffer
 numpixels <- numpixels %>%
              mutate(numpix = numpixels$`sum(freq2001)`) %>% #renaming column
-             select(ID, numpix) 
+             dplyr::select(ID, numpix) 
 #number of pixels varries from 550 to 565, depends on how the exact edges of the 400m boundaries lined up with the nlcd 30x30m pixels
 
 #now here I can get the percent of each 400m buffer that's a given nlcd class
@@ -67,7 +70,7 @@ landtype_byroutestop <- landtype_bybuff %>%
 
 #now, if we want to look at across routes instead of buffers
 landtype_byroute <- landtype_bybuff %>% 
-                    group_by(County_Route, nlcd, year) %>%
+                    group_by(County_Route, mbbs_county, route_num, nlcd, year) %>%
                     transmute(frequency = sum(frequency),
                               totpix = sum(numpix)) %>% 
                     distinct() %>% #this gives 510 rows, this is fine b/c land types 12,51,72,73,and 74 are all Alaska only land cover types and are removed for being 0s
@@ -79,7 +82,7 @@ landtype_byroute <- landtype_bybuff %>%
                     relocate(totpix, .after = frequency)
 
 #check percents add up to 100
-t <- landtype_byroute %>% filter(year == "2001", County_Route == "Chatham-01") 
+t <- landtype_byroute %>% filter(year == "2001", mbbs_county == "chatham", route_num == 1) 
 sum(t$percent) #yep, sums to 100
 
 
