@@ -51,6 +51,8 @@ mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 10, min_num_rout
 
 n_distinct(mbbs$common_name) #ok, 58 species rn make the cut with the borders set at 5 routes and 10 sightings on those routes. Nice!
 
+#save a version of the mbbs before adding 0s
+  mbbs_nozero <- mbbs
 #add in the 0 values for when routes were surveyed but the species that remain in this filtered dataset were not seen.
  mbbs <- mbbs %>% complete(
   nesting(year, mbbs_county, route_ID, route_num),
@@ -65,13 +67,20 @@ n_distinct(mbbs$common_name) #ok, 58 species rn make the cut with the borders se
      print("ERROR: Adding in the 0 values has led to some species having more occurances than others."); beep(11); beep(11)}
  
 #now that everything else is ready to go, leftjoin survey_events so we have observer information
-mbbs <- mbbs %>% 
-  left_join(mbbs_survey_events, by = c("mbbs_county", "year", "route_num")) %>%
-  dplyr::select(-observers.x) %>%
-  rename(observers = observers.y)
+add_survey_events <- function(mbbs, mbbs_survey_events) {
+  mbbs <- mbbs %>% 
+    left_join(mbbs_survey_events, by = c("mbbs_county", "year", "route_num")) %>%
+    dplyr::select(-observers.x) %>%
+    rename(observers = observers.y)
+  
+  return(mbbs)
+} 
+mbbs <- add_survey_events(mbbs, survey_events)
+mbbs_nozero <- add_survey_events(mbbs_nozero, survey_events)
   
 # Remove Orange route 11 from 2012 due to uncharacteristically high counts from a one-time observer
 mbbs <- mbbs %>% filter(primary_observer != "Ali Iyoob")
+mbbs_nozero <- mbbs_nozero  %>% filter(primary_observer != "Ali Iyoob")
 
 #leftjoin for landcover information
 #read in nlcd data, filter to just what we're interested in. Otherwise it's a many-to-many join relationship. Right now, just the % developed land. Workflow similar to "calc_freq_remove_rows()" from the generate_percent_change_+_map.. code, but altered for this use.
@@ -89,13 +98,18 @@ nlcd <- read.csv("data/landtype_byroute.csv", header = TRUE) %>%
   
   #need to now combine all the % developed land into one row for each county/route/year
 ##heads up, nlcd data is missing years, u need to assign it the last value, only change when a new yr that has new data happens. Must be a way to do that easily without writing a whole complicated function..
-mbbs <- mbbs %>%
-  left_join(nlcd, by = c("mbbs_county", "year", "route_num")) %>%
-  group_by(route_ID, common_name) %>%
-  arrange(common_name, route_ID, year) %>%
-  relocate(percent_developed, .before = common_name) %>%
-  fill(percent_developed, .direction = "downup")
-#check <- mbbs %>% filter(route_ID == 106)
+add_nlcd <- function(mbbs, nlcd) {
+  mbbs <- mbbs %>%
+    left_join(nlcd, by = c("mbbs_county", "year", "route_num")) %>%
+    group_by(route_ID, common_name) %>%
+    arrange(common_name, route_ID, year) %>%
+    relocate(percent_developed, .before = common_name) %>%
+    fill(percent_developed, .direction = "downup")
+  #check <- mbbs %>% filter(route_ID == 106)
+  return(mbbs)
+}
+mbbs <- add_nlcd(mbbs, nlcd)
+mbbs_nozero <- add_nlcd(mbbs_nozero, nlcd)
 
 #------------------------------------------------------------------------------
 
@@ -104,19 +118,17 @@ species_list <- unique(mbbs$common_name)
 filtered_mbbs <- mbbs %>% filter(common_name == species_list[1])
 
 #create trend table to store results in
-cols <- c("species")
-trend_table <- as.data.frame(matrix(ncol = length(cols), nrow = 0))
-colnames(trend_table) <- cols
-#initiate the trend table, fill with NAs
-  trend_table[1:length(species_list),] <- NA
-#add in the species
+cols_list <- c("common_name")
+trend_table <- make_trend_table(cols_list)
+  #add in the species
   for(s in 1:length(species_list)) {
     
-    trend_table$species[s] <- species_list[s]
+    trend_table[s,1] <- species_list[s]
     
   }
 
-  
+#formulas to plug into the models
+  formula_basic <- count ~ year
   formula_simple <- count ~ year + percent_developed
   formula_randomeffects <- count ~ year + percent_developed + (1|primary_observer)
   
@@ -129,40 +141,84 @@ colnames(trend_table) <- cols
 #issues with glmer poisson - I'm getting a "model failed to converge" when I include the random effect of observers, "Model is nearly unidentifiable: very large eigenvalue" - this is using primary_observer (58 possible random variations)
   #sample_model <- glmer(count ~ year + percent_developed + (1 | observer_ID), data = filtered_mbbs, family = "poisson")
   
+#a poisson model is not meant for a version that has the added in zeros. so we will use the mbbs without added zeros
+  
+  pois_table <- make_trend_table(c("common_name","pois_estimate", "pois_trend", "pois_error", "pois_significant", "pois_percdev_estimate", "pois_percdev_trend", "pois_percdev_significant"))
+  
   for(s in 1:length(species_list)) {
     
     current_species <- species_list[s]
     
-    filtered_mbbs <- mbbs %>% filter(common_name == current_species)
+    filtered_mbbs <- mbbs_nozero %>% filter(common_name == current_species)
     
     model <- glm(formula_simple, family = "poisson", data = filtered_mbbs)
     
     tidied <- tidy(model)
     
     #add to trend table
-    trend_table <- 
-      trend_table %>%
-      mutate(
-        pois_estimate = ifelse(species == current_species, tidied$estimate[1], pois_estimate)
-      )
-    trend_table[trend_table$species == current_species,]$pois_error
+    pois_table[s,1] <- current_species
+    pois_table$pois_estimate[s] <- tidied$estimate[2]
+    pois_table$pois_trend[s] <- exp(pois_table$pois_estimate[s]) -1
+    pois_table$pois_error[s] <- tidied$std.error[2]
+    pois_table$pois_significant[s] <- case_when(tidied$p.value[2] <= 0.05 ~ 1,
+                                                tidied$p.value[2] > 0.05 ~ 0)
+    pois_table$pois_percdev_estimate[s] <- tidied$estimate[3]
+    pois_table$pois_percdev_trend[s] <- exp(pois_table$pois_percdev_estimate[s]) -1
+    pois_table$pois_percdev_significant[s] <- case_when(tidied$p.value[3] <= 0.05 ~ 1,
+                                                        tidied$p.value[3] > 0.05 ~ 0)
   }
 
-sample_model <- glm(count ~ year + percent_developed, data = filtered_mbbs, family = "poisson")
-temp <- tidy(sample_model)
-
-yeartemp <- temp %>% filter(term == "year")
-yeartemp$estimate
-  
-  model <- glm(count ~ year + (1|route_ID) + (1|observer_ID), data = filtered.mbbs, family="poisson")
+  trend_table <- left_join(trend_table, pois_table, by = "common_name")
 
 #------------------------------------------------------------------------------
 #negative binomial model
 #------------------------------------------------------------------------------
-
-
+  
+  #I think not necessary, but reserve the space.
+  negb_table <- make_trend_table(c("common_name","negb_estimate", "negb_trend", "negb_error", "negb_significant", "negb_percdev_estimate", "negb_percdev_trend", "negb_percdev_significant"))
+  
 #------------------------------------------------------------------------------
 #GEE model  
 #------------------------------------------------------------------------------
+  #GEE models from GEEpack assume that things are listed in order of cluster
+  #cluster is the route. that's fine, we can sort in order
+  mbbs <- mbbs %>% arrange(route_ID, year, common_name)  #also by year and common_name just to improve readability of the datatable
 
+    gee_table <- make_trend_table(c("common_name", "gee_estimate", "gee_trend","gee_error", "gee_significant", "gee_percdev_estimate", "gee_percdev_significant", "gee_observer_estimate", "gee_Waldtest"))
+    
+    #add in the species
+    for(s in 1:length(species_list)) {
+      
+      gee_table[s,1] <- species_list[s]
+      
+    }
+    
+    for(s in 1:length(species_list)) {
+      
+      current_species <- species_list[s]
+      
+      filtered_mbbs <- mbbs %>% filter(common_name == current_species)
+      
+      model <- geeglm(formula_simple,
+                      family = poisson,
+                      id = route_ID,
+                      data = filtered_mbbs)
+      
+      tidied <- tidy(model)
+      
+      gee_table$common_name[s] <- current_species
+      gee_table$gee_estimate[s] <- tidied$estimate[2]
+      gee_table$gee_trend[s] <- exp(gee_table$gee_estimate[s]) -1
+      gee_table$gee_error[s] <- tidied$std.error[2]
+      gee_table$gee_significant[s] <- case_when(tidied$p.value[2] <= 0.05 ~ 1,
+                                             tidied$p.value[2] > 0.05 ~ 0)
+      gee_table$gee_percdev_estimate[s] <- tidied$estimate[3]
+      gee_table$gee_percdev_significant[s] <- case_when(tidied$p.value[3] <= 0.05 ~ 1,
+                                                        tidied$p.value[3] > 0.05 ~ 0)
+      gee_table$gee_observer_estimate[s] <- NA
+      gee_table$gee_Waldtest[s] <- summary(model)$coefficients[2,3]
+    }
 
+    trend_table <- left_join(trend_table, gee_table, by = "common_name")
+    
+    

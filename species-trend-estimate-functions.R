@@ -37,3 +37,21 @@ filter_to_min_sightings <- function(mbbs, min_sightings_per_route, min_num_route
   return(mbbs)
   
 }
+
+
+#
+#
+# Function to create and initialize a trend table, based off a list of the names of columns
+#
+#
+make_trend_table <- function(cols_list) {
+  #make trend table
+  trend_table <- as.data.frame(matrix(ncol = length(cols_list), nrow = 0))
+  #name the columns
+  colnames(trend_table) <- cols_list
+  #initiate trend table with first row, fill with NAs
+  trend_table[1,] <- NA
+  
+  return(trend_table)
+  
+}
