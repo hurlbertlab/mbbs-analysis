@@ -55,3 +55,17 @@ make_trend_table <- function(cols_list) {
   return(trend_table)
   
 }
+
+#
+#
+# Function to left_join mbbs_survey events to a mbbs dataframe
+#
+#
+add_survey_events <- function(mbbs, mbbs_survey_events) {
+  mbbs <- mbbs %>% 
+    left_join(mbbs_survey_events, by = c("mbbs_county", "year", "route_num")) %>%
+    dplyr::select(-observers.x) %>%
+    rename(observers = observers.y)
+  
+  return(mbbs)
+} 

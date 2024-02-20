@@ -21,9 +21,6 @@ options(scipen=999)
 mbbs <- read.csv("data/analysis.df.csv", header = T)
 survey_events <- mbbs_survey_events
 
-#unneeded mbbs columns
-remove <- c("sub_id", "tax_order", "count_raw", "state", "loc", "locid", "lat", "lon", "protocol", "distance_traveled", "area_covered","all_obs", "breed_code")
-
 #read in data, using most updated versions of the mbbs. 
 mbbs_orange <- mbbs_orange
 mbbs_durham <- mbbs_durham
@@ -32,8 +29,7 @@ mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three co
   mutate(route_ID = route_num + case_when(
     mbbs_county == "orange" ~ 100L,
     mbbs_county == "durham" ~ 200L,
-    mbbs_county == "chatham" ~ 300L),
-    year = year - 1999) %>%
+    mbbs_county == "chatham" ~ 300L)) %>%
   filter(count > 0) %>%
   ungroup() %>%
   dplyr::select(-sub_id, -tax_order, -count_raw, -state, -loc, -locid, -lat, -lon, -protocol, -distance_traveled, -area_covered, -all_obs, -breed_code, -checklist_comments, -source)
@@ -68,20 +64,14 @@ n_distinct(mbbs$common_name) #ok, 58 species rn make the cut with the borders se
      print("ERROR: Adding in the 0 values has led to some species having more occurances than others."); beep(11); beep(11)}
  
 #now that everything else is ready to go, leftjoin survey_events so we have observer information
-add_survey_events <- function(mbbs, mbbs_survey_events) {
-  mbbs <- mbbs %>% 
-    left_join(mbbs_survey_events, by = c("mbbs_county", "year", "route_num")) %>%
-    dplyr::select(-observers.x) %>%
-    rename(observers = observers.y)
-  
-  return(mbbs)
-} 
 mbbs <- add_survey_events(mbbs, survey_events)
 mbbs_nozero <- add_survey_events(mbbs_nozero, survey_events)
   
 # Remove Orange route 11 from 2012 due to uncharacteristically high counts from a one-time observer
+#current giving an error where it sets mbbs to have 0 obs, so, that needs a fix
 #mbbs <- mbbs %>% dplyr::filter(primary_observer != "Ali Iyoob")
 #mbbs_nozero <- mbbs_nozero  %>% dplyr::filter(primary_observer != "Ali Iyoob")
+#check <- mbbs %>% filter(!primary_observer %in% "Ali Iyoob")
 
 #leftjoin for landcover information
 #read in nlcd data, filter to just what we're interested in. Otherwise it's a many-to-many join relationship. Right now, just the % developed land. Workflow similar to "calc_freq_remove_rows()" from the generate_percent_change_+_map.. code, but altered for this use.
@@ -135,6 +125,7 @@ mbbs_nozero <- mbbs_nozero %>% mutate(route_ID = as.factor(route_ID))
   formula_basic <- count ~ year
   formula_simple <- count ~ year + percent_developed
   formula_randomeffects <- count ~ year  + (1|route_ID)
+  formula_rankedobserver <- count ~ year + observer_quality
   
 #------------------------------------------------------------------------------
 #poisson model
