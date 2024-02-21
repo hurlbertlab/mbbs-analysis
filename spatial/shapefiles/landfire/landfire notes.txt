@@ -1,0 +1,5 @@
+landfire 2001: based on 2001 landsat
+landfire 2014: disturbance data 2011-2015
+landfire 2016: using 2013-2017 imagery
+landfire 2020: using 2017-2020 imagery
+landfire 2022: using 2017-2022 imagery
