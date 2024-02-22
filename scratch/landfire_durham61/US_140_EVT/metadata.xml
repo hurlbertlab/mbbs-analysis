@@ -1,0 +1,1793 @@
+<metadata>
+	<idinfo>
+		<citation>
+			<citeinfo>
+				<origin>Wildland Fire Science, Earth Resources Observation and Science Center, U.S. Geological Survey</origin>
+				<pubdate>20161031</pubdate>
+				<pubtime>unknown</pubtime>
+				<title>LANDFIRE.US_140EVT</title>
+				<geoform>map</geoform>
+				<serinfo>
+					<sername>LANDFIRE Existing Vegetation Type</sername>
+					<issue>LANDFIRE 2014 (lf_1.4.0)</issue>
+				</serinfo>
+				<pubinfo>
+					<pubplace>47914 252nd St., Sioux Falls, SD, 57198-0001, US</pubplace>
+					<publish>Wildland Fire Science, Earth Resources Observation and Science Center, U.S. Geological Survey</publish>
+				</pubinfo>
+				<othercit>United States Forest Service</othercit>
+				<onlink>http://landfire.cr.usgs.gov/viewer/</onlink>
+				<onlink>http://www.landfire.gov</onlink>
+			</citeinfo>
+		</citation>
+		<descript>
+			<abstract>Introduction: The LANDFIRE existing vegetation layers describe the following elements of existing vegetation for each LANDFIRE mapping zone: existing vegetation type, existing vegetation canopy cover, and existing vegetation height. Vegetation is mapped using predictive landscape models based on extensive field reference data, satellite imagery, biophysical gradient layers, and classification and regression trees. DATA SUMMARY: The existing vegetation type (EVT) data layer represents the current distribution of the terrestrial ecological systems classification developed by NatureServe for the western Hemisphere (http://www.natureserve.org/publications/usEcologicalsystems.jsp). A terrestrial ecological system is defined as a group of plant community types (associations) that tend to co-occur within landscapes with similar ecological processes, substrates, and/or environmental gradients. EVTs are mapped in LANDFIRE using decision tree models, field reference data, Landsat imagery, digital elevation model data, and biophysical gradient data. Go to http://www.landfire.gov/participate_acknowledgements.php for more information regarding contributors of field plot data. Decision tree models are developed separately for each of the three life-forms -tree, shrub, and herbaceous - using C5 software. Life-form specific cross validation error matrices are generated during this process to assess levels of accuracy of the models. Decision tree relationships are then used to generate life-form specific EVT spatial data layers. The final EVT and Environmental Site Potential (ESP) layers are compared and rectified through a series of QA/QC measures. Values of one or more of these data layers are adjusted based on a hierarchical decision tree ruleset in order to align the respective life-forms and life-zone of each ESP and EVT category. The EVT layer is used in many subsequent LANDFIRE data layers. LF 2014 (lf_1.4.0) used modified LF 2010 (lf_1.2.0) data as a launching point to incorporate disturbance and its severity, both managed and natural, which occurred on the landscape 2013 and 2014. Specific examples of disturbance are: fire, vegetation management, weather, and insect and disease. The final disturbance data used in LANDFIRE is the result of several efforts that include data derived in part from remotely sensed land change methods, Monitoring Trends in Burn Severity (MTBS), and the LANDFIRE Events data call. Vegetation growth was modeled where both disturbance and non-disturbance occurs.Urban, agriculture, and wetlands were refined to reflect a 2012 landscape using the National Conservation Easement Database, National Wetlands Inventory (NWI), and Common Land Unit database (CLU) data.</abstract>
+			<purpose>LANDFIRE data products are designed to facilitate national- and regional-level strategic planning and reporting of management activities. Data products are created at a 30-meter grid spatial resolution raster data set; however, the applicability of data products varies by location and specific use. Principal purposes of the data products include providing, 1) national-level, landscape-scale geospatial products to support fire and fuels management planning, and, 2) consistent fuels data to support fire planning, analysis, and budgeting to evaluate fire management alternatives. Users are advised to evaluate the data carefully for their applications.</purpose>
+			<supplinf>Four attributes are provided in which LANDFIRE EVTs have been cross-walked to existing vegetation classifications. These attributes are provided to help characterize and describe the LANDFIRE EVTs nationally in terms of these existing vegetation classifications but should not be used to create coarser, thematically simplified maps as they encompass a large amount of local variation. The Order, Class, and Subclass attributes are based on the Federal Geographic Data Committee - Vegetation Subcommittee's vegetation classification standard and pertain to upper physiognomic levels of the National Vegetation Classification System hierarchy. Order describes the dominant life forms (tree, shrub, dwarf shrub, herbaceous, or nonvascular) within the Vegetated Division of the hierarchy. Class describes the level in the classification hierarchy defined by the relative percent canopy cover of the tree, shrub, dwarf shrub, herb, and nonvascular life form in the uppermost strata during the peak of the growing season. Subclass describes the predominant leaf phenology of classes defined by tree, shrub, or dwarf shrub stratum (evergreen, deciduous, mixed evergreen-deciduous), and the average vegetation height for the herbaceous stratum (tall, medium, short). In addition to physiognomy, a cross-walk based more on the floristic composition of each EVT is provided using the combined classifications SAF and SRM for forested and rangeland types, respectively. LANDFIRE EVTs that do not apply to these pre-existing categories are cross-walked to coarser, LANDFIRE "cover classes".</supplinf>
+		</descript>
+		<status>
+			<update>Continually</update>
+		</status>
+		<keywords>
+			<theme>
+				<themekt>ISO 19115 Category</themekt>
+				<themekey>010</themekey>
+				<themekey>imageryBaseMapsEarthCover</themekey>
+			</theme>
+			<theme>
+				<themekt>None</themekt>
+				<themekey>U.S. Geological Survey</themekey>
+				<themekey>LANDFIRE</themekey>
+				<themekey>GIS</themekey>
+				<themekey>Existing Vegetation Type</themekey>
+				<themekey>LANDFIRE 2014</themekey>
+				<themekey>Raster digital data</themekey>
+				<themekey>USGS</themekey>
+				<themekey>EVT</themekey>
+				<themekey>LF_1.4.0</themekey>
+				<themekey>USFS</themekey>
+			</theme>
+			<place>
+				<placekt>U.S. Department of Commerce, 1995, Countries, dependencies, areas of special sovereignty, and their principal administrative divisions, Federal Information Processing Standard 10-4,): Washington, D.C., National Institute of Standards and Technology</placekt>
+				<placekey>U.S.</placekey>
+				<placekey>United States</placekey>
+				<placekey>US</placekey>
+			</place>
+		</keywords>
+		<accconst>None</accconst>
+		<useconst>Although LANDFIRE products are delivered as 30-meter pixels, they should not be used at the individual pixel level or on small groups of pixels. LANDFIRE products were designed to support 1) national (all states) strategic planning, 2) regional (single large states or groups of smaller states), and 3) strategic/tactical planning for large sub-regional landscapes and Fire Management Units (FMUs) (such as significant portions of states or multiple federal administrative entities). The applicability of LANDFIRE products to support fire and land management planning on smaller areas will vary by product, location, and specific use. Further investigation by local and regional experts should be conducted to inform decisions regarding local applicability. However, it is the responsibility of the local user, using LANDFIRE metadata and local knowledge, to determine if and/or how LANDFIRE can be used for particular areas of interest. LANDFIRE products are not intended to replace local products, but rather serve as a back-up by providing wall-to-wall cross-boundary products. It is the responsibility of the user to be familiar with the value, assumptions, and limitations of LANDFIRE products. Managers and planners must evaluate LANDFIRE data according to the scale and requirements specific to their needs.</useconst>
+		<ptcontac>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>Wildland Fire Science, Earth Resources Observation and Science Center, U.S. Geological Survey</cntorg>
+				</cntorgp>
+				<cntpos>Customer Service Representative</cntpos>
+				<cntaddr>
+					<addrtype>physical</addrtype>
+					<address>47914 252nd Street</address>
+					<city>Sioux Falls</city>
+					<state>SD</state>
+					<postal>57198-0001</postal>
+					<country>US</country>
+				</cntaddr>
+				<cntvoice>605/594-6151</cntvoice>
+				<cntfax>605/594-6589</cntfax>
+				<cntemail>helpdesk@landfire.gov</cntemail>
+			</cntinfo>
+		</ptcontac>
+		<datacred>Data have been collected and analyzed by teams at both USGS EROS, Sioux Falls, SD and at the USFS, Rocky Mountain Research Station, Missoula, MT. Depending on the data set described primary responsibility may reside with USGS EROS or with USFS. Contact information will be listed in the Contact Section and in the Metadata Reference section with regards to the primary responsibility.</datacred>
+		<secinfo>
+			<secsys>None in place</secsys>
+			<secclass>Unclassified</secclass>
+			<sechandl>If there is ever doubt, contact the appropriate resource staff who has stewardship responsibility and the GIS Coordinator.</sechandl>
+		</secinfo>
+		<native>Microsoft Windows 2000 Version 5.0 (Build 2195) Service Pack 4; ESRI ArcCatalog 9.1.0.722</native>
+		<crossref>
+			<citeinfo>
+				<origin>Snow, K.</origin>
+				<origin>Evans, R.</origin>
+				<origin>Menard, S.</origin>
+				<origin>Gawler, S.</origin>
+				<origin>Teague, J.</origin>
+				<origin>Schulz, K.</origin>
+				<origin>Josse, C.</origin>
+				<origin>Faber-Langendoen, D.</origin>
+				<origin>Reid, M.</origin>
+				<origin>Comer, P.</origin>
+				<origin>Kittel, G.</origin>
+				<origin>Pyne, M.</origin>
+				<pubdate>20030101</pubdate>
+				<title>Ecological Systems of the United States: A Working Classification of U.S. Terrestrial Systems</title>
+				<othercit>NatureServe, Arlington, Virginia.</othercit>
+			</citeinfo>
+		</crossref>
+	</idinfo>
+	<dataqual>
+		<lineage>
+			<procstep>
+				<procdesc>LANDFIRE Refresh 2001 (lf_1.0.5): Imagery used in LANDFIRE National covered a span of years and several large wildland fires may not be represented for the time period used in that locale. LANDFIRE circa 2001 ensures wildland fires through 2001 are represented. Additional improvements found in Refresh 2001 include resolving inconsistencies along the international borders and updating aspects of the following: riparian and wetlands areas, agricultural and urban vegetation types as burnable, and adjusting the extent of barren and water land cover types.</procdesc>
+				<procdate>20100101</procdate>
+			</procstep>
+			<procstep>
+				<procdesc>LANDFIRE 2010 values are 3000 - 3999. EVT values were revised from previous versions to distinguish systems by lifeform when multiple lifeforms could occur.</procdesc>
+				<procdate>20130415</procdate>
+			</procstep>
+			<procstep>
+				<procdesc>Metadata updated</procdesc>
+				<procdate>20130415</procdate>
+			</procstep>
+			<procstep>
+				<procdesc>For a detailed definition and discussion on LANDFIRE, refer to http://www.LANDFIRE.gov</procdesc>
+				<procdate>20131129</procdate>
+				<proccont>
+					<cntinfo>
+						<cntorgp>
+							<cntorg>U.S. Geological Survey</cntorg>
+						</cntorgp>
+						<cntpos>Customer Service Representative</cntpos>
+						<cntaddr>
+							<addrtype>mailing and physical</addrtype>
+							<address>47914 252nd Street</address>
+							<address>USGS EROS</address>
+							<city>Sioux Falls</city>
+							<state>SD</state>
+							<postal>57198-0001</postal>
+							<country>US</country>
+						</cntaddr>
+						<cntvoice>605/594-6151</cntvoice>
+						<cnttdd>605/594-6933</cnttdd>
+						<cntfax>605/594-6589</cntfax>
+						<cntemail>custserv@usgs.gov</cntemail>
+						<hours>0800 - 1600, CT M-F (-6h CST/-5h CDT GMT)</hours>
+					</cntinfo>
+				</proccont>
+			</procstep>
+		</lineage>
+	</dataqual>
+	<eainfo>
+		<detailed>
+			<enttyp>
+				<enttypl>evt</enttypl>
+				<enttypd>Existing Vegetation Type</enttypd>
+				<enttypds>Landfire</enttypds>
+			</enttyp>
+			<attr>
+				<attrlabl>ObjectID</attrlabl>
+				<attrdef>Internal feature number.</attrdef>
+				<attrdefs>ESRI</attrdefs>
+				<attrdomv>
+					<udom>Sequential unique whole numbers that are automatically generated.</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Value</attrlabl>
+				<attrdef>Existing vegetation type, see Overview Description for complete list</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>3000</rdommin>
+						<rdommax>3999</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Count</attrlabl>
+				<attrdef>Number of pixels</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<udom>Number of pixels</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>CLASSNAME</attrlabl>
+				<attrdef>Existing vegetation type name</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>see Attribute Overview</edomv>
+						<edomvd>LANDFIRE</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EVT_FUEL</attrlabl>
+				<attrdef>LF100, 105, and 110 value for EVT, attribute used with the LANDFIRE Total Fuel Change Tool</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>11</rdommin>
+						<rdommax>2999</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EVT_LF</attrlabl>
+				<attrdef>EVT Lifeform</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>sparse</edomv>
+						<edomvd>sparse lifeform</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>tree</edomv>
+						<edomvd>tree lifeform</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>shrub</edomv>
+						<edomvd>shrub lifeform</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>herb</edomv>
+						<edomvd>herb lifeform</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>water</edomv>
+						<edomvd>water</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>barren</edomv>
+						<edomvd>barren</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>developed</edomv>
+						<edomvd>developed</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EVT_GP</attrlabl>
+				<attrdef>Existing Vegetation System Group Identification</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>11</rdommin>
+						<rdommax>800</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EVT_GP_N</attrlabl>
+				<attrdef>Aggregated existing vegetation types based on dominant species or groups of dominant species</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>see CSV at http://www.landfire.gov/NationalProductDescriptions21.php</edomv>
+						<edomvd>LANDFIRE</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EVT_ORDER</attrlabl>
+				<attrdef>National Vegetation Classification System Physiognomic Order</attrdef>
+				<attrdefs>National Vegetation Classification System</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>Herbaceous - Nonvascular-dominated</edomv>
+						<edomvd>Herbaceous - Nonvascular-dominated</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Herbaceous/Non-vascular</edomv>
+						<edomvd>Herbaceous/Non-vascular</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>No Dominant Life Form</edomv>
+						<edomvd>No Dominant Life Form</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Non-vegetated</edomv>
+						<edomvd>Non-vegetated</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Shrub</edomv>
+						<edomvd>Shrub</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Shrub-dominated</edomv>
+						<edomvd>Shrub-dominated</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Treed</edomv>
+						<edomvd>Treed</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Tree-dominated</edomv>
+						<edomvd>Tree-dominated</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EVT_CLASS</attrlabl>
+				<attrdef>National Vegetation Classification System Physiognomic Class</attrdef>
+				<attrdefs>National Vegetation Classification System</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>Closed tree canopy</edomv>
+						<edomvd>Closed tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Dwarf Shrubland</edomv>
+						<edomvd>Dwarf Shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Herbaceous - grassland</edomv>
+						<edomvd>Herbaceous - grassland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Herbaceous - Shrub Steppe</edomv>
+						<edomvd>Herbaceous - Shrub Steppe</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>No Dominant Lifeform</edomv>
+						<edomvd>No Dominant Lifeform</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Non-vegetated</edomv>
+						<edomvd>Non-vegetated</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Open Tree Canopy</edomv>
+						<edomvd>Open Tree Canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Shrubland</edomv>
+						<edomvd>Shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Sparse tree canopy</edomv>
+						<edomvd>Sparse tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Sparsely Vegetated</edomv>
+						<edomvd>Sparsely Vegetated</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EVT_SBCLS</attrlabl>
+				<attrdef>National Vegetation Classification System Physiognomic Subclass</attrdef>
+				<attrdefs>National Vegetation Classification System</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>Alga</edomv>
+						<edomvd>Alga</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Annual Graminoid/Forb</edomv>
+						<edomvd>Annual Graminoid/Forb</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Boulder, gravel, cobble or talus</edomv>
+						<edomvd>Boulder, gravel, cobble or talus</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Bryophyte</edomv>
+						<edomvd>Bryophyte</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Deciduous</edomv>
+						<edomvd>Deciduous</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Deciduous closed tree canopy</edomv>
+						<edomvd>Deciduous closed tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Deciduous open tree canopy</edomv>
+						<edomvd>Deciduous open tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Deciduous shrubland</edomv>
+						<edomvd>Deciduous shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Deciduous sparse tree canopy</edomv>
+						<edomvd>Deciduous sparse tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Evergreen</edomv>
+						<edomvd>Evergreen</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Evergreen closed tree canopy</edomv>
+						<edomvd>Evergreen closed tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Evergreen dwarf-shrubland</edomv>
+						<edomvd>Evergreen dwarf-shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Evergreen open tree canopy</edomv>
+						<edomvd>Evergreen open tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Evergreen shrubland</edomv>
+						<edomvd>Evergreen shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Evergreen sparse tree canopy</edomv>
+						<edomvd>Evergreen sparse tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Hydromorphic-rooted</edomv>
+						<edomvd>Hydromorphic-rooted</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Lichen</edomv>
+						<edomvd>Lichen</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Mixed</edomv>
+						<edomvd>Mixed</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Mixed evergreen-deciduous closed tree canopy</edomv>
+						<edomvd>Mixed evergreen-deciduous closed tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Mixed evergreen-deciduous dwarf-shrubland</edomv>
+						<edomvd>Mixed evergreen-deciduous dwarf-shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Mixed evergreen-deciduous open tree canopy</edomv>
+						<edomvd>Mixed evergreen-deciduous open tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Mixed evergreen-deciduous shrubland</edomv>
+						<edomvd>Mixed evergreen-deciduous shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Mixed evergreen-deciduous sparse tree canopy</edomv>
+						<edomvd>Mixed evergreen-deciduous sparse tree canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>No Dominant Lifeform</edomv>
+						<edomvd>No Dominant Lifeform</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Non-vegetated</edomv>
+						<edomvd>Non-vegetated</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Perennial forb</edomv>
+						<edomvd>Perennial forb</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Perennial Graminoid</edomv>
+						<edomvd>Perennial Graminoid</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Perennial graminoid grassland</edomv>
+						<edomvd>Perennial graminoid grassland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Perennial Graminoid or Annual Gramminoid/Forb</edomv>
+						<edomvd>Perennial Graminoid or Annual Gramminoid/Forb</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Perennial graminoid steppe</edomv>
+						<edomvd>Perennial graminoid steppe</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Unconsolidated material</edomv>
+						<edomvd>Unconsolidated material</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>SAF_SRM</attrlabl>
+				<attrdef>Society of American Foresters &amp; Society of Range Management Cover Type</attrdef>
+				<attrdefs>Society of American Foresters &amp; Society of Range Management</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>See EVT CSV, http://www.landfire.gov/NationalProductDescriptions21.php</edomv>
+						<edomvds>http://www.landfire.gov/NationalProductDescriptions21.php</edomvds>
+						<edomvd>See EVT CSV, http://www.landfire.gov/NationalProductDescriptions21.php</edomvd>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EVT_PHYS</attrlabl>
+				<attrdef>System Group Physiognomy</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>Agricultural</edomv>
+						<edomvd>Agricultural</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Conifer-Hardwood</edomv>
+						<edomvd>Conifer-Hardwood</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Developed low, medium, high intensity</edomv>
+						<edomvd>Developed low, medium, high intensity</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Exotic Herbaceous</edomv>
+						<edomvd>Exotic Herbaceous</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Exotic Tree-Shrub</edomv>
+						<edomvd>Exotic Tree-Shrub</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Grassland</edomv>
+						<edomvd>Grassland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Hardwood</edomv>
+						<edomvd>Hardwood</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Open water</edomv>
+						<edomvd>Open water</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Riparian</edomv>
+						<edomvd>Riparian</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Shrubland</edomv>
+						<edomvd>Shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>Sparsely Vegetated</edomv>
+						<edomvd>Sparsely Vegetated</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>Snow - Ice</edomv>
+						<edomvd>Snow - Ice</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>Barren</edomv>
+						<edomvd>Barren</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>Quarries-Stripmines-Gravel Pits</edomv>
+						<edomvd>Quarries-Stripmines-Gravel Pits</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>Developed-Roads</edomv>
+						<edomvd>Developed-Roads</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>Developed Upland - Deciduous Forest</edomv>
+						<edomvd>Developed Upland - Deciduous Forest</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>Developed Upland-Evergreen Forest</edomv>
+						<edomvd>Developed Upland-Evergreen Forest</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>Developed Upland-Mixed Forest</edomv>
+						<edomvd>Developed Upland-Mixed Forest</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>Developed Upland-Herbaceous</edomv>
+						<edomvd>Developed Upland-Herbaceous</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>Developed Upland-Shrubland</edomv>
+						<edomvd>Developed Upland-Shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>R</attrlabl>
+				<attrdef>Red color value</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>255</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>G</attrlabl>
+				<attrdef>Green color value</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>255</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>B</attrlabl>
+				<attrdef>Blue color value</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>255</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Red</attrlabl>
+				<attrdef>Red color value/255</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>1</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Green</attrlabl>
+				<attrdef>Green color value/255</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>1</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Blue</attrlabl>
+				<attrdef>Blue color value/255</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>1</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>EVT_Fuel_N</attrlabl>
+				<attrdef>LF100, 105, and 110 value for EVT attribute with lifeform used with the LANDFIRE Total Fuel Change Tool</attrdef>
+				<attrdefs>LANDFIRE</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>see Attribute Overview list</edomv>
+						<edomvd>LANDFIRE</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+		</detailed>
+		<overview>
+			<eaover>
+If the following table does not display properly, then please go to the LANDFIRE Data Distribution Site &lt;http://landfire.cr.usgs.gov/viewer/viewer.html&gt; and download the corresponding attribute table.
+
+VALUE CLASSNAME EVT_Fuel EVT_Fuel_N
+
+-9999 Nodata -9999 Nodata
+3001 Inter-Mountain Basins Sparsely Vegetated Systems 2001 Sps Inter-Mountain Basins Sparsely Vegetated Systems
+3002 Mediterranean California Sparsely Vegetated Systems 2002 Sps Mediterranean California Sparsely Vegetated Systems
+3003 North Pacific Sparsely Vegetated Systems 2003 Sps North Pacific Sparsely Vegetated Systems
+3004 North American Warm Desert Sparsely Vegetated Systems 2004 Sps North American Warm Desert Sparsely Vegetated Systems
+3006 Rocky Mountain Alpine/Montane Sparsely Vegetated Systems 2006 Sps Rocky Mountain Alpine/Montane Sparsely Vegetated Systems
+3007 Western Great Plains Sparsely Vegetated Systems 2007 Sps Western Great Plains Sparsely Vegetated Systems
+3008 North Pacific Oak Woodland 2008 Tr North Pacific Oak Woodland
+3009 Northwestern Great Plains Aspen Forest and Parkland 2009 Tr Northwestern Great Plains Aspen Forest and Parkland
+3011 Rocky Mountain Aspen Forest and Woodland 2011 Tr Rocky Mountain Aspen Forest and Woodland
+3012 Rocky Mountain Bigtooth Maple Ravine Woodland 2012 Tr Rocky Mountain Bigtooth Maple Ravine Woodland
+3013 Western Great Plains Dry Bur Oak Forest and Woodland 2013 Tr Western Great Plains Dry Bur Oak Forest and Woodland
+3014 Central and Southern California Mixed Evergreen Woodland 2014 Tr Central and Southern California Mixed Evergreen Woodland
+3015 California Coastal Redwood Forest 2015 Tr California Coastal Redwood Forest
+3016 Colorado Plateau Pinyon-Juniper Woodland 2016 Tr Colorado Plateau Pinyon-Juniper Woodland
+3017 Columbia Plateau Western Juniper Woodland and Savanna 2017 Tr Columbia Plateau Western Juniper Woodland and Savanna
+3018 East Cascades Mesic Montane Mixed-Conifer Forest and Woodland 2018 Tr East Cascades Mesic Montane Mixed-Conifer Forest and Woodland
+3019 Great Basin Pinyon-Juniper Woodland 2019 Tr Great Basin Pinyon-Juniper Woodland
+3020 Inter-Mountain Basins Subalpine Limber-Bristlecone Pine Woodland 2020 Tr Inter-Mountain Basins Subalpine Limber-Bristlecone Pine Woodland
+3021 Klamath-Siskiyou Lower Montane Serpentine Mixed Conifer Woodland 2021 Tr Klamath-Siskiyou Lower Montane Serpentine Mixed Conifer Woodland
+3022 Klamath-Siskiyou Upper Montane Serpentine Mixed Conifer Woodland 2022 Tr Klamath-Siskiyou Upper Montane Serpentine Mixed Conifer Woodland
+3023 Madrean Encinal 2023 Tr Madrean Encinal
+3024 Madrean Lower Montane Pine-Oak Forest and Woodland 2024 Tr Madrean Lower Montane Pine-Oak Forest and Woodland
+3025 Madrean Pinyon-Juniper Woodland 2025 Tr Madrean Pinyon-Juniper Woodland
+3026 Madrean Upper Montane Conifer-Oak Forest and Woodland 2026 Tr Madrean Upper Montane Conifer-Oak Forest and Woodland
+3027 Mediterranean California Dry-Mesic Mixed Conifer Forest and Woodland 2027 Tr Mediterranean California Dry-Mesic Mixed Conifer Forest and Woodland
+3028 Mediterranean California Mesic Mixed Conifer Forest and Woodland 2028 Tr Mediterranean California Mesic Mixed Conifer Forest and Woodland
+3029 Mediterranean California Mixed Oak Woodland 2029 Tr Mediterranean California Mixed Oak Woodland
+3030 Mediterranean California Lower Montane Conifer Forest and Woodland 2030 Tr Mediterranean California Lower Montane Conifer Forest and Woodland
+3031 California Montane Jeffrey Pine(-Ponderosa Pine) Woodland 2031 Tr California Montane Jeffrey Pine(-Ponderosa Pine) Woodland
+3032 Mediterranean California Red Fir Forest 2032 Tr Mediterranean California Red Fir Forest
+3033 Mediterranean California Subalpine Woodland 2033 Tr Mediterranean California Subalpine Woodland
+3034 Mediterranean California Mesic Serpentine Woodland and Chaparral 2034 Tr Mediterranean California Mesic Serpentine Woodland and Chaparral
+3035 North Pacific Dry Douglas-fir(-Madrone) Forest and Woodland 2035 Tr North Pacific Dry Douglas-fir(-Madrone) Forest and Woodland
+3036 North Pacific Hypermaritime Seasonal Sitka Spruce Forest 2036 Tr North Pacific Hypermaritime Seasonal Sitka Spruce Forest
+3037 North Pacific Maritime Dry-Mesic Douglas-fir-Western Hemlock Forest 2037 Tr North Pacific Maritime Dry-Mesic Douglas-fir-Western Hemlock Forest
+3038 North Pacific Maritime Mesic Subalpine Parkland 2038 Tr North Pacific Maritime Mesic Subalpine Parkland
+3039 North Pacific Maritime Mesic-Wet Douglas-fir-Western Hemlock Forest 2039 Tr North Pacific Maritime Mesic-Wet Douglas-fir-Western Hemlock Forest
+3041 North Pacific Mountain Hemlock Forest 2041 Tr North Pacific Mountain Hemlock Forest
+3042 North Pacific Mesic Western Hemlock-Silver Fir Forest 2042 Tr North Pacific Mesic Western Hemlock-Silver Fir Forest
+3043 Mediterranean California Mixed Evergreen Forest 2043 Tr Mediterranean California Mixed Evergreen Forest
+3044 Northern California Mesic Subalpine Woodland 2044 Tr Northern California Mesic Subalpine Woodland
+3045 Northern Rocky Mountain Dry-Mesic Montane Mixed Conifer Forest 2045 Tr Northern Rocky Mountain Dry-Mesic Montane Mixed Conifer Forest
+3046 Northern Rocky Mountain Subalpine Woodland and Parkland 2046 Tr Northern Rocky Mountain Subalpine Woodland and Parkland
+3047 Northern Rocky Mountain Mesic Montane Mixed Conifer Forest 2047 Tr Northern Rocky Mountain Mesic Montane Mixed Conifer Forest
+3048 Northwestern Great Plains Highland White Spruce Woodland 2048 Tr Northwestern Great Plains Highland White Spruce Woodland
+3049 Rocky Mountain Foothill Limber Pine-Juniper Woodland 2049 Tr Rocky Mountain Foothill Limber Pine-Juniper Woodland
+3050 Rocky Mountain Lodgepole Pine Forest 2050 Tr Rocky Mountain Lodgepole Pine Forest
+3051 Southern Rocky Mountain Dry-Mesic Montane Mixed Conifer Forest and Woodland 2051 Tr Southern Rocky Mountain Dry-Mesic Montane Mixed Conifer Forest and Woodland
+3052 Southern Rocky Mountain Mesic Montane Mixed Conifer Forest and Woodland 2052 Tr Southern Rocky Mountain Mesic Montane Mixed Conifer Forest and Woodland
+3053 Northern Rocky Mountain Ponderosa Pine Woodland and Savanna 2053 Tr Northern Rocky Mountain Ponderosa Pine Woodland and Savanna
+3054 Southern Rocky Mountain Ponderosa Pine Woodland 2054 Tr Southern Rocky Mountain Ponderosa Pine Woodland
+3055 Rocky Mountain Subalpine Dry-Mesic Spruce-Fir Forest and Woodland 2055 Tr Rocky Mountain Subalpine Dry-Mesic Spruce-Fir Forest and Woodland
+3056 Rocky Mountain Subalpine Mesic-Wet Spruce-Fir Forest and Woodland 2056 Tr Rocky Mountain Subalpine Mesic-Wet Spruce-Fir Forest and Woodland
+3057 Rocky Mountain Subalpine-Montane Limber-Bristlecone Pine Woodland 2057 Tr Rocky Mountain Subalpine-Montane Limber-Bristlecone Pine Woodland
+3058 Sierra Nevada Subalpine Lodgepole Pine Forest and Woodland 2058 Tr Sierra Nevada Subalpine Lodgepole Pine Forest and Woodland
+3059 Southern Rocky Mountain Pinyon-Juniper Woodland 2059 Tr Southern Rocky Mountain Pinyon-Juniper Woodland
+3060 East Cascades Ponderosa Pine Forest and Woodland 2060 Tr East Cascades Ponderosa Pine Forest and Woodland
+3061 Inter-Mountain Basins Aspen-Mixed Conifer Forest and Woodland 2061 Tr Inter-Mountain Basins Aspen-Mixed Conifer Forest and Woodland
+3062 Inter-Mountain Basins Curl-leaf Mountain Mahogany Woodland 2062 Tr Inter-Mountain Basins Curl-leaf Mountain Mahogany Woodland and Shrubland
+3063 North Pacific Broadleaf Landslide Forest and Shrubland 2063 Tr North Pacific Broadleaf Landslide Forest and Shrubland
+3064 Colorado Plateau Mixed Low Sagebrush Shrubland 2064 Sh Colorado Plateau Mixed Low Sagebrush Shrubland
+3065 Columbia Plateau Scabland Shrubland 2065 Sh Columbia Plateau Scabland Shrubland
+3066 Inter-Mountain Basins Mat Saltbush Shrubland 2066 Sh Inter-Mountain Basins Mat Saltbush Shrubland
+3067 Mediterranean California Alpine Fell-Field 2067 Sh Mediterranean California Alpine Fell-Field
+3068 North Pacific Dry and Mesic Alpine Dwarf-Shrubland or Fell-field or Meadow 2068 Sh North Pacific Dry and Mesic Alpine Dwarf-Shrubland or Fell-field or Meadow
+3070 Rocky Mountain Alpine Dwarf-Shrubland 2070 Sh Rocky Mountain Alpine Dwarf-Shrubland
+3071 Sierra Nevada Alpine Dwarf-Shrubland 2071 Sh Sierra Nevada Alpine Dwarf-Shrubland
+3072 Wyoming Basins Dwarf Sagebrush Shrubland and Steppe 2072 Sh Wyoming Basins Dwarf Sagebrush Shrubland and Steppe
+3074 Chihuahuan Creosotebush Desert Scrub 2074 Sh Chihuahuan Creosotebush Desert Scrub
+3075 Chihuahuan Mixed Salt Desert Scrub 2075 Sh Chihuahuan Mixed Salt Desert Scrub
+3076 Chihuahuan Stabilized Coppice Dune and Sand Flat Scrub 2076 Sh Chihuahuan Stabilized Coppice Dune and Sand Flat Scrub
+3077 Chihuahuan Succulent Desert Scrub 2077 Sh Chihuahuan Succulent Desert Scrub
+3078 Colorado Plateau Blackbrush-Mormon-tea Shrubland 2078 Sh Colorado Plateau Blackbrush-Mormon-tea Shrubland
+3079 Great Basin Xeric Mixed Sagebrush Shrubland 2079 Sh Great Basin Xeric Mixed Sagebrush Shrubland
+3080 Inter-Mountain Basins Big Sagebrush Shrubland 2080 Sh Inter-Mountain Basins Big Sagebrush Shrubland
+3081 Inter-Mountain Basins Mixed Salt Desert Scrub 2081 Sh Inter-Mountain Basins Mixed Salt Desert Scrub
+3082 Mojave Mid-Elevation Mixed Desert Scrub 2082 Sh Mojave Mid-Elevation Mixed Desert Scrub
+3083 North Pacific Avalanche Chute Shrubland 2083 Sh North Pacific Avalanche Chute Shrubland
+3084 North Pacific Montane Shrubland 2084 Sh North Pacific Montane Shrubland
+3085 Northwestern Great Plains Shrubland 2085 Sh Northwestern Great Plains Shrubland
+3086 Rocky Mountain Lower Montane-Foothill Shrubland 2086 Sh Rocky Mountain Lower Montane-Foothill Shrubland
+3087 Sonora-Mojave Creosotebush-White Bursage Desert Scrub 2087 Sh Sonora-Mojave Creosotebush-White Bursage Desert Scrub
+3088 Sonora-Mojave Mixed Salt Desert Scrub 2088 Sh Sonora-Mojave Mixed Salt Desert Scrub
+3090 Sonoran Granite Outcrop Desert Scrub 2090 Sh Sonoran Granite Outcrop Desert Scrub
+3091 Sonoran Mid-Elevation Desert Scrub 2091 Sh Sonoran Mid-Elevation Desert Scrub
+3092 Southern California Coastal Scrub 2092 Sh Southern California Coastal Scrub
+3093 Southern Colorado Plateau Sand Shrubland 2093 Sh Southern Colorado Plateau Sand Shrubland
+3094 Western Great Plains Sandhill Shrubland 2094 Sh Western Great Plains Sandhill Steppe
+3095 Apacherian-Chihuahuan Mesquite Upland Scrub 2095 Sh Apacherian-Chihuahuan Mesquite Upland Scrub
+3096 California Maritime Chaparral 2096 Sh California Maritime Chaparral
+3097 California Mesic Chaparral 2097 Sh California Mesic Chaparral
+3098 California Montane Woodland and Chaparral 2098 Sh California Montane Woodland and Chaparral
+3099 California Xeric Serpentine Chaparral 2099 Sh California Xeric Serpentine Chaparral
+3100 Chihuahuan Mixed Desert and Thornscrub 2100 Sh Chihuahuan Mixed Desert and Thornscrub
+3101 Madrean Oriental Chaparral 2101 Sh Madrean Oriental Chaparral
+3103 Great Basin Semi-Desert Chaparral 2103 Sh Great Basin Semi-Desert Chaparral
+3104 Mogollon Chaparral 2104 Sh Mogollon Chaparral
+3105 Northern and Central California Dry-Mesic Chaparral 2105 Sh Northern and Central California Dry-Mesic Chaparral
+3106 Northern Rocky Mountain Montane-Foothill Deciduous Shrubland 2106 Sh Northern Rocky Mountain Montane-Foothill Deciduous Shrubland
+3107 Rocky Mountain Gambel Oak-Mixed Montane Shrubland 2107 Sh Rocky Mountain Gambel Oak-Mixed Montane Shrubland
+3108 Sonora-Mojave Semi-Desert Chaparral 2108 Sh Sonora-Mojave Semi-Desert Chaparral
+3109 Sonoran Paloverde-Mixed Cacti Desert Scrub 2109 Sh Sonoran Paloverde-Mixed Cacti Desert Scrub
+3110 Southern California Dry-Mesic Chaparral 2110 Sh Southern California Dry-Mesic Chaparral
+3111 Western Great Plains Mesquite Woodland 2111 Tr Western Great Plains Mesquite Woodland and Shrubland
+3112 California Central Valley Mixed Oak Savanna 2112 Tr California Central Valley Mixed Oak Savanna
+3113 California Coastal Live Oak Woodland and Savanna 2113 Tr California Coastal Live Oak Woodland and Savanna
+3114 California Lower Montane Foothill Pine Woodland and Savanna 2114 Tr California Lower Montane Foothill Pine Woodland and Savanna
+3115 Inter-Mountain Basins Juniper Savanna 2115 Tr Inter-Mountain Basins Juniper Savanna
+3116 Madrean Juniper Savanna 2116 Tr Madrean Juniper Savanna
+3117 Southern Rocky Mountain Ponderosa Pine Savanna 2117 Tr Southern Rocky Mountain Ponderosa Pine Savanna
+3118 Southern California Oak Woodland and Savanna 2118 Tr Southern California Oak Woodland and Savanna
+3119 Southern Rocky Mountain Juniper Woodland and Savanna 2119 Tr Southern Rocky Mountain Juniper Woodland and Savanna
+3120 Willamette Valley Upland Prairie and Savanna 2120 Tr Willamette Valley Upland Prairie and Savanna
+3121 Apacherian-Chihuahuan Semi-Desert Shrubland 2121 Sh Apacherian-Chihuahuan Semi-Desert Grassland and Steppe
+3122 Chihuahuan Gypsophilous Grassland and Steppe 2122 Sh Chihuahuan Gypsophilous Grassland and Steppe
+3123 Columbia Plateau Steppe and Grassland 2123 He Columbia Plateau Steppe and Grassland
+3124 Columbia Plateau Low Sagebrush Steppe 2124 Sh Columbia Plateau Low Sagebrush Steppe
+3125 Inter-Mountain Basins Big Sagebrush Steppe 2125 Sh Inter-Mountain Basins Big Sagebrush Steppe
+3126 Inter-Mountain Basins Montane Sagebrush Steppe 2126 Sh Inter-Mountain Basins Montane Sagebrush Steppe
+3127 Inter-Mountain Basins Semi-Desert Shrub-Steppe 2127 Sh Inter-Mountain Basins Semi-Desert Shrub-Steppe
+3128 Northern California Coastal Scrub 2128 Sh Northern California Coastal Scrub
+3129 California Central Valley and Southern Coastal Grassland 2129 He California Central Valley and Southern Coastal Grassland
+3130 California Mesic Serpentine Grassland 2130 He California Mesic Serpentine Grassland
+3131 California Northern Coastal Grassland 2131 He California Northern Coastal Grassland
+3132 Central Mixedgrass Prairie Grassland 2132 Sh Central Mixedgrass Prairie
+3133 Chihuahuan Sandy Plains Semi-Desert Grassland 2133 He Chihuahuan Sandy Plains Semi-Desert Grassland
+3134 Columbia Basin Foothill and Canyon Dry Grassland 2134 He Columbia Basin Foothill and Canyon Dry Grassland
+3135 Inter-Mountain Basins Semi-Desert Grassland 2135 He Inter-Mountain Basins Semi-Desert Grassland
+3136 Mediterranean California Alpine Dry Tundra 2136 He Mediterranean California Alpine Dry Tundra
+3137 Mediterranean California Subalpine Meadow 2137 He Mediterranean California Subalpine Meadow
+3138 North Pacific Montane Grassland 2138 He North Pacific Montane Grassland
+3139 Northern Rocky Mountain Lower Montane-Foothill-Valley Grassland 2139 He Northern Rocky Mountain Lower Montane-Foothill-Valley Grassland
+3140 Northern Rocky Mountain Subalpine-Upper Montane Grassland 2140 He Northern Rocky Mountain Subalpine-Upper Montane Grassland
+3141 Northwestern Great Plains Mixedgrass Prairie 2141 He Northwestern Great Plains Mixedgrass Prairie
+3142 Columbia Basin Palouse Prairie 2142 He Columbia Basin Palouse Prairie
+3143 Rocky Mountain Alpine Fell-Field 2143 He Rocky Mountain Alpine Fell-Field
+3144 Rocky Mountain Alpine Turf 2144 He Rocky Mountain Alpine Turf
+3145 Rocky Mountain Subalpine-Montane Mesic Meadow 2145 He Rocky Mountain Subalpine-Montane Mesic Meadow
+3146 Southern Rocky Mountain Montane-Subalpine Grassland 2146 He Southern Rocky Mountain Montane-Subalpine Grassland
+3147 Western Great Plains Foothill and Piedmont Grassland 2147 He Western Great Plains Foothill and Piedmont Grassland
+3148 Western Great Plains Sand Prairie Grassland 2148 Sh Western Great Plains Sand Prairie
+3149 Western Great Plains Shortgrass Prairie 2149 He Western Great Plains Shortgrass Prairie
+3150 Western Great Plains Tallgrass Prairie 2150 He Western Great Plains Tallgrass Prairie
+3151 California Central Valley Riparian Forest and Woodland 2151 Tr California Central Valley Riparian Woodland and Shrubland
+3152 California Montane Riparian Systems 2152 Tr California Montane Riparian Systems
+3153 Inter-Mountain Basins Greasewood Flat 2153 Sh Inter-Mountain Basins Greasewood Flat
+3154 Inter-Mountain Basins Montane Riparian Forest and Woodland 2154 Tr Inter-Mountain Basins Montane Riparian Systems
+3155 North American Warm Desert Riparian Forest and Woodland 2155 Tr North American Warm Desert Riparian Systems
+3156 North Pacific Lowland Riparian Forest and Shrubland 2156 Tr North Pacific Lowland Riparian Forest and Shrubland
+3157 North Pacific Swamp Systems 2157 Tr North Pacific Swamp Systems
+3158 North Pacific Montane Riparian Woodland and Shrubland 2158 Tr North Pacific Montane Riparian Woodland and Shrubland
+3159 Rocky Mountain Montane Riparian Forest and Woodland 2159 Tr Rocky Mountain Montane Riparian Systems
+3160 Rocky Mountain Subalpine/Upper Montane Riparian Forest and Woodland 2160 Tr Rocky Mountain Subalpine/Upper Montane Riparian Systems
+3161 Northern Rocky Mountain Conifer Swamp 2161 Tr Northern Rocky Mountain Conifer Swamp
+3162 Western Great Plains Floodplain Forest and Woodland 2162 Tr Western Great Plains Floodplain Systems
+3163 Pacific Coastal Marsh Systems 2163 He Pacific Coastal Marsh Systems
+3164 Rocky Mountain Wetland-Herbaceous 2164 He Rocky Mountain Wetland-Herbaceous
+3165 Northern Rocky Mountain Foothill Conifer Wooded Steppe 2165 Tr Northern Rocky Mountain Foothill Conifer Wooded Steppe
+3166 Middle Rocky Mountain Montane Douglas-fir Forest and Woodland 2166 Tr Middle Rocky Mountain Montane Douglas-fir Forest and Woodland
+3167 Rocky Mountain Poor-Site Lodgepole Pine Forest 2167 Tr Rocky Mountain Poor-Site Lodgepole Pine Forest
+3168 Northern Rocky Mountain Avalanche Chute Shrubland 2168 Sh Northern Rocky Mountain Avalanche Chute Shrubland
+3169 Northern Rocky Mountain Subalpine Deciduous Shrubland 2169 Sh Northern Rocky Mountain Subalpine Deciduous Shrubland
+3170 Klamath-Siskiyou Xeromorphic Serpentine Savanna and Chaparral 2170 Tr Klamath-Siskiyou Xeromorphic Serpentine Savanna and Chaparral
+3171 North Pacific Alpine and Subalpine Dry Grassland 2171 He North Pacific Alpine and Subalpine Dry Grassland
+3172 Sierran-Intermontane Desert Western White Pine-White Fir Woodland 2172 Tr Sierran-Intermontane Desert Western White Pine-White Fir Woodland
+3173 North Pacific Wooded Volcanic Flowage 2173 Tr North Pacific Wooded Volcanic Flowage
+3174 North Pacific Dry-Mesic Silver Fir-Western Hemlock-Douglas-fir Forest 2174 Tr North Pacific Dry-Mesic Silver Fir-Western Hemlock-Douglas-fir Forest
+3177 California Coastal Closed-Cone Conifer Forest and Woodland 2177 Tr California Coastal Closed-Cone Conifer Forest and Woodland
+3178 North Pacific Hypermaritime Western Red-cedar-Western Hemlock Forest 2178 Tr North Pacific Hypermaritime Western Red-cedar-Western Hemlock Forest
+3179 Northwestern Great Plains-Black Hills Ponderosa Pine Woodland and Savanna 2179 Tr Northwestern Great Plains-Black Hills Ponderosa Pine Woodland and Savanna
+3180 Introduced Riparian Forest and Woodland 2180 Tr Introduced Riparian Vegetation
+3181 Introduced Upland Vegetation-Annual Grassland 2181 He Introduced Upland Vegetation-Annual Grassland
+3182 Introduced Upland Vegetation-Perennial Grassland and Forbland 2182 He Introduced Upland Vegetation-Perennial Grassland and Forbland
+3183 Introduced Upland Vegetation-Annual and Biennial Forbland 2183 He Introduced Upland Vegetation-Annual and Biennial Forbland
+3184 California Annual Grassland 2184 He California Annual Grassland
+3185 Introduced Forest Wetland 2185 Tr Introduced Wetland Vegetation
+3186 Introduced Upland Vegetation-Shrub 2186 Sh Introduced Upland Vegetation-Shrub
+3187 Introduced Upland Vegetation-Treed 2187 Tr Introduced Upland Vegetation-Treed
+3191 Recently Logged-Herb and Grass Cover 2191 He Recently Logged-Herb and Grass Cover
+3192 Recently Logged-Shrub Cover 2192 Sh Recently Logged-Shrub Cover
+3193 Recently Logged-Tree Cover 2193 Tr Recently Logged-Tree Cover
+3194 Ruderal Upland-Treed 2194 Tr Ruderal Upland-Treed
+3195 Recently Burned-Herb and Grass Cover 2195 He Recently Burned-Herb and Grass Cover
+3196 Introduced Shrub Wetland 2185 Tr Introduced Wetland Vegetation
+3199 Introduced Herbaceous Wetland 2185 Tr Introduced Wetland Vegetation
+3200 Coastal Douglas-fir Woodland 2200 Tr Coastal Douglas-fir Woodland
+3201 Quercus garryana Woodland Alliance 2201 Tr Quercus garryana Woodland Alliance
+3202 Juniperus occidentalis Wooded Herbaceous Alliance 2202 Tr Juniperus occidentalis Wooded Herbaceous Alliance
+3203 Juniperus occidentalis Woodland Alliance 2203 Tr Juniperus occidentalis Woodland Alliance
+3204 Western Great Plains Mesquite Shrubland 2111 Tr Western Great Plains Mesquite Woodland and Shrubland
+3205 Tsuga mertensiana-Abies amabilis Woodland Alliance 2205 Tr Tsuga mertensiana-Abies amabilis Woodland Alliance
+3206 Pseudotsuga menziesii Giant Forest Alliance 2206 Tr Pseudotsuga menziesii Giant Forest Alliance
+3207 Central Mixedgrass Prairie Shrubland 2132 Sh Central Mixedgrass Prairie
+3208 Abies concolor Forest Alliance 2208 Tr Abies concolor Forest Alliance
+3209 Western Great Plains Sand Prairie Shrubland 2148 Sh Western Great Plains Sand Prairie
+3210 Coleogyne ramosissima Shrubland Alliance 2210 Sh Coleogyne ramosissima Shrubland Alliance
+3211 Grayia spinosa Shrubland Alliance 2211 Sh Grayia spinosa Shrubland Alliance
+3212 Western Great Plains Sandhill Grassland 2094 Sh Western Great Plains Sandhill Steppe
+3213 Quercus havardii Shrubland Alliance 2213 Sh Quercus havardii Shrubland Alliance
+3214 Arctostaphylos patula Shrubland Alliance 2214 Sh Arctostaphylos patula Shrubland Alliance
+3215 Quercus turbinella Shrubland Alliance 2215 Sh Quercus turbinella Shrubland Alliance
+3216 Cercocarpus montanus Shrubland Alliance 2216 Sh Cercocarpus montanus Shrubland Alliance
+3217 Quercus gambelii Shrubland Alliance 2217 Sh Quercus gambelii Shrubland Alliance
+3218 North American Warm Desert Sparsely Vegetated Systems II 2218 Sps North American Warm Desert Sparsely Vegetated Systems II
+3219 Inter-Mountain Basins Sparsely Vegetated Systems II 2219 Sps Inter-Mountain Basins Sparsely Vegetated Systems II
+3220 Artemisia tridentata ssp. vaseyana Shrubland Alliance 2220 Sh Artemisia tridentata ssp. vaseyana Shrubland Alliance
+3221 Mediterranean California Sparsely Vegetated Systems II 2221 Sps Mediterranean California Sparsely Vegetated Systems II
+3222 Rocky Mountain Alpine/Montane Sparsely Vegetated Systems II 2222 Sps Rocky Mountain Alpine/Montane Sparsely Vegetated Systems II
+3223 Sonoran Desert Sparsely Vegetated 2223 Sps Sonoran Desert Sparsely Vegetated
+3227 Dry-mesic Montane Douglas-fir Forest 2227 Tr Pseudotsuga menziesii Forest Alliance
+3228 Dry-mesic Montane Western Larch Forest 2228 Tr Larix occidentalis Forest Alliance
+3229 Pinus albicaulis Woodland Alliance 2229 Tr Pinus albicaulis Woodland Alliance
+3230 Pinus sabiniana Woodland Alliance 2230 Tr Pinus sabiniana Woodland Alliance
+3231 Sequoiadendron giganteum Forest Alliance 2231 Tr Sequoiadendron giganteum Forest Alliance
+3232 Abies grandis Forest Forest 2232 Tr Abies grandis Forest Forest
+3233 Subalpine Douglas-fir Forest 2227 Tr Pseudotsuga menziesii Forest Alliance
+3234 Mesic Montane Douglas-fir Forest 2227 Tr Pseudotsuga menziesii Forest Alliance
+3235 Xeric Montane Douglas-fir Forest 2227 Tr Pseudotsuga menziesii Forest Alliance
+3236 Subalpine Western Larch Forest 2228 Tr Larix occidentalis Forest Alliance
+3237 Mesic Montane Western Larch Forest 2228 Tr Larix occidentalis Forest Alliance
+3238 Laurentian-Acadian Northern Oak Forest 2238 Tr Laurentian-Acadian Northern Oak Forest
+3239 Laurentian-Acadian Northern Pine-Oak Forest 2239 Tr Laurentian-Acadian Northern Pine-Oak Forest
+3240 Laurentian-Acadian Hardwood Forest 2240 Tr Laurentian-Acadian Hardwood Forest
+3241 Laurentian-Acadian Pine-Hemlock-Hardwood Forest 2241 Tr Laurentian-Acadian Pine-Hemlock-Hardwood Forest
+3242 Laurentian Oak Barrens 2242 Tr Laurentian Oak Barrens
+3243 Laurentian Pine-Oak Barrens 2243 Tr Laurentian Pine-Oak Barrens
+3244 Boreal Hardwood Forest 2244 Tr Boreal Hardwood Forest
+3245 Boreal White Spruce-Fir-Hardwood Forest 2245 Tr Boreal White Spruce-Fir-Hardwood Forest
+3247 Southern Appalachian Grass Bald 2414 Sh Southern Appalachian Grass and Shrub Bald
+3248 Northern Atlantic Coastal Plain Dune and Swale Grassland 2436 Sh Northern Atlantic Coastal Plain Dune and Swale
+3249 Atlantic Coastal Plain Peatland Pocosin and Canebrake Shrubland 2452 Tr Atlantic Coastal Plain Peatland Pocosin and Canebrake
+3250 Inter-Mountain Basins Curl-leaf Mountain Mahogany Shrubland 2062 Tr Inter-Mountain Basins Curl-leaf Mountain Mahogany Woodland and Shrubland
+3251 Rocky Mountain Montane Riparian Shrubland 2159 Tr Rocky Mountain Montane Riparian Systems
+3252 Rocky Mountain Subalpine/Upper Montane Riparian Shrubland 2160 Tr Rocky Mountain Subalpine/Upper Montane Riparian Systems
+3253 Western Great Plains Floodplain Shrubland 2162 Tr Western Great Plains Floodplain Systems
+3254 Western Great Plains Floodplain Herbaceous 2162 Tr Western Great Plains Floodplain Systems
+3255 Inter-Mountain Basins Montane Riparian Shrubland 2154 Tr Inter-Mountain Basins Montane Riparian Systems
+3256 Apacherian-Chihuahuan Semi-Desert Grassland 2121 Sh Apacherian-Chihuahuan Semi-Desert Grassland and Steppe
+3257 California Central Valley Riparian Herbaceous 2151 Tr California Central Valley Riparian Woodland and Shrubland
+3258 North American Warm Desert Riparian Herbaceous 2155 Tr North American Warm Desert Riparian Systems
+3259 Introduced Riparian Shrubland 2180 Tr Introduced Riparian Vegetation
+3260 Mediterranean California Lower Montane Black Oak Forest and Woodland 2260 Tr Mediterranean California Lower Montane Black Oak Forest and Woodland
+3261 Mediterranean California Lower Montane Black Oak - Conifer Forest and Woodland 2261 Tr Mediterranean California Lower Montane Black Oak - Conifer Forest and Woodland
+3262 East Cascades Oak Forest and Woodland 2262 Tr East Cascades Oak Forest and Woodland
+3263 East Cascades Oak - Ponderosa Pine Forest and Woodland 2263 Tr East Cascades Oak - Ponderosa Pine Forest and Woodland
+3264 California Lower Montane Blue Oak Forest and Woodland 2264 Tr California Lower Montane Blue Oak Forest and Woodland
+3265 California Lower Montane Blue Oak-Foothill Pine Forest and Woodland 2265 Tr California Lower Montane Blue Oak-Foothill Pine Forest and Woodland
+3266 Oregon White Oak Woodland 2266 Tr Oregon White Oak Woodland
+3267 Douglas-fir - Oregon White Oak Woodland 2267 Tr Douglas-fir - Oregon White Oak Woodland
+3268 Eastern Great Plains Tallgrass Aspen Shrubland 2331 Tr Eastern Great Plains Tallgrass Aspen Parkland
+3269 Laurentian Shrubland Barrens 2407 Tr Laurentian Pine Barrens
+3270 North-Central Interior Sand and Gravel Shrubland 2412 Sh North-Central Interior Sand and Gravel Tallgrass Prairie
+3271 Eastern Boreal Floodplain Herbaceous 2444 Tr Eastern Boreal Floodplain
+3272 Eastern Boreal Floodplain Shrubland 2444 Tr Eastern Boreal Floodplain
+3273 Eastern Great Plains Floodplain Herbaceous 2469 Tr Eastern Great Plains Floodplain Systems
+3274 Central Interior and Appalachian Floodplain Herbaceous 2471 Tr Central Interior and Appalachian Floodplain Systems
+3275 Central Interior and Appalachian Floodplain Shrubland 2471 Tr Central Interior and Appalachian Floodplain Systems
+3276 Laurentian-Acadian Floodplain Herbaceous 2475 Tr Laurentian-Acadian Floodplain Systems
+3277 Laurentian-Acadian Floodplain Shrubland 2475 Tr Laurentian-Acadian Floodplain Systems
+3278 Boreal Acidic Peatland Herbaceous 2477 Tr Boreal Acidic Peatland Systems
+3279 Boreal Acidic Peatland Shrubland 2477 Tr Boreal Acidic Peatland Systems
+3280 Central Interior and Appalachian Swamp Shrubland 2479 Tr Central Interior and Appalachian Swamp Systems
+3281 Laurentian-Acadian Alkaline Conifer-Hardwood Swamp Shrubland 2481 Tr Laurentian-Acadian Alkaline Conifer-Hardwood Swamp
+3282 Great Lakes Coastal Marsh Shrubland 2492 Sh Great Lakes Coastal Marsh Systems
+3283 Central Interior and Appalachian Shrub Wetlands 2493 Sh Central Interior and Appalachian Shrub-Herbaceous Wetland Systems
+3284 Laurentian-Acadian Herbaceous Wetlands 2494 Tr Laurentian-Acadian Shrub-Herbaceous Wetland Systems
+3285 Laurentian-Acadian Shrub Wetlands 2494 Tr Laurentian-Acadian Shrub-Herbaceous Wetland Systems
+3286 Paleozoic Plateau Bluff and Talus Herbaceous 2517 Tr Paleozoic Plateau Bluff and Talus
+3287 Modified/Managed Northern Tallgrass Shrubland 2539 Sh Modified/Managed Northern Tallgrass Grassland
+3288 Central Appalachian Rocky Shrubland 2377 Tr Central Appalachian Rocky Pine Woodland
+3289 Acadian-Appalachian Subalpine Heath-Krummholz 2389 Tr Acadian-Appalachian Subalpine Woodland and Heath-Krummholz
+3290 North-Central Oak Barrens Herbaceous 2395 Tr North-Central Oak Barrens
+3291 Central Interior Highlands Calcareous Glade and Barrens Herbaceous 2401 Tr Central Interior Highlands Calcareous Glade and Barrens
+3292 Open Water 11 Ba Open Water
+3293 Snow-Ice 12 Ba Snow-Ice
+3294 Barren 31 Bab Barren
+3295 Quarries-Strip Mines-Gravel Pits 32 Bab Quarries-Strip Mines-Gravel Pits
+3296 Developed-Low Intensity 2902 Bau Developed-Low Intensity
+3297 Developed-Medium Intensity 2903 Bau Developed-Medium Intensity
+3298 Developed-High Intensity 2904 Bau Developed-High Intensity
+3299 Developed-Roads 2905 Bau Developed-Roads
+3300 Central Interior and Appalachian Riparian Herbaceous 2472 Tr Central Interior and Appalachian Riparian Systems
+3301 Boreal Aspen-Birch Forest 2301 Tr Boreal Aspen-Birch Forest
+3302 Laurentian-Acadian Northern Hardwoods Forest 2302 Tr Laurentian-Acadian Northern Hardwoods Forest
+3303 Northeastern Interior Dry-Mesic Oak Forest 2303 Tr Northeastern Interior Dry-Mesic Oak Forest
+3304 Ozark-Ouachita Dry-Mesic Oak Forest 2304 Tr Ozark-Ouachita Dry-Mesic Oak Forest
+3305 Southern Interior Low Plateau Dry-Mesic Oak Forest 2305 Tr Southern Interior Low Plateau Dry-Mesic Oak Forest
+3306 East Gulf Coastal Plain Northern Loess Plain Oak-Hickory Upland 2306 Tr East Gulf Coastal Plain Northern Loess Plain Oak-Hickory Upland
+3307 East Gulf Coastal Plain Northern Dry Upland Hardwood Forest 2307 Tr East Gulf Coastal Plain Northern Dry Upland Hardwood Forest
+3308 Crosstimbers Oak Forest and Woodland 2308 Tr Crosstimbers Oak Forest and Woodland
+3309 Southern Appalachian Northern Hardwood Forest 2309 Tr Southern Appalachian Northern Hardwood Forest
+3310 North-Central Interior Dry-Mesic Oak Forest and Woodland 2310 Tr North-Central Interior Dry-Mesic Oak Forest and Woodland
+3311 North-Central Interior Dry Oak Forest and Woodland 2311 Tr North-Central Interior Dry Oak Forest and Woodland
+3312 Ouachita Montane Oak Forest 2312 Tr Ouachita Montane Oak Forest
+3313 North-Central Interior Beech-Maple Forest 2313 Tr North-Central Interior Beech-Maple Forest
+3314 North-Central Interior Maple-Basswood Forest 2314 Tr North-Central Interior Maple-Basswood Forest
+3315 Southern Appalachian Oak Forest 2315 Tr Southern Appalachian Oak Forest
+3316 Southern Piedmont Mesic Forest 2316 Tr Southern Piedmont Mesic Forest
+3317 Allegheny-Cumberland Dry Oak Forest and Woodland 2317 Tr Allegheny-Cumberland Dry Oak Forest and Woodland
+3318 Southern and Central Appalachian Cove Forest 2318 Tr Southern and Central Appalachian Cove Forest
+3319 Central Interior and Appalachian Riparian Shrubland 2472 Tr Central Interior and Appalachian Riparian Systems
+3320 Central and Southern Appalachian Montane Oak Forest 2320 Tr Central and Southern Appalachian Montane Oak Forest
+3321 South-Central Interior Mesophytic Forest 2321 Tr South-Central Interior Mesophytic Forest
+3322 Crowley's Ridge Mesic Loess Slope Forest 2321 Tr Crowley's Ridge Mesic Loess Slope Forest
+3323 West Gulf Coastal Plain Mesic Hardwood Forest 2323 Tr West Gulf Coastal Plain Mesic Hardwood Forest
+3324 Northern Atlantic Coastal Plain Hardwood Forest 2324 Tr Northern Atlantic Coastal Plain Hardwood Forest
+3325 East Gulf Coastal Plain Northern Mesic Hardwood Slope Forest 2325 Tr East Gulf Coastal Plain Northern Mesic Hardwood Slope Forest
+3326 South-Central Interior/Upper Coastal Plain Flatwoods 2326 Tr South-Central Interior/Upper Coastal Plain Flatwoods
+3327 East Gulf Coastal Plain Northern Loess Bluff Forest 2327 Tr East Gulf Coastal Plain Northern Loess Bluff Forest
+3328 Southern Coastal Plain Limestone Forest 2328 Tr Southern Coastal Plain Limestone Forest
+3329 East Gulf Coastal Plain Southern Loess Bluff Forest 2329 Tr East Gulf Coastal Plain Southern Loess Bluff Forest
+3330 Southern Coastal Plain Dry Upland Hardwood Forest 2330 Tr Southern Coastal Plain Dry Upland Hardwood Forest
+3331 Eastern Great Plains Tallgrass Aspen Forest and Woodland 2331 Tr Eastern Great Plains Tallgrass Aspen Parkland
+3332 Gulf and Atlantic Coastal Plain Floodplain Herbaceous 2473 Tr Gulf and Atlantic Coastal Plain Floodplain Systems
+3333 South Florida Hardwood Hammock 2333 Tr South Florida Hardwood Hammock
+3334 Ozark-Ouachita Mesic Hardwood Forest 2334 Tr Ozark-Ouachita Mesic Hardwood Forest
+3335 Southern Atlantic Coastal Plain Dry and Dry-Mesic Oak Forest 2335 Tr Southern Atlantic Coastal Plain Dry and Dry-Mesic Oak Forest
+3336 Southwest Florida Coastal Strand and Maritime Hammock 2336 Tr Southwest Florida Coastal Strand and Maritime Hammock
+3337 Southeast Florida Coastal Strand and Maritime Hammock 2337 Tr Southeast Florida Coastal Strand and Maritime Hammock
+3338 Central and South Texas Coastal Fringe Forest and Woodland 2338 Tr Central and South Texas Coastal Fringe Forest and Woodland
+3339 West Gulf Coastal Plain Chenier and Upper Texas Coastal Fringe Forest and Woodland 2339 Tr West Gulf Coastal Plain Chenier and Upper Texas Coastal Fringe Forest and Woodland
+3340 Appalachian Shale Barrens 2340 Tr Appalachian Shale Barrens
+3342 Piedmont Hardpan Woodland and Forest 2342 Tr Piedmont Hardpan Woodland and Forest
+3343 Southern Atlantic Coastal Plain Mesic Hardwood Forest 2343 Tr Southern Atlantic Coastal Plain Mesic Hardwood Forest
+3344 Boreal Jack Pine-Black Spruce Forest 2344 Tr Boreal Jack Pine-Black Spruce Forest
+3346 Atlantic Coastal Plain Fall-line Sandhills Longleaf Pine Woodland 2346 Tr Atlantic Coastal Plain Fall-line Sandhills Longleaf Pine Woodland
+3347 Atlantic Coastal Plain Upland Longleaf Pine Woodland 2347 Tr Atlantic Coastal Plain Upland Longleaf Pine Woodland
+3348 West Gulf Coastal Plain Upland Longleaf Pine Forest and Woodland 2348 Tr West Gulf Coastal Plain Upland Longleaf Pine Forest and Woodland
+3349 East Gulf Coastal Plain Interior Upland Longleaf Pine Woodland 2349 Tr East Gulf Coastal Plain Interior Upland Longleaf Pine Woodland
+3350 Central and Southern Appalachian Spruce-Fir Forest 2350 Tr Central and Southern Appalachian Spruce-Fir Forest
+3351 Southeastern Interior Longleaf Pine Woodland 2351 Tr Southeastern Interior Longleaf Pine Woodland
+3352 Southern Appalachian Montane Pine Forest and Woodland 2352 Tr Southern Appalachian Montane Pine Forest and Woodland
+3353 Southern Appalachian Low-Elevation Pine Forest 2353 Tr Southern Appalachian Low-Elevation Pine Forest
+3354 Northeastern Interior Pine Barrens 2354 Tr Northeastern Interior Pine Barrens
+3355 Northern Atlantic Coastal Plain Pitch Pine Barrens 2355 Tr Northern Atlantic Coastal Plain Pitch Pine Barrens
+3356 Florida Longleaf Pine Sandhill 2356 Tr Florida Longleaf Pine Sandhill
+3357 Southern Coastal Plain Mesic Slope Forest 2357 Tr Southern Coastal Plain Mesic Slope Forest
+3358 East-Central Texas Plains Pine Forest and Woodland 2358 Tr East-Central Texas Plains Pine Forest and Woodland
+3359 Gulf and Atlantic Coastal Plain Floodplain Shrubland 2473 Tr Gulf and Atlantic Coastal Plain Floodplain Systems
+3361 Central Atlantic Coastal Plain Maritime Forest 2361 Tr Central Atlantic Coastal Plain Maritime Forest
+3362 Laurentian-Acadian Northern Pine Forest 2362 Tr Laurentian-Acadian Northern Pine Forest
+3363 Central Interior Highlands Dry Acidic Glade and Barrens 2363 Tr Central Interior Highlands Dry Acidic Glade and Barrens
+3364 Ozark-Ouachita Dry Oak Woodland 2364 Tr Ozark-Ouachita Dry Oak Woodland
+3365 Boreal White Spruce-Fir Forest 2365 Tr Boreal White Spruce-Fir Forest
+3366 Laurentian-Acadian Pine-Hemlock Forest 2366 Tr Laurentian-Acadian Pine-Hemlock Forest
+3367 Ozark-Ouachita Shortleaf Pine Forest and Woodland 2367 Tr Ozark-Ouachita Shortleaf Pine Forest and Woodland
+3368 Southern Piedmont Dry Pine Forest 2368 Tr Southern Piedmont Dry Pine Forest
+3369 Central Appalachian Dry Pine Forest 2369 Tr Central Appalachian Dry Pine Forest
+3370 Appalachian Hemlock Forest 2370 Tr Appalachian Hemlock Forest
+3371 West Gulf Coastal Plain Pine Forest 2371 Tr West Gulf Coastal Plain Pine Forest
+3372 East Gulf Coastal Plain Interior Shortleaf Pine Forest 2372 Tr East Gulf Coastal Plain Interior Shortleaf Pine Forest
+3373 Acadian Low-Elevation Spruce-Fir Forest 2373 Tr Acadian Low-Elevation Spruce-Fir Forest
+3374 Acadian-Appalachian Montane Spruce-Fir Forest 2374 Tr Acadian-Appalachian Montane Spruce-Fir Forest
+3375 Eastern Serpentine Woodland 2375 Tr Eastern Serpentine Woodland
+3376 Southern Ridge and Valley/Cumberland Dry Calcareous Forest 2376 Tr Southern Ridge and Valley/Cumberland Dry Calcareous Forest
+3377 Central Appalachian Rocky Pine Woodland 2377 Tr Central Appalachian Rocky Pine Woodland
+3378 West Gulf Coastal Plain Sandhill Shortleaf Pine Forest and Woodland 2378 Tr West Gulf Coastal Plain Sandhill Shortleaf Pine Forest and Woodland
+3379 Northern Atlantic Coastal Plain Maritime Forest 2379 Tr Northern Atlantic Coastal Plain Maritime Forest
+3380 East Gulf Coastal Plain Maritime Forest 2380 Tr East Gulf Coastal Plain Maritime Forest
+3381 Lower Mississippi River Dune Woodland and Forest 2381 Tr Lower Mississippi River Dune Woodland and Forest
+3382 Southern Atlantic Coastal Plain Maritime Forest 2382 Tr Southern Atlantic Coastal Plain Maritime Forest
+3383 Edwards Plateau Limestone Woodland 2383 Tr Edwards Plateau Limestone Savanna and Woodland
+3384 Mississippi Delta Maritime Forest 2384 Tr Mississippi Delta Maritime Forest
+3385 Western Great Plains Wooded Draw and Ravine 2385 Tr Western Great Plains Wooded Draw and Ravine
+3386 Acadian-Appalachian Alpine Tundra 2386 Sh Acadian-Appalachian Alpine Tundra
+3387 Florida Peninsula Inland Scrub Shrubland 2387 Tr Florida Peninsula Inland Scrub
+3389 Acadian-Appalachian Subalpine Woodland 2389 Tr Acadian-Appalachian Subalpine Woodland and Heath-Krummholz
+3390 Tamaulipan Mixed Deciduous Thornscrub 2390 Sh Tamaulipan Mixed Deciduous Thornscrub
+3391 Tamaulipan Mesquite Upland Tree 2391 Tr Tamaulipan Mesquite Upland Scrub
+3392 Tamaulipan Calcareous Thornscrub 2392 Sh Tamaulipan Calcareous Thornscrub
+3393 Edwards Plateau Limestone Shrubland 2393 Sh Edwards Plateau Limestone Shrubland
+3394 North-Central Interior Oak Savanna 2394 Tr North-Central Interior Oak Savanna
+3395 North-Central Oak Barrens Woodland 2395 Tr North-Central Oak Barrens
+3396 Gulf and Atlantic Coastal Plain Tidal Marsh Herbaceous 2490 Sh Gulf and Atlantic Coastal Plain Tidal Marsh Systems
+3397 Nashville Basin Limestone Glade and Woodland 2397 Tr Nashville Basin Limestone Glade and Woodland
+3398 Cumberland Sandstone Glade and Barrens 2398 Tr Cumberland Sandstone Glade and Barrens
+3399 Northern Atlantic Coastal Plain Grassland 2522 Tr Northern Atlantic Coastal Plain Heathland
+3400 Central Appalachian Alkaline Glade and Woodland 2400 Tr Central Appalachian Alkaline Glade and Woodland
+3401 Central Interior Highlands Calcareous Glade and Barrens Woodland 2401 Tr Central Interior Highlands Calcareous Glade and Barrens
+3402 Laurentian-Acadian Swamp Shrubland 2526 Tr Laurentian-Acadian Swamp Systems
+3403 West Gulf Coastal Plain Catahoula Barrens 2403 Tr West Gulf Coastal Plain Catahoula Barrens
+3405 West Gulf Coastal Plain Nepheline Syenite Glade 2405 Tr West Gulf Coastal Plain Nepheline Syenite Glade
+3406 Southern Piedmont Dry Oak Forest 2406 Tr Southern Piedmont Dry Oak Forest
+3407 Laurentian Pine Barrens 2407 Tr Laurentian Pine Barrens
+3408 Alabama Ketona Glade and Woodland 2408 Tr Alabama Ketona Glade and Woodland
+3409 Great Lakes Alvar Shrubland 2409 Sh Great Lakes Alvar Shrubland
+3410 Llano Uplift Acidic Forest and Woodland 2410 Tr Llano Uplift Acidic Forest, Woodland, and Glade
+3411 Great Lakes Wet-Mesic Lakeplain Prairie 2411 He Great Lakes Wet-Mesic Lakeplain Prairie
+3412 North-Central Interior Sand and Gravel Tallgrass Prairie 2412 Sh North-Central Interior Sand and Gravel Tallgrass Prairie
+3413 Bluegrass Savanna and Woodland 2413 He Bluegrass Savanna and Woodland
+3414 Southern Appalachian Shrub Bald 2414 Sh Southern Appalachian Grass and Shrub Bald
+3415 Arkansas Valley Prairie and Woodland 2415 He Arkansas Valley Prairie and Woodland
+3416 Western Highland Rim Prairie and Barrens 2416 He Western Highland Rim Prairie and Barrens
+3417 Eastern Highland Rim Prairie and Barrens 2417 He Eastern Highland Rim Prairie and Barrens
+3418 Pennyroyal Karst Plain Prairie and Barrens 2418 He Pennyroyal Karst Plain Prairie and Barrens
+3419 Southern Ridge and Valley Patch Prairie 2419 He Southern Ridge and Valley Patch Prairie
+3420 Northern Tallgrass Prairie 2420 He Northern Tallgrass Prairie
+3421 Central Tallgrass Prairie 2421 He Central Tallgrass Prairie
+3422 Texas Blackland Tallgrass Prairie 2422 He Texas Blackland Tallgrass Prairie
+3423 Southeastern Great Plains Tallgrass Prairie 2423 He Southeastern Great Plains Tallgrass Prairie
+3425 Florida Dry Prairie Grassland 2425 Sh Florida Dry Prairie
+3426 Southern Atlantic Coastal Plain Dune and Maritime Grassland 2426 He Southern Atlantic Coastal Plain Dune and Maritime Grassland
+3428 West Gulf Coastal Plain Northern Calcareous Prairie 2428 He West Gulf Coastal Plain Northern Calcareous Prairie
+3429 West Gulf Coastal Plain Southern Calcareous Prairie 2429 He West Gulf Coastal Plain Southern Calcareous Prairie
+3430 Southern Coastal Plain Blackland Prairie 2430 Tr Southern Coastal Plain Blackland Prairie and Woodland
+3433 East Gulf Coastal Plain Jackson Prairie 2433 Tr East Gulf Coastal Plain Jackson Prairie and Woodland
+3434 Texas-Louisiana Coastal Prairie 2434 He Texas-Louisiana Coastal Prairie
+3435 East Gulf Coastal Plain Dune and Coastal Grassland 2435 He East Gulf Coastal Plain Dune and Coastal Grassland
+3436 Northern Atlantic Coastal Plain Dune and Swale Shrubland 2436 Sh Northern Atlantic Coastal Plain Dune and Swale
+3437 Central and Upper Texas Coast Dune and Coastal Grassland 2437 He Central and Upper Texas Coast Dune and Coastal Grassland
+3438 Tamaulipan Savanna Grassland 2438 He Tamaulipan Savanna Grassland
+3439 South Texas Lomas 2439 He South Texas Lomas
+3440 Tamaulipan Clay Grassland 2440 He Tamaulipan Clay Grassland
+3442 South Texas Sand Sheet Grassland 2442 He South Texas Sand Sheet Grassland
+3443 South Texas Dune and Coastal Grassland 2443 He South Texas Dune and Coastal Grassland
+3444 Eastern Boreal Floodplain Woodland 2444 Tr Eastern Boreal Floodplain
+3446 South Florida Pine Flatwoods 2446 Tr South Florida Pine Flatwoods
+3447 South Florida Cypress Dome 2447 Tr South Florida Cypress Dome
+3448 Southern Piedmont Dry Oak-Pine Forest 2448 Tr Southern Piedmont Dry Oak-Pine Forest
+3449 Central Atlantic Coastal Plain Wet Longleaf Pine Savanna and Flatwoods 2449 Tr Central Atlantic Coastal Plain Wet Longleaf Pine Savanna and Flatwoods
+3450 Southern Atlantic Coastal Plain Wet Pine Savanna and Flatwoods 2450 Tr Southern Atlantic Coastal Plain Wet Pine Savanna and Flatwoods
+3451 West Gulf Coastal Plain Wet Longleaf Pine Savanna and Flatwoods 2451 Tr West Gulf Coastal Plain Wet Longleaf Pine Savanna and Flatwoods
+3452 Atlantic Coastal Plain Peatland Pocosin and Canebrake Woodland 2452 Tr Atlantic Coastal Plain Peatland Pocosin and Canebrake
+3453 Central Florida Pine Flatwoods 2453 Tr Central Florida Pine Flatwoods
+3454 East Gulf Coastal Plain Near-Coast Pine Flatwoods 2454 Tr East Gulf Coastal Plain Near-Coast Pine Flatwoods
+3455 East Gulf Coastal Plain Southern Loblolly Flatwoods 2455 Tr East Gulf Coastal Plain Southern Loblolly Flatwoods
+3456 Northern Atlantic Coastal Plain Pitch Pine Lowland 2456 Tr Northern Atlantic Coastal Plain Pitch Pine Lowland
+3457 South-Central Interior/Upper Coastal Plain Wet Flatwoods 2457 Tr South-Central Interior/Upper Coastal Plain Wet Flatwoods
+3458 West Gulf Coastal Plain Pine Flatwoods 2458 Tr West Gulf Coastal Plain Pine Flatwoods
+3459 Atlantic Coastal Plain Clay-Based Carolina Bay Wetland 2459 Tr Atlantic Coastal Plain Clay-Based Carolina Bay Wetland
+3460 Southern Coastal Plain Nonriverine Cypress Dome Woodland 2460 Tr Southern Coastal Plain Nonriverine Cypress Dome
+3461 Southern Coastal Plain Seepage Swamp and Baygall Woodland 2461 Tr Southern Coastal Plain Seepage Swamp and Baygall
+3462 West Gulf Coastal Plain Seepage Swamp and Baygall 2462 Tr West Gulf Coastal Plain Seepage Swamp and Baygall
+3463 Central Appalachian Dry Oak Forest 2463 Tr Central Appalachian Dry Oak Forest
+3464 Acadian Near-Boreal Spruce Barrens 2464 Acadian Near-Boreal Spruce Barrens
+3466 Great Lakes Wooded Dune and Swale 2466 Tr Great Lakes Wooded Dune and Swale
+3467 Tamaulipan Floodplain Forest 2467 Tr Tamaulipan Floodplain Forest
+3468 Atlantic Coastal Plain Streamhead Seepage Swamp-Pocosin-Baygall 2468 Tr Atlantic Coastal Plain Streamhead Seepage Swamp-Pocosin-Baygall
+3469 Eastern Great Plains Floodplain Woodland 2469 Tr Eastern Great Plains Floodplain Systems
+3470 Caribbean Coastal Wetland Systems 2470 Tr Caribbean Coastal Wetland Systems
+3471 Central Interior and Appalachian Floodplain Forest 2471 Tr Central Interior and Appalachian Floodplain Systems
+3472 Central Interior and Appalachian Riparian Forest 2472 Tr Central Interior and Appalachian Riparian Systems
+3473 Gulf and Atlantic Coastal Plain Floodplain Forest 2473 Tr Gulf and Atlantic Coastal Plain Floodplain Systems
+3474 Gulf and Atlantic Coastal Plain Small Stream Riparian Woodland 2474 Tr Gulf and Atlantic Coastal Plain Small Stream Riparian Systems
+3475 Laurentian-Acadian Floodplain Forest 2475 Tr Laurentian-Acadian Floodplain Systems
+3476 Tamaulipan Riparian Woodland 2476 Tr Tamaulipan Riparian Systems
+3477 Boreal Acidic Peatland Forest 2477 Tr Boreal Acidic Peatland Systems
+3478 Caribbean Forested Swamp 2478 Tr Caribbean Swamp System
+3479 Central Interior and Appalachian Swamp Forest 2479 Tr Central Interior and Appalachian Swamp Systems
+3480 Gulf and Atlantic Coastal Plain Swamp Systems 2480 Tr Gulf and Atlantic Coastal Plain Swamp Systems
+3481 Laurentian-Acadian Alkaline Conifer-Hardwood Swamp Forest 2481 Tr Laurentian-Acadian Alkaline Conifer-Hardwood Swamp
+3482 Great Plains Prairie Pothole 2482 He Great Plains Prairie Pothole
+3483 South Florida Everglades Sawgrass Marsh 2483 Tr South Florida Everglades Sawgrass Marsh
+3485 East Gulf Coastal Plain Savanna and Wet Prairie 2485 Tr East Gulf Coastal Plain Savanna and Wet Prairie
+3486 Texas Saline Coastal Prairie 2486 He Texas Saline Coastal Prairie
+3488 Eastern Great Plains Wet Meadow-Prairie-Marsh 2488 He Eastern Great Plains Wet Meadow-Prairie-Marsh
+3489 Floridian Highlands Freshwater Marsh Herbaceous 2489 Tr Floridian Highlands Freshwater Marsh
+3490 Gulf and Atlantic Coastal Plain Tidal Marsh Shrubland 2490 Sh Gulf and Atlantic Coastal Plain Tidal Marsh Systems
+3491 Acadian Salt Marsh and Estuary Systems 2491 He Acadian Salt Marsh and Estuary Systems
+3492 Great Lakes Coastal Marsh Herbaceous 2492 Sh Great Lakes Coastal Marsh Systems
+3493 Central Interior and Appalachian Herbaceous Wetlands 2493 Sh Central Interior and Appalachian Shrub-Herbaceous Wetland Systems
+3494 Laurentian-Acadian Forested Wetlands 2494 Tr Laurentian-Acadian Shrub-Herbaceous Wetland Systems
+3495 Western Great Plains Depressional Wetland Systems 2495 He Western Great Plains Depressional Wetland Systems
+3497 Central Interior and Appalachian Sparsely Vegetated Systems 2497 Sps Central Interior and Appalachian Sparsely Vegetated Systems
+3498 Gulf and Atlantic Coastal Plain Sparsely Vegetated Systems 2498 Sps Gulf and Atlantic Coastal Plain Sparsely Vegetated Systems
+3499 Laurentian-Acadian Sparsely Vegetated Systems 2499 Sps Laurentian-Acadian Sparsely Vegetated Systems
+3501 Southern Atlantic Coastal Plain Nonriverine Swamp and Wet Hardwood Forest 2501 Tr Southern Atlantic Coastal Plain Nonriverine Swamp and Wet Hardwood Forest
+3502 Central Appalachian Dry Oak-Pine Forest 2502 Tr Central Appalachian Dry Oak-Pine Forest
+3503 Chihuahuan Loamy Plains Desert Grassland 2503 He Chihuahuan Loamy Plains Desert Grassland
+3504 Chihuahuan-Sonoran Desert Bottomland and Swale Grassland 2504 He Chihuahuan-Sonoran Desert Bottomland and Swale Grassland
+3506 West Gulf Coastal Plain Nonriverine Wet Hardwood Flatwoods 2506 Tr West Gulf Coastal Plain Nonriverine Wet Hardwood Flatwoods
+3507 Ozark-Ouachita Shortleaf Pine-Bluestem Woodland 2507 Tr Ozark-Ouachita Shortleaf Pine-Bluestem Woodland
+3509 Mississippi River Alluvial Plain Dry-Mesic Loess Slope Forest 2509 Tr Mississippi River Alluvial Plain Dry-Mesic Loess Slope Forest
+3510 Crowley's Ridge Sand Forest 2510 Tr Crowley's Ridge Sand Forest
+3511 Appalachian Northern Hardwood Forest 2511 Tr Appalachian Northern Hardwood Forest
+3512 Appalachian Hemlock-Northern Hardwood Forest 2512 Tr Appalachian Hemlock-Northern Hardwood Forest
+3513 Lower Mississippi River Flatwoods 2513 Tr Lower Mississippi River Flatwoods
+3517 Paleozoic Plateau Bluff and Talus Woodland 2517 Tr Paleozoic Plateau Bluff and Talus
+3518 North-Central Interior Wet Flatwoods 2518 Tr North-Central Interior Wet Flatwoods
+3519 East-Central Texas Plains Post Oak Savanna and Woodland 2519 Tr East-Central Texas Plains Post Oak Savanna and Woodland
+3522 Northern Atlantic Coastal Plain Heathland 2522 Sh Northern Atlantic Coastal Plain Heathland
+3523 Edwards Plateau Dry-Mesic Slope Forest and Woodland 2523 Tr Edwards Plateau Dry-Mesic Slope Forest and Woodland
+3524 Edwards Plateau Mesic Canyon 2524 Tr Edwards Plateau Mesic Canyon
+3525 Edwards Plateau Riparian Woodland 2525 Tr Edwards Plateau Riparian
+3526 Laurentian-Acadian Swamp Woodland 2526 Tr Laurentian-Acadian Swamp Systems
+3527 East Gulf Coastal Plain Interior Oak Forest 2527 Tr East Gulf Coastal Plain Interior Oak Forest
+3528 Ruderal Upland Shrubland 2531 Tr Ruderal Upland Vegetation
+3529 Ruderal Upland Herbaceous 2531 Tr Ruderal Upland Vegetation
+3531 Ruderal Upland Forest 2531 Tr Ruderal Upland Vegetation
+3532 Ruderal Forest-Northern and Central Hardwood and Conifer 2532 Tr Ruderal Forest-Northern and Central Hardwood and Conifer
+3533 Ruderal Forest-Southeast Hardwood and Conifer 2533 Tr Ruderal Forest-Southeast Hardwood and Conifer
+3534 Managed Tree Plantation-Northern and Central Hardwood and Conifer Plantation Group 2534 Tr Managed Tree Plantation-Northern and Central Hardwood and Conifer Plantation Group
+3535 Managed Tree Plantation-Southeast Conifer and Hardwood Plantation Group 2535 Tr Managed Tree Plantation-Southeast Conifer and Hardwood Plantation Group
+3536 Introduced Wetland Vegetation-Tree 2536 Tr Introduced Wetland Vegetation-Tree
+3538 Introduced Wetland Vegetation-Herbaceous 2538 He Introduced Wetland Vegetation-Herbaceous
+3539 Modified/Managed Northern Tallgrass Grassland 2539 Sh Modified/Managed Northern Tallgrass Grassland
+3540 Modified/Managed Southern Tallgrass Grassland 2540 Sh Modified/Managed Southern Tallgrass Grassland
+3546 East Gulf Coastal Plain Interior Shortleaf Pine-Oak Forest 2546 Tr East Gulf Coastal Plain Interior Shortleaf Pine-Oak Forest
+3550 Pinus taeda Forest Alliance 2550 Tr Pinus taeda Forest Alliance
+3551 Pinus elliottii Saturated Temperate Woodland Alliance 2551 Tr Pinus elliottii Saturated Temperate Woodland Alliance
+3552 Pinus palustris-Pinus elliottii Forest Alliance 2552 Tr Pinus palustris-Pinus elliottii Forest Alliance
+3553 Mixed Loblolly-Slash Pine 2553 Tr Mixed Loblolly-Slash Pine
+3554 Acadian Low-Elevation Hardwood Forest 2554 Tr Acadian Low-Elevation Hardwood Forest
+3555 Acadian Low-Elevation Spruce-Fir-Hardwood Forest 2555 Tr Acadian Low-Elevation Spruce-Fir-Hardwood Forest
+3556 Central Appalachian Rocky Oak Woodland 2556 Tr Central Appalachian Rocky Oak Woodland
+3557 Central Appalachian Rocky Pine-Oak Woodland 2557 Tr Central Appalachian Rocky Pine-Oak Woodland
+3558 Edwards Plateau Limestone Grassland 2383 Tr Edwards Plateau Limestone Savanna and Woodland
+3559 Edwards Plateau Limestone Shrubland 2383 Tr Edwards Plateau Limestone Savanna and Woodland
+3560 Tamaulipan Mesquite Upland Shrub 2391 Tr Tamaulipan Mesquite Upland Scrub
+3561 Llano Uplift Acidic Herbaceous Glade 2410 Tr Llano Uplift Acidic Forest, Woodland, and Glade
+3562 Tamaulipan Riparian Shrubland 2476 Tr Tamaulipan Riparian Systems
+3563 Edwards Plateau Riparian Shrubland 2525 Sh Edwards Plateau Riparian
+3564 Modified/Managed Southern Tallgrass Shrubland 2540 Sh Modified/Managed Southern Tallgrass Grassland
+3565 Florida Peninsula Inland Scrub Woodland 2387 Tr Florida Peninsula Inland Scrub
+3566 Florida Dry Prairie Shruband 2425 Sh Florida Dry Prairie
+3567 Southern Coastal Plain Blackland Prairie Woodland 2430 Tr Southern Coastal Plain Blackland Prairie and Woodland
+3568 East Gulf Coastal Plain Jackson Prairie Woodland 2433 Tr East Gulf Coastal Plain Jackson Prairie and Woodland
+3569 Central Atlantic Coastal Plain Wet Longleaf Pine Savanna and Shrubland 2449 Tr Central Atlantic Coastal Plain Wet Longleaf Pine Savanna and Flatwoods
+3570 Southern Coastal Plain Nonriverine Cypress Dome Herbaceous 2460 Tr Southern Coastal Plain Nonriverine Cypress Dome
+3571 Southern Coastal Plain Seepage Swamp and Baygall Shrubland 2461 Tr Southern Coastal Plain Seepage Swamp and Baygall
+3572 South Florida Cypress Dome Herbaceous 2447 Tr South Florida Cypress Dome
+3573 Gulf and Atlantic Coastal Plain Small Stream Riparian Herbaceous 2474 Tr Gulf and Atlantic Coastal Plain Small Stream Riparian Systems
+3574 Gulf and Atlantic Coastal Plain Small Stream Riparian Shrubland 2474 Tr Gulf and Atlantic Coastal Plain Small Stream Riparian Systems
+3575 Caribbean Herbaceous Swamp 2478 Tr Caribbean Swamp System
+3576 South Florida Everglades Forest 2483 Tr South Florida Everglades Sawgrass Marsh
+3577 East Gulf Coastal Plain Wet Prairie Grassland 2485 Tr East Gulf Coastal Plain Savanna and Wet Prairie
+3578 East Gulf Coastal Plain Wet Prairie Shrubland 2485 Tr East Gulf Coastal Plain Savanna and Wet Prairie
+3579 Floridian Highlands Freshwater Marsh Shrubland 2489 Tr Floridian Highlands Freshwater Marsh
+3580 Floridian Highlands Freshwater Marsh Woodland 2489 Tr Floridian Highlands Freshwater Marsh
+3581 South Florida Everglades Shrubland 2483 Tr South Florida Everglades Sawgrass Marsh
+3582 Ozark-Ouachita Oak Forest and Woodland 2582 Tr Ozark-Ouachita Oak Forest and Woodland
+3583 Ozark-Ouachita Shortleaf Pine-Oak Forest and Woodland 2583 Tr Ozark-Ouachita Shortleaf Pine-Oak Forest and Woodland
+3584 West Gulf Coastal Plain Hardwood Forest 2584 Tr West Gulf Coastal Plain Hardwood Forest
+3585 West Gulf Coastal Plain Pine-Hardwood Forest 2585 Tr West Gulf Coastal Plain Pine-Hardwood Forest
+3586 West Gulf Coastal Plain Sandhill Oak Forest and Woodland 2586 Tr West Gulf Coastal Plain Sandhill Oak Forest and Woodland
+3587 West Gulf Coastal Plain Sandhill Oak and Shortleaf Pine Forest and Woodland 2587 Tr West Gulf Coastal Plain Sandhill Oak and Shortleaf Pine Forest and Woodland
+3588 East Gulf Coastal Plain Southern Hardwood Flatwoods 2588 Tr East Gulf Coastal Plain Southern Hardwood Flatwoods
+3589 East Gulf Coastal Plain Southern Loblolly-Hardwood Flatwoods 2589 Tr East Gulf Coastal Plain Southern Loblolly-Hardwood Flatwoods
+3590 West Gulf Coastal Plain Hardwood Flatwoods 2590 Tr West Gulf Coastal Plain Hardwood Flatwoods
+3591 West Gulf Coastal Plain Pine-Hardwood Flatwoods 2591 Tr West Gulf Coastal Plain Pine-Hardwood Flatwoods
+3600 Western North American Boreal White Spruce Forest 2600 Western North American Boreal White Spruce Forest
+3601 Western North American Boreal Treeline White Spruce Woodland 2601 Western North American Boreal Treeline White Spruce Woodland
+3602 Western North American Boreal Spruce-Lichen Woodland 2602 Western North American Boreal Spruce-Lichen Woodland
+3603 Alaska Boreal White Spruce Forest 2603 Alaska Boreal White Spruce Forest
+3604 Western North American Boreal Mesic Black Spruce Forest 2604 Western North American Boreal Mesic Black Spruce Forest
+3605 Western North American Boreal Mesic Birch-Aspen Forest 2605 Western North American Boreal Mesic Birch-Aspen Forest
+3606 Western North American Boreal Dry Aspen-Steppe Bluff 2606 Western North American Boreal Dry Aspen-Steppe Bluff
+3607 Western North American Boreal Subalpine Balsam Poplar-Aspen Woodland 2607 Western North American Boreal Subalpine Balsam Poplar-Aspen Woodland
+3608 Alaska Sub-boreal Avalanche Slope Shrubland 2608 Alaska Sub-boreal Avalanche Slope Shrubland
+3609 Alaska Sub-boreal Mesic Subalpine Alder Shrubland 2609 Alaska Sub-boreal Mesic Subalpine Alder Shrubland
+3610 Western North American Boreal Mesic Scrub Birch-Willow Shrubland 2610 Western North American Boreal Mesic Scrub Birch-Willow Shrubland
+3611 Western North American Sub-boreal Mesic Bluejoint Meadow 2611 Western North American Sub-boreal Mesic Bluejoint Meadow
+3612 Western North American Boreal Dry Grassland 2612 Western North American Boreal Dry Grassland
+3631 Western North American Boreal Alpine Dwarf-Shrub Summit 2631 Western North American Boreal Alpine Dwarf-Shrub Summit
+3633 Western North American Boreal Alpine Mesic Herbaceous Meadow 2633 Western North American Boreal Alpine Mesic Herbaceous Meadow
+3634 Western North American Boreal Alpine Dryas Dwarf-Shrubland 2634 Western North American Boreal Alpine Dryas Dwarf-Shrubland
+3635 Western North American Boreal Alpine Ericaceous Dwarf-Shrubland 2635 Western North American Boreal Alpine Ericaceous Dwarf-Shrubland
+3636 Western North American Boreal Alpine Dwarf-Shrub-Lichen Shrubland 2636 Western North American Boreal Alpine Dwarf-Shrub-Lichen Shrubland
+3638 Alaska Arctic Mesic Alder Shrubland 2638 Alaska Arctic Mesic Alder Shrubland
+3639 Alaska Arctic Mesic-Wet Willow Shrubland 2639 Alaska Arctic Mesic-Wet Willow Shrubland
+3640 Aleutian Mesic-Wet Willow Shrubland 2640 Aleutian Mesic-Wet Willow Shrubland
+3641 North Pacific Maritime Mesic Subalpine Parkland 2038 North Pacific Maritime Mesic Subalpine Parkland
+3642 Aleutian Kenai Birch-Cottonwood-Poplar Forest 2642 Aleutian Kenai Birch-Cottonwood-Poplar Forest
+3643 Alaskan Pacific Maritime Alpine Dwarf-Shrubland 2643 Alaskan Pacific Maritime Alpine Dwarf-Shrubland
+3644 Alaskan Pacific Maritime Sitka Spruce Forest 2644 Alaskan Pacific Maritime Sitka Spruce Forest
+3645 Alaska Sub-boreal and Maritime Alpine Mesic Herbaceous Meadow 2645 Alaska Sub-boreal and Maritime Alpine Mesic Herbaceous Meadow
+3646 Alaskan Pacific Maritime Western Hemlock Forest 2646 Alaskan Pacific Maritime Western Hemlock Forest
+3648 Alaskan Pacific Maritime Mountain Hemlock Forest 2648 Alaskan Pacific Maritime Mountain Hemlock Forest
+3649 Alaskan Pacific Maritime Subalpine Mountain Hemlock Woodland 2649 Alaskan Pacific Maritime Subalpine Mountain Hemlock Woodland
+3650 Alaskan Pacific Maritime Periglacial Woodland 2650 Alaskan Pacific Maritime Periglacial Woodland and Shrubland
+3651 Aleutian Mesic Herbaceous Meadow 2651 Aleutian Mesic Herbaceous Meadow
+3652 Alaskan Pacific Maritime Subalpine Alder-Salmonberry Shrubland 2652 Alaskan Pacific Maritime Subalpine Alder-Salmonberry Shrubland
+3653 Alaskan Pacific Maritime Mesic Herbaceous Meadow 2653 Alaskan Pacific Maritime Mesic Herbaceous Meadow
+3654 Alaskan Pacific Maritime Sitka Spruce Beach Ridge 2654 Alaskan Pacific Maritime Sitka Spruce Beach Ridge
+3671 Aleutian American Dunegrass Grassland 2671 Aleutian American Dunegrass Grassland
+3672 Alaskan Pacific Maritime Subalpine Copperbush Shrubland 2672 Alaskan Pacific Maritime Subalpine Copperbush Shrubland
+3674 Alaskan Pacific Maritime Alpine Sparse Shrub and Fell-field 2674 Alaskan Pacific Maritime Alpine Sparse Shrub and Fell-field
+3675 North Pacific Mesic Western Hemlock-Yellow-cedar Forest 2040 North Pacific Mesic Western Hemlock-Yellow-cedar Forest
+3677 Alaska Sub-boreal White-Lutz Spruce Forest and Woodland 2677 Alaska Sub-boreal White-Lutz Spruce Forest and Woodland
+3678 Alaska Sub-boreal Mountain Hemlock-White Spruce Forest 2678 Alaska Sub-boreal Mountain Hemlock-White Spruce Forest
+3679 Alaska Sub-boreal White Spruce Forest 2679 Alaska Sub-boreal White Spruce-Hardwood Forest
+3680 Alaskan Pacific Maritime Avalanche Slope Shrubland 2680 Alaskan Pacific Maritime Avalanche Slope Shrubland
+3682 Alaska Arctic Scrub Birch-Ericaceous Shrubland 2682 Alaska Arctic Scrub Birch-Ericaceous Shrubland
+3683 Alaska Arctic Mesic Sedge-Willow Tundra 2683 Alaska Arctic Mesic Sedge-Willow Tundra
+3684 Alaska Arctic Mesic Sedge-Dryas Tundra 2684 Alaska Arctic Mesic Sedge-Dryas Tundra
+3685 Alaska Arctic Acidic Sparse Tundra 2685 Alaska Arctic Acidic Sparse Tundra
+3686 Alaska Arctic Non-Acidic Sparse Tundra 2686 Alaska Arctic Non-Acidic Sparse Tundra
+3687 Alaska Arctic Lichen Tundra 2687 Alaska Arctic Lichen Tundra
+3688 Alaska Arctic Acidic Dryas Dwarf-Shrubland 2688 Alaska Arctic Acidic Dryas Dwarf-Shrubland
+3689 Alaska Arctic Non-Acidic Dryas Dwarf-Shrubland 2689 Alaska Arctic Non-Acidic Dryas Dwarf-Shrubland
+3690 Alaska Arctic Dwarf-Shrubland 2690 Alaska Arctic Dwarf-Shrubland
+3691 Alaska Arctic Acidic Dwarf-Shrub Lichen Tundra 2691 Alaska Arctic Acidic Dwarf-Shrub Lichen Tundra
+3692 Alaska Arctic Non-Acidic Dwarf-Shrub Lichen Tundra 2692 Alaska Arctic Non-Acidic Dwarf-Shrub Lichen Tundra
+3699 Alaska Arctic Mesic Herbaceous Meadow 2699 Alaska Arctic Mesic Herbaceous Meadow
+3709 Alaska Arctic Marine Beach and Beach Meadow 2709 Alaska Arctic Marine Beach and Beach Meadow
+3718 Aleutian Mesic Alder-Salmonberry Shrubland 2718 Aleutian Mesic Alder-Salmonberry Shrubland
+3719 Aleutian Crowberry-Herbaceous Heath 2719 Aleutian Crowberry-Herbaceous Heath
+3720 Aleutian Mixed Dwarf-Shrub-Herbaceous Shrubland 2720 Aleutian Mixed Dwarf-Shrub-Herbaceous Shrubland
+3725 Aleutian Marine Beach and Beach Meadow 2725 Aleutian Marine Beach and Beach Meadow
+3730 Aleutian Sparse Heath and Fell-Field 2730 Aleutian Sparse Heath and Fell-Field
+3731 Aleutian Oval-leaf Blueberry Shrubland 2731 Aleutian Oval-leaf Blueberry Shrubland
+3736 Barren 31 Barren
+3737 Snow-Ice 12 Snow-Ice
+3738 Open Water 11 Open Water
+3739 North Pacific Hypermaritime Western Red-cedar-Western Hemlock Forest 2178 North Pacific Hypermaritime Western Red-cedar-Western Hemlock Forest
+3740 Boreal Aquatic Beds 2740 Boreal Aquatic Beds
+3741 Polar Tidal Marshes and Aquatic Beds 2741 Polar Tidal Marshes and Aquatic Beds
+3742 Temperate Pacific Tidal Marshes, Aquatic Beds, and Intertidal Flats 2742 Temperate Pacific Tidal Marshes, Aquatic Beds, and Intertidal Flats
+3743 Aleutian Herbaceous Wetlands 2743 Aleutian Herbaceous Wetlands
+3744 Arctic Herbaceous Wetlands 2744 Arctic Herbaceous Wetlands
+3745 Boreal Herbaceous Wetlands 2745 Boreal Herbaceous Wetlands
+3746 Pacific Maritime Herbaceous Wetlands 2746 Pacific Maritime Herbaceous Wetlands
+3747 Arctic Sedge Meadows 2747 Arctic Sedge Meadows
+3748 Aleutian Shrub-Herbaceous Wetlands 2743 Aleutian Herbaceous Wetlands
+3749 Pacific Maritime Coastal Meadows and Slough-Levee 2749 Pacific Maritime Coastal Meadows and Slough-Levee
+3750 Alaska Sub-boreal Hardwood Forest 2750 Alaska Sub-boreal White Spruce-Hardwood Forest
+3751 Boreal Coniferous Woody Wetland 2751 Boreal Coniferous Woody Wetland
+3752 Pacific Maritime Coniferous Woody Wetland 2752 Pacific Maritime Coniferous Woody Wetland
+3753 Boreal Coniferous-Deciduous Woody Wetland 2753 Boreal Coniferous-Deciduous Woody Wetland
+3754 Agriculture-Pasture and Hay 81 Agriculture-Pasture and Hay
+3755 Agriculture-Cultivated Crops and Irrigated Agriculture 82 Agriculture-Cultivated Crops and Irrigated Agriculture
+3756 Arctic Dwarf Shrub Wetland 2756 Arctic Dwarf Shrub Wetland
+3757 Boreal Dwarf Shrub Wetland 2757 Boreal Dwarf Shrub Wetland
+3758 Pacific Maritime Dwarf Shrub Wetland 2758 Pacific Maritime Dwarf Shrub Wetland
+3759 Recently Burned - Herb Cover 2195 Recently Burned-Herb and Grass Cover
+3760 Recently Burned - Shrub Cover 2190 Recently Burned-Shrub Cover
+3761 Aleutian Shrub Floodplains 2761 Aleutian Floodplains
+3762 Arctic Floodplains 2762 Arctic Floodplains
+3763 Boreal Forested Floodplains 2763 Boreal Floodplains
+3764 Pacific Maritime Forested Floodplains 2764 Pacific Maritime Floodplains
+3765 Boreal Forest-Tussock Tundra 2786 Boreal Shrub-Tussock Tundra
+3766 Alaskan Pacific Maritime Periglacial Shrubland 2650 Alaskan Pacific Maritime Periglacial Woodland and Shrubland
+3767 Developed-Open Space 21 Developed-Open Space
+3768 Developed-Low Intensity 22 Developed-Low Intensity
+3769 Developed-Medium Intensity 23 Developed-Medium Intensity
+3770 Developed-High Intensity 24 Developed-High Intensity
+3771 Aleutian Shrub Peatlands 2771 Aleutian Peatlands
+3772 Arctic Shrub Peatlands 2772 Arctic Peatlands
+3773 Boreal Peatlands 2773 Boreal Peatlands
+3774 Pacific Maritime Forested Peatlands 2774 Pacific Maritime Peatlands
+3775 Aleutian Forested Floodplains 2761 Aleutian Floodplains
+3776 Boreal Riparian Stringer Forest and Shrubland 2776 Boreal Riparian Stringer Forest and Shrubland
+3777 Boreal Shrub Swamp 2777 Boreal Shrub Swamp
+3778 Pacific Maritime Shrub Swamp 2778 Pacific Maritime Shrub Swamp
+3779 Alaska Boreal Hardwood Forest 2779 Alaska Boreal Hardwood Forest
+3780 Alaska Boreal White Spruce-Hardwood Forest 2780 Alaska Boreal White Spruce-Hardwood Forest
+3781 Arctic Shrub Sedge-Tussock-Lichen Tundra 2781 Arctic Sedge-Tussock-Lichen Tundra
+3782 Boreal Tussock Tundra 2782 Boreal Tussock Tundra
+3783 Arctic Shrub Tussock Tundra 2783 Arctic Tussock Tundra
+3784 Arctic Shrub-Tussock Tundra 2784 Arctic Shrub-Tussock Tundra
+3785 Arctic Shrub Tundra 2785 Arctic Shrub Tundra
+3786 Boreal Shrub-Tussock Tundra 2786 Boreal Shrub-Tussock Tundra
+3787 Boreal Herbaceous Floodplains 2763 Boreal Floodplains
+3788 Boreal Shrub Floodplains 2763 Boreal Floodplains
+3789 Alaska Sub-boreal White Spruce-Hardwood Forest 2789 Alaska Sub-boreal White Spruce-Hardwood Forest
+3790 Pacific Maritime Shrub Floodplains 2764 Pacific Maritime Floodplains
+3791 Aleutian Sparsely Vegetated 2791 Aleutian Sparsely Vegetated
+3792 Arctic Sparsely Vegetated 2792 Arctic Sparsely Vegetated
+3793 Boreal Sparsely Vegetated 2793 Boreal Sparsely Vegetated
+3794 Pacific Maritime Sparsely Vegetated 2794 Pacific Maritime Sparsely Vegetated
+3795 Aleutian Herbaceous Peatlands 2771 Aleutian Peatlands
+3796 Arctic Herbaceous Peatlands 2772 Arctic Peatlands
+3797 Pacific Maritime Shrub Peatlands 2774 Pacific Maritime Peatlands
+3798 Arctic Herbaceous Sedge-Tussock-Lichen Tundra 2781 Arctic Sedge-Tussock-Lichen Tundra
+3799 Arctic Herbaceous Tussock Tundra 2783 Arctic Tussock Tundra
+3800 Developed-Open Space 21 Developed-Open Space
+3801 Developed-Low Intensity 22 Developed-Low Intensity
+3802 Developed-Medium Intensity 23 Developed-Medium Intensity
+3803 Developed-High Intensity 24 Developed-High Intensity
+3804 Agriculture 82 Agriculture-Cultivated Crops and Irrigated Agriculture
+3805 Water 11 Water
+3806 Hawai'i Bog 2806 Hawai'i Bog
+3807 Hawai'i Islands Introduced Wetland Vegetation-Tree 2836 Hawai'i Islands Introduced Wetland Vegetation-Tree
+3808 Hawai'i Lowland Rainforest 2808 Hawai'i Lowland Rainforest
+3809 Hawai'i Montane Cloud Forest 2809 Hawai'i Montane Cloud Forest
+3810 Hawai'i Montane Rainforest 2810 Hawai'i Montane Rainforest
+3811 Hawai'i Wet Cliff and Ridge Crest Shrubland 2811 Hawai'i Wet Cliff and Ridge Crest Shrubland
+3812 Hawai'i Introduced Wetland Vegetation-Shrub 2837 Hawai'i Introduced Wetland Vegetation-Shrub
+3813 Hawai'i Lowland Dry Forest 2813 Hawai'i Lowland Dry Forest
+3814 Hawai'i Lowland Mesic Forest 2814 Hawai'i Lowland Mesic Forest
+3815 Hawai'i Montane-Subalpine Dry Forest and Woodland 2815 Hawai'i Montane-Subalpine Dry Forest and Woodland
+3816 Hawai'i Montane-Subalpine Mesic Forest 2816 Hawai'i Montane-Subalpine Mesic Forest
+3817 Hawai'i Lowland Dry Shrubland 2817 Hawai'i Lowland Dry Shrubland
+3818 Hawai'i Lowland Mesic Shrubland 2818 Hawai'i Lowland Mesic Shrubland
+3819 Hawai'i Lowland Dry Grassland 2819 Hawai'i Lowland Dry Grassland
+3820 Hawai'i Lowland Mesic Grassland 2820 Hawai'i Lowland Mesic Grassland
+3821 Hawai'i Montane-Subalpine Dry Shrubland 2821 Hawai'i Montane-Subalpine Dry Shrubland
+3822 Hawai'i Montane-Subalpine Dry Grassland 2822 Hawai'i Montane-Subalpine Dry Grassland
+3823 Hawai'i Montane-Subalpine Mesic Grassland 2823 Hawai'i Montane-Subalpine Mesic Grassland
+3824 Hawai'i Alpine Dwarf-Shrubland 2824 Hawai'i Alpine Dwarf-Shrubland
+3825 Hawai'i Dry Cliff 2825 Hawai'i Dry Cliff
+3826 Hawai'i Dry Coastal Strand 2826 Hawai'i Dry Coastal Strand
+3827 Hawai'i Wet-Mesic Coastal Strand 2827 Hawai'i Wet-Mesic Coastal Strand
+3828 Hawai'i Subalpine Mesic Shrubland 2828 Hawai'i Subalpine Mesic Shrubland
+3830 Barren 31 Barren
+3832 Barren 31 Barren
+3833 Pacific Islands Limestone Forest 2833 Pacific Islands Limestone Forest
+3834 Pacific Islands Littoral/Strand Vegetation 2834 Pacific Islands Littoral/Strand Vegetation
+3835 Pacific Islands Lowland Forest 2835 Pacific Islands Lowland Forest
+3836 Pacific Islands Mangrove Forest 2851 Pacific Islands Mangrove Forest
+3837 Pacific Islands Palm Forest 2844 Pacific Islands Palm Forest
+3838 Hawai'i Introduced Wetland Vegetation-Herbaceous 2838 Hawai'i Introduced Wetland Vegetation-Herbaceous
+3839 Pacific Islands Ravine Forest 2839 Pacific Islands Ravine Forest
+3840 Pacific Islands Savannah 2840 Pacific Islands Savannah
+3841 Pacific Islands Scrub Forest/Shrub 2841 Pacific Islands Scrub Forest/Shrub
+3842 Pacific Islands Swamp/Marsh 2842 Pacific Islands Swamp/Marsh
+3843 Pacific Islands Upland Forest 2843 Pacific Islands Upland Forest
+3845 Hawai'i Introduced Dry Forest 2845 Hawai'i Introduced Dry Forest
+3846 Hawai'i Introduced Wet-Mesic Forest 2846 Hawai'i Introduced Wet-Mesic Forest
+3847 Hawai'i Introduced Deciduous Shrubland 2847 Hawai'i Introduced Deciduous Shrubland
+3848 Hawai'i Introduced Perennial Grassland 2848 Hawai'i Introduced Perennial Grassland
+3849 Hawai'i Introduced Evergreen Shrubland 2849 Hawai'i Introduced Evergreen Shrubland
+3850 Pacific Islands Introduced Forest 2850 Pacific Islands Introduced Forest
+3852 Hawai'i Introduced Coastal Wetland Vegetation - Tree 2852 Hawai'i Introduced Coastal Wetland Vegetation - Tree
+3853 Hawai'i Introduced Coastal Wetland Vegetation - Shrub 2853 Hawai'i Introduced Coastal Wetland Vegetation - Shrub
+3854 Hawai'i Introduced Coastal Wetland Vegetation - Herbaceous 2854 Hawai'i Introduced Coastal Wetland Vegetation - Herbaceous
+3855 Hawai'i Managed Tree Plantation 2855 Hawai'i Managed Tree Plantation
+3856 Pacific Islands Plantation Forest 2856 Pacific Islands Plantation Forest
+3857 Urban 20 Urban
+3858 Agriculture 80 Agriculture
+3859 Water 11 Water
+3860 Caribbean High-medium density urban 2860 Caribbean High-medium density urban
+3861 Caribbean Low-medium density urban 2861 Caribbean Low-medium density urban
+3862 Caribbean Herbaceous agriculture - cultivated lands 2862 Caribbean Herbaceous agriculture - cultivated lands
+3863 Caribbean Active sun coffee and mixed woody agriculture 2863 Caribbean Active sun coffee and mixed woody agriculture
+3864 Caribbean Pasture, hay or inactive agriculture 2864 Caribbean Pasture, hay or inactive agriculture
+3865 Caribbean Pasture, hay or other grassy areas 2865 Caribbean Pasture, hay or other grassy areas
+3866 Caribbean Drought deciduous open woodland 2866 Caribbean Drought deciduous open woodland
+3867 Caribbean Drought deciduous dense woodland 2867 Caribbean Drought deciduous dense woodland
+3868 Caribbean Deciduous, evergreen coastal and mixed forest or shrubland with succulents 2868 Caribbean Deciduous, evergreen coastal and mixed forest or shrubland with succulents
+3869 Caribbean Semi-deciduous and drought deciduous forest on alluvium and non-carbonate substrates 2869 Caribbean Semi-deciduous and drought deciduous forest on alluvium and non-carbonate substrates
+3870 Caribbean Semi-deciduous and drought deciduous forest on karst (includes semi-evergreen forest) 2870 Caribbean Semi-deciduous and drought deciduous forest on karst (includes semi-evergreen forest)
+3871 Caribbean Drought deciduous, semi-deciduous and seasonal evergreen forest on serpentine 2871 Caribbean Drought deciduous, semi-deciduous and seasonal evergreen forest on serpentine
+3872 Caribbean Seasonal evergreen and semi-deciduous forest on karst 2872 Caribbean Seasonal evergreen and semi-deciduous forest on karst
+3873 Caribbean Seasonal evergreen and evergreen forest 2873 Caribbean Seasonal evergreen and evergreen forest
+3874 Caribbean Seasonal evergreen forest with coconut palm 2874 Caribbean Seasonal evergreen forest with coconut palm
+3875 Caribbean Evergreen and seasonal evergreen forest on karst 2875 Caribbean Evergreen and seasonal evergreen forest on karst
+3876 Caribbean Evergreen forest on serpentine 2876 Caribbean Evergreen forest on serpentine
+3877 Caribbean Elfin, sierra palm, transitional and tall cloud forest 2877 Caribbean Elfin, sierra palm, transitional and tall cloud forest
+3878 Caribbean Emergent wetlands including seasonally flooded pasture 2878 Caribbean Emergent wetlands including seasonally flooded pasture
+3879 Caribbean Salt or mud flats 2879 Caribbean Salt or mud flats
+3880 Caribbean Mangrove 2880 Caribbean Mangrove
+3881 Caribbean Seasonally flooded savannahs and woodlands 2881 Caribbean Seasonally flooded savannahs and woodlands
+3882 Caribbean Pterocarpus swamp 2882 Caribbean Pterocarpus swamp
+3883 Caribbean Tidally flooded evergreen dwarf-shrubland and forb vegetation 2883 Caribbean Tidally flooded evergreen dwarf-shrubland and forb vegetation
+3884 Quarries 32 Quarries-Strip Mines-Gravel Pits
+3885 Coastal sand and rock 31 Barren
+3886 Bare soil 31 Barren
+3887 Water 11 Water
+3900 Western Cool Temperate Urban Deciduous Forest 2913 Dtd Urban Deciduous Forest
+3901 Western Cool Temperate Urban Evergreen Forest 2914 Dtc Urban Evergreen Forest
+3902 Western Cool Temperate Urban Mixed Forest 2915 Dtm Urban Mixed Deciduous-Evergreen Forest
+3903 Western Cool Temperate Urban Herbaceous 2916 Dgr Urban Herbaceous
+3904 Western Cool Temperate Urban Shrubland 2917 Dsh Urban Shrubland
+3905 Eastern Cool Temperate Urban Deciduous Forest 2913 Dtd Urban Deciduous Forest
+3906 Eastern Cool Temperate Urban Evergreen Forest 2914 Dtc Urban Evergreen Forest
+3907 Eastern Cool Temperate Urban Mixed Forest 2915 Dtm Urban Mixed Deciduous-Evergreen Forest
+3908 Eastern Cool Temperate Urban Herbaceous 2916 Dgr Urban Herbaceous
+3909 Eastern Cool Temperate Urban Shrubland 2917 Dsh Urban Shrubland
+3910 Western Warm Temperate Urban Deciduous Forest 2913 Dtd Urban Deciduous Forest
+3911 Western Warm Temperate Urban Evergreen Forest 2914 Dtc Urban Evergreen Forest
+3912 Western Warm Temperate Urban Mixed Forest 2915 Dtm Urban Mixed Deciduous-Evergreen Forest
+3913 Western Warm Temperate Urban Herbaceous 2916 Dgr Urban Herbaceous
+3914 Western Warm Temperate Urban Shrubland 2917 Dsh Urban Shrubland
+3915 Eastern Warm Temperate Urban Urban Deciduous Forest 2913 Dtd Urban Deciduous Forest
+3916 Eastern Warm Temperate Urban Urban Evergreen Forest 2914 Dtc Urban Evergreen Forest
+3917 Eastern Warm Temperate Urban Urban Mixed Forest 2915 Dtm Urban Mixed Deciduous-Evergreen Forest
+3918 Eastern Warm Temperate Urban Urban Herbaceous 2916 Dgr Urban Herbaceous
+3919 Eastern Warm Temperate Urban Urban Shrubland 2917 Dsh Urban Shrubland
+3920 Western Cool Temperate Developed Ruderal Deciduous Forest 2923 Dtd Developed Ruderal Deciduous Forest
+3921 Western Cool Temperate Developed Ruderal Evergreen Forest 2924 Dtc Developed Ruderal Evergreen Forest
+3922 Western Cool Temperate Developed Ruderal Mixed Forest 2925 Dtm Developed Ruderal Deciduous-Evergreen Forest
+3923 Western Cool Temperate Developed Ruderal Shrubland 2926 Dsh Developed Ruderal Shrubland
+3924 Western Cool Temperate Developed Ruderal Grassland 2927 Dgr Developed Ruderal Grassland
+3925 Western Warm Temperate Developed Ruderal Deciduous Forest 2923 Dtd Developed Ruderal Deciduous Forest
+3926 Western Warm Temperate Developed Ruderal Evergreen Forest 2924 Dtc Developed Ruderal Evergreen Forest
+3927 Western Warm Temperate Developed Ruderal Mixed Forest 2925 Dtm Developed Ruderal Deciduous-Evergreen Forest
+3928 Western Warm Temperate Developed Ruderal Shrubland 2926 Dsh Developed Ruderal Shrubland
+3929 Western Warm Temperate Developed Ruderal Grassland 2927 Dgr Developed Ruderal Grassland
+3930 Eastern Cool Temperate Developed Ruderal Deciduous Forest 2923 Dtd Developed Ruderal Deciduous Forest
+3931 Eastern Cool Temperate Developed Ruderal Evergreen Forest 2924 Dtc Developed Ruderal Evergreen Forest
+3932 Eastern Cool Temperate Developed Ruderal Mixed Forest 2925 Dtm Developed Ruderal Deciduous-Evergreen Forest
+3933 Eastern Cool Temperate Developed Ruderal Shrubland 2926 Dsh Developed Ruderal Shrubland
+3934 Eastern Cool Temperate Developed Ruderal Grassland 2927 Dgr Developed Ruderal Grassland
+3935 Eastern Warm Temperate Developed Ruderal Deciduous Forest 2923 Dtd Developed Ruderal Deciduous Forest
+3936 Eastern Warm Temperate Developed Ruderal Evergreen Forest 2924 Dtc Developed Ruderal Evergreen Forest
+3937 Eastern Warm Temperate Developed Ruderal Mixed Forest 2925 Dtm Developed Ruderal Deciduous-Evergreen Forest
+3938 Eastern Warm Temperate Developed Ruderal Shrubland 2926 Dsh Developed Ruderal Shrubland
+3939 Eastern Warm Temperate Developed Ruderal Grassland 2927 Dgr Developed Ruderal Grassland
+3940 Western Cool Temperate Undeveloped Ruderal Deciduous Forest 2933 Dtd Undeveloped Ruderal Deciduous Forest
+3941 Western Cool Temperate Undeveloped Ruderal Evergreen Forest 2934 Dtc Undeveloped Ruderal Evergreen Forest
+3942 Western Cool Temperate Undeveloped Ruderal Mixed Forest 2935 Dtm Undeveloped Ruderal Deciduous-Evergreen Forest
+3943 Western Cool Temperate Undeveloped Ruderal Shrubland 2936 Dsh Undeveloped Ruderal Shrubland
+3944 Western Cool Temperate Undeveloped Ruderal Grassland 2937 Dgr Undeveloped Ruderal Grassland
+3945 Western Warm Temperate Undeveloped Ruderal Deciduous Forest 2933 Dtd Undeveloped Ruderal Deciduous Forest
+3946 Western Warm Temperate Undeveloped Ruderal Evergreen Forest 2934 Dtc Undeveloped Ruderal Evergreen Forest
+3947 Western Warm Temperate Undeveloped Ruderal Mixed Forest 2935 Dtm Undeveloped Ruderal Deciduous-Evergreen Forest
+3948 Western Warm Temperate Undeveloped Ruderal Shrubland 2936 Dsh Undeveloped Ruderal Shrubland
+3949 Western Warm Temperate Undeveloped Ruderal Grassland 2937 Dgr Undeveloped Ruderal Grassland
+3950 Eastern Cool Temperate Undeveloped Ruderal Deciduous Forest 2933 Dtd Undeveloped Ruderal Deciduous Forest
+3951 Eastern Cool Temperate Undeveloped Ruderal Evergreen Forest 2934 Dtc Undeveloped Ruderal Evergreen Forest
+3952 Eastern Cool Temperate Undeveloped Ruderal Mixed Forest 2935 Dtm Undeveloped Ruderal Deciduous-Evergreen Forest
+3953 Eastern Cool Temperate Undeveloped Ruderal Shrubland 2936 Dsh Undeveloped Ruderal Shrubland
+3954 Eastern Cool Temperate Undeveloped Ruderal Grassland 2937 Dgr Undeveloped Ruderal Grassland
+3955 Eastern Warm Temperate Undeveloped Ruderal Deciduous Forest 2933 Dtd Undeveloped Ruderal Deciduous Forest
+3956 Eastern Warm Temperate Undeveloped Ruderal Evergreen Forest 2934 Dtc Undeveloped Ruderal Evergreen Forest
+3957 Eastern Warm Temperate Undeveloped Ruderal Mixed Forest 2935 Dtm Undeveloped Ruderal Deciduous-Evergreen Forest
+3958 Eastern Warm Temperate Undeveloped Ruderal Shrubland 2936 Dsh Undeveloped Ruderal Shrubland
+3959 Eastern Warm Temperate Undeveloped Ruderal Grassland 2937 Dgr Undeveloped Ruderal Grassland
+3960 Western Cool Temperate Orchard 2960 Dab Orchard
+3961 Western Cool Temperate Vineyard 2961 Da Vineyard
+3962 Western Cool Temperate Bush fruit and berries 2962 Dab Bush Fruit and Berries
+3963 Western Cool Temperate Row Crop - Close Grown Crop 2963 Da Row Crop - Close Grown Crop
+3964 Western Cool Temperate Row Crop 2964 Da Row Crop
+3965 Western Cool Temperate Close Grown Crop 2965 Da Close Grown Crop
+3966 Western Cool Temperate Fallow/Idle Cropland 2966 Dab Fallow/Idle Cropland
+3967 Western Cool Temperate Pasture and Hayland 2967 Dab Pasture and Hayland
+3968 Western Cool Temperate Wheat 2968 Da Wheat
+3969 Western Cool Temperate Aquaculture 2969 Da Aquaculture
+3970 Eastern Cool Temperate Orchard 2960 Dab Orchard
+3971 Eastern Cool Temperate Vineyard 2961 Da Vineyard
+3972 Eastern Cool Temperate Bush fruit and berries 2962 Dab Bush Fruit and Berries
+3973 Eastern Cool Temperate Row Crop - Close Grown Crop 2963 Da Row Crop - Close Grown Crop
+3974 Eastern Cool Temperate Row Crop 2964 Da Row Crop
+3975 Eastern Cool Temperate Close Grown Crop 2965 Da Close Grown Crop
+3976 Eastern Cool Temperate Fallow/Idle Cropland 2966 Dab Fallow/Idle Cropland
+3977 Eastern Cool Temperate Pasture and Hayland 2967 Dab Pasture and Hayland
+3978 Eastern Cool Temperate Wheat 2968 Da Wheat
+3979 Eastern Cool Temperate Aquaculture 2969 Da Aquaculture
+3980 Western Warm Temperate Orchard 2960 Dab Orchard
+3981 Western Warm Temperate Vineyard 2961 Da Vineyard
+3982 Western Warm Temperate Bush fruit and berries 2962 Dab Bush Fruit and Berries
+3983 Western Warm Temperate Row Crop - Close Grown Crop 2963 Da Row Crop - Close Grown Crop
+3984 Western Warm Temperate Row Crop 2964 Da Row Crop
+3985 Western Warm Temperate Close Grown Crop 2965 Da Close Grown Crop
+3986 Western Warm Temperate Fallow/Idle Cropland 2966 Dab Fallow/Idle Cropland
+3987 Western Warm Temperate Pasture and Hayland 2967 Dab Pasture and Hayland
+3988 Western Warm Temperate Wheat 2968 Da Wheat
+3989 Western Warm Temperate Aquaculture 2969 Da Aquaculture
+3990 Eastern Warm Temperate Orchard 2960 Dab Orchard
+3991 Eastern Warm Temperate Vineyard 2961 Da Vineyard
+3992 Eastern Warm Temperate Bush fruit and berries 2962 Dab Bush Fruit and Berries
+3993 Eastern Warm Temperate Row Crop - Close Grown Crop 2963 Da Row Crop - Close Grown Crop
+3994 Eastern Warm Temperate Row Crop 2964 Da Row Crop
+3995 Eastern Warm Temperate Close Grown Crop 2965 Da Close Grown Crop
+3996 Eastern Warm Temperate Fallow/Idle Cropland 2966 Dab Fallow/Idle Cropland
+3997 Eastern Warm Temperate Pasture and Hayland 2967 Dab Pasture and Hayland
+3998 Eastern Warm Temperate Wheat 2968 Da Wheat
+3999 Eastern Warm Temperate Aquaculture 2969 Da Aquaculture
+
+</eaover>
+			<eadetcit>LF 2010 (LF1.2.0) Existing Vegetation Type</eadetcit>
+		</overview>
+	</eainfo>
+	<distinfo>
+		<distrib>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>U.S. Geological Survey</cntorg>
+				</cntorgp>
+				<cntpos>Customer Services Representative</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical</addrtype>
+					<address>47914 252nd Street</address>
+					<address>USGS EROS</address>
+					<city>Sioux Falls</city>
+					<state>SD</state>
+					<postal>57198-0001</postal>
+					<country>US</country>
+				</cntaddr>
+				<cntvoice>605/594-6151</cntvoice>
+				<cnttdd>605/594-6933</cnttdd>
+				<cntfax>605/594-6589</cntfax>
+				<cntemail>helpdesk@landfire.gov</cntemail>
+				<hours>0800 - 1600, CT M-F (-6h CST/-5h CDT GMT)</hours>
+				<cntinst>The USGS point of contact is for questions relating only to the data display and download from this web site. For questions regarding data content and quality, refer to the original metadata document.</cntinst>
+			</cntinfo>
+		</distrib>
+		<distliab>This product is reproduced from geospatial information prepared by the U.S. Department of Agriculture, Forest Service and USGS EROS. By removing the contents of this package or taking receipt of these files via electronic file transfer methods, you understand that the data stored on this media is in draft condition. Represented features may not be in an accurate geographic location. The Forest Service and USGS EROS make no expressed or implied warranty, including warranty of merchantability and fitness, with respect to the character, function, or capabilities of the data or their appropriateness for any user's purposes. The Forest Service and USGS EROS reserve the right to correct, update, modify, or replace this geospatial information without notification.</distliab>
+		<stdorder>
+			<digform>
+				<digtinfo>
+					<formname>ARCG</formname>
+					<formvern>ArcGIS 9.3</formvern>
+					<formspec>Raster</formspec>
+					<transize>49.835</transize>
+				</digtinfo>
+				<digtopt>
+					<onlinopt>
+						<computer>
+							<networka>
+								<networkr>http://landfire.cr.usgs.gov/viewer</networkr>
+							</networka>
+						</computer>
+					</onlinopt>
+				</digtopt>
+			</digform>
+			<fees>None</fees>
+			<turnarnd>Variable</turnarnd>
+		</stdorder>
+		<availabl>
+			<timeinfo>
+				<rngdates>
+					<begdate>20100101</begdate>
+					<enddate>unknown</enddate>
+				</rngdates>
+			</timeinfo>
+		</availabl>
+	</distinfo>
+	<metainfo>
+		<metd>20070201</metd>
+		<metc>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>U.S. Geological Survey</cntorg>
+				</cntorgp>
+				<cntpos>Customer Service Representative</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical</addrtype>
+					<address>47914 252nd Street</address>
+					<address>USGS EROS</address>
+					<city>Sioux Falls</city>
+					<state>SD</state>
+					<postal>57198-0001</postal>
+					<country>US</country>
+				</cntaddr>
+				<cntvoice>605/594-6151</cntvoice>
+				<cntfax>605/594-6589</cntfax>
+				<cntemail>helpdesk@landfire.gov</cntemail>
+				<hours>0800 - 1600 CT, M - F (-6h CST/-5h CDT GMT)</hours>
+			</cntinfo>
+		</metc>
+		<metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+		<metstdv>FGDC-STD-001-1998</metstdv>
+		<mettc>local time</mettc>
+		<metsi>
+			<metscs>None</metscs>
+			<metsc>Unclassified</metsc>
+			<metshd>None</metshd>
+		</metsi>
+	</metainfo>
+	<Esri><CreaDate>20170421</CreaDate><CreaTime>15333100</CreaTime><ArcGISstyle>FGDC CSDGM Metadata</ArcGISstyle><SyncOnce>TRUE</SyncOnce><DataProperties><itemProps><itemLocation><linkage Sync="TRUE">file://\\gs.doi.net\siouxfallssd-n\Science\firesnfs1\Landfire\Distribution\XML_Metadata\_New_Incoming\updated\lf2014\lf_140_evt_20170421_22</linkage><protocol Sync="TRUE">Local Area Network</protocol></itemLocation></itemProps><copyHistory><copy date="20170421" dest="\\gs.doi.net\siouxfallssd-n\Science\firesnfs1\Landfire\Distribution\XML_Metadata\_New_Incoming\updated\lf2014\lf_140_evt_20170421_22" source="D:\Workspace\datalist\metadata\LF2014\c14\LF\VEG\lf_140_evt_20170421_22" time="15333100" /></copyHistory></DataProperties></Esri></metadata>

@@ -49,5 +49,4 @@ plot(clip_evh_2023)
 #to do any work with filtering or summarizing etc, then we have to extract the buffers and work with the data from there. 
 extracted <-  extract(x = clip_evh, y = mbbs_buffers, df = TRUE)
 #ID 1:40 is the 40 different buffers from mbbs_buffers, in the listed order.
-#we can do
-extracted <- extracted 
+

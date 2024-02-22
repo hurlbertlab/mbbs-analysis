@@ -1,0 +1,1 @@
+{"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[-8790452.602462, 4276193.280784], [-8765991.80947, 4276193.280784], [-8765991.80947, 4326730.202154], [-8790452.602462, 4326730.202154], [-8790452.602462, 4276193.280784]]]}, "properties": {"id": "dataDownloadBox"}}]}

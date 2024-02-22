@@ -4,22 +4,21 @@
 source("species-trend-estimate-functions.R")
 
 #libraries
-library(beepr)
-library(dplyr)
-library(tidyr)
-library(lme4)
-library(beepr)
-library(MASS)
-library(geepack)
-library(mbbs)
+library(beepr) #beeps
+library(dplyr) #data manip
+library(tidyr) #data manip
+library(lme4) #modeling
+library(MASS) #modeling
+library(geepack) #GEE modeling
+library(mbbs) #data comes from here
 library(broom) #extracts coefficient values out of models, works with geepack
 
 #prevent scientific notation to make a trend table easier to read
 options(scipen=999)
 
-#read in data
-mbbs <- read.csv("data/analysis.df.csv", header = T)
-survey_events <- mbbs_survey_events
+#read in data - not in use right now. Data workflow where I'm making an analysis.df needs a reassessment
+#mbbs <- read.csv("data/analysis.df.csv", header = T)
+#survey_events <- mbbs_survey_events
 
 #read in data, using most updated versions of the mbbs. 
 mbbs_orange <- mbbs_orange
@@ -32,9 +31,12 @@ mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three co
     mbbs_county == "chatham" ~ 300L)) %>%
   filter(count > 0) %>%
   ungroup() %>%
+  #clean up for ease of use, lots of columns we don't need rn
   dplyr::select(-sub_id, -tax_order, -count_raw, -state, -loc, -locid, -lat, -lon, -protocol, -distance_traveled, -area_covered, -all_obs, -breed_code, -checklist_comments, -source)
 #help keep the environment clean
 rm(mbbs_chatham); rm(mbbs_durham); rm(mbbs_orange) 
+#load in mbbs_survey_events from current branch (stop_num)
+load("C:/git/mbbs/data/mbbs_survey_events.rda")
 
 #Data structure changes in 2019 to have stop-level records. We need to group together this data for analysis. We cannot use date here or it causes problems with future analysis. 
 mbbs <- mbbs %>%
@@ -61,17 +63,16 @@ n_distinct(mbbs$common_name) #ok, 58 species rn make the cut with the borders se
    print("All species have same number of occurances, good to continue")
    beep()
  } else {
-     print("ERROR: Adding in the 0 values has led to some species having more occurances than others."); beep(11); beep(11)}
+     print("ERROR: Adding in the 0 values has led to some species having more occurances than others."); beep(11);}
  
 #now that everything else is ready to go, leftjoin survey_events so we have observer information
-mbbs <- add_survey_events(mbbs, survey_events)
-mbbs_nozero <- add_survey_events(mbbs_nozero, survey_events)
+mbbs <- add_survey_events(mbbs, mbbs_survey_events)
+mbbs_nozero <- add_survey_events(mbbs_nozero, mbbs_survey_events)
   
 # Remove Orange route 11 from 2012 due to uncharacteristically high counts from a one-time observer
-#current giving an error where it sets mbbs to have 0 obs, so, that needs a fix
-#mbbs <- mbbs %>% dplyr::filter(primary_observer != "Ali Iyoob")
-#mbbs_nozero <- mbbs_nozero  %>% dplyr::filter(primary_observer != "Ali Iyoob")
-#check <- mbbs %>% filter(!primary_observer %in% "Ali Iyoob")
+mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
+mbbs_nozero <- mbbs_nozero  %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
+
 
 #leftjoin for landcover information
 #read in nlcd data, filter to just what we're interested in. Otherwise it's a many-to-many join relationship. Right now, just the % developed land. Workflow similar to "calc_freq_remove_rows()" from the generate_percent_change_+_map.. code, but altered for this use.
@@ -88,14 +89,13 @@ nlcd <- read.csv("data/landtype_byroute.csv", header = TRUE) %>%
 
   
   #need to now combine all the % developed land into one row for each county/route/year
-##heads up, nlcd data is missing years, u need to assign it the last value, only change when a new yr that has new data happens. Must be a way to do that easily without writing a whole complicated function..
+##heads up, nlcd data is missing years, assigns it the last value, only change when a new yr that has new data happens. 
 add_nlcd <- function(mbbs, nlcd) {
   mbbs <- mbbs %>%
     left_join(nlcd, by = c("mbbs_county", "year", "route_num")) %>%
     group_by(route_ID, common_name) %>%
     arrange(common_name, route_ID, year) %>%
-    relocate(percent_developed, .before = common_name) %>%
-    fill(percent_developed, .direction = "downup")
+    tidyr::fill(percent_developed, .direction = "downup")
   #check <- mbbs %>% filter(route_ID == 106)
   return(mbbs)
 }
@@ -110,22 +110,120 @@ filtered_mbbs <- mbbs %>% filter(common_name == species_list[1])
 
 #create trend table to store results in
 cols_list <- c("common_name")
-trend_table <- make_trend_table(cols_list)
-  #add in the species
-  for(s in 1:length(species_list)) {
-    
-    trend_table[s,1] <- species_list[s]
-    
-  }
+trend_table <- make_trend_table(cols_list, species_list)
 
+#make route_ID a factor
 mbbs <- mbbs %>% mutate(route_ID = as.factor(route_ID))
 mbbs_nozero <- mbbs_nozero %>% mutate(route_ID = as.factor(route_ID))
 
+#add in UAI
+uai <- read.csv("data/UAIs_NCetall.csv") %>%
+  filter(City == "Charlotte_US")
+
+mbbs <- mbbs %>%
+  left_join(uai, by = c("common_name" = "Species"))
+
 #formulas to plug into the models
-  formula_basic <- count ~ year
-  formula_simple <- count ~ year + percent_developed
-  formula_randomeffects <- count ~ year  + (1|route_ID)
-  formula_rankedobserver <- count ~ year + observer_quality
+  f_base <- count ~ year  
+  f_pd <- update(f_base, ~ . + percent_developed)
+  f_obs <- update(f_base, ~ . + observer_quality)
+  f_pdobs <- update(f_base, ~ . + percent_developed + observer_quality)
+
+#------------------------------------------------------------------------------
+#GEE model  
+#------------------------------------------------------------------------------
+  #GEE models from GEEpack assume that things are listed in order of cluster
+  #cluster is the route. that's fine, we can sort in order
+  mbbs <- mbbs %>% arrange(route_ID, year, common_name)  #also by year and common_name just to improve readability of the datatable
+
+    gee_table <- make_trend_table(cols_list = c("common_name", "gee_estimate", "gee_trend","gee_error", "gee_significant", "gee_percdev_estimate", "gee_percdev_significant", "gee_observer_estimate", "gee_Waldtest"),
+                                  rows_list = species_list)
+  
+  #let's try another way of having the trend table. 
+  pivot_tidied <- function(model, current_species) {
+    
+    #tidy up the model
+    tidied <- tidy(model) %>%
+      pivot_longer(cols = term) %>% 
+      mutate(common_name = current_species) %>% #add species column
+      relocate(c(common_name, value), .before = estimate)
+    
+    return(tidied)
+    
+  }
+  
+  
+  run_gee <- function(formula, mbbs, species_list) {
+    
+    #make first rows of trend table based off the first species
+    current_species <- species_list[1]
+    filtered_mbbs <- mbbs %>% filter(common_name == current_species)
+    model <- geeglm(formula,
+                    family = poisson,
+                    id = route_ID,
+                    data = filtered_mbbs)
+    gee_table <- pivot_tidied(model, current_species)
+    
+    #do the same thing to the rest of the species list, and rbind those rows together
+    for(s in 2:length(species_list)) {
+      
+      current_species <- species_list[s]
+      
+      filtered_mbbs <- mbbs %>% filter(common_name == current_species)
+      
+      model <- geeglm(formula,
+                      family = poisson,
+                      id = route_ID,
+                      data = filtered_mbbs)
+      #rbind to gee_table
+      gee_table <- rbind(gee_table, pivot_tidied(model, current_species))
+      
+    }
+    
+    return(gee_table)
+  }
+  
+  output <- run_gee(formula = 
+                     update(f_base, ~ . + percent_developed + observer_quality),
+                   mbbs, species_list) %>%
+    #remove intercept information
+    filter(!value %in% "(Intercept)") %>%
+    #add trend into (exponentiate the esimate)
+    mutate(trend = exp(estimate -1)) %>%
+    #pivot_wider
+    pivot_wider(names_from = value, values_from = c(estimate, std.error, statistic, p.value, trend)) %>%
+    dplyr::select(-name)%>%
+    left_join(uai, by = c("common_name" = "Species"))
+  
+  #estimate and trend are 1:1 matched. !!! Something is probably wrong with trend, I don't think it should all be in the .30s when the estimates are -06:0.08
+  plot(output$trend_year, output$estimate_year)
+  
+  fit <- lm(trend_year ~ UAI, data = output)
+  plot(y=output$trend_year, x=output$UAI)
+  plot(trend_year ~ UAI, data = output)
+  abline(fit)
+    
+#------------------------------------------  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
   
 #------------------------------------------------------------------------------
 #poisson model

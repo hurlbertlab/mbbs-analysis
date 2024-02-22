@@ -1,0 +1,793 @@
+<metadata>
+	<idinfo>
+		<citation>
+			<citeinfo>
+				<origin>Wildland Fire Science, Earth Resources Observation and Science Center, U.S. Geological Survey</origin>
+				<pubdate>20161031</pubdate>
+				<pubtime>unknown</pubtime>
+				<title>LANDFIRE.US_140EVH</title>
+				<geoform>map</geoform>
+				<serinfo>
+					<sername>LANDFIRE Existing Vegetation Height</sername>
+					<issue>LANDFIRE 2014 (LF_1.4.0)</issue>
+				</serinfo>
+				<pubinfo>
+					<pubplace>47914 252nd St., Sioux Falls, SD, 57198-0001, US</pubplace>
+					<publish>Wildland Fire Science, Earth Resources Observation and Science Center, U.S. Geological Survey</publish>
+				</pubinfo>
+				<othercit>United States Forest Service</othercit>
+				<onlink>http://landfire.cr.usgs.gov/viewer/</onlink>
+				<onlink>http://www.landfire.gov</onlink>
+			</citeinfo>
+		</citation>
+		<descript>
+			<abstract>Introduction: The LANDFIRE existing vegetation layers describe the following elements of existing vegetation for each LANDFIRE mapping zone: existing vegetation type, existing vegetation canopy cover, and existing vegetation height. Vegetation is mapped using predictive landscape models based on extensive field reference data, satellite imagery, biophysical gradient layers, and classification and regression trees. Abstract: The existing vegetation height (EVH) data layer is an important input to LANDFIRE modeling efforts. Canopy height is generated separately for tree, shrub and herbaceous cover life forms using training data and a series of geospatial data layers. Plots from the Forest Inventory and Analysis (FIA) program of USDA Forest Service (http://fia.fs.fed.us/) were used as the training data for tree canopy height mapping. EVH is determined by the average height weighted by species cover and based on existing vegetation type (EVT) life-form assignments. Dominant life-form height of each plot is then binned as follows: (A) Tree classes; 0-5 m, 5-10 m, 10-25 m, 25-50 m, and greater than 50 m, (B) Shrub classes; 0-0.5 m, 0.5-1.0 m, 1.0-3.0 m, greater than 3.0 m, (C) Herbaceous vegetation classes; 0-0.5 m; 0.5-1.0 m, greater than 1 m. Go to http://www.landfire.gov/participate_acknowledgements.php for more information regarding contributors of field plot data. Decision tree models using field reference data and Landsat imagery, digital elevation model data, and biophysical gradient data, are then developed separately for each of the three life forms using C5 software. Life-form specific cross-validation error matrices are generated during this process to assess levels of accuracy of the models. Decision tree relationships are then used to generate life-form specific height class spatial data layers, which are later merged into a single composite height data layer. The final EVH layer is evaluated and rectified through a series of QA/QC measures to ensure that the life-form of the cover code matched the life-form of the existing vegetation type. EVH is used in many subsequent LANDFIRE data layers.LF 2012 (lf_1.3.0) used modified LF 2010 (lf_1.2.0) data as a launching point to incorporate disturbance and its severity, both managed and natural, which occurred on the landscape 2013 and 2014. Specific examples of disturbance are: fire, vegetation management, weather, and insect and disease. The final disturbance data used in LANDFIRE is the result of several efforts that include data derived in part from remotely sensed land change methods, Monitoring Trends in Burn Severity (MTBS), and the LANDFIRE Events data call. Vegetation growth was modeled where both disturbance and non-disturbance occurs.Urban, agriculture, and wetlands were refined to reflect a 2012 landscape using the National Conservation Easement Database, National Wetlands Inventory (NWI), and Common Land Unit database (CLU) data.</abstract>
+			<purpose>LANDFIRE data products are designed to facilitate national- and regional-level strategic planning and reporting of management activities. Data products are created at a 30-meter grid spatial resolution raster data set; however, the applicability of data products varies by location and specific use. Principal purposes of the data products include providing, 1) national-level, landscape-scale geospatial products to support fire and fuels management planning, and, 2) consistent fuels data to support fire planning, analysis, and budgeting to evaluate fire management alternatives. Users are advised to evaluate the data carefully for their applications.</purpose>
+		</descript>
+		<status>
+			<progress>Complete</progress>
+			<update>Continually</update>
+		</status>
+		<spdom>
+			<bounding>
+				<westbc>-78.9660</westbc>
+				<eastbc>-78.7462</eastbc>
+				<northbc>36.1895</northbc>
+				<southbc>35.8223</southbc>
+			</bounding>
+		</spdom>
+		<keywords>
+			<theme>
+				<themekt>ISO 19115 Category</themekt>
+				<themekey>imageryBaseMapsEarthCover</themekey>
+				<themekey>010</themekey>
+			</theme>
+			<theme>
+				<themekt>None</themekt>
+				<themekey>GIS</themekey>
+				<themekey>Existing Vegetation Height</themekey>
+				<themekey>LANDFIRE 2014</themekey>
+				<themekey>USFS</themekey>
+				<themekey>EVH</themekey>
+				<themekey>United States Forest Service</themekey>
+				<themekey>LF_1.4.0</themekey>
+				<themekey>Raster digital data</themekey>
+				<themekey>LANDFIRE</themekey>
+				<themekey>U.S. Geological Survey</themekey>
+				<themekey>USGS</themekey>
+			</theme>
+			<place>
+				<placekt>U.S. Department of Commerce, 1995, Countries, dependencies, areas of special sovereignty, and their principal administrative divisions, Federal Information Processing Standard 10-4,): Washington, D.C., National Institute of Standards and Technology</placekt>
+				<placekey>US</placekey>
+				<placekey>United States</placekey>
+				<placekey>U.S.</placekey>
+			</place>
+		</keywords>
+		<accconst>None</accconst>
+		<useconst>Although LANDFIRE products are delivered as 30-meter pixels, they should not be used at the individual pixel level or on small groups of pixels. LANDFIRE products were designed to support 1) national (all states) strategic planning, 2) regional (single large states or groups of smaller states), and 3) strategic/tactical planning for large sub-regional landscapes and Fire Management Units (FMUs) (such as significant portions of states or multiple federal administrative entities). The applicability of LANDFIRE products to support fire and land management planning on smaller areas will vary by product, location, and specific use. Further investigation by local and regional experts should be conducted to inform decisions regarding local applicability. However, it is the responsibility of the local user, using LANDFIRE metadata and local knowledge, to determine if and/or how LANDFIRE can be used for particular areas of interest. LANDFIRE products are not intended to replace local products, but rather serve as a back-up by providing wall-to-wall cross-boundary products. It is the responsibility of the user to be familiar with the value, assumptions, and limitations of LANDFIRE products. Managers and planners must evaluate LANDFIRE data according to the scale and requirements specific to their needs.</useconst>
+		<ptcontac>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>Wildland Fire Science, Earth Resources Observation and Science Center, U.S. Geological Survey</cntorg>
+				</cntorgp>
+				<cntpos>Customer Service Representative</cntpos>
+				<cntaddr>
+					<addrtype>physical</addrtype>
+					<address>47914 252nd Street</address>
+					<city>Sioux Falls</city>
+					<state>SD</state>
+					<postal>57198-0001</postal>
+					<country>US</country>
+				</cntaddr>
+				<cntvoice>605/594-6151</cntvoice>
+				<cntfax>605/594-6589</cntfax>
+				<cntemail>helpdesk@landfire.gov</cntemail>
+			</cntinfo>
+		</ptcontac>
+		<datacred>Data have been collected and analyzed by teams at both USGS EROS, Sioux Falls, SD and at the USFS, Rocky Mountain Research Station, Missoula, MT. Depending on the data set described primary responsibility may reside with USGS EROS or with USFS. Contact information will be listed in the Contact Section and in the Metadata Reference section with regards to the primary responsibility.</datacred>
+		<secinfo>
+			<secsys>None in place</secsys>
+			<secclass>Unclassified</secclass>
+			<sechandl>If there is ever doubt, contact the appropriate resource staff who has stewardship responsibility and the GIS Coordinator.</sechandl>
+		</secinfo>
+		<native>Microsoft Windows 2000 Version 5.0 (Build 2195) Service Pack 4; ESRI ArcCatalog 9.1.0.722</native>
+	</idinfo>
+	<dataqual>
+		<lineage>
+			<procstep>
+				<procdesc>For a detailed definition and discussion on LANDFIRE, refer to http://www.LANDFIRE.gov</procdesc>
+				<procdate>unknown</procdate>
+				<proccont>
+					<cntinfo>
+						<cntorgp>
+							<cntorg>U.S. Geological Survey</cntorg>
+						</cntorgp>
+						<cntpos>Customer Service Representative</cntpos>
+						<cntaddr>
+							<addrtype>mailing and physical</addrtype>
+							<address>47914 252nd Street</address>
+							<address>USGS EROS</address>
+							<city>Sioux Falls</city>
+							<state>SD</state>
+							<postal>57198-0001</postal>
+							<country>US</country>
+						</cntaddr>
+						<cntvoice>605/594-6151</cntvoice>
+						<cnttdd>605/594-6933</cnttdd>
+						<cntfax>605/594-6589</cntfax>
+						<cntemail>custserv@usgs.gov</cntemail>
+						<hours>0800 - 1600, CT M-F (-6h CST/-5h CDT GMT)</hours>
+					</cntinfo>
+				</proccont>
+			</procstep>
+			<procstep>
+				<procdesc>LANDFIRE Refresh 2001 (lf_1.0.5): Imagery used in LANDFIRE National covered a span of years and several large wildland fires may not be represented for the time period used in that locale. LANDFIRE circa 2001 ensures wildland fires through 2001 are represented. Additional improvements found in Refresh 2001 include resolving inconsistencies along the international borders and updating aspects of the following: riparian and wetlands areas, agricultural and urban vegetation types as burnable, and adjusting the extent of barren and water land cover types.</procdesc>
+			</procstep>
+			<procstep>
+				<procdesc>Metadata updated</procdesc>
+				<procdate>20111116</procdate>
+			</procstep>
+		</lineage>
+	</dataqual>
+	<spdoinfo>
+		<rastinfo>
+			<rasttype>Grid Cell</rasttype>
+			<rowcount>23553</rowcount>
+			<colcount>7783</colcount>
+			<vrtcount>1</vrtcount>
+		</rastinfo>
+	</spdoinfo>
+	<eainfo>
+		<detailed>
+			<enttyp>
+				<enttypl>evh</enttypl>
+				<enttypd>Existing Vegetation Height</enttypd>
+				<enttypds>Landfire</enttypds>
+			</enttyp>
+			<attr>
+				<attrlabl>ObjectID</attrlabl>
+				<attrdef>Internal feature number.</attrdef>
+				<attrdefs>ESRI</attrdefs>
+				<attrdomv>
+					<udom>Sequential unique whole numbers that are automatically generated.</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Value</attrlabl>
+				<attrdef>Existing vegetation height</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>11</edomv>
+						<edomvd>Open Water</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>12</edomv>
+						<edomvd>Snow/Ice</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>13</edomv>
+						<edomvd>Developed-Upland Deciduous Forest</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>14</edomv>
+						<edomvd>Developed-Upland Evergreen Forest</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>15</edomv>
+						<edomvd>Developed-Upland Mixed Forest</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>16</edomv>
+						<edomvd>Developed-Upland Herbaceous</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>17</edomv>
+						<edomvd>Developed-Upland Shrubland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>18</edomv>
+						<edomvd>Developed-Herbaceous Wetland Vegetation</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>19</edomv>
+						<edomvd>Developed-Woody Wetland Vegetation</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>20</edomv>
+						<edomvd>Developed - General</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>21</edomv>
+						<edomvd>Developed - Open Space</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>22</edomv>
+						<edomvd>Developed - Low Intensity</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>23</edomv>
+						<edomvd>Developed - Medium Intensity</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>24</edomv>
+						<edomvd>Developed - High Intensity</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>25</edomv>
+						<edomvd>Developed-Roads</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>31</edomv>
+						<edomvd>Barren</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>32</edomv>
+						<edomvd>Quarries-Strip Mines-Gravel Pits</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>60</edomv>
+						<edomvd>NASS-Orchard</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>61</edomv>
+						<edomvd>NASS-Vineyard</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>62</edomv>
+						<edomvd>NASS-Bush fruit and berries</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>63</edomv>
+						<edomvd>NASS-Row Crop-Close Grown Crop</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>64</edomv>
+						<edomvd>NASS-Row Crop</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>65</edomv>
+						<edomvd>NASS-Close Grown Crop</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>66</edomv>
+						<edomvd>NASS-Pasture and Hayland</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>68</edomv>
+						<edomvd>NASS-Wheat</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+					<edom>
+						<edomv>69</edomv>
+						<edomvd>NASS-Aquaculture</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>75</edomv>
+						<edomvd>Herbaceous Semi-dry</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>76</edomv>
+						<edomvd>Herbaceous Semi-wet</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>78</edomv>
+						<edomvd>Recently Disturbed Forest</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>80</edomv>
+						<edomvd>Agriculture - General</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>81</edomv>
+						<edomvd>Pasture/Hay</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>82</edomv>
+						<edomvd>Cultivated Crops</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>83</edomv>
+						<edomvd>Small Grains</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>84</edomv>
+						<edomvd>Fallow</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>85</edomv>
+						<edomvd>Urban-Recreational Grasses</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>95</edomv>
+						<edomvd>Herbaceous Wetlands</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>100</edomv>
+						<edomvd>Sparse Vegetation Canopy</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>101</edomv>
+						<edomvd>Herb Height 0 to 0.5 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>102</edomv>
+						<edomvd>Herb Height 0.5 to 1.0 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>103</edomv>
+						<edomvd>Herb Height &gt; 1.0 meter</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>104</edomv>
+						<edomvd>Shrub Height 0 to 0.5 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>105</edomv>
+						<edomvd>Shrub Height 0.5 to 1.0 meter</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>106</edomv>
+						<edomvd>Shrub Height 1.0 to 3.0 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>107</edomv>
+						<edomvd>Shrub Height &gt; 3.0 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>108</edomv>
+						<edomvd>Forest Height 0 to 5 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>109</edomv>
+						<edomvd>Forest Height 5 to 10 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>110</edomv>
+						<edomvd>Forest Height 10 to 25 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>111</edomv>
+						<edomvd>Forest Height 25 to 50 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>112</edomv>
+						<edomvd>Forest Height &gt; 50 meters</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>150</edomv>
+						<edomvd>Sparse Vegetation Height</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>151</edomv>
+						<edomvd>Herb Height &gt;0 and &lt; 0.5m</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>152</edomv>
+						<edomvd>Herb Height &gt;= 0.5m</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>153</edomv>
+						<edomvd>Shrub Height &gt;0 and &lt; 0.5m</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>154</edomv>
+						<edomvd>Shrub Height &gt;= 0.5 and &lt; 1.5m</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>155</edomv>
+						<edomvd>Shrub Height &gt;= 1.5m</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>156</edomv>
+						<edomvd>Tree Height &gt; 0 and &lt; 10m</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+				<attrdomv>
+					<edom>
+						<edomv>157</edomv>
+						<edomvd>Tree Height &gt;= 10m</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Count</attrlabl>
+				<attrdef>Number of pixels</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<udom>Value represents number of pixels.</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Evh_name</attrlabl>
+				<attrdef>Existing vegetation height description</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<edom>
+						<edomv>see Attribute Overview for complete list</edomv>
+						<edomvd>see Attribute Overview for complete list</edomvd>
+						<edomvds>LANDFIRE</edomvds>
+					</edom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>R</attrlabl>
+				<attrdef>Red color value</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>255</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>G</attrlabl>
+				<attrdef>Green color value</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>255</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>B</attrlabl>
+				<attrdef>Blue color value</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>255</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Red</attrlabl>
+				<attrdef>Red color value/255</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>1</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Green</attrlabl>
+				<attrdef>Green color value/255</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>1</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Blue</attrlabl>
+				<attrdef>Blue color value/255</attrdef>
+				<attrdefs>Landfire</attrdefs>
+				<attrdomv>
+					<rdom>
+						<rdommin>0</rdommin>
+						<rdommax>1</rdommax>
+					</rdom>
+				</attrdomv>
+			</attr>
+		</detailed>
+		<overview>
+			<eaover>
+VALUE	CLASSNAMES
+11	Open Water
+12	Snow/Ice
+13	Developed-Upland Deciduous Forest
+14	Developed-Upland Evergreen Forest
+15	Developed-Upland Mixed Forest
+16	Developed-Upland Herbaceous
+17	Developed-Upland Shrubland
+18	Developed-Herbaceous Wetland Vegetation
+19	Developed-Woody Wetland Vegetation
+20	Developed - General
+21	Developed - Open Space
+22	Developed - Low Intensity
+23	Developed - Medium Intensity
+24	Developed - High Intensity
+25	Developed-Roads
+31	Barren
+32	Quarries-Strip Mines-Gravel Pits
+60	NASS-Orchard
+61	NASS-Vineyard
+62	NASS-Bush fruit and berries
+63	NASS-Row Crop-Close Grown Crop
+64	NASS-Row Crop
+65	NASS-Close Grown Crop
+66	NASS-Fallow/Idle Cropland
+67	NASS-Pasture and Hayland
+68           NASS-Wheat
+69           NASS-Aquaculture
+75	Herbaceous Semi-dry
+76	Herbaceous Semi-wet
+78	Recently Disturbed Forest
+80	Agriculture - General
+81	Pasture/Hay
+82	Cultivated Crops
+83	Small Grains
+84	Fallow
+85	Urban-Recreational Grasses
+95	Herbaceous Wetlands
+100	Sparse Vegetation Height
+101	Herb Height 0 to 0.5 meters
+102	Herb Height 0.5 to 1.0 meters
+103	Herb Height &gt; 1.0 meter
+104	Shrub Height 0 to 0.5 meters
+105	Shrub Height 0.5 to 1.0 meter
+106	Shrub Height 1.0 to 3.0 meters
+107	Shrub Height &gt; 3.0 meters
+108	Forest Height 0 to 5 meters
+109	Forest Height 5 to 10 meters
+110	Forest Height 10 to 25 meters
+111	Forest Height 25 to 50 meters
+112	Forest Height &gt; 50 meters
+150	Sparse Vegetation Height
+151	Herb Height &gt;0 and &lt; 0.5m
+152	Herb Height &gt;= 0.5m
+153	Shrub Height &gt;0 and &lt; 0.5m
+154	Shrub Height &gt;= 0.5 and &lt; 1.5m
+155	Shrub Height &gt;= 1.5m
+156	Tree Height &gt; 0 and &lt; 10m
+157	Tree Height &gt;= 10m
+</eaover>
+			<eadetcit>LF_110 (Refresh 2008) Existing Vegetation Height</eadetcit>
+		</overview>
+	</eainfo>
+	<distinfo>
+		<distrib>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>U.S. Geological Survey</cntorg>
+				</cntorgp>
+				<cntpos>Wildland Fire Science, Earth Resources Observation and Science Center, U.S. Geological Survey</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical</addrtype>
+					<address>47914 252nd Street</address>
+					<address>USGS EROS</address>
+					<city>Sioux Falls</city>
+					<state>SD</state>
+					<postal>57198-0001</postal>
+					<country>US</country>
+				</cntaddr>
+				<cntvoice>605/594-6151</cntvoice>
+				<cntfax>605/594-6589</cntfax>
+				<cntemail>webmapping@usgs.gov</cntemail>
+				<hours>0800 - 1600, CT M-F (-6h CST/-5h CDT GMT)</hours>
+				<cntinst>The USGS point of contact is for questions relating only to the data display and download from this web site. For questions regarding data content and quality, refer to the original metadata document.</cntinst>
+			</cntinfo>
+		</distrib>
+		<distliab>This product is reproduced from geospatial information prepared by the U.S. Department of Agriculture, Forest Service and USGS EROS. By removing the contents of this package or taking receipt of these files via electronic file transfer methods, you understand that the data stored on this media is in draft condition. Represented features may not be in an accurate geographic location. The Forest Service and USGS EROS make no expressed or implied warranty, including warranty of merchantability and fitness, with respect to the character, function, or capabilities of the data or their appropriateness for any user's purposes. The Forest Service and USGS EROS reserve the right to correct, update, modify, or replace this geospatial information without notification.</distliab>
+		<stdorder>
+			<digform>
+				<digtinfo>
+					<formname>ARCG</formname>
+					<formvern>ArcGIS 9.3</formvern>
+					<formspec>Raster</formspec>
+					<transize>38.76</transize>
+				</digtinfo>
+				<digtopt>
+					<onlinopt>
+						<computer>
+							<networka>
+								<networkr>http://landfire.cr.usgs.gov/viewer</networkr>
+							</networka>
+						</computer>
+					</onlinopt>
+				</digtopt>
+			</digform>
+			<fees>None</fees>
+			<turnarnd>Variable</turnarnd>
+		</stdorder>
+		<availabl>
+			<timeinfo>
+				<rngdates>
+					<begdate>20100101</begdate>
+					<enddate>unknown</enddate>
+				</rngdates>
+			</timeinfo>
+		</availabl>
+	</distinfo>
+	<metainfo>
+		<metd>20070201</metd>
+		<metc>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>U.S. Geological Survey</cntorg>
+				</cntorgp>
+				<cntpos>Customer Service Representative</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical</addrtype>
+					<address>USGS EROS</address>
+					<address>47914 252nd Street</address>
+					<city>Sioux Falls</city>
+					<state>SD</state>
+					<postal>57198-0001</postal>
+					<country>US</country>
+				</cntaddr>
+				<cntvoice>605/594-6151</cntvoice>
+				<cntfax>605/594-6589</cntfax>
+				<cntemail>custserv@usgs.gov</cntemail>
+				<hours>0800 - 1600 CT, M - F (-6h CST/-5h CDT GMT)</hours>
+			</cntinfo>
+		</metc>
+		<metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+		<metstdv>FGDC-STD-001-1998</metstdv>
+		<mettc>local time</mettc>
+		<metsi>
+			<metscs>None</metscs>
+			<metsc>Unclassified</metsc>
+			<metshd>None</metshd>
+		</metsi>
+	</metainfo>
+	<Esri><CreaDate>20161101</CreaDate><CreaTime>07562300</CreaTime><ArcGISstyle>FGDC CSDGM Metadata</ArcGISstyle><SyncOnce>TRUE</SyncOnce><DataProperties><itemProps><itemLocation><linkage Sync="TRUE">file://\\gs.doi.net\siouxfallssd-n\Science\firesnfs1\Landfire\Distribution\XML_Metadata\_New_Incoming\updated\lf2014\lf_140_evh_20161031_22</linkage><protocol Sync="TRUE">Local Area Network</protocol></itemLocation></itemProps><copyHistory><copy date="20161101" dest="\\gs.doi.net\siouxfallssd-n\Science\firesnfs1\Landfire\Distribution\XML_Metadata\_New_Incoming\updated\lf2014\lf_140_evh_20161031_22" source="D:\Workspace\datalist\metadata\LF2014\c14\LF\VEG\lf_140_evh_20161031_22" time="07562300" /></copyHistory></DataProperties></Esri></metadata>
