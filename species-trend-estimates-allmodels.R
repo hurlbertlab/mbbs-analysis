@@ -161,7 +161,8 @@ mbbs <- mbbs %>%
     model <- geeglm(formula,
                     family = poisson,
                     id = route_ID,
-                    data = filtered_mbbs)
+                    data = filtered_mbbs,
+                    corstr = "ar1")
     gee_table <- pivot_tidied(model, current_species)
     
     #do the same thing to the rest of the species list, and rbind those rows together
@@ -174,7 +175,8 @@ mbbs <- mbbs %>%
       model <- geeglm(formula,
                       family = poisson,
                       id = route_ID,
-                      data = filtered_mbbs)
+                      data = filtered_mbbs,
+                      corstr = "ar1")
       #rbind to gee_table
       gee_table <- rbind(gee_table, pivot_tidied(model, current_species))
       
@@ -189,7 +191,19 @@ mbbs <- mbbs %>%
     #remove intercept information
     filter(!value %in% "(Intercept)") %>%
     #add trend into (exponentiate the esimate)
-    mutate(trend = exp(estimate -1)) %>%
+    mutate(trend = exp(estimate)-1) %>%
+    #pivot_wider
+    pivot_wider(names_from = value, values_from = c(estimate, std.error, statistic, p.value, trend)) %>%
+    dplyr::select(-name)%>%
+    left_join(uai, by = c("common_name" = "Species"))
+  
+  
+  output_base <- run_gee(formula = f_base,
+                    mbbs, species_list) %>%
+    #remove intercept information
+    filter(!value %in% "(Intercept)") %>%
+    #add trend into (exponentiate the esimate)
+    mutate(trend = exp(estimate)-1) %>%
     #pivot_wider
     pivot_wider(names_from = value, values_from = c(estimate, std.error, statistic, p.value, trend)) %>%
     dplyr::select(-name)%>%
@@ -202,6 +216,12 @@ mbbs <- mbbs %>%
   plot(y=output$trend_year, x=output$UAI)
   plot(trend_year ~ UAI, data = output)
   abline(fit)
+  
+  plot(count ~ year, data = pw)
+  fit <- lm(count ~ year, data = pw)
+  abline(fit)
+  
+  plot(x=output_cor$trend_year,y= output_cor$estimate_percent_developed)
     
 #------------------------------------------  
   
