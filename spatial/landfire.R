@@ -69,7 +69,7 @@ landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
     TRUE ~ raw_landtype
   )) %>%
   arrange(ID, year, converted_landtype) %>%
-  #plenty of landtypes that we don't care about. Let's filter them out. For now, we can do more than just trees and include shub and herb vegetation in this. If you want to change this later, filter to landtype > 100 and < 200
+  #plenty of landtypes that we don't care about. Let's filter them out. For now, we can do more than just trees and include shrub and herb vegetation in this. If you want to change this later, filter to landtype > 100 and < 200
   filter(raw_landtype > 100) %>% 
   #add in total pixels for each route
   group_by(County_Route, year) %>%
@@ -82,21 +82,38 @@ landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
   #add in route_level summaries
   group_by(County_Route, year, converted_landtype) %>%
   mutate(frequency_route = sum(frequency),
-         percent_route = (frequency_route/totpix_route)*100,
-         median_route = median(raw_landtype),
+         percent_route = (frequency_route/totpix_route)*100) %>%
+  ungroup() %>%
+  group_by(County_Route, year) %>% 
+  mutate(median_route = median(raw_landtype),
          mean_route = mean(raw_landtype),
          q3_route = quantile(raw_landtype, 0.75)) %>%
   ungroup() %>%
   #add in quarter route summaries
   group_by(County_Route, year, converted_landtype, routequarter) %>%
   mutate(frequency_quarter = sum(frequency),
-         percent_quarter = (frequency_quarter/totpix_quarter)*100,
-         median_quarter = median(raw_landtype),
+         percent_quarter = (frequency_quarter/totpix_quarter)*100) %>%
+  ungroup() %>%
+  group_by(County_Route, year, routequarter) %>%
+  mutate(median_quarter = median(raw_landtype),
          mean_quarter = mean(raw_landtype),
          q3_quarter = quantile(raw_landtype, 0.75)) %>%
-  ungroup() %>%
-  #next step is to get the 2022-2014 differences
+  ungroup()
+
+#next step is to get the 2022-2014 differences. We'll do this first by route
+values_year <- function(landfire_raw, select_year) {
+  values_year <- landfire_raw %>% 
+    group_by(County_Route) %>%
+    filter(year == select_year) %>%
+    distinct(County_Route, .keep_all = TRUE)
+}
+v2014 <- values_year(landfire_raw, 2014)
+  group_by(County_Route) %>%
+  mutate(mean_route_2014 = ifelse(year == 2014, mean_route, NA)) #eh, I may need to exit my huge beautiful piping chain for this
   
+  
+  
+  ###clean up script below this point.
   
   
   # #group to route_level real quick
