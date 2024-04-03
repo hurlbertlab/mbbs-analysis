@@ -107,11 +107,24 @@ values_year <- function(landfire_raw, select_year) {
     filter(year == select_year) %>%
     distinct(County_Route, .keep_all = TRUE)
 }
-v2014 <- values_year(landfire_raw, 2014)
-  group_by(County_Route) %>%
-  mutate(mean_route_2014 = ifelse(year == 2014, mean_route, NA)) #eh, I may need to exit my huge beautiful piping chain for this
+
+v2016 <- values_year(landfire_raw, 2016) %>%
+  rename(t16mean_route = mean_route) %>%
+  select(County_Route, t16mean_route)
+
+v2022 <- values_year(landfire_raw, 2022) %>%
+  rename(t22mean_route = mean_route) %>%
+  select(County_Route, t22mean_route)
+
+#okay good! comparing between those two, values get higher. 
+dif <- left_join(v2016, v2022, by = "County_Route") %>%
+  mutate(dif_22_16 = t22mean_route - t16mean_route)
+
+hist(dif$dif_22_16) #great! variation. ONE route only experiencing a decline route-wide. 
+#Q: how much a difference does it cause in analysis for this to be something stable across years, vs something that changes year by year. There's interpolation, and maybe we can back calculate degree change from the differences we see from 22-16, like get the rate of change and project that backwards, but eh. I'm not sure about that, it's making up a lot of data. I guess we have the minimum bound of knowing what category the trees were in in 2001. 
+
   
-  
+  #graph of 1999 style median mean mode frequency - histogram, nojust a points plot actually pls
   
   ###clean up script below this point.
   
