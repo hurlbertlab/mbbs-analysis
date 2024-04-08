@@ -87,6 +87,13 @@ nlcd <- read.csv("data/landtype_byroute.csv", header = TRUE) %>%
          year = as.integer(year)) %>%
   ungroup() 
 
+#read in landfire information
+landfire <- read.csv("data/landfire_byroute.csv", header = TRUE) %>%
+  #right now, I'm only concerned here with means. So I want to just have one bit of information for each route, we don't need to keep all the different percent landtypes. If we wanted to do that, we could pivot wider based on landtype and get the % frequency for each category.
+  distinct(mbbs_county, route_num, lf_mean_route, lf_median_route, lf_year, lf_q3_route, lf_difmean_22_16) 
+
+landfire$mbbs_county <- str_to_lower(landfire$mbbs_county)
+
   
   #need to now combine all the % developed land into one row for each county/route/year
 ##heads up, nlcd data is missing years, assigns it the last value, only change when a new yr that has new data happens. 
@@ -101,6 +108,17 @@ add_nlcd <- function(mbbs, nlcd) {
 }
 mbbs <- add_nlcd(mbbs, nlcd)
 mbbs_nozero <- add_nlcd(mbbs_nozero, nlcd)
+
+add_landfire <- function(mbbs, landfire) {
+  mbbs <- mbbs %>% 
+    left_join(landfire, by = c("mbbs_county", "route_num", "year" = "lf_year")) %>%
+    group_by(route_ID, common_name) %>%
+    arrange(common_name, route_ID, year) %>%
+    tidyr::fill(lf_mean_route, lf_median_route, lf_q3_route, lf_difmean_22_16, .direction = "downup")
+}
+
+mbbs <- add_landfire(mbbs,landfire)
+mbbs_nozero <- add_landfire(mbbs_nozero, landfire)
 
 #------------------------------------------------------------------------------
 
@@ -128,6 +146,7 @@ mbbs <- mbbs %>%
   f_pd <- update(f_base, ~ . + percent_developed)
   f_obs <- update(f_base, ~ . + observer_quality)
   f_pdobs <- update(f_base, ~ . + percent_developed + observer_quality)
+  f_wlandfire <- update(f_pdobs, ~. + lf_mean_route)
 
 #------------------------------------------------------------------------------
 #GEE model  
@@ -186,7 +205,7 @@ mbbs <- mbbs %>%
   }
   
   output <- run_gee(formula = 
-                     update(f_base, ~ . + percent_developed + observer_quality),
+                     update(f_base, ~ . + percent_developed + observer_quality + lf_mean_route),
                    mbbs, species_list) %>%
     #remove intercept information
     filter(!value %in% "(Intercept)") %>%

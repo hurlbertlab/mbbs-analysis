@@ -69,8 +69,10 @@ landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
     TRUE ~ raw_landtype
   )) %>%
   arrange(ID, year, converted_landtype) %>%
-  #plenty of landtypes that we don't care about. Let's filter them out. For now, we can do more than just trees and include shrub and herb vegetation in this. If you want to change this later, filter to landtype > 100 and < 200
-  filter(raw_landtype > 100) %>% 
+  #plenty of landtypes that we don't care about. Let's filter them out. For now, let's just focus on trees. If we want to change this later to include herbs and shrubs, filter to landtype > 100 For now, we can do more than just trees and include shrub and herb vegetation in this. 
+  filter(raw_landtype > 100 & raw_landtype < 200) %>% 
+  #2014 has shrub information included in the low 100s information, needs to be 108 or greater for those years
+  filter(year != 2014 | (year == 2014 & raw_landtype >= 108)) %>%
   #add in total pixels for each route
   group_by(County_Route, year) %>%
   mutate(totpix_route = sum(numpix)) %>%
@@ -100,7 +102,7 @@ landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
          q3_quarter = quantile(raw_landtype, 0.75)) %>%
   ungroup()
 
-#next step is to get the 2022-2014 differences. We'll do this first by route
+#next step is to get the 2022-2016 differences. We'll do this first by route
 values_year <- function(landfire_raw, select_year) {
   values_year <- landfire_raw %>% 
     group_by(County_Route) %>%
@@ -108,21 +110,80 @@ values_year <- function(landfire_raw, select_year) {
     distinct(County_Route, .keep_all = TRUE)
 }
 
+values_year_quarter <- function(landfire_raw, select_year) {
+  values_year <- landfire_raw %>% 
+    group_by(County_Route, routequarter) %>%
+    filter(year == select_year) %>%
+    distinct(County_Route, .keep_all = TRUE)
+}
+
 v2016 <- values_year(landfire_raw, 2016) %>%
-  rename(t16mean_route = mean_route) %>%
-  select(County_Route, t16mean_route)
+  rename(y16mean_route = mean_route) %>%
+  rename(y16median_route = median_route) %>%
+  select(County_Route, y16mean_route, y16median_route)
 
 v2022 <- values_year(landfire_raw, 2022) %>%
-  rename(t22mean_route = mean_route) %>%
-  select(County_Route, t22mean_route)
+  rename(y22mean_route = mean_route) %>%
+  rename(y22median_route = median_route) %>%
+  select(County_Route, y22mean_route, y22median_route)
 
 #okay good! comparing between those two, values get higher. 
 dif <- left_join(v2016, v2022, by = "County_Route") %>%
-  mutate(dif_22_16 = t22mean_route - t16mean_route)
+  mutate(difmean_22_16 = y22mean_route - y16mean_route,
+         difmedian_22_16 = y22median_route - y16median_route)
 
-hist(dif$dif_22_16) #great! variation. ONE route only experiencing a decline route-wide. 
+#by routequarter
+v2016 <- values_year_quarter(landfire_raw, 2016) %>%
+  rename(y16mean_quarter = mean_quarter) %>%
+  rename(y16median_quarter = median_quarter) %>%
+  select(County_Route, routequarter, y16mean_quarter, y16median_quarter)
+
+v2022 <- values_year_quarter(landfire_raw, 2022) %>%
+  rename(y22mean_quarter = mean_quarter) %>%
+  rename(y22median_quarter = median_quarter) %>%
+  select(County_Route, routequarter, y22mean_quarter, y22median_quarter)
+
+#okay good! comparing between those two, values get higher. 
+dif_quarter <- left_join(v2016, v2022, by = c("County_Route", "routequarter")) %>%
+  mutate(difmeanquarter_22_16 = y22mean_quarter - y16mean_quarter,
+         difmedianquarter_22_16 = y22median_quarter - y16median_quarter)
+
+hist(dif$difmean_22_16) #great! variation. ONE route only experiencing a decline route-wide.
+hist(dif$difmedian_22_16) #median experiences no changes 
+hist(dif_quarter$difmeanquarter_22_16) #more variation in the quarter routes. Some decline, most stay around 0, a few increase
+hist(dif_quarter$difmedianquarter_22_16) #and like above, much less variation in median. I think mean is the way to go because it's capturing more of the distribution of values. 
+
+landfire_raw <- landfire_raw %>% 
+  left_join(dif_quarter, by = c("County_Route", "routequarter")) %>%
+  left_join(dif, by = c("County_Route"))
 #Q: how much a difference does it cause in analysis for this to be something stable across years, vs something that changes year by year. There's interpolation, and maybe we can back calculate degree change from the differences we see from 22-16, like get the rate of change and project that backwards, but eh. I'm not sure about that, it's making up a lot of data. I guess we have the minimum bound of knowing what category the trees were in in 2001. 
 
+
+landfire_quarter <- landfire_raw %>%
+  group_by(County_Route, raw_landtype, year, routequarter) %>%
+  distinct(County_Route, raw_landtype, year, routequarter, .keep_all=TRUE) %>%
+  ungroup() %>%
+  select(-geometry) %>%
+  #add lf prefix to columns
+  rename_with(~ paste0("lf_", .), numpix:difmedian_22_16)
+
+landfire_route <- landfire_raw %>%
+  group_by(County_Route, raw_landtype, year) %>%
+  distinct(County_Route, raw_landtype, year, .keep_all=TRUE) %>%
+  ungroup() %>%
+  select(-geometry) %>%
+  #add lf prefix to columns
+  rename_with(~ paste0("lf_", .), numpix:difmedian_22_16) 
+
+#save csv
+write.csv(landfire_route, "data/landfire_byroute.csv", row.names = FALSE)
+write.csv(landfire_quarter, "data/landfire_byroutequarter.csv", row.names = FALSE)
+
+
+
+plot(landfire_route$year, landfire_route$mean_route)
+plot(landfire_quarter$year, landfire_quarter$mean_quarter)
+hist(landfire_quarter$difmeanquarter_22_16)
   
   #graph of 1999 style median mean mode frequency - histogram, nojust a points plot actually pls
   
@@ -278,12 +339,3 @@ turn_to_route_level <- function(landfire, grouping_variables) {
 
 #add in landfire classification information
   #this gets...complicated. early landfire 108-112 is information about tree heights. later landfire anything 101+ the part after the hundreds place is the m height of the trees. This changes so little, is essentially bins the tree categories into like, 2 segments. I Dont know that this is a valuable way to get tree heights. I think, the work is still work working to before ultimately coming to this conclusion. CONFIRM your thoughts before deciding offhand based on looking at the raw data and not clear summaries about how things change along routes. 
-
-
-
-
-
-
-
-#write csv of extracted data
-write.csv(extractedbuffers_terra, "/proj/hurlbertlab/ijbgoulden/extractedbuffers.csv")
