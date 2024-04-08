@@ -39,13 +39,11 @@ extracted <-  terra::extract(x = bufferstack, y = mbbs_buffers, df = TRUE)
 landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
   #get the total number of pixels on each route_stop
   group_by(ID) %>%
-  mutate(numpix = n()) %>%
+  mutate(numpix = n()) %>% #year doesn't matter yet, because all we have is IDs and each year is a column
   ungroup() %>%
-  #get the frequency of each raw_landtype by stop
-  pivot_longer(cols = landfire_2001evh:landfire_2022evh, names_to = "year", names_prefix = "landfire_", values_to = "raw_landtype") %>% #pivot
-  mutate(year = as.numeric(str_extract(year, "[0-9]+"))) %>% #make year a number
-  group_by(County_Route_Stop, year, raw_landtype) %>%
-  mutate(frequency = n()) %>%
+  #get the total number of pixels on each route
+  group_by(County_Route) %>%
+  mutate(totpix_route = n()) %>%
   ungroup() %>%
   #add in route stop information
   mutate(routequarter = case_when(stop_num < 6 ~ 1,
@@ -54,8 +52,23 @@ landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
                                   stop_num > 15 ~ 4),
          routehalf = case_when(routequarter < 3 ~ 1,
                                routequarter > 2 ~ 2)) %>% 
+  #get total number of pixels on each route quarter
+  group_by(County_Route, routequarter) %>%
+  mutate(totpix_quarter = n()) %>%
+  ungroup %>%
+  #pivot time! Now each row is a pixel + a year. 
+  pivot_longer(cols = landfire_2001evh:landfire_2022evh, names_to = "year", names_prefix = "landfire_", values_to = "raw_landtype") %>% #pivot
+  mutate(year = as.numeric(str_extract(year, "[0-9]+"))) %>% #make year a number
   #convert landtypes to 2001 style
   mutate(converted_landtype = case_when(
+    year > 2014 &
+      raw_landtype > 200 & raw_landtype < 206 ~ 104,
+    year > 2014 &
+      raw_landtype > 205 & raw_landtype < 211 ~ 105,
+    year > 2014 &
+      raw_landtype > 210 & raw_landtype < 230 ~ 106,
+    year > 2014 &
+      raw_landtype == 230 ~ 107,
     year > 2014 & 
       raw_landtype > 99 & raw_landtype < 105 ~ 108,
     year > 2014 & 
@@ -68,11 +81,30 @@ landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
       raw_landtype > 150 & raw_landtype < 200 ~ 112,
     TRUE ~ raw_landtype
   )) %>%
-  arrange(ID, year, converted_landtype) %>%
-  #plenty of landtypes that we don't care about. Let's filter them out. For now, let's just focus on trees. If we want to change this later to include herbs and shrubs, filter to landtype > 100 For now, we can do more than just trees and include shrub and herb vegetation in this. 
-  filter(raw_landtype > 100 & raw_landtype < 200) %>% 
+  arrange(ID, year, converted_landtype) %>% #ease of readability
+  #plenty of landtypes that we don't care about. Let's filter them out. For now, all we're interested in is that successional forest height. So we want landtypes 106-109. If interested in just forest, > 100 < 200, if interested in forest + herb in the later years of landfire, only >100
+  filter(converted_landtype >= 106 & converted_landtype <= 109) %>%  
+  #get route level information and summaries
+  group_by(County_Route, year, raw_landtype) %>%
+  mutate(frequency_raw_route = n()) %>%
+  ungroup() %>%
+  group_by(County_Route, year, converted_landtype) %>%
+  mutate(frequency_converted_route = n(),
+         percent_converted_route = (frequency_converted_route/totpix_route)*100) %>%
+  ungroup() %>%
+  group_by(County_Route, year) %>% #only by route and year because we've filtered to just the landtypes we're interested in looking at.
+  mutate(frequency_succesional_route = n(),
+         percent_succesional_route = (frequency_succesional_route/totpix_route)*100) %>%
+  ungroup()
+#% each land type
+#% filtered landtypes
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Below here needs updating.
+  
+  group_by(County_Route_Stop, year, raw_landtype) %>%
+  mutate(frequency_raw = n()) %>%
+  ungroup() %>%
   #2014 has shrub information included in the low 100s information, needs to be 108 or greater for those years
-  filter(year != 2014 | (year == 2014 & raw_landtype >= 108)) %>%
+  #filter(year != 2014 | (year == 2014 & raw_landtype >= 108)) %>% #comment out, using high shrub info now.
   #add in total pixels for each route
   group_by(County_Route, year) %>%
   mutate(totpix_route = sum(numpix)) %>%
@@ -87,9 +119,10 @@ landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
          percent_route = (frequency_route/totpix_route)*100) %>%
   ungroup() %>%
   group_by(County_Route, year) %>% 
-  mutate(median_route = median(raw_landtype),
-         mean_route = mean(raw_landtype),
-         q3_route = quantile(raw_landtype, 0.75)) %>%
+  mutate(median_route = median(converted_landtype),
+         mean_route = mean(converted_landtype),
+         q3_route = quantile(converted_landtype, 0.75),
+         percent_succesional_route <- (sum(frequency)/totpix_route)*100) %>%
   ungroup() %>%
   #add in quarter route summaries
   group_by(County_Route, year, converted_landtype, routequarter) %>%
@@ -99,7 +132,8 @@ landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
   group_by(County_Route, year, routequarter) %>%
   mutate(median_quarter = median(raw_landtype),
          mean_quarter = mean(raw_landtype),
-         q3_quarter = quantile(raw_landtype, 0.75)) %>%
+         q3_quarter = quantile(raw_landtype, 0.75),
+         percent_succesional_quarter <- (sum(frequency)/totpix_route)*100) %>%
   ungroup()
 
 #next step is to get the 2022-2016 differences. We'll do this first by route
