@@ -95,47 +95,84 @@ landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
   group_by(County_Route, year) %>% #only by route and year because we've filtered to just the landtypes we're interested in looking at.
   mutate(frequency_succesional_route = n(),
          percent_succesional_route = (frequency_succesional_route/totpix_route)*100) %>%
-  ungroup()
+  ungroup() %>%
 #% each land type
 #% filtered landtypes
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Below here needs updating.
-  
-  group_by(County_Route_Stop, year, raw_landtype) %>%
-  mutate(frequency_raw = n()) %>%
-  ungroup() %>%
-  #2014 has shrub information included in the low 100s information, needs to be 108 or greater for those years
-  #filter(year != 2014 | (year == 2014 & raw_landtype >= 108)) %>% #comment out, using high shrub info now.
-  #add in total pixels for each route
-  group_by(County_Route, year) %>%
-  mutate(totpix_route = sum(numpix)) %>%
-  ungroup() %>%
-  #add in total pixels for each route quarter
-  group_by(County_Route, year, routequarter) %>%
-  mutate(totpix_quarter = sum(numpix)) %>%
-  ungroup() %>%
-  #add in route_level summaries
-  group_by(County_Route, year, converted_landtype) %>%
-  mutate(frequency_route = sum(frequency),
-         percent_route = (frequency_route/totpix_route)*100) %>%
-  ungroup() %>%
-  group_by(County_Route, year) %>% 
-  mutate(median_route = median(converted_landtype),
-         mean_route = mean(converted_landtype),
-         q3_route = quantile(converted_landtype, 0.75),
-         percent_succesional_route <- (sum(frequency)/totpix_route)*100) %>%
-  ungroup() %>%
-  #add in quarter route summaries
+  #get route quarter information and summaries
   group_by(County_Route, year, converted_landtype, routequarter) %>%
-  mutate(frequency_quarter = sum(frequency),
-         percent_quarter = (frequency_quarter/totpix_quarter)*100) %>%
+  mutate(frequency_converted_quarter = n(),
+         percent_converted_route = (frequency_converted_quarter/totpix_quarter)*100) %>%
   ungroup() %>%
   group_by(County_Route, year, routequarter) %>%
-  mutate(median_quarter = median(raw_landtype),
-         mean_quarter = mean(raw_landtype),
-         q3_quarter = quantile(raw_landtype, 0.75),
-         percent_succesional_quarter <- (sum(frequency)/totpix_route)*100) %>%
+  mutate(frequency_succesional_quarter = n(), 
+         percent_succesional_quarter = (frequency_succesional_quarter/totpix_quarter)*100) %>%
   ungroup()
 
+
+landfire_quarter_succesional <- landfire_raw %>%
+  group_by(County_Route, year, routequarter) %>%
+  distinct(County_Route, percent_succesional_quarter, year, routequarter, .keep_all=TRUE) %>%
+  ungroup() %>%
+  select(-geometry)
+
+landfire_quarter_converted <- landfire_raw %>%
+  group_by(County_Route, year, converted_landtype, routequarter) %>%
+  distinct(County_Route, converted_landtype, year, routequarter, .keep_all=TRUE) %>%
+  ungroup() %>%
+  select(-geometry)
+
+
+#Plot changes for all the landfire data by routequarter
+cr <- unique(landfire_quarter$County_Route)
+q <- unique(landfire_quarter$routequarter)
+#generate the pdf that we'll print to
+pdf(file = "spatial/landfire_quarter_converted.pdf",
+    width = 15)
+
+for(i in 1:length(cr)) {
+  
+  crselect <- cr[i]
+  par(mfrow = c(1,4))
+  
+  for(a in 1:length(q)) {
+    
+    qselect <- q[a]
+    
+    plot_df <- filter(landfire_quarter, County_Route == crselect, routequarter == qselect)
+    
+    plot(plot_df$year,
+         plot_df$percent_succesional_quarter,
+         type = "b", 
+         xlin = c(2001,2023),
+         ylim = c(0,20),
+         xlab = "Year", 
+         ylab = "Percent Succesional Landcover",
+         main = crselect,
+         lwd = 2)
+    axis(1, at=seq(2001,2021,1))
+  }
+}
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Below here needs updating.
+ 
 #next step is to get the 2022-2016 differences. We'll do this first by route
 values_year <- function(landfire_raw, select_year) {
   values_year <- landfire_raw %>% 
@@ -235,54 +272,6 @@ hist(landfire_quarter$difmeanquarter_22_16)
   #     distinct(County_Route, converted_landtype, year, .keep_all = TRUE) 
   
   
-  
-  
-#add back in the route information
-landfire_raw <- left_join(extracted, mbbs_buffers, by = "ID") %>%
-  #get the total number of pixels on each route_stop
-  group_by(ID) %>%
-  mutate(numpix = n()) %>%
-  ungroup() %>%
-  #get the frequency of each raw_landtype
-  pivot_longer(cols = landfire_2001evh:landfire_2022evh, names_to = "year", names_prefix = "landfire_", values_to = "raw_landtype") %>% #pivot
-  mutate(year = as.numeric(str_extract(year, "[0-9]+"))) %>% #make year a number
-  group_by(County_Route_Stop, year, raw_landtype) %>%
-  mutate(frequency = n()) %>%
-  ungroup() %>%
-  #convert the raw land cover types to match the earlier kinds
-  mutate(converted_landtype = case_when(
-    year > 2014 & 
-      raw_landtype > 99 & raw_landtype < 105 ~ 108,
-    year > 2014 & 
-      raw_landtype > 104 & raw_landtype < 111 ~ 109,
-    year > 2014 & 
-      raw_landtype > 110 & raw_landtype < 126 ~ 110,
-    year > 2014 & 
-      raw_landtype > 125 & raw_landtype < 151 ~ 111,
-    year > 2014 & 
-      raw_landtype > 150 & raw_landtype < 200 ~ 112,
-    TRUE ~ raw_landtype
-  )) %>%
-  #add in route stop information
-  mutate(routequarter = case_when(stop_num < 6 ~ 1,
-                                  stop_num < 11 ~ 2,
-                                  stop_num < 16 ~ 3,
-                                  stop_num > 15 ~ 4),
-         routehalf = case_when(routequarter < 3 ~ 1,
-                               routequarter > 2 ~ 2)) %>% 
-  ungroup()
-
-landfire <- landfire_raw %>% distinct()
-
-landfire_medians <- landfire_raw %>% 
-  filter(raw_landtype > 100 & raw_landtype < 200) %>%
-  group_by(County_Route, year, routequarter) %>%
-  mutate(median = median(raw_landtype),
-         q3 = quantile(raw_landtype, 0.75)) %>%
-  distinct() %>%
-  ungroup()
-
-
 #Plot changes for all the landfire data by routequarter
 cr <- unique(landfire_quarter$County_Route)
 nlcdcode <- unique(landfire_quarter$converted_landtype)
@@ -305,7 +294,7 @@ for(i in 1:length(cr)) {
     color = c("#476BA0", "#AA0000", "#B2ADA3", "#68AA63", "#1C6330", "#B5C98E",  "#CCBA7C", "#77AD93", "#DBD83D", "#AA7028",  "#BAD8EA")
     
     plot(plot_df[plot_df$converted_landtype == nlcdclass[1],]$year, 
-         plot_df[plot_df$ijbg_class == nlcdclass[1],]$percent, 
+         plot_df[plot_df$converted_landtype == nlcdclass[1],]$percent, 
          type = "b",
          col = color[1],
          xlim = c(2001, 2021),
@@ -316,9 +305,9 @@ for(i in 1:length(cr)) {
          xaxt = "n", 
          lwd = 2)
     axis(1, at=seq(2001,2021,1))
-    legend("topleft", legend = unique(plot_df$ijbg_class), col = color, lty = 1, ncol = 2, lwd = 4)
+    legend("topleft", legend = unique(plot_df$converted_landtype), col = color, lty = 1, ncol = 2, lwd = 4)
     for(a in 2:length(nlcdclass)) {
-      lines(plot_df[plot_df$ijbg_class == nlcdclass[a],]$year,  plot_df[plot_df$ijbg_class == nlcdclass[a],]$percent, type = "b", lwd = 2, col = color[a])
+      lines(plot_df[plot_df$converted_landtype == nlcdclass[a],]$year,  plot_df[plot_df$converted_landtype == nlcdclass[a],]$percent, type = "b", lwd = 2, col = color[a])
     }
   }
 }
@@ -326,18 +315,6 @@ for(i in 1:length(cr)) {
 dev.off()
 
 
-
-#create converted landfire database, getting the frequencies of the converted 
-landfire_c <- landfire %>%
-  group_by(ID, year, converted_landtype) %>%
-  mutate(frequency_c = sum(frequency)) %>%
-  arrange(ID, year, converted_landtype) %>%
-  distinct(ID, year, converted_landtype, .keep_all = TRUE) %>%
-  select(-raw_landtype, -frequency) %>%
-  mutate(percent = frequency_c/numpix) 
-
-#if I'm only interested in forest height categories
-landfire_cfh <- landfire_c %>% filter(converted_landtype > 100 & converted_landtype < 200)
 
 #group to route_level real quick
 lf_group_route <- function(landfire) {
@@ -370,6 +347,3 @@ landfire_quarter <- landfire_cfh %>%
 turn_to_route_level <- function(landfire, grouping_variables) {
   
 }
-
-#add in landfire classification information
-  #this gets...complicated. early landfire 108-112 is information about tree heights. later landfire anything 101+ the part after the hundreds place is the m height of the trees. This changes so little, is essentially bins the tree categories into like, 2 segments. I Dont know that this is a valuable way to get tree heights. I think, the work is still work working to before ultimately coming to this conclusion. CONFIRM your thoughts before deciding offhand based on looking at the raw data and not clear summaries about how things change along routes. 
