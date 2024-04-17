@@ -205,7 +205,7 @@ mbbs <- mbbs %>%
   }
   
   output <- run_gee(formula = 
-                     update(f_base, ~ . + percent_developed + observer_quality + lf_mean_route),
+                     update(f_base, ~ .+ observer_quality),
                    mbbs, species_list) %>%
     #remove intercept information
     filter(!value %in% "(Intercept)") %>%
@@ -215,6 +215,43 @@ mbbs <- mbbs %>%
     pivot_wider(names_from = value, values_from = c(estimate, std.error, statistic, p.value, trend)) %>%
     dplyr::select(-name)%>%
     left_join(uai, by = c("common_name" = "Species"))
+  
+  #---------------------------------bsft---------------------------------------
+  output$trend_year <- output$trend_year*100
+  output$std.error_year <- output$std.error_year*100
+  
+  output <- output %>% arrange(trend_year)
+  
+  hist(output$trend_year, breaks = 15)
+  
+  colors <- ifelse(output$p.value_year >= 0.05, "skyblue", "white")
+  
+  mid <- barplot(output$trend_year)
+  barplot(height = output$trend_year,
+         # names.arg = output$common_name,
+         #percent_change - 2 * standard_deviation, percent_change + 2 * standard_deviation),  # Adjust ylim to include error bars,
+          #main = "Species Yearly Trends",
+          xlab = "Bird Species",
+         ylab = "% Yearly Change",
+         ylim = c(-7,7),
+         col = "skyblue", #if you want based on significance use colors variable above
+         border = "black")
+  #arrows(x0 = mid, y0 = output$trend_year + output$std.error_year,
+  #       x1 = mid, y1 = output$trend_year - output$std.error_year,
+  #       angle = 90, code =3, length = 0.01)
+  
+  
+  #okay. um. some start to visuals for this presentation..
+  
+  #meantime. let's do migratory distance and diet etc. predictions. left_join traits
+  traits <- read.csv("data/NC_species_traits.csv", header = TRUE)
+  output <- output %>%
+    left_join(traits, by = c("common_name" = "english_common_name"))
+  
+  #hey, Ivara, this is the wrong way to analyze this data. Rather than fitting a linear line to a category vs trend, this is a t-test style analysis that requires box plots of differences. let's do that and THEN make calls, ok? uai is a continous variable and can be fit with a line, these categorical variables are not and you should treat them like the cat data.
+  fit <- lm(trend_year ~ Breeding_Biome, data = output)
+  summary(fit)
+  #____________________________________________________________________________
   
   
   output_base <- run_gee(formula = f_base,
