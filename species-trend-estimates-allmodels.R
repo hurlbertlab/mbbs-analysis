@@ -87,6 +87,13 @@ nlcd <- read.csv("data/landtype_byroute.csv", header = TRUE) %>%
          year = as.integer(year)) %>%
   ungroup() 
 
+#read in landfire information
+landfire <- read.csv("data/landfire_byroute.csv", header = TRUE) %>%
+  #right now, I'm only concerned here with means. So I want to just have one bit of information for each route, we don't need to keep all the different percent landtypes. If we wanted to do that, we could pivot wider based on landtype and get the % frequency for each category.
+  distinct(mbbs_county, route_num, lf_mean_route, lf_median_route, lf_year, lf_q3_route, lf_difmean_22_16) 
+
+landfire$mbbs_county <- str_to_lower(landfire$mbbs_county)
+
   
   #need to now combine all the % developed land into one row for each county/route/year
 ##heads up, nlcd data is missing years, assigns it the last value, only change when a new yr that has new data happens. 
@@ -101,6 +108,17 @@ add_nlcd <- function(mbbs, nlcd) {
 }
 mbbs <- add_nlcd(mbbs, nlcd)
 mbbs_nozero <- add_nlcd(mbbs_nozero, nlcd)
+
+add_landfire <- function(mbbs, landfire) {
+  mbbs <- mbbs %>% 
+    left_join(landfire, by = c("mbbs_county", "route_num", "year" = "lf_year")) %>%
+    group_by(route_ID, common_name) %>%
+    arrange(common_name, route_ID, year) %>%
+    tidyr::fill(lf_mean_route, lf_median_route, lf_q3_route, lf_difmean_22_16, .direction = "downup")
+}
+
+mbbs <- add_landfire(mbbs,landfire)
+mbbs_nozero <- add_landfire(mbbs_nozero, landfire)
 
 #------------------------------------------------------------------------------
 
@@ -128,6 +146,7 @@ mbbs <- mbbs %>%
   f_pd <- update(f_base, ~ . + percent_developed)
   f_obs <- update(f_base, ~ . + observer_quality)
   f_pdobs <- update(f_base, ~ . + percent_developed + observer_quality)
+  f_wlandfire <- update(f_pdobs, ~. + lf_mean_route)
 
 #------------------------------------------------------------------------------
 #GEE model  
@@ -186,7 +205,7 @@ mbbs <- mbbs %>%
   }
   
   output <- run_gee(formula = 
-                     update(f_base, ~ . + percent_developed + observer_quality),
+                     update(f_base, ~ .+ observer_quality),
                    mbbs, species_list) %>%
     #remove intercept information
     filter(!value %in% "(Intercept)") %>%
@@ -196,6 +215,43 @@ mbbs <- mbbs %>%
     pivot_wider(names_from = value, values_from = c(estimate, std.error, statistic, p.value, trend)) %>%
     dplyr::select(-name)%>%
     left_join(uai, by = c("common_name" = "Species"))
+  
+  #---------------------------------bsft---------------------------------------
+  output$trend_year <- output$trend_year*100
+  output$std.error_year <- output$std.error_year*100
+  
+  output <- output %>% arrange(trend_year)
+  
+  hist(output$trend_year, breaks = 15)
+  
+  colors <- ifelse(output$p.value_year >= 0.05, "skyblue", "white")
+  
+  mid <- barplot(output$trend_year)
+  barplot(height = output$trend_year,
+         # names.arg = output$common_name,
+         #percent_change - 2 * standard_deviation, percent_change + 2 * standard_deviation),  # Adjust ylim to include error bars,
+          #main = "Species Yearly Trends",
+          xlab = "Bird Species",
+         ylab = "% Yearly Change",
+         ylim = c(-7,7),
+         col = "skyblue", #if you want based on significance use colors variable above
+         border = "black")
+  #arrows(x0 = mid, y0 = output$trend_year + output$std.error_year,
+  #       x1 = mid, y1 = output$trend_year - output$std.error_year,
+  #       angle = 90, code =3, length = 0.01)
+  
+  
+  #okay. um. some start to visuals for this presentation..
+  
+  #meantime. let's do migratory distance and diet etc. predictions. left_join traits
+  traits <- read.csv("data/NC_species_traits.csv", header = TRUE)
+  output <- output %>%
+    left_join(traits, by = c("common_name" = "english_common_name"))
+  
+  #hey, Ivara, this is the wrong way to analyze this data. Rather than fitting a linear line to a category vs trend, this is a t-test style analysis that requires box plots of differences. let's do that and THEN make calls, ok? uai is a continous variable and can be fit with a line, these categorical variables are not and you should treat them like the cat data.
+  fit <- lm(trend_year ~ Breeding_Biome, data = output)
+  summary(fit)
+  #____________________________________________________________________________
   
   
   output_base <- run_gee(formula = f_base,
