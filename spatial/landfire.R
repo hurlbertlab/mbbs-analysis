@@ -121,6 +121,8 @@ dif <- left_join(v2016, v2022, by = "County_Route") %>%
   mutate(dif_22_16 = t22mean_route - t16mean_route)
 
 hist(dif$dif_22_16) #great! variation. ONE route only experiencing a decline route-wide. 
+#But there's still variation in how much these trees are growing by.
+#should also do this with median. RN shrubs are included.
 #Q: how much a difference does it cause in analysis for this to be something stable across years, vs something that changes year by year. There's interpolation, and maybe we can back calculate degree change from the differences we see from 22-16, like get the rate of change and project that backwards, but eh. I'm not sure about that, it's making up a lot of data. I guess we have the minimum bound of knowing what category the trees were in in 2001. 
 
   
