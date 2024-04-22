@@ -1,6 +1,7 @@
 #for getting a trend estimate by route for each species, and then mapping that variation on the buffers
 #first, go ahead and run species-trend-estiamtes-allmodels to get the mbbs data.
 library(sf)
+library(stringr)
 #going to need a table of the route information
 #let's load in the buffers
 
@@ -51,13 +52,25 @@ species_list <- unique(mbbs$common_name)
 filtered_mbbs <- mbbs %>% filter(common_name == species_list[1] & route_ID == mbbs_buffers$route_ID[1]) %>%
   arrange(route_ID, year, common_name)
 model <- NA
-results <- NA
-for(i in 1:length(species_list)) {#for each species
+results <- geeglm(count ~ year,
+                  family = poisson,
+                  id = route_ID,
+                  data = filtered_mbbs,
+                  corstr = "ar1") %>%
+  pivot_tidied(species_list[i]) %>%
+  filter(value == "year") %>%
+  mutate(route_ID = 999)
+
+
+for(i in 1:length(species_list)) {  
+  print(paste("started sp", species_list[i]))
   for(a in 1:length(unique(mbbs_buffers$route_ID))){ #and within each route
     
     #filter mbbs
     filtered_mbbs <- mbbs %>% 
       filter(common_name == species_list[i] & route_ID == unique(mbbs_buffers$route_ID)[a])
+    
+    #maybe I need something to help the code when the next species has really small data along each route? idk..
     
     #model - this is a gee with just one route in the grouping variable
     model <- geeglm(count ~ year,
@@ -69,10 +82,11 @@ for(i in 1:length(species_list)) {#for each species
       filter(value == "year")
     
     model$route_ID <- unique(mbbs_buffers$route_ID)[a]
+    results <- rbind(results, model)
+    print(paste("routed",a))
     
   }
-  
-  results <- rbind(results, model)
+  print("species'd")
 }
 
 
