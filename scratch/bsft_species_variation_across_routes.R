@@ -41,10 +41,6 @@ mbbs_buffers <- data.frame(routes,test) %>%
     mbbs_county == "orange" ~ 100L,
     mbbs_county == "durham" ~ 200L,
     mbbs_county == "chatham" ~ 300L)) %>%
-  #we need some blank columns where we can add information in a for loop
-  mutate(common_name = NA) %>%
-  mutate(trend = NA) %>%
-  mutate(p_value = NA)
 #okay, done! now we can start adding species information to this.
 
 #take the mbbs, filter to a route, and calculate the route-level trend for each species. Then, add that to the mbbs_buffers datatable so that we can easily graph based on each species. 
@@ -62,40 +58,80 @@ results <- geeglm(count ~ year,
   mutate(route_ID = 999)
 
 
-for(i in 1:length(species_list)) {  
-  print(paste("started sp", species_list[i]))
-  for(a in 1:length(unique(mbbs_buffers$route_ID))){ #and within each route
-    
-    #filter mbbs
-    filtered_mbbs <- mbbs %>% 
-      filter(common_name == species_list[i] & route_ID == unique(mbbs_buffers$route_ID)[a])
-    
-    #maybe I need something to help the code when the next species has really small data along each route? idk..
-    
-    #model - this is a gee with just one route in the grouping variable
-    model <- geeglm(count ~ year,
-                    family = poisson,
-                    id = route_ID,
-                    data = filtered_mbbs,
-                    corstr = "ar1")
-    model <- pivot_tidied(model, species_list[i]) %>%
-      filter(value == "year")
-    
-    model$route_ID <- unique(mbbs_buffers$route_ID)[a]
-    results <- rbind(results, model)
-    print(paste("routed",a))
-    
-  }
+for(i in 1:length(species_list)) {
+  print(paste("started sp", species_list[i]))  #filter mbbs
+  filtered_mbbs <- mbbs %>%
+    filter(common_name == species_list[i])  
+  
+  for(a in 1:length(unique(filtered_mbbs$route_ID))){ #and within each route that species has data for.    #filter mbbs again
+      filtered_mbbs_temp <- filtered_mbbs %>%
+        filter(route_ID == unique(filtered_mbbs$route_ID)[a])    
+      
+      #model - this is a gee with just one route in the grouping variable
+      #okay. this is obviously causing problems. What if I just didn't use a geeglm as a model, and, because I only have the data for one route and am functionally fitting it with just one grouping variable, this could just be a glm. I think that's the better way to run this.
+      model <- glm(count~year, family = poisson, data = filtered_mbbs_temp)    
+      model <- pivot_tidied(model, species_list[i]) %>%
+        filter(value == "year")    
+      model$route_ID <- unique(filtered_mbbs$route_ID)[a]
+      results <- rbind(results, model)
+      print(paste("routed",a))  
+      }
   print("species'd")
 }
 
+results <- results %>% 
+  filter(route_ID %in% 100:400) %>% #remove test
+  #shift estimate to a trend
+  mutate(trend = exp(estimate)-1) %>%
+  #have an acadian flycatcher that needs removing, maybe just one seen on route
+  filter(trend < 20)
+results$route_ID <- as.double(results$route_ID)
 
 
+#save df
+write.csv(results, "scratch/bsft_species_variation_across_routes.csv", row.names = FALSE)
+
+#read df is needed
+results <- read.csv("scratch/bsft_species_variation_across_routes.csv", header = TRUE)
 
 
+#reconnect route information
+results_buffers <- left_join(results, mbbs_buffers, by = "route_ID")
 
+check <- results_buffers %>% filter(common_name.x == "Canada Goose")
+#transform a numerican variable into bins for color
+  library(paletteer)
+  nColor <- 20
+  colors = paletteer_c("viridis::inferno", n=nColor)
+  rank <- as.factor(as.numeric(cut(results_buffers$estimate, nColor)))
 
+  
+plot(check$geometry,
+     col = colors[ rank ],
+     main = unique(check$common_name.x))
 
+#okay, or plot using ggplot
+ggplot(results_buffers, aes(x = geometry)) +
+  geom_polygon(aes(fill = trend.x)) +
+  scale_fill_gradient2(midpoint = 0, mid = "#eee8d5", low = "#dc322f", high = "#268bd2")
+
+#do the save to pdf thing to look at species variation
+pdf(file = "scratch/bsft_species_variation_acorss_routes.pdf")
+
+for(i in 1:length(unique(results_buffers$common_name.x))) {
+  
+  check <- results_buffers %>% filter(common_name.x == unique(results_buffers$common_name.x)[i])
+
+  hist(check$trend.x,
+       main = unique(check$common_name.x))
+  
+  #plot(check$geometry,
+  #   col = colors[ rank ],
+  #   main = unique(check$common_name.x))
+  
+}
+
+dev.off()
 
 
 

@@ -19,14 +19,14 @@ nc <- nc %>% filter(County %in% c("Chatham", "Orange", "Durham"))
 #plot(check)
 
 #now, I want the nlcd 1999 and nlcd 2023 - or the latest one - for nc so I can clip it to these counties.
-#path <- "spatial/nlcd/"
-#nlcdlist <- list.files(path = path, pattern = '.tif$', all.files=TRUE, full.name=TRUE)
-#stack <- rast(nlcdlist)
+path <- "spatial/nlcd/"
+nlcdlist <- list.files(path = path, pattern = '.tif$', all.files=TRUE, full.name=TRUE)
+stack <- rast(nlcdlist)
 
 #put everything in the same projection
 #we're going to do this the other way, with the nc having to change.
-#nc <- st_transform(nc, crs(stack))
-#stack <- terra::project(stack, crs(nc))
+nc <- st_transform(nc, crs(stack))
+stack <- terra::project(stack, crs(nc))
 #okay that took a bit. save that.
 #writeRaster(stack, "spatial/nlcd/projected_nc_stack", filetype = "GTiff")
 #stack <- rast("spatial/nlcd/projected_nc_stack")
@@ -34,17 +34,17 @@ nc <- nc %>% filter(County %in% c("Chatham", "Orange", "Durham"))
 #plot(nc)
 
 #crop the nlcd
-#studyarea_nlcd <- terra::crop(stack, nc)
-#studyarea_nlcd <- terra::mask(studyarea_nlcd, nc)
-#studyarea_nlcd <- terra::trim(studyarea_nlcd)
-#plot(studyarea_nlcd)
+studyarea_nlcd <- terra::crop(stack, nc)
+studyarea_nlcd <- terra::mask(studyarea_nlcd, nc)
+studyarea_nlcd <- terra::trim(studyarea_nlcd)
+plot(studyarea_nlcd)
 #okay. problem solved.
 
 #save, we might want it later
 #writeRaster(studyarea_nlcd, "spatial/nlcd/projected_studyarea_stack.tiff", filetype = "GTiff", overwrite = TRUE)
 
 #Coming back to this script later, read in the data.
-studyarea_nlcd <- rast("spatial/nlcd/projected_studyarea_stack.tiff")
+#studyarea_nlcd <- rast("spatial/nlcd/projected_studyarea_stack.tiff")
 
 #extract the data.
 extracted <-  terra::extract(x = studyarea_nlcd, y = nc, df = TRUE)
@@ -77,7 +77,7 @@ for(i in 1:3) {
   df$county[i] <- c$County[1]
   df$npix[i] <- nrow(c)
   df$urban2001[i] <- nrow(c %>% filter(nc_nlcd_2001 %in% 21:24))
-  df$urban2021[i] <-   nrow(c %>% filter(nc_nlcd_2021 %in% 21:24))
+  df$urban2021[i] <- nrow(c %>% filter(nc_nlcd_2021 %in% 21:24))
   df$f2001[i] <- nrow(c %>% filter(nc_nlcd_2001 %in% 41:43))
   df$f2021[i] <- nrow(c %>% filter(nc_nlcd_2021 %in% 41:43))
   
@@ -87,7 +87,10 @@ df <- df %>%
   mutate(pu2001 = (urban2001/npix)*100,
          pu2021 = (urban2021/npix)*100,
          pf2001 = (f2001/npix)*100,
-         pf2021 = (f2021/npix)*100)
+         pf2021 = (f2021/npix)*100,
+         difpu = pu2021 - pu2001)
+
+write.csv(df, "scratch/bsft_percent_urbanization_county_df.csv", row.names = FALSE)
 
 #lets try and plot..
 barplot(height = t(df[,c("pu2001", "pu2021")]),
