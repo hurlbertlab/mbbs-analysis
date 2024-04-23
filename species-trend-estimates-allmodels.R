@@ -246,7 +246,33 @@ mbbs <- mbbs %>%
   #meantime. let's do migratory distance and diet etc. predictions. left_join traits
   traits <- read.csv("data/NC_species_traits.csv", header = TRUE)
   output <- output %>%
-    left_join(traits, by = c("common_name" = "english_common_name"))
+    left_join(traits, by = c("common_name" = "english_common_name"))  
+  
+  output$Winter_Biome <- as.factor(output$Winter_Biome)
+  output$Diet_5Cat <- as.factor(output$Diet_5Cat)
+  output$Migrate <- as.factor(output$Migrate)
+  output 
+  levels(output$Winter_Biome) 
+  library(ggpubr)
+  library(rstatix)
+  ggboxplot(output, x = "Winter_Biome", y = "trend_year")
+  ggboxplot(output, x = "Diet_5Cat", y = "trend_year")
+  ggboxplot(output, x = "Migrate", y = "trend_year")
+  
+  output %>% levene_test(trend_year ~ Winter_Biome) #passes with p > 0.05  #fit an ANOVA
+  winter.aov <- output %>% anova_test(trend_year ~ Winter_Biome, detailed = T)
+  winter.aov
+  #no significance  
+  
+  #fit an ANOVA for diet
+  diet.aov <- output %>% anova_test(trend_year ~ Diet_5Cat, detailed = T)
+  diet.aov
+  #no significance  
+  
+  #git an ANOVA for migration
+  migration.aov <- output %>% anova_test(trend_year ~ Migrate, detailed = T)
+  migration.aov  #this is how you do it in base R
+  summary(aov(trend_year ~ Winter_Biome, data = output))
   
   #hey, Ivara, this is the wrong way to analyze this data. Rather than fitting a linear line to a category vs trend, this is a t-test style analysis that requires box plots of differences. let's do that and THEN make calls, ok? uai is a continous variable and can be fit with a line, these categorical variables are not and you should treat them like the cat data.
   fit <- lm(trend_year ~ Breeding_Biome, data = output)
