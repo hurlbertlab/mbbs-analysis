@@ -220,22 +220,28 @@ mbbs <- mbbs %>%
   output$trend_year <- output$trend_year*100
   output$std.error_year <- output$std.error_year*100
   
+  minout <- min(output$trend_year)
+  maxout <- max(output$trend_year)
+  output$trend_std <-  round(50*((output$trend_year)-minout)/(maxout - minout),0) +1
+  colorramp = colorRampPalette(c("red", "lightgrey", "blue"))
   output <- output %>% arrange(trend_year)
   
   hist(output$trend_year, breaks = 15)
   
-  colors <- ifelse(output$p.value_year >= 0.05, "skyblue", "white")
   
   mid <- barplot(output$trend_year)
   barplot(height = output$trend_year,
          # names.arg = output$common_name,
          #percent_change - 2 * standard_deviation, percent_change + 2 * standard_deviation),  # Adjust ylim to include error bars,
           #main = "Species Yearly Trends",
-          xlab = "Bird Species",
+         xlab = "Bird Species",
          ylab = "% Yearly Change",
          ylim = c(-7,7),
-         col = "skyblue", #if you want based on significance use colors variable above
-         border = "black")
+         col = colorramp(51)[output$trend_std],
+         border = "black",
+         cex.lab=1.5,
+         cex.axis=1.5,
+         yaxs = "i")
   #arrows(x0 = mid, y0 = output$trend_year + output$std.error_year,
   #       x1 = mid, y1 = output$trend_year - output$std.error_year,
   #       angle = 90, code =3, length = 0.01)
@@ -256,7 +262,8 @@ mbbs <- mbbs %>%
   library(ggpubr)
   library(rstatix)
   ggboxplot(output, x = "Winter_Biome", y = "trend_year")
-  ggboxplot(output, x = "Diet_5Cat", y = "trend_year")
+  ggboxplot(output, x = "Diet_5Cat", y = "trend_year",
+            font.label = list(size = 25, color = "black"))
   ggboxplot(output, x = "Migrate", y = "trend_year")
   
   output %>% levene_test(trend_year ~ Winter_Biome) #passes with p > 0.05  #fit an ANOVA
@@ -264,9 +271,19 @@ mbbs <- mbbs %>%
   winter.aov
   #no significance  
   
+  library(rstatix)
+  
   #fit an ANOVA for diet
   diet.aov <- output %>% anova_test(trend_year ~ Diet_5Cat, detailed = T)
   diet.aov
+  pwc <- output %>% tukey_hsd(trend_year ~ Diet_5Cat)
+  pwc <- pwc %>% add_xy_position(x = "Diet_5Cat")
+  ggboxplot(output, x = "Diet_5Cat", y = "trend_year", add = "jitter") +
+    stat_pvalue_manual(pwc, hide.ns = TRUE) +
+    labs(
+      subtitle = get_test_label(diet.aov, detailed = TRUE),
+      caption = get_pwc_label(pwc)
+    )
   #no significance  
   
   #git an ANOVA for migration
@@ -296,7 +313,9 @@ mbbs <- mbbs %>%
   
   fit <- lm(trend_year ~ UAI, data = output)
   plot(y=output$trend_year, x=output$UAI)
-  plot(trend_year ~ UAI, data = output)
+  plot(trend_year ~ UAI, data = output, 
+       pch = 16,
+       col = colorramp(51)[output$trend_std])
   abline(fit)
   
   plot(count ~ year, data = pw)
