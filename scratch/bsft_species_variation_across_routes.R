@@ -3,31 +3,12 @@
 library(sf)
 library(stringr)
 #going to need a table of the route information
-#let's load in the buffers
 
+
+#for now, let's not worry about mapping along routes. What we want is just the 1st stop
 mbbs_buffers <- read.csv("spatial/RouteStops.csv") %>%
-  dplyr::select(-notes)
-#create 400m buffers from route stop points
-#convert lat/lon to points geometry
-mbbs_buffers <- st_as_sf(mbbs_buffers, coords = c('lon', 'lat'), crs = 4269) 
-#transform to a meters based crs
-mbbs_buffers <- st_transform(mbbs_buffers, crs = 5070) #meters, NC 
-#buffer each point by 400m, now geometry is polygons
-mbbs_buffers <- st_buffer(mbbs_buffers, dist = 400) 
-
-#merge to routes
-test <- mbbs_buffers %>%
-  filter(County_Route == "Chatham-01") %>%
-  st_union()
-routes <- unique(mbbs_buffers$County_Route)
-for(i in 1:length(routes)) {
-  test[i] <- mbbs_buffers %>%
-    filter(County_Route == routes[i]) %>%
-    st_union()
-}
-
-#recreate a dataframe, now there's a spatial polygon for each individual route.
-mbbs_buffers <- data.frame(routes,test) %>%
+  dplyr::select(-notes) %>%
+  filter(stop_num == 1) %>%
   #get county
   mutate(mbbs_county = case_when(
     str_starts(routes, "Chatham") ~ "chatham",
@@ -40,8 +21,21 @@ mbbs_buffers <- data.frame(routes,test) %>%
   mutate(route_ID = route_num + case_when(
     mbbs_county == "orange" ~ 100L,
     mbbs_county == "durham" ~ 200L,
-    mbbs_county == "chatham" ~ 300L)) %>%
-#okay, done! now we can start adding species information to this.
+    mbbs_county == "chatham" ~ 300L))
+  #okay, done! now we can start adding species information to this.
+#actually, we do need to convert to a sf.
+sf <- st_as_sf(mbbs_buffers, coords = c('lon', 'lat'), crs = 4269) %>%
+  mutate(st_coordinates(geometry))
+
+sf$`st_coordinates(geometry)`[,1]
+
+#now for the counties
+nc <- st_read("spatial/shapefiles/NC_County_Polygons/North_Carolina_State_and_County_Boundary_Polygons.shp")
+
+#filter to counties we're interested in
+nc <- nc %>% filter(County %in% c("Chatham", "Orange", "Durham")) %>%
+  st_transform(crs = 4269) #change crs
+
 
 #take the mbbs, filter to a route, and calculate the route-level trend for each species. Then, add that to the mbbs_buffers datatable so that we can easily graph based on each species. 
 species_list <- unique(mbbs$common_name)
@@ -96,24 +90,43 @@ results <- read.csv("scratch/bsft_species_variation_across_routes.csv", header =
 
 
 #reconnect route information
-results_buffers <- left_join(results, mbbs_buffers, by = "route_ID")
+results_buffers <- left_join(results, mbbs_buffers, by = "route_ID") %>%
+  #connect polygons
+  left_join(sf)
 
-check <- results_buffers %>% filter(common_name.x == "Canada Goose")
-#transform a numerican variable into bins for color
-  library(paletteer)
-  nColor <- 20
-  colors = paletteer_c("viridis::inferno", n=nColor)
-  rank <- as.factor(as.numeric(cut(results_buffers$estimate, nColor)))
 
-  
+pdf(file = "scratch/bsft_species_variation_acorss_routes.pdf")
+
+
+for(i in 1:length(unique(results_buffers$common_name))){
+temp <- results_buffers %>% filter(common_name == unique(results_buffers$common_name)[i])
+minestimate <- min(temp$estimate)
+maxestimate <- max(temp$estimate)
+#if maxestimate is less than 0, we should add a positive number to the scale
+if(maxestimate < 0) {
+  maxestimate <- .1 #a ten percent increase per year
+}
+temp$estimate.std = round(30*(temp$estimate-minestimate)/(maxestimate - minestimate),0) +1
+
+plot(nc$geometry,
+     main = unique(temp$common_name))
+points(x = results_buffers$`st_coordinates(geometry)`[,1],  
+       y= results_buffers$`st_coordinates(geometry)`[,2],
+       col = colorramp(30)[temp$estimate.std],
+       pch = 16,
+       cex = 2.5)}
+
+dev.off()
+
+#we want to standardize the estimates
+minestimate <- min(results_buffers$estimate)
+maxestimate <- max(results_buffers$estimate)
+results_buffers$estimate.std = round(50*(results$estimate-minestimate)/(maxestimate - minestimate),0) +1
+
 plot(check$geometry,
-     col = colors[ rank ],
-     main = unique(check$common_name.x))
+     col = colorramp(50)[check$estimate.std]) 
+plot(nc$geometry)
 
-#okay, or plot using ggplot
-ggplot(results_buffers, aes(x = geometry)) +
-  geom_polygon(aes(fill = trend.x)) +
-  scale_fill_gradient2(midpoint = 0, mid = "#eee8d5", low = "#dc322f", high = "#268bd2")
 
 #do the save to pdf thing to look at species variation
 pdf(file = "scratch/bsft_species_variation_acorss_routes.pdf")
