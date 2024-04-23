@@ -31,13 +31,14 @@ plot_one_species_one_county <- function(mbbs_county, species, county_name) {
     xlim(2002,max(mbbs_county$year)) +
     geom_line(aes(group = route_num), color = "grey") +
     geom_line(data = ave, aes(x = year, y = mean)) +
-    geom_point(data = ave, aes(x = year, y = mean)) +
-    stat_smooth(method = "lm", se = FALSE) + 
-    ylab("Count")+
-    xlab("Year")+
-    ylim(0,40)+  ##40 for Wood Thrush, 80 for CAWR, 20 for WEVI
-    labs(title=paste(species), subtitle = county_name) +
-    theme_bw()
+    geom_point(data = ave, aes(x = year, y = mean), size = 1.5) +
+    stat_smooth(method = "lm", se = FALSE, size = 2) + 
+    ylab("")+
+    xlab("")+
+    ylim(0,25)+  ##25 for Wood Thrush, 25 for CAWR, 10 for WEVI
+    labs(title=county_name) +
+    theme_bw()+
+    theme(text = element_text(size = 20, color = "black"))
   
 }
 
@@ -46,10 +47,10 @@ plot_one_species_county_breakdown <- function (species) {
   p1 <- plot_one_species_one_county(mbbs[mbbs$mbbs_county == "orange",], species, "Orange")
   p2 <- plot_one_species_one_county(mbbs[mbbs$mbbs_county == "durham",], species, "Durham")
   p3 <- plot_one_species_one_county(mbbs[mbbs$mbbs_county == "chatham",], species, "Chatham")
-  p4 <- plot_one_species_one_county(mbbs, species, "All Counties")
+  #p4 <- plot_one_species_one_county(mbbs, species, "All Counties")
   
-  ggarrange(p1,p2,p3,p4, nrow = 1)
+  ggarrange(p1,p2,p3, nrow = 1)
   
 }
 
-plot_one_species_county_breakdown("Wood Thrush")
+plot_one_species_county_breakdown("Red-eyed Vireo")
