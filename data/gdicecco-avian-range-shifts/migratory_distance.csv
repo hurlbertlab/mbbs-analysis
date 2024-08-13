@@ -1,0 +1,379 @@
+"file","spp_name","file_binomial","aou","english_common_name","family","genus","binomial","old_genus","new_binomial","matched_filename","species_code","mig_dist_m"
+"Ortalis_vetula_22678305.shp","Ortalis_vetula","Ortalis vetula",3110,"Plain Chachalaca","Cracidae","Ortalis","Ortalis vetula",NA,NA,"Ortalis_vetula",NA,0
+"Oreortyx_pictus_22679591.shp","Oreortyx_pictus","Oreortyx pictus",2920,"Mountain Quail","Odontophoridae","Oreortyx","Oreortyx pictus",NA,NA,"Oreortyx_pictus",NA,0
+"Colinus_virginianus_22728956.shp","Colinus_virginianus","Colinus virginianus",2890,"Northern Bobwhite","Odontophoridae","Colinus","Colinus virginianus",NA,NA,"Colinus_virginianus",NA,0
+"Callipepla_squamata_22679594.shp","Callipepla_squamata","Callipepla squamata",2930,"Scaled Quail","Odontophoridae","Callipepla","Callipepla squamata",NA,NA,"Callipepla_squamata",NA,0
+"Callipepla_californica_22679603.shp","Callipepla_californica","Callipepla californica",2940,"California Quail","Odontophoridae","Callipepla","Callipepla californica",NA,NA,"Callipepla_californica",NA,0
+"Callipepla_gambelii_22679609.shp","Callipepla_gambelii","Callipepla gambelii",2950,"Gambel's Quail","Odontophoridae","Callipepla","Callipepla gambelii",NA,NA,"Callipepla_gambelii",NA,0
+"Cyrtonyx_montezumae_22728212.shp","Cyrtonyx_montezumae","Cyrtonyx montezumae",2960,"Montezuma Quail","Odontophoridae","Cyrtonyx","Cyrtonyx montezumae",NA,NA,"Cyrtonyx_montezumae",NA,0
+"Alectoris_chukar_22678691.shp","Alectoris_chukar","Alectoris chukar",2882,"Chukar","Phasianidae","Alectoris","Alectoris chukar",NA,NA,"Alectoris_chukar",NA,0
+"Perdix_perdix_22678911.shp","Perdix_perdix","Perdix perdix",2881,"Gray Partridge","Phasianidae","Perdix","Perdix perdix",NA,NA,"Perdix_perdix",NA,0
+"Phasianus_colchicus_45100023.shp","Phasianus_colchicus","Phasianus colchicus",3091,"Ring-necked Pheasant","Phasianidae","Phasianus","Phasianus colchicus",NA,NA,"Phasianus_colchicus",NA,0
+"Pavo_cristatus_22679435.shp","Pavo_cristatus","Pavo cristatus",3095,"Indian Peafowl","Phasianidae","Pavo","Pavo cristatus",NA,NA,"Pavo_cristatus",NA,0
+"Bonasa_umbellus_22679500.shp","Bonasa_umbellus","Bonasa umbellus",3000,"Ruffed Grouse","Phasianidae","Bonasa","Bonasa umbellus",NA,NA,"Bonasa_umbellus",NA,0
+"Centrocercus_urophasianus_22679503.shp","Centrocercus_urophasianus","Centrocercus urophasianus",3090,"Greater Sage-Grouse","Phasianidae","Centrocercus","Centrocercus urophasianus",NA,NA,"Centrocercus_urophasianus",NA,0
+"Centrocercus_minimus_22728472.shp","Centrocercus_minimus","Centrocercus minimus",3089,"Gunnison Sage-Grouse","Phasianidae","Centrocercus","Centrocercus minimus",NA,NA,"Centrocercus_minimus",NA,0
+"Falcipennis_canadensis_61204079.shp","Falcipennis_canadensis","Falcipennis canadensis",2980,"Spruce Grouse","Phasianidae","Falcipennis","Falcipennis canadensis",NA,NA,"Falcipennis_canadensis",NA,0
+"Lagopus_lagopus_22679460.shp","Lagopus_lagopus","Lagopus lagopus",3010,"Willow Ptarmigan","Phasianidae","Lagopus","Lagopus lagopus",NA,NA,"Lagopus_lagopus",NA,371613.834857192
+"Lagopus_muta_22679464.shp","Lagopus_muta","Lagopus muta",3020,"Rock Ptarmigan","Phasianidae","Lagopus","Lagopus muta",NA,NA,"Lagopus_muta",NA,737947.014355228
+"Lagopus_leucura_22679473.shp","Lagopus_leucura","Lagopus leucura",3040,"White-tailed Ptarmigan","Phasianidae","Lagopus","Lagopus leucura",NA,NA,"Lagopus_leucura",NA,0
+"Dendragapus_obscurus_22734690.shp","Dendragapus_obscurus","Dendragapus obscurus",2970,"Dusky Grouse","Phasianidae","Dendragapus","Dendragapus obscurus",NA,NA,"Dendragapus_obscurus",NA,0
+"Dendragapus_fuliginosus_22734695.shp","Dendragapus_fuliginosus","Dendragapus fuliginosus",2971,"Sooty Grouse","Phasianidae","Dendragapus","Dendragapus fuliginosus",NA,NA,"Dendragapus_fuliginosus",NA,0
+"Tympanuchus_phasianellus_22679511.shp","Tympanuchus_phasianellus","Tympanuchus phasianellus",3080,"Sharp-tailed Grouse","Phasianidae","Tympanuchus","Tympanuchus phasianellus",NA,NA,"Tympanuchus_phasianellus",NA,0
+"Tympanuchus_cupido_22679514.shp","Tympanuchus_cupido","Tympanuchus cupido",3050,"Greater Prairie-Chicken","Phasianidae","Tympanuchus","Tympanuchus cupido",NA,NA,"Tympanuchus_cupido",NA,0
+"Tympanuchus_pallidicinctus_22679519.shp","Tympanuchus_pallidicinctus","Tympanuchus pallidicinctus",3070,"Lesser Prairie-Chicken","Phasianidae","Tympanuchus","Tympanuchus pallidicinctus",NA,NA,"Tympanuchus_pallidicinctus",NA,0
+"Meleagris_gallopavo_22679525.shp","Meleagris_gallopavo","Meleagris gallopavo",3100,"Wild Turkey","Phasianidae","Meleagris","Meleagris gallopavo",NA,NA,"Meleagris_gallopavo",NA,0
+"Columba_livia_22690066.shp","Columba_livia","Columba livia",3131,"Rock Pigeon","Columbidae","Columba","Columba livia",NA,NA,"Columba_livia",NA,0
+"Patagioenas_leucocephala_22690229.shp","Patagioenas_leucocephala","Patagioenas leucocephala",3140,"White-crowned Pigeon","Columbidae","Patagioenas","Patagioenas leucocephala",NA,NA,"Patagioenas_leucocephala",NA,0
+"Patagioenas_flavirostris_22690296.shp","Patagioenas_flavirostris","Patagioenas flavirostris",3130,"Red-billed Pigeon","Columbidae","Patagioenas","Patagioenas flavirostris",NA,NA,"Patagioenas_flavirostris",NA,20665.7996331658
+"Patagioenas_fasciata_22725264.shp","Patagioenas_fasciata","Patagioenas fasciata",3120,"Band-tailed Pigeon","Columbidae","Patagioenas","Patagioenas fasciata",NA,NA,"Patagioenas_fasciata",NA,707282.357176236
+"Streptopelia_roseogrisea_22690515.shp","Streptopelia_roseogrisea","Streptopelia roseogrisea",3152,"African Collared-Dove (a.k.a. Ringed Turtle-Dove)","Columbidae","Streptopelia","Streptopelia roseogrisea",NA,NA,"Streptopelia_roseogrisea",NA,1005294.15616677
+"Streptopelia_decaocto_22727811.shp","Streptopelia_decaocto","Streptopelia decaocto",22860,"Eurasian Collared-Dove","Columbidae","Streptopelia","Streptopelia decaocto",NA,NA,"Streptopelia_decaocto",NA,0
+"Columbina_inca_22690762.shp","Columbina_inca","Columbina inca",3210,"Inca Dove","Columbidae","Columbina","Columbina inca",NA,NA,"Columbina_inca",NA,0
+"Columbina_passerina_22690774.shp","Columbina_passerina","Columbina passerina",3200,"Common Ground-Dove","Columbidae","Columbina","Columbina passerina",NA,NA,"Columbina_passerina",NA,0
+"Columbina_talpacoti_22690784.shp","Columbina_talpacoti","Columbina talpacoti",3201,"Ruddy Ground-Dove","Columbidae","Columbina","Columbina talpacoti",NA,NA,"Columbina_talpacoti",NA,0
+"Leptotila_verreauxi_22690854.shp","Leptotila_verreauxi","Leptotila verreauxi",3180,"White-tipped Dove","Columbidae","Leptotila","Leptotila verreauxi",NA,NA,"Leptotila_verreauxi",NA,0
+"Zenaida_asiatica_22733956.shp","Zenaida_asiatica","Zenaida asiatica",3190,"White-winged Dove","Columbidae","Zenaida","Zenaida asiatica",NA,NA,"Zenaida_asiatica",NA,473957.024944066
+"Zenaida_macroura_22690736.shp","Zenaida_macroura","Zenaida macroura",3160,"Mourning Dove","Columbidae","Zenaida","Zenaida macroura",NA,NA,"Zenaida_macroura",NA,525169.136779727
+"Coccyzus_americanus_22684331.shp","Coccyzus_americanus","Coccyzus americanus",3870,"Yellow-billed Cuckoo","Cuculidae","Coccyzus","Coccyzus americanus",NA,NA,"Coccyzus_americanus",NA,6135800.7402491
+"Coccyzus_minor_22684337.shp","Coccyzus_minor","Coccyzus minor",3860,"Mangrove Cuckoo","Cuculidae","Coccyzus","Coccyzus minor",NA,NA,"Coccyzus_minor",NA,0
+"Coccyzus_erythropthalmus_22684328.shp","Coccyzus_erythropthalmus","Coccyzus erythropthalmus",3880,"Black-billed Cuckoo","Cuculidae","Coccyzus","Coccyzus erythropthalmus",NA,NA,"Coccyzus_erythropthalmus",NA,5735561.671382
+"Geococcyx_californianus_22684458.shp","Geococcyx_californianus","Geococcyx californianus",3850,"Greater Roadrunner","Cuculidae","Geococcyx","Geococcyx californianus",NA,NA,"Geococcyx_californianus",NA,0
+"Crotophaga_ani_22684434.shp","Crotophaga_ani","Crotophaga ani",3830,"Smooth-billed Ani","Cuculidae","Crotophaga","Crotophaga ani",NA,NA,"Crotophaga_ani",NA,0
+"Crotophaga_sulcirostris_22684438.shp","Crotophaga_sulcirostris","Crotophaga sulcirostris",3840,"Groove-billed Ani","Cuculidae","Crotophaga","Crotophaga sulcirostris",NA,NA,"Crotophaga_sulcirostris",NA,53061.7758293369
+"Cypseloides_niger_22686440.shp","Cypseloides_niger","Cypseloides niger",4220,"Black Swift","Apodidae","Cypseloides","Cypseloides niger",NA,NA,"Cypseloides_niger",NA,3249755.3614444
+"Chaetura_pelagica_22686709.shp","Chaetura_pelagica","Chaetura pelagica",4230,"Chimney Swift","Apodidae","Chaetura","Chaetura pelagica",NA,NA,"Chaetura_pelagica",NA,5194801.98945828
+"Chaetura_vauxi_22733935.shp","Chaetura_vauxi","Chaetura vauxi",4240,"Vaux's Swift","Apodidae","Chaetura","Chaetura vauxi",NA,NA,"Chaetura_vauxi",NA,2950210.27953236
+"Aeronautes_saxatalis_22686733.shp","Aeronautes_saxatalis","Aeronautes saxatalis",4250,"White-throated Swift","Apodidae","Aeronautes","Aeronautes saxatalis",NA,NA,"Aeronautes_saxatalis",NA,854690.650516037
+"Eugenes_fulgens_22687746.shp","Eugenes_fulgens","Eugenes fulgens",4260,"Magnificent Hummingbird","Trochilidae","Eugenes","Eugenes fulgens",NA,NA,"Eugenes_fulgens",NA,245767.243184504
+"Lampornis_clemenciae_22687664.shp","Lampornis_clemenciae","Lampornis clemenciae",4270,"Blue-throated Hummingbird","Trochilidae","Lampornis","Lampornis clemenciae",NA,NA,"Lampornis_clemenciae",NA,286540.230892913
+"Calothorax_lucifer_22688185.shp","Calothorax_lucifer","Calothorax lucifer",4370,"Lucifer Hummingbird","Trochilidae","Calothorax","Calothorax lucifer",NA,NA,"Calothorax_lucifer",NA,803620.892429529
+"Archilochus_colubris_22688193.shp","Archilochus_colubris","Archilochus colubris",4280,"Ruby-throated Hummingbird","Trochilidae","Archilochus","Archilochus colubris",NA,NA,"Archilochus_colubris",NA,2829759.58361058
+"Empidonax_hammondii_22699857.shp","Empidonax_hammondii","Empidonax hammondii",4680,"Hammond's Flycatcher","Tyrannidae","Empidonax","Empidonax hammondii",NA,NA,"Empidonax_hammondii",NA,3992780.70025002
+"Empidonax_wrightii_22699860.shp","Empidonax_wrightii","Empidonax wrightii",4691,"Gray Flycatcher","Tyrannidae","Empidonax","Empidonax wrightii",NA,NA,"Empidonax_wrightii",NA,1872988.87332995
+"Empidonax_oberholseri_22699864.shp","Empidonax_oberholseri","Empidonax oberholseri",4690,"Dusky Flycatcher","Tyrannidae","Empidonax","Empidonax oberholseri",NA,NA,"Empidonax_oberholseri",NA,2780841.0151025
+"Empidonax_difficilis_22699871.shp","Empidonax_difficilis","Empidonax difficilis",4641,"Pacific-slope Flycatcher","Tyrannidae","Empidonax","Empidonax difficilis",NA,NA,"Empidonax_difficilis",NA,3310410.5975492
+"Empidonax_occidentalis_22699874.shp","Empidonax_occidentalis","Empidonax occidentalis",4640,"Cordilleran Flycatcher","Tyrannidae","Empidonax","Empidonax occidentalis",NA,NA,"Empidonax_occidentalis",NA,1902924.70622087
+"Empidonax_fulvifrons_22699880.shp","Empidonax_fulvifrons","Empidonax fulvifrons",4700,"Buff-breasted Flycatcher","Tyrannidae","Empidonax","Empidonax fulvifrons",NA,NA,"Empidonax_fulvifrons",NA,135803.884720667
+"Sayornis_nigricans_22699892.shp","Sayornis_nigricans","Sayornis nigricans",4580,"Black Phoebe","Tyrannidae","Sayornis","Sayornis nigricans",NA,NA,"Sayornis_nigricans",NA,109410.842745798
+"Sayornis_phoebe_22699886.shp","Sayornis_phoebe","Sayornis phoebe",4560,"Eastern Phoebe","Tyrannidae","Sayornis","Sayornis phoebe",NA,NA,"Sayornis_phoebe",NA,1959009.93271919
+"Sayornis_saya_22699889.shp","Sayornis_saya","Sayornis saya",4570,"Say's Phoebe","Tyrannidae","Sayornis","Sayornis saya",NA,NA,"Sayornis_saya",NA,2856877.81572852
+"Pyrocephalus_rubinus_22699895.shp","Pyrocephalus_rubinus","Pyrocephalus rubinus",4710,"Vermilion Flycatcher","Tyrannidae","Pyrocephalus","Pyrocephalus rubinus",NA,NA,"Pyrocephalus_rubinus",NA,1010338.42720761
+"Myiarchus_tuberculifer_22700399.shp","Myiarchus_tuberculifer","Myiarchus tuberculifer",4550,"Dusky-capped Flycatcher","Tyrannidae","Myiarchus","Myiarchus tuberculifer",NA,NA,"Myiarchus_tuberculifer",NA,173912.021060802
+"Myiarchus_cinerascens_22700427.shp","Myiarchus_cinerascens","Myiarchus cinerascens",4540,"Ash-throated Flycatcher","Tyrannidae","Myiarchus","Myiarchus cinerascens",NA,NA,"Myiarchus_cinerascens",NA,1345453.72076786
+"Myiarchus_crinitus_22700433.shp","Myiarchus_crinitus","Myiarchus crinitus",4520,"Great Crested Flycatcher","Tyrannidae","Myiarchus","Myiarchus crinitus",NA,NA,"Myiarchus_crinitus",NA,3115265.29866906
+"Myiarchus_tyrannulus_22700436.shp","Myiarchus_tyrannulus","Myiarchus tyrannulus",4530,"Brown-crested Flycatcher","Tyrannidae","Myiarchus","Myiarchus tyrannulus",NA,NA,"Myiarchus_tyrannulus",NA,435836.864804958
+"Pitangus_sulphuratus_22700605.shp","Pitangus_sulphuratus","Pitangus sulphuratus",4490,"Great Kiskadee","Tyrannidae","Pitangus","Pitangus sulphuratus",NA,NA,"Pitangus_sulphuratus",NA,0
+"Myiodynastes_luteiventris_22700580.shp","Myiodynastes_luteiventris","Myiodynastes luteiventris",4510,"Sulphur-bellied Flycatcher","Tyrannidae","Myiodynastes","Myiodynastes luteiventris",NA,NA,"Myiodynastes_luteiventris",NA,3742166.69713737
+"Tyrannus_melancholicus_22700485.shp","Tyrannus_melancholicus","Tyrannus melancholicus",4460,"Tropical Kingbird","Tyrannidae","Tyrannus","Tyrannus melancholicus",NA,NA,"Tyrannus_melancholicus",NA,302912.273630876
+"Tyrannus_couchii_22700488.shp","Tyrannus_couchii","Tyrannus couchii",4461,"Couch's Kingbird","Tyrannidae","Tyrannus","Tyrannus couchii",NA,NA,"Tyrannus_couchii",NA,115944.563138164
+"Tyrannus_vociferans_22700491.shp","Tyrannus_vociferans","Tyrannus vociferans",4480,"Cassin's Kingbird","Tyrannidae","Tyrannus","Tyrannus vociferans",NA,NA,"Tyrannus_vociferans",NA,632925.90363747
+"Tyrannus_crassirostris_22700494.shp","Tyrannus_crassirostris","Tyrannus crassirostris",4451,"Thick-billed Kingbird","Tyrannidae","Tyrannus","Tyrannus crassirostris",NA,NA,"Tyrannus_crassirostris",NA,319958.616447905
+"Tyrannus_verticalis_22700497.shp","Tyrannus_verticalis","Tyrannus verticalis",4470,"Western Kingbird","Tyrannidae","Tyrannus","Tyrannus verticalis",NA,NA,"Tyrannus_verticalis",NA,3169513.49936791
+"Tyrannus_tyrannus_22700506.shp","Tyrannus_tyrannus","Tyrannus tyrannus",4440,"Eastern Kingbird","Tyrannidae","Tyrannus","Tyrannus tyrannus",NA,NA,"Tyrannus_tyrannus",NA,7333354.67582799
+"Tyrannus_dominicensis_22700509.shp","Tyrannus_dominicensis","Tyrannus dominicensis",4450,"Gray Kingbird","Tyrannidae","Tyrannus","Tyrannus dominicensis",NA,NA,"Tyrannus_dominicensis",NA,1270420.10416768
+"Tyrannus_forficatus_22700500.shp","Tyrannus_forficatus","Tyrannus forficatus",4430,"Scissor-tailed Flycatcher","Tyrannidae","Tyrannus","Tyrannus forficatus",NA,NA,"Tyrannus_forficatus",NA,2210787.16863572
+"Tyrannus_savana_22700503.shp","Tyrannus_savana","Tyrannus savana",4420,"Fork-tailed Flycatcher","Tyrannidae","Tyrannus","Tyrannus savana",NA,NA,"Tyrannus_savana",NA,964355.189734707
+"Lanius_ludovicianus_22705042.shp","Lanius_ludovicianus","Lanius ludovicianus",6220,"Loggerhead Shrike","Laniidae","Lanius","Lanius ludovicianus",NA,NA,"Lanius_ludovicianus",NA,638349.903827701
+"Lanius_excubitor_22730627.shp","Lanius_excubitor","Lanius excubitor",6210,"Northern Shrike","Laniidae","Lanius","Lanius excubitor",NA,NA,"Lanius_excubitor",NA,2888873.70878243
+"Vireo_atricapilla_22705159.shp","Vireo_atricapilla","Vireo atricapilla",6300,"Black-capped Vireo","Vireonidae","Vireo","Vireo atricapilla",NA,NA,"Vireo_atricapilla",NA,1151856.79123849
+"Vireo_griseus_22705188.shp","Vireo_griseus","Vireo griseus",6310,"White-eyed Vireo","Vireonidae","Vireo","Vireo griseus",NA,NA,"Vireo_griseus",NA,1051318.24032472
+"Vireo_bellii_22705156.shp","Vireo_bellii","Vireo bellii",6330,"Bell's Vireo","Vireonidae","Vireo","Vireo bellii",NA,NA,"Vireo_bellii",NA,1576075.88149224
+"Vireo_vicinior_22705209.shp","Vireo_vicinior","Vireo vicinior",6340,"Gray Vireo","Vireonidae","Vireo","Vireo vicinior",NA,NA,"Vireo_vicinior",NA,706613.308574321
+"Vireo_huttoni_22705182.shp","Vireo_huttoni","Vireo huttoni",6320,"Hutton's Vireo","Vireonidae","Vireo","Vireo huttoni",NA,NA,"Vireo_huttoni",NA,0
+"Vireo_flavifrons_22705237.shp","Vireo_flavifrons","Vireo flavifrons",6280,"Yellow-throated Vireo","Vireonidae","Vireo","Vireo flavifrons",NA,NA,"Vireo_flavifrons",NA,2890646.41302744
+"Vireo_cassinii_22705231.shp","Vireo_cassinii","Vireo cassinii",6291,"Cassin's Vireo","Vireonidae","Vireo","Vireo cassinii",NA,NA,"Vireo_cassinii",NA,1603483.98664499
+"Vireo_solitarius_22705234.shp","Vireo_solitarius","Vireo solitarius",6290,"Blue-headed Vireo","Vireonidae","Vireo","Vireo solitarius",NA,NA,"Vireo_solitarius",NA,2759214.65877937
+"Vireo_plumbeus_22705228.shp","Vireo_plumbeus","Vireo plumbeus",6292,"Plumbeous Vireo","Vireonidae","Vireo","Vireo plumbeus",NA,NA,"Vireo_plumbeus",NA,2795780.05646172
+"Vireo_philadelphicus_22705240.shp","Vireo_philadelphicus","Vireo philadelphicus",6260,"Philadelphia Vireo","Vireonidae","Vireo","Vireo philadelphicus",NA,NA,"Vireo_philadelphicus",NA,4194257.09887747
+"Vireo_gilvus_22735122.shp","Vireo_gilvus","Vireo gilvus",6270,"Warbling Vireo","Vireonidae","Vireo","Vireo gilvus",NA,NA,"Vireo_gilvus",NA,2845625.62499558
+"Vireo_olivaceus_22705243.shp","Vireo_olivaceus","Vireo olivaceus",6240,"Red-eyed Vireo","Vireonidae","Vireo","Vireo olivaceus",NA,NA,"Vireo_olivaceus",NA,5569035.00226143
+"Vireo_altiloquus_22705254.shp","Vireo_altiloquus","Vireo altiloquus",6230,"Black-whiskered Vireo","Vireonidae","Vireo","Vireo altiloquus",NA,NA,"Vireo_altiloquus",NA,2526537.41866955
+"Perisoreus_canadensis_22705783.shp","Perisoreus_canadensis","Perisoreus canadensis",4840,"Gray Jay","Corvidae","Perisoreus","Perisoreus canadensis",NA,NA,"Perisoreus_canadensis",NA,0
+"Cyanocorax_yncas_22705738.shp","Cyanocorax_yncas","Cyanocorax yncas",4830,"Green Jay","Corvidae","Cyanocorax","Cyanocorax yncas",NA,NA,"Cyanocorax_yncas",NA,0
+"Gymnorhinus_cyanocephalus_22705608.shp","Gymnorhinus_cyanocephalus","Gymnorhinus cyanocephalus",4920,"Pinyon Jay","Corvidae","Gymnorhinus","Gymnorhinus cyanocephalus",NA,NA,"Gymnorhinus_cyanocephalus",NA,0
+"Cyanocitta_stelleri_22705614.shp","Cyanocitta_stelleri","Cyanocitta stelleri",4780,"Steller's Jay","Corvidae","Cyanocitta","Cyanocitta stelleri",NA,NA,"Cyanocitta_stelleri",NA,0
+"Cyanocitta_cristata_22705611.shp","Cyanocitta_cristata","Cyanocitta cristata",4770,"Blue Jay","Corvidae","Cyanocitta","Cyanocitta cristata",NA,NA,"Cyanocitta_cristata",NA,377097.087341802
+"Aphelocoma_coerulescens_22705629.shp","Aphelocoma_coerulescens","Aphelocoma coerulescens",4790,"Florida Scrub-Jay","Corvidae","Aphelocoma","Aphelocoma coerulescens",NA,NA,"Aphelocoma_coerulescens",NA,0
+"Aphelocoma_insularis_22705617.shp","Aphelocoma_insularis","Aphelocoma insularis",4811,"Island Scrub-Jay","Corvidae","Aphelocoma","Aphelocoma insularis",NA,NA,"Aphelocoma_insularis",NA,0
+"Aphelocoma_californica_22705623.shp","Aphelocoma_californica","Aphelocoma californica",4812,"California Scrub-Jay","Corvidae","Aphelocoma","Aphelocoma californica",NA,NA,"Aphelocoma_californica",NA,0
+"Aphelocoma_wollweberi_22724967.shp","Aphelocoma_wollweberi","Aphelocoma wollweberi",4820,"Mexican Jay","Corvidae","Aphelocoma","Aphelocoma wollweberi",NA,NA,"Aphelocoma_wollweberi",NA,0
+"Nucifraga_columbiana_22705909.shp","Nucifraga_columbiana","Nucifraga columbiana",4910,"Clark's Nutcracker","Corvidae","Nucifraga","Nucifraga columbiana",NA,NA,"Nucifraga_columbiana",NA,0
+"Pica_nuttalli_22705874.shp","Pica_nuttalli","Pica nuttalli",4760,"Yellow-billed Magpie","Corvidae","Pica","Pica nuttalli",NA,NA,"Pica_nuttalli","yebmag",0
+"Corvus_brachyrhynchos_22705990.shp","Corvus_brachyrhynchos","Corvus brachyrhynchos",4880,"American Crow","Corvidae","Corvus","Corvus brachyrhynchos",NA,NA,"Corvus_brachyrhynchos","amecro",746349.022788481
+"Corvus_caurinus_22705986.shp","Corvus_caurinus","Corvus caurinus",4890,"Northwestern Crow","Corvidae","Corvus","Corvus caurinus",NA,NA,"Corvus_caurinus","norcro",0
+"Corvus_ossifragus_22705993.shp","Corvus_ossifragus","Corvus ossifragus",4900,"Fish Crow","Corvidae","Corvus","Corvus ossifragus",NA,NA,"Corvus_ossifragus","fiscro",0
+"Corvus_cryptoleucus_22706055.shp","Corvus_cryptoleucus","Corvus cryptoleucus",4870,"Chihuahuan Raven","Corvidae","Corvus","Corvus cryptoleucus",NA,NA,"Corvus_cryptoleucus","chirav",127634.394150253
+"Corvus_corax_22706068.shp","Corvus_corax","Corvus corax",4860,"Common Raven","Corvidae","Corvus","Corvus corax",NA,NA,"Corvus_corax","comrav",2293.77691340451
+"Eremophila_alpestris_22717434.shp","Eremophila_alpestris","Eremophila alpestris",4740,"Horned Lark","Alaudidae","Eremophila","Eremophila alpestris",NA,NA,"Eremophila_alpestris","horlar",2458178.94232446
+"Progne_subis_22712098.shp","Progne_subis","Progne subis",6110,"Purple Martin","Hirundinidae","Progne","Progne subis",NA,NA,"Progne_subis","purmar",7793096.99631334
+"Tachycineta_bicolor_22712057.shp","Tachycineta_bicolor","Tachycineta bicolor",6140,"Tree Swallow","Hirundinidae","Tachycineta","Tachycineta bicolor",NA,NA,"Tachycineta_bicolor","treswa",3429379.51133826
+"Tachycineta_thalassina_22712077.shp","Tachycineta_thalassina","Tachycineta thalassina",6150,"Violet-green Swallow","Hirundinidae","Tachycineta","Tachycineta thalassina",NA,NA,"Tachycineta_thalassina","vigswa",3135198.53691
+"Stelgidopteryx_serripennis_22735128.shp","Stelgidopteryx_serripennis","Stelgidopteryx serripennis",6170,"Northern Rough-winged Swallow","Hirundinidae","Stelgidopteryx","Stelgidopteryx serripennis",NA,NA,"Stelgidopteryx_serripennis","nrwswa",2291919.06690197
+"Riparia_riparia_22712176.shp","Riparia_riparia","Riparia riparia",6160,"Bank Swallow","Hirundinidae","Riparia","Riparia riparia",NA,NA,"Riparia_riparia","banswa",8284224.75281649
+"Petrochelidon_pyrrhonota_22712427.shp","Petrochelidon_pyrrhonota","Petrochelidon pyrrhonota",6120,"Cliff Swallow","Hirundinidae","Petrochelidon","Petrochelidon pyrrhonota",NA,NA,"Petrochelidon_pyrrhonota","cliswa",9330689.53461451
+"Petrochelidon_fulva_22712435.shp","Petrochelidon_fulva","Petrochelidon fulva",6121,"Cave Swallow","Hirundinidae","Petrochelidon","Petrochelidon fulva",NA,NA,"Petrochelidon_fulva","cavswa",240104.139929174
+"Hirundo_rustica_22712252.shp","Hirundo_rustica","Hirundo rustica",6130,"Barn Swallow","Hirundinidae","Hirundo","Hirundo rustica",NA,NA,"Hirundo_rustica","barswa",6506760.45357452
+"Parus_carolinensis_22711708.shp","Parus_carolinensis","Parus carolinensis",7360,"Carolina Chickadee","Paridae","Poecile","Poecile carolinensis","Parus","Parus carolinensis","Parus_carolinensis","carchi",0
+"Parus_atricapillus_22711716.shp","Parus_atricapillus","Parus atricapillus",7350,"Black-capped Chickadee","Paridae","Poecile","Poecile atricapillus","Parus","Parus atricapillus","Parus_atricapillus","bkcchi",0
+"Parus_gambeli_22711724.shp","Parus_gambeli","Parus gambeli",7380,"Mountain Chickadee","Paridae","Poecile","Poecile gambeli","Parus","Parus gambeli","Parus_gambeli","mouchi",0
+"Parus_sclateri_22711732.shp","Parus_sclateri","Parus sclateri",7370,"Mexican Chickadee","Paridae","Poecile","Poecile sclateri","Parus","Parus sclateri","Parus_sclateri","mexchi",0
+"Parus_rufescens_22711767.shp","Parus_rufescens","Parus rufescens",7410,"Chestnut-backed Chickadee","Paridae","Poecile","Poecile rufescens","Parus","Parus rufescens","Parus_rufescens","chbchi",0
+"Parus_hudsonicus_22711759.shp","Parus_hudsonicus","Parus hudsonicus",7400,"Boreal Chickadee","Paridae","Poecile","Poecile hudsonicus","Parus","Parus hudsonicus","Parus_hudsonicus","borchi2",0
+"Baeolophus_wollweberi_22711969.shp","Baeolophus_wollweberi","Baeolophus wollweberi",7340,"Bridled Titmouse","Paridae","Baeolophus","Baeolophus wollweberi",NA,NA,"Baeolophus_wollweberi","britit",0
+"Baeolophus_inornatus_22711978.shp","Baeolophus_inornatus","Baeolophus inornatus",7330,"Oak Titmouse","Paridae","Baeolophus","Baeolophus inornatus",NA,NA,"Baeolophus_inornatus","oaktit",0
+"Baeolophus_ridgwayi_22729143.shp","Baeolophus_ridgwayi","Baeolophus ridgwayi",7331,"Juniper Titmouse","Paridae","Baeolophus","Baeolophus ridgwayi",NA,NA,"Baeolophus_ridgwayi","juntit1",0
+"Baeolophus_bicolor_22711983.shp","Baeolophus_bicolor","Baeolophus bicolor",7310,"Tufted Titmouse","Paridae","Baeolophus","Baeolophus bicolor",NA,NA,"Baeolophus_bicolor","tuftit",0
+"Baeolophus_atricristatus_22711989.shp","Baeolophus_atricristatus","Baeolophus atricristatus",7320,"Black-crested Titmouse","Paridae","Baeolophus","Baeolophus atricristatus",NA,NA,"Baeolophus_atricristatus","blctit4",0
+"Auriparus_flaviceps_22711568.shp","Auriparus_flaviceps","Auriparus flaviceps",7460,"Verdin","Remizidae","Auriparus","Auriparus flaviceps",NA,NA,"Auriparus_flaviceps","verdin",0
+"Psaltriparus_minimus_22712028.shp","Psaltriparus_minimus","Psaltriparus minimus",7430,"Bushtit","Aegithalidae","Psaltriparus","Psaltriparus minimus",NA,NA,"Psaltriparus_minimus","bushti",0
+"Sitta_canadensis_22711196.shp","Sitta_canadensis","Sitta canadensis",7280,"Red-breasted Nuthatch","Sittidae","Sitta","Sitta canadensis",NA,NA,"Sitta_canadensis","rebnut",504622.950769356
+"Sitta_carolinensis_22711202.shp","Sitta_carolinensis","Sitta carolinensis",7270,"White-breasted Nuthatch","Sittidae","Sitta","Sitta carolinensis",NA,NA,"Sitta_carolinensis","whbnut",0
+"Sitta_pygmaea_22711170.shp","Sitta_pygmaea","Sitta pygmaea",7300,"Pygmy Nuthatch","Sittidae","Sitta","Sitta pygmaea",NA,NA,"Sitta_pygmaea","pygnut",0
+"Sitta_pusilla_22711173.shp","Sitta_pusilla","Sitta pusilla",7290,"Brown-headed Nuthatch","Sittidae","Sitta","Sitta pusilla",NA,NA,"Sitta_pusilla","bnhnut",0
+"Certhia_americana_22711244.shp","Certhia_americana","Certhia americana",7260,"Brown Creeper","Certhiidae","Certhia","Certhia americana",NA,NA,"Certhia_americana","brncre",344731.019296625
+"Salpinctes_obsoletus_22711332.shp","Salpinctes_obsoletus","Salpinctes obsoletus",7150,"Rock Wren","Troglodytidae","Salpinctes","Salpinctes obsoletus",NA,NA,"Salpinctes_obsoletus","rocwre",778074.131140219
+"Catherpes_mexicanus_22711335.shp","Catherpes_mexicanus","Catherpes mexicanus",7170,"Canyon Wren","Troglodytidae","Catherpes","Catherpes mexicanus",NA,NA,"Catherpes_mexicanus","canwre",0
+"Troglodytes_aedon_22711487.shp","Troglodytes_aedon","Troglodytes aedon",7210,"House Wren","Troglodytidae","Troglodytes","Troglodytes aedon",NA,NA,"Troglodytes_aedon","houwre",1605499.95233788
+"Troglodytes_pacificus_22714246.shp","Troglodytes_pacificus","Troglodytes pacificus",7221,"Pacific Wren","Troglodytidae","Troglodytes","Troglodytes pacificus",NA,NA,"Troglodytes_pacificus","pacwre1",729626.053477261
+"Troglodytes_hiemalis_22714246.shp","Troglodytes_hiemalis","Troglodytes hiemalis",7222,"Winter Wren","Troglodytidae","Troglodytes","Troglodytes hiemalis",NA,NA,"Troglodytes_hiemalis","winwre3",1586634.84583456
+"Cistothorus_platensis_22711360.shp","Cistothorus_platensis","Cistothorus platensis",7240,"Sedge Wren","Troglodytidae","Cistothorus","Cistothorus platensis",NA,NA,"Cistothorus_platensis","sedwre",1189379.96120204
+"Cistothorus_palustris_22711374.shp","Cistothorus_palustris","Cistothorus palustris",7250,"Marsh Wren","Troglodytidae","Cistothorus","Cistothorus palustris",NA,NA,"Cistothorus_palustris","marwre",1369767.26318366
+"Thryothorus_ludovicianus_22711450.shp","Thryothorus_ludovicianus","Thryothorus ludovicianus",7180,"Carolina Wren","Troglodytidae","Thryothorus","Thryothorus ludovicianus",NA,NA,"Thryothorus_ludovicianus","carwre",0
+"Thryomanes_bewickii_22711377.shp","Thryomanes_bewickii","Thryomanes bewickii",7190,"Bewick's Wren","Troglodytidae","Thryomanes","Thryomanes bewickii",NA,NA,"Thryomanes_bewickii","bewwre",40267.9279619051
+"Campylorhynchus_brunneicapillus_22711287.shp","Campylorhynchus_brunneicapillus","Campylorhynchus brunneicapillus",7130,"Cactus Wren","Troglodytidae","Campylorhynchus","Campylorhynchus brunneicapillus",NA,NA,"Campylorhynchus_brunneicapillus","cacwre",0
+"Thryothorus_sinaloa_22711461.shp","Thryothorus_sinaloa","Thryothorus sinaloa",16600,"Sinaloa Wren","Troglodytidae","Thryophilus","Thryophilus sinaloa","Thryothorus","Thryothorus sinaloa","Thryothorus_sinaloa",NA,0
+"Polioptila_caerulea_22711581.shp","Polioptila_caerulea","Polioptila caerulea",7510,"Blue-gray Gnatcatcher","Polioptilidae","Polioptila","Polioptila caerulea",NA,NA,"Polioptila_caerulea","buggna",1012083.99943858
+"Polioptila_californica_22711585.shp","Polioptila_californica","Polioptila californica",7530,"California Gnatcatcher","Polioptilidae","Polioptila","Polioptila californica",NA,NA,"Polioptila_californica","calgna",0
+"Polioptila_melanura_22711588.shp","Polioptila_melanura","Polioptila melanura",7520,"Black-tailed Gnatcatcher","Polioptilidae","Polioptila","Polioptila melanura",NA,NA,"Polioptila_melanura","bktgna",0
+"Regulus_satrapa_22712594.shp","Regulus_satrapa","Regulus satrapa",7480,"Golden-crowned Kinglet","Regulidae","Regulus","Regulus satrapa",NA,NA,"Regulus_satrapa","gockin",1035588.21066536
+"Regulus_calendula_22712567.shp","Regulus_calendula","Regulus calendula",7490,"Ruby-crowned Kinglet","Regulidae","Regulus","Regulus calendula",NA,NA,"Regulus_calendula","ruckin",2371971.88442913
+"Chamaea_fasciata_22716861.shp","Chamaea_fasciata","Chamaea fasciata",7420,"Wrentit","Sylviidae","Chamaea","Chamaea fasciata",NA,NA,"Chamaea_fasciata","wrenti",0
+"Luscinia_svecica_22709707.shp","Luscinia_svecica","Luscinia svecica",7640,"Bluethroat","Muscicapidae","Luscinia","Luscinia svecica",NA,NA,"Luscinia_svecica","blueth",4544548.85621748
+"Oenanthe_oenanthe_22710272.shp","Oenanthe_oenanthe","Oenanthe oenanthe",7650,"Northern Wheatear","Muscicapidae","Oenanthe","Oenanthe oenanthe",NA,NA,"Oenanthe_oenanthe","norwhe",6098919.96665186
+"Sialia_sialis_22708550.shp","Sialia_sialis","Sialia sialis",7660,"Eastern Bluebird","Turdidae","Sialia","Sialia sialis",NA,NA,"Sialia_sialis","easblu",821782.041393807
+"Sialia_mexicana_22708553.shp","Sialia_mexicana","Sialia mexicana",7670,"Western Bluebird","Turdidae","Sialia","Sialia mexicana",NA,NA,"Sialia_mexicana","wesblu",545709.5807811
+"Sialia_currucoides_22708556.shp","Sialia_currucoides","Sialia currucoides",7680,"Mountain Bluebird","Turdidae","Sialia","Sialia currucoides",NA,NA,"Sialia_currucoides","moublu",1970276.53034414
+"Myadestes_townsendi_22708587.shp","Myadestes_townsendi","Myadestes townsendi",7540,"Townsend's Solitaire","Turdidae","Myadestes","Myadestes townsendi",NA,NA,"Myadestes_townsendi","towsol",1489502.42832677
+"Catharus_fuscescens_22708655.shp","Catharus_fuscescens","Catharus fuscescens",7560,"Veery","Turdidae","Catharus","Catharus fuscescens",NA,NA,"Catharus_fuscescens","veery",7945124.60600208
+"Catharus_minimus_22708658.shp","Catharus_minimus","Catharus minimus",7570,"Gray-cheeked Thrush","Turdidae","Catharus","Catharus minimus",NA,NA,"Catharus_minimus","gycthr",6750520.57924553
+"Catharus_bicknelli_22728467.shp","Catharus_bicknelli","Catharus bicknelli",7571,"Bicknell's Thrush","Turdidae","Catharus","Catharus bicknelli",NA,NA,"Catharus_bicknelli","bicthr",3166958.61112744
+"Catharus_ustulatus_22708664.shp","Catharus_ustulatus","Catharus ustulatus",7580,"Swainson's Thrush","Turdidae","Catharus","Catharus ustulatus",NA,NA,"Catharus_ustulatus","swathr",6625114.88702754
+"Catharus_guttatus_22708667.shp","Catharus_guttatus","Catharus guttatus",7590,"Hermit Thrush","Turdidae","Catharus","Catharus guttatus",NA,NA,"Catharus_guttatus","herthr",2282918.4456245
+"Hylocichla_mustelina_22708670.shp","Hylocichla_mustelina","Hylocichla mustelina",7550,"Wood Thrush","Turdidae","Hylocichla","Hylocichla mustelina",NA,NA,"Hylocichla_mustelina","woothr",2803764.38871567
+"Turdus_migratorius_22708958.shp","Turdus_migratorius","Turdus migratorius",7610,"American Robin","Turdidae","Turdus","Turdus migratorius",NA,NA,"Turdus_migratorius","amerob",1365458.71670689
+"Dumetella_carolinensis_22711013.shp","Dumetella_carolinensis","Dumetella carolinensis",7040,"Gray Catbird","Mimidae","Dumetella","Dumetella carolinensis",NA,NA,"Dumetella_carolinensis","grycat",2252235.90123636
+"Toxostoma_curvirostre_22711115.shp","Toxostoma_curvirostre","Toxostoma curvirostre",7070,"Curve-billed Thrasher","Mimidae","Toxostoma","Toxostoma curvirostre",NA,NA,"Toxostoma_curvirostre","cubthr",0
+"Toxostoma_rufum_22711099.shp","Toxostoma_rufum","Toxostoma rufum",7050,"Brown Thrasher","Mimidae","Toxostoma","Toxostoma rufum",NA,NA,"Toxostoma_rufum","brnthr",1024937.4093555
+"Toxostoma_longirostre_22711102.shp","Toxostoma_longirostre","Toxostoma longirostre",7060,"Long-billed Thrasher","Mimidae","Toxostoma","Toxostoma longirostre",NA,NA,"Toxostoma_longirostre","lobthr",0
+"Toxostoma_bendirei_22711108.shp","Toxostoma_bendirei","Toxostoma bendirei",7080,"Bendire's Thrasher","Mimidae","Toxostoma","Toxostoma bendirei",NA,NA,"Toxostoma_bendirei","benthr",359858.514183789
+"Toxostoma_redivivum_22711124.shp","Toxostoma_redivivum","Toxostoma redivivum",7100,"California Thrasher","Mimidae","Toxostoma","Toxostoma redivivum",NA,NA,"Toxostoma_redivivum","calthr",0
+"Toxostoma_lecontei_22711121.shp","Toxostoma_lecontei","Toxostoma lecontei",7110,"Le Conte's Thrasher","Mimidae","Toxostoma","Toxostoma lecontei",NA,NA,"Toxostoma_lecontei",NA,0
+"Toxostoma_crissale_22711127.shp","Toxostoma_crissale","Toxostoma crissale",7120,"Crissal Thrasher","Mimidae","Toxostoma","Toxostoma crissale",NA,NA,"Toxostoma_crissale","crithr",0
+"Oreoscoptes_montanus_22711096.shp","Oreoscoptes_montanus","Oreoscoptes montanus",7020,"Sage Thrasher","Mimidae","Oreoscoptes","Oreoscoptes montanus",NA,NA,"Oreoscoptes_montanus","sagthr",1575523.64486286
+"Mimus_gundlachii_22711032.shp","Mimus_gundlachii","Mimus gundlachii",7031,"Bahama Mockingbird","Mimidae","Mimus","Mimus gundlachii",NA,NA,"Mimus_gundlachii",NA,0
+"Mimus_polyglottos_22711026.shp","Mimus_polyglottos","Mimus polyglottos",7030,"Northern Mockingbird","Mimidae","Mimus","Mimus polyglottos",NA,NA,"Mimus_polyglottos","normoc",31276.7019276691
+"Sturnus_vulgaris_22710886.shp","Sturnus_vulgaris","Sturnus vulgaris",4930,"European Starling","Sturnidae","Sturnus","Sturnus vulgaris",NA,NA,"Sturnus_vulgaris","eursta",3101085.88596189
+"Acridotheres_tristis_22710921.shp","Acridotheres_tristis","Acridotheres tristis",4932,"Common Myna","Sturnidae","Acridotheres","Acridotheres tristis",NA,NA,"Acridotheres_tristis","commyn",0
+"Bombycilla_garrulus_22708146.shp","Bombycilla_garrulus","Bombycilla garrulus",6180,"Bohemian Waxwing","Bombycillidae","Bombycilla","Bombycilla garrulus",NA,NA,"Bombycilla_garrulus","bohwax",1692045.69952133
+"Bombycilla_cedrorum_22708153.shp","Bombycilla_cedrorum","Bombycilla cedrorum",6190,"Cedar Waxwing","Bombycillidae","Bombycilla","Bombycilla cedrorum",NA,NA,"Bombycilla_cedrorum","cedwax",1352561.89325773
+"Phainopepla_nitens_22708139.shp","Phainopepla_nitens","Phainopepla nitens",6200,"Phainopepla","Ptiliogonatidae","Phainopepla","Phainopepla nitens",NA,NA,"Phainopepla_nitens","phaino",397558.618339214
+"Peucedramus_taeniatus_22720027.shp","Peucedramus_taeniatus","Peucedramus taeniatus",6510,"Olive Warbler","Peucedramidae","Peucedramus","Peucedramus taeniatus",NA,NA,"Peucedramus_taeniatus","oliwar",0
+"Euplectes_franciscanus_22719181.shp","Euplectes_franciscanus","Euplectes franciscanus",19500,"Northern Red Bishop","Ploceidae","Euplectes","Euplectes franciscanus",NA,NA,"Euplectes_franciscanus",NA,0
+"Passer_domesticus_22718174.shp","Passer_domesticus","Passer domesticus",6882,"House Sparrow","Passeridae","Passer","Passer domesticus",NA,NA,"Passer_domesticus","houspa",8910.17039992881
+"Passer_montanus_22718270.shp","Passer_montanus","Passer montanus",6883,"Eurasian Tree Sparrow","Passeridae","Passer","Passer montanus",NA,NA,"Passer_montanus","eutspa",102715.028165128
+"Motacilla_alba_22718348.shp","Motacilla_alba","Motacilla alba",6940,"White Wagtail","Motacillidae","Motacilla","Motacilla alba",NA,NA,"Motacilla_alba","whiwag",4256435.73128574
+"Anthus_cervinus_22718560.shp","Anthus_cervinus","Anthus cervinus",6990,"Red-throated Pipit","Motacillidae","Anthus","Anthus cervinus",NA,NA,"Anthus_cervinus",NA,7180709.54361252
+"Anthus_rubescens_22718575.shp","Anthus_rubescens","Anthus rubescens",6970,"American Pipit","Motacillidae","Anthus","Anthus rubescens",NA,NA,"Anthus_rubescens","amepip",4022448.69525349
+"Anthus_spragueii_22718591.shp","Anthus_spragueii","Anthus spragueii",7000,"Sprague's Pipit","Motacillidae","Anthus","Anthus spragueii",NA,NA,"Anthus_spragueii","sprpip",2400343.74831881
+"Leucosticte_tephrocotis_22720482.shp","Leucosticte_tephrocotis","Leucosticte tephrocotis",5240,"Gray-crowned Rosy-Finch","Fringillidae","Leucosticte","Leucosticte tephrocotis",NA,NA,"Leucosticte_tephrocotis","gcrfin",2577082.59952287
+"Leucosticte_atrata_22720488.shp","Leucosticte_atrata","Leucosticte atrata",5250,"Black Rosy-Finch","Fringillidae","Leucosticte","Leucosticte atrata",NA,NA,"Leucosticte_atrata","bkrfin",278974.386790969
+"Leucosticte_australis_22728985.shp","Leucosticte_australis","Leucosticte australis",5260,"Brown-capped Rosy-Finch","Fringillidae","Leucosticte","Leucosticte australis",NA,NA,"Leucosticte_australis","bcrfin",91015.8702989894
+"Pinicola_enucleator_22720625.shp","Pinicola_enucleator","Pinicola enucleator",5150,"Pine Grosbeak","Fringillidae","Pinicola","Pinicola enucleator",NA,NA,"Pinicola_enucleator","pingro",820570.765897154
+"Carpodacus_mexicanus_22720563.shp","Carpodacus_mexicanus","Carpodacus mexicanus",5190,"House Finch","Fringillidae","Haemorhous","Haemorhous mexicanus","Carpodacus","Carpodacus mexicanus","Carpodacus_mexicanus","houfin",0
+"Carpodacus_purpureus_22720553.shp","Carpodacus_purpureus","Carpodacus purpureus",5170,"Purple Finch","Fringillidae","Haemorhous","Haemorhous purpureus","Carpodacus","Carpodacus purpureus","Carpodacus_purpureus","purfin",1394884.9769068
+"Carpodacus_cassinii_22720560.shp","Carpodacus_cassinii","Carpodacus cassinii",5180,"Cassin's Finch","Fringillidae","Haemorhous","Haemorhous cassinii","Carpodacus","Carpodacus cassinii","Carpodacus_cassinii","casfin",623923.389463259
+"Loxia_curvirostra_22720646.shp","Loxia_curvirostra","Loxia curvirostra",5210,"Red Crossbill","Fringillidae","Loxia","Loxia curvirostra",NA,NA,"Loxia_curvirostra","redcro",1066745.83637545
+"Loxia_leucoptera_22728944.shp","Loxia_leucoptera","Loxia leucoptera",5220,"White-winged Crossbill","Fringillidae","Loxia","Loxia leucoptera",NA,NA,"Loxia_leucoptera","whwcro",927799.116892869
+"Carduelis_flammea_22725044.shp","Carduelis_flammea","Carduelis flammea",5280,"Common Redpoll","Fringillidae","Acanthis","Acanthis flammea","Carduelis","Carduelis flammea","Carduelis_flammea","comred",1008564.3696314
+"Carduelis_pinus_22720359.shp","Carduelis_pinus","Carduelis pinus",5330,"Pine Siskin","Fringillidae","Spinus","Spinus pinus","Carduelis","Carduelis pinus","Carduelis_pinus","pinsis",1186638.96246615
+"Carduelis_psaltria_22720410.shp","Carduelis_psaltria","Carduelis psaltria",5300,"Lesser Goldfinch","Fringillidae","Spinus","Spinus psaltria","Carduelis","Carduelis psaltria","Carduelis_psaltria","lesgol",595642.419949513
+"Carduelis_lawrencei_22720413.shp","Carduelis_lawrencei","Carduelis lawrencei",5310,"Lawrence's Goldfinch","Fringillidae","Spinus","Spinus lawrencei","Carduelis","Carduelis lawrencei","Carduelis_lawrencei","lawgol",733012.745379533
+"Carduelis_tristis_22720407.shp","Carduelis_tristis","Carduelis tristis",5290,"American Goldfinch","Fringillidae","Spinus","Spinus tristis","Carduelis","Carduelis tristis","Carduelis_tristis","amegfi",698562.48483116
+"Coccothraustes_vespertinus_22720702.shp","Coccothraustes_vespertinus","Coccothraustes vespertinus",5140,"Evening Grosbeak","Fringillidae","Coccothraustes","Coccothraustes vespertinus",NA,NA,"Coccothraustes_vespertinus","evegro",431973.929569732
+"Calcarius_lapponicus_22721033.shp","Calcarius_lapponicus","Calcarius lapponicus",5360,"Lapland Longspur","Calcariidae","Calcarius","Calcarius lapponicus",NA,NA,"Calcarius_lapponicus","laplon",3265343.35013025
+"Calcarius_ornatus_22721040.shp","Calcarius_ornatus","Calcarius ornatus",5380,"Chestnut-collared Longspur","Calcariidae","Calcarius","Calcarius ornatus",NA,NA,"Calcarius_ornatus","chclon",1850844.30654694
+"Calcarius_pictus_22721037.shp","Calcarius_pictus","Calcarius pictus",5370,"Smith's Longspur","Calcariidae","Calcarius","Calcarius pictus",NA,NA,"Calcarius_pictus","smilon",3722922.00087133
+"Rhynchophanes_mccownii_22721025.shp","Rhynchophanes_mccownii","Rhynchophanes mccownii",5390,"McCown's Longspur","Calcariidae","Rhynchophanes","Rhynchophanes mccownii",NA,NA,"Rhynchophanes_mccownii","mcclon",1902311.74586861
+"Plectrophenax_nivalis_22721043.shp","Plectrophenax_nivalis","Plectrophenax nivalis",5340,"Snow Bunting","Calcariidae","Plectrophenax","Plectrophenax nivalis",NA,NA,"Plectrophenax_nivalis","snobun",2940677.5034898
+"Seiurus_aurocapilla_22721779.shp","Seiurus_aurocapilla","Seiurus aurocapilla",6740,"Ovenbird","Parulidae","Seiurus","Seiurus aurocapilla",NA,NA,"Seiurus_aurocapilla","ovenbi1",3257103.74703272
+"Helmitheros_vermivorum_22721768.shp","Helmitheros_vermivorum","Helmitheros vermivorum",6390,"Worm-eating Warbler","Parulidae","Helmitheros","Helmitheros vermivorum",NA,NA,"Helmitheros_vermivorum","woewar1",2152914.25109893
+"Parkesia_motacilla_22721803.shp","Parkesia_motacilla","Parkesia motacilla",6760,"Louisiana Waterthrush","Parulidae","Parkesia","Parkesia motacilla",NA,NA,"Parkesia_motacilla","louwat",2565953.03767707
+"Parkesia_noveboracensis_22721793.shp","Parkesia_noveboracensis","Parkesia noveboracensis",6750,"Northern Waterthrush","Parulidae","Parkesia","Parkesia noveboracensis",NA,NA,"Parkesia_noveboracensis","norwat",5371482.21939207
+"Vermivora_chrysoptera_22721618.shp","Vermivora_chrysoptera","Vermivora chrysoptera",6420,"Golden-winged Warbler","Parulidae","Vermivora","Vermivora chrysoptera",NA,NA,"Vermivora_chrysoptera","gowwar",3705320.92115589
+"Vermivora_cyanoptera_22721610.shp","Vermivora_cyanoptera","Vermivora cyanoptera",6410,"Blue-winged Warbler","Parulidae","Vermivora","Vermivora cyanoptera",NA,NA,"Vermivora_cyanoptera","buwwar",2488767.97867228
+"Mniotilta_varia_22721758.shp","Mniotilta_varia","Mniotilta varia",6360,"Black-and-white Warbler","Parulidae","Mniotilta","Mniotilta varia",NA,NA,"Mniotilta_varia","bawwar",3441898.47810296
+"Protonotaria_citrea_22721765.shp","Protonotaria_citrea","Protonotaria citrea",6370,"Prothonotary Warbler","Parulidae","Protonotaria","Protonotaria citrea",NA,NA,"Protonotaria_citrea","prowar",2615402.16298109
+"Limnothlypis_swainsonii_22721776.shp","Limnothlypis_swainsonii","Limnothlypis swainsonii",6380,"Swainson's Warbler","Parulidae","Limnothlypis","Limnothlypis swainsonii",NA,NA,"Limnothlypis_swainsonii","swawar",1545144.9997748
+"Vermivora_peregrina_22721621.shp","Vermivora_peregrina","Vermivora peregrina",6470,"Tennessee Warbler","Parulidae","Oreothlypis","Oreothlypis peregrina","Vermivora","Vermivora peregrina","Vermivora_peregrina","tenwar",5109496.84797741
+"Vermivora_celata_22721624.shp","Vermivora_celata","Vermivora celata",6460,"Orange-crowned Warbler","Parulidae","Oreothlypis","Oreothlypis celata","Vermivora","Vermivora celata","Vermivora_celata","orcwar",3335517.43352385
+"Vermivora_luciae_22721636.shp","Vermivora_luciae","Vermivora luciae",6430,"Lucy's Warbler","Parulidae","Oreothlypis","Oreothlypis luciae","Vermivora","Vermivora luciae","Vermivora_luciae","lucwar",1501415.6144086
+"Vermivora_ruficapilla_22721627.shp","Vermivora_ruficapilla","Vermivora ruficapilla",6450,"Nashville Warbler","Parulidae","Oreothlypis","Oreothlypis ruficapilla","Vermivora","Vermivora ruficapilla","Vermivora_ruficapilla","naswar",3078917.0596076
+"Vermivora_virginiae_22721630.shp","Vermivora_virginiae","Vermivora virginiae",6440,"Virginia's Warbler","Parulidae","Oreothlypis","Oreothlypis virginiae","Vermivora","Vermivora virginiae","Vermivora_virginiae","virwar",2367822.44083262
+"Oporornis_agilis_22721818.shp","Oporornis_agilis","Oporornis agilis",6780,"Connecticut Warbler","Parulidae","Oporornis","Oporornis agilis",NA,NA,"Oporornis_agilis","conwar",6623056.79309925
+"Geothlypis_trichas_22721836.shp","Geothlypis_trichas","Geothlypis trichas",6810,"Common Yellowthroat","Parulidae","Geothlypis","Geothlypis trichas",NA,NA,"Geothlypis_trichas","comyel",2354396.45274059
+"Wilsonia_citrina_22721876.shp","Wilsonia_citrina","Wilsonia citrina",6840,"Hooded Warbler","Parulidae","Setophaga","Setophaga citrina","Wilsonia","Wilsonia citrina","Wilsonia_citrina","hoowar",2057678.84519956
+"Setophaga_ruticilla_22721762.shp","Setophaga_ruticilla","Setophaga ruticilla",6870,"American Redstart","Parulidae","Setophaga","Setophaga ruticilla",NA,NA,"Setophaga_ruticilla","amered",4724203.75802531
+"Dendroica_kirtlandii_22721722.shp","Dendroica_kirtlandii","Dendroica kirtlandii",6700,"Kirtland's Warbler","Parulidae","Setophaga","Setophaga kirtlandii","Dendroica","Dendroica kirtlandii","Dendroica_kirtlandii","kirwar",2385708.16725247
+"Dendroica_tigrina_22721670.shp","Dendroica_tigrina","Dendroica tigrina",6500,"Cape May Warbler","Parulidae","Setophaga","Setophaga tigrina","Dendroica","Dendroica tigrina","Dendroica_tigrina","camwar",4615044.77329324
+"Dendroica_cerulea_22721740.shp","Dendroica_cerulea","Dendroica cerulea",6580,"Cerulean Warbler","Parulidae","Setophaga","Setophaga cerulea","Dendroica","Dendroica cerulea","Dendroica_cerulea","cerwar",4429730.68883375
+"Parula_americana_22721639.shp","Parula_americana","Parula americana",6480,"Northern Parula","Parulidae","Setophaga","Setophaga americana","Parula","Parula americana","Parula_americana","norpar",2288875.41577288
+"Parula_pitiayumi_22721642.shp","Parula_pitiayumi","Parula pitiayumi",6490,"Tropical Parula","Parulidae","Setophaga","Setophaga pitiayumi","Parula","Parula pitiayumi","Parula_pitiayumi","tropar",102309.480189636
+"Dendroica_magnolia_22721667.shp","Dendroica_magnolia","Dendroica magnolia",6570,"Magnolia Warbler","Parulidae","Setophaga","Setophaga magnolia","Dendroica","Dendroica magnolia","Dendroica_magnolia","magwar",3988001.5712891
+"Dendroica_castanea_22721734.shp","Dendroica_castanea","Dendroica castanea",6600,"Bay-breasted Warbler","Parulidae","Setophaga","Setophaga castanea","Dendroica","Dendroica castanea","Dendroica_castanea","babwar",4951432.10518913
+"Dendroica_fusca_22721695.shp","Dendroica_fusca","Dendroica fusca",6620,"Blackburnian Warbler","Parulidae","Setophaga","Setophaga fusca","Dendroica","Dendroica fusca","Dendroica_fusca","bkbwar",4902622.7709203
+"Dendroica_petechia_22721657.shp","Dendroica_petechia","Dendroica petechia",6520,"Yellow Warbler","Parulidae","Setophaga","Setophaga petechia","Dendroica","Dendroica petechia","Dendroica_petechia","yelwar",5443775.3351171
+"Dendroica_pensylvanica_22721664.shp","Dendroica_pensylvanica","Dendroica pensylvanica",6590,"Chestnut-sided Warbler","Parulidae","Setophaga","Setophaga pensylvanica","Dendroica","Dendroica pensylvanica","Dendroica_pensylvanica","chswar",3846688.99556279
+"Dendroica_striata_22721737.shp","Dendroica_striata","Dendroica striata",6610,"Blackpoll Warbler","Parulidae","Setophaga","Setophaga striata","Dendroica","Dendroica striata","Dendroica_striata","bkpwar",7332987.20161759
+"Dendroica_caerulescens_22721673.shp","Dendroica_caerulescens","Dendroica caerulescens",6540,"Black-throated Blue Warbler","Parulidae","Setophaga","Setophaga caerulescens","Dendroica","Dendroica caerulescens","Dendroica_caerulescens","btbwar",3009078.04782778
+"Dendroica_palmarum_22721731.shp","Dendroica_palmarum","Dendroica palmarum",6720,"Palm Warbler","Parulidae","Setophaga","Setophaga palmarum","Dendroica","Dendroica palmarum","Dendroica_palmarum","palwar",3277960.1999624
+"Dendroica_pinus_22721719.shp","Dendroica_pinus","Dendroica pinus",6710,"Pine Warbler","Parulidae","Setophaga","Setophaga pinus","Dendroica","Dendroica pinus","Dendroica_pinus","pinwar",773808.325696254
+"Dendroica_coronata_22721676.shp","Dendroica_coronata","Dendroica coronata",6550,"Yellow-rumped Warbler","Parulidae","Setophaga","Dendroica coronata",NA,NA,"Dendroica_coronata",NA,2769107.24875379
+"Dendroica_dominica_22724793.shp","Dendroica_dominica","Dendroica dominica",6630,"Yellow-throated Warbler","Parulidae","Setophaga","Setophaga dominica","Dendroica","Dendroica dominica","Dendroica_dominica","yetwar",1485723.20284602
+"Dendroica_discolor_22721725.shp","Dendroica_discolor","Dendroica discolor",6730,"Prairie Warbler","Parulidae","Setophaga","Setophaga discolor","Dendroica","Dendroica discolor","Dendroica_discolor","prawar",1601532.39844701
+"Dendroica_graciae_22721708.shp","Dendroica_graciae","Dendroica graciae",6640,"Grace's Warbler","Parulidae","Setophaga","Setophaga graciae","Dendroica","Dendroica graciae","Dendroica_graciae","grawar",1244274.43916999
+"Dendroica_nigrescens_22721679.shp","Dendroica_nigrescens","Dendroica nigrescens",6650,"Black-throated Gray Warbler","Parulidae","Setophaga","Setophaga nigrescens","Dendroica","Dendroica nigrescens","Dendroica_nigrescens","btywar",2345722.76159576
+"Dendroica_townsendi_22721683.shp","Dendroica_townsendi","Dendroica townsendi",6680,"Townsend's Warbler","Parulidae","Setophaga","Setophaga townsendi","Dendroica","Dendroica townsendi","Dendroica_townsendi","towwar",3955245.59187293
+"Dendroica_occidentalis_22721686.shp","Dendroica_occidentalis","Dendroica occidentalis",6690,"Hermit Warbler","Parulidae","Setophaga","Setophaga occidentalis","Dendroica","Dendroica occidentalis","Dendroica_occidentalis","herwar",3328489.69896769
+"Dendroica_chrysoparia_22721692.shp","Dendroica_chrysoparia","Dendroica chrysoparia",6660,"Golden-cheeked Warbler","Parulidae","Setophaga","Setophaga chrysoparia","Dendroica","Dendroica chrysoparia","Dendroica_chrysoparia","gchwar",2038425.7172856
+"Dendroica_virens_22721689.shp","Dendroica_virens","Dendroica virens",6670,"Black-throated Green Warbler","Parulidae","Setophaga","Setophaga virens","Dendroica","Dendroica virens","Dendroica_virens","btnwar",3714659.91063353
+"Wilsonia_canadensis_22721882.shp","Wilsonia_canadensis","Wilsonia canadensis",6860,"Canada Warbler","Parulidae","Cardellina","Cardellina canadensis","Wilsonia","Wilsonia canadensis","Wilsonia_canadensis","canwar",5328510.61784781
+"Wilsonia_pusilla_22721879.shp","Wilsonia_pusilla","Wilsonia pusilla",6850,"Wilson's Warbler","Parulidae","Cardellina","Cardellina pusilla","Wilsonia","Wilsonia pusilla","Wilsonia_pusilla","wlswar",4373630.09392607
+"Cardellina_rubrifrons_22721885.shp","Cardellina_rubrifrons","Cardellina rubrifrons",6900,"Red-faced Warbler","Parulidae","Cardellina","Cardellina rubrifrons",NA,NA,"Cardellina_rubrifrons","refwar",1412279.37699108
+"Myioborus_pictus_22721894.shp","Myioborus_pictus","Myioborus pictus",6880,"Painted Redstart","Parulidae","Myioborus","Myioborus pictus",NA,NA,"Myioborus_pictus","paired",673877.503265371
+"Icteria_virens_22722057.shp","Icteria_virens","Icteria virens",6830,"Yellow-breasted Chat","Parulidae","Icteria","Icteria virens",NA,NA,"Icteria_virens","yebcha",2633211.48639168
+"Arremonops_rufivirgatus_22721392.shp","Arremonops_rufivirgatus","Arremonops rufivirgatus",5860,"Olive Sparrow","Emberizidae","Arremonops","Arremonops rufivirgatus",NA,NA,"Arremonops_rufivirgatus","olispa",0
+"Pipilo_chlorurus_22721304.shp","Pipilo_chlorurus","Pipilo chlorurus",5900,"Green-tailed Towhee","Emberizidae","Pipilo","Pipilo chlorurus",NA,NA,"Pipilo_chlorurus","gnttow",1370812.85587358
+"Pipilo_maculatus_22729113.shp","Pipilo_maculatus","Pipilo maculatus",5880,"Spotted Towhee","Emberizidae","Pipilo","Pipilo maculatus",NA,NA,"Pipilo_maculatus","spotow",783945.071947329
+"Pipilo_erythrophthalmus_22721310.shp","Pipilo_erythrophthalmus","Pipilo erythrophthalmus",5870,"Eastern Towhee","Emberizidae","Pipilo","Pipilo erythrophthalmus",NA,NA,"Pipilo_erythrophthalmus","eastow",531061.668391919
+"Aimophila_ruficeps_22721288.shp","Aimophila_ruficeps","Aimophila ruficeps",5800,"Rufous-crowned Sparrow","Emberizidae","Aimophila","Aimophila ruficeps",NA,NA,"Aimophila_ruficeps","rucspa",0
+"Melozone_crissalis_22721323.shp","Melozone_crissalis","Melozone crissalis",5911,"California Towhee","Emberizidae","Melozone","Melozone crissalis",NA,NA,"Melozone_crissalis","caltow",0
+"Melozone_aberti_22721315.shp","Melozone_aberti","Melozone aberti",5920,"Abert's Towhee","Emberizidae","Melozone","Melozone aberti",NA,NA,"Melozone_aberti","abetow",0
+"Peucaea_carpalis_22721280.shp","Peucaea_carpalis","Peucaea carpalis",5790,"Rufous-winged Sparrow","Emberizidae","Peucaea","Peucaea carpalis",NA,NA,"Peucaea_carpalis","ruwspa",0
+"Peucaea_botterii_22721264.shp","Peucaea_botterii","Peucaea botterii",5760,"Botteri's Sparrow","Emberizidae","Peucaea","Peucaea botterii",NA,NA,"Peucaea_botterii","botspa",0
+"Peucaea_cassinii_22721272.shp","Peucaea_cassinii","Peucaea cassinii",5780,"Cassin's Sparrow","Emberizidae","Peucaea","Peucaea cassinii",NA,NA,"Peucaea_cassinii","casspa",341511.229996384
+"Peucaea_aestivalis_22721256.shp","Peucaea_aestivalis","Peucaea aestivalis",5750,"Bachman's Sparrow","Emberizidae","Peucaea","Peucaea aestivalis",NA,NA,"Peucaea_aestivalis","bacspa",138819.317008816
+"Spizella_arborea_22721159.shp","Spizella_arborea","Spizella arborea",5590,"American Tree Sparrow","Emberizidae","Spizelloides","Spizelloides arborea","Spizella","Spizella arborea","Spizella_arborea","amtspa",2514528.35897386
+"Spizella_passerina_22721162.shp","Spizella_passerina","Spizella passerina",5600,"Chipping Sparrow","Emberizidae","Spizella","Spizella passerina",NA,NA,"Spizella_passerina","chispa",2086506.87343137
+"Spizella_pallida_22721165.shp","Spizella_pallida","Spizella pallida",5610,"Clay-colored Sparrow","Emberizidae","Spizella","Spizella pallida",NA,NA,"Spizella_pallida","clcspa",3065076.17954715
+"Spizella_breweri_22734705.shp","Spizella_breweri","Spizella breweri",5620,"Brewer's Sparrow","Emberizidae","Spizella","Spizella breweri",NA,NA,"Spizella_breweri","brespa",1856140.91630798
+"Spizella_pusilla_22721179.shp","Spizella_pusilla","Spizella pusilla",5630,"Field Sparrow","Emberizidae","Spizella","Spizella pusilla",NA,NA,"Spizella_pusilla","fiespa",488321.882222764
+"Spizella_atrogularis_22721185.shp","Spizella_atrogularis","Spizella atrogularis",5650,"Black-chinned Sparrow","Emberizidae","Spizella","Spizella atrogularis",NA,NA,"Spizella_atrogularis","bkcspa",332988.497361469
+"Pooecetes_gramineus_22721188.shp","Pooecetes_gramineus","Pooecetes gramineus",5400,"Vesper Sparrow","Emberizidae","Pooecetes","Pooecetes gramineus",NA,NA,"Pooecetes_gramineus","vesspa",1821088.43834836
+"Chondestes_grammacus_22721191.shp","Chondestes_grammacus","Chondestes grammacus",5520,"Lark Sparrow","Emberizidae","Chondestes","Chondestes grammacus",NA,NA,"Chondestes_grammacus","larspa",1233751.61821868
+"Amphispiza_bilineata_22721194.shp","Amphispiza_bilineata","Amphispiza bilineata",5730,"Black-throated Sparrow","Emberizidae","Amphispiza","Amphispiza bilineata",NA,NA,"Amphispiza_bilineata","bktspa",504281.728447467
+"Amphispiza_belli_22721197.shp","Amphispiza_belli","Amphispiza belli",5739,"Bell's Sparrow","Emberizidae","Artemisiospiza","Artemisiospiza belli","Amphispiza","Amphispiza belli","Amphispiza_belli","belspa2",96071.9194547866
+"Calamospiza_melanocorys_22721049.shp","Calamospiza_melanocorys","Calamospiza melanocorys",6050,"Lark Bunting","Emberizidae","Calamospiza","Calamospiza melanocorys",NA,NA,"Calamospiza_melanocorys","larbun",1603232.06660368
+"Passerculus_sandwichensis_22721110.shp","Passerculus_sandwichensis","Passerculus sandwichensis",5420,"Savannah Sparrow","Emberizidae","Passerculus","Passerculus sandwichensis",NA,NA,"Passerculus_sandwichensis","savspa",2844235.52018752
+"Ammodramus_savannarum_22721144.shp","Ammodramus_savannarum","Ammodramus savannarum",5460,"Grasshopper Sparrow","Emberizidae","Ammodramus","Ammodramus savannarum",NA,NA,"Ammodramus_savannarum","graspa",1545696.77265594
+"Ammodramus_bairdii_22721141.shp","Ammodramus_bairdii","Ammodramus bairdii",5450,"Baird's Sparrow","Emberizidae","Ammodramus","Ammodramus bairdii",NA,NA,"Ammodramus_bairdii","baispa",2272003.84043724
+"Ammodramus_henslowii_22721138.shp","Ammodramus_henslowii","Ammodramus henslowii",5470,"Henslow's Sparrow","Emberizidae","Ammodramus","Ammodramus henslowii",NA,NA,"Ammodramus_henslowii","henspa",1094350.70742601
+"Ammodramus_leconteii_22721135.shp","Ammodramus_leconteii","Ammodramus leconteii",5480,"Le Conte's Sparrow","Emberizidae","Ammodramus","Ammodramus leconteii",NA,NA,"Ammodramus_leconteii",NA,2347297.44939632
+"Ammodramus_nelsoni_22728393.shp","Ammodramus_nelsoni","Ammodramus nelsoni",5491,"Nelson's Sparrow","Emberizidae","Ammodramus","Ammodramus nelsoni",NA,NA,"Ammodramus_nelsoni","nstspa",2683222.20659721
+"Ammodramus_caudacutus_22721129.shp","Ammodramus_caudacutus","Ammodramus caudacutus",5490,"Saltmarsh Sparrow","Emberizidae","Ammodramus","Ammodramus caudacutus",NA,NA,"Ammodramus_caudacutus","sstspa",618535.243350517
+"Ammodramus_maritimus_22721123.shp","Ammodramus_maritimus","Ammodramus maritimus",5500,"Seaside Sparrow","Emberizidae","Ammodramus","Ammodramus maritimus",NA,NA,"Ammodramus_maritimus","seaspa",225875.3736819
+"Passerella_iliaca_22721052.shp","Passerella_iliaca","Passerella iliaca",5850,"Fox Sparrow","Emberizidae","Passerella","Passerella iliaca",NA,NA,"Passerella_iliaca","foxspa",2989075.15936598
+"Melospiza_melodia_22721058.shp","Melospiza_melodia","Melospiza melodia",5810,"Song Sparrow","Emberizidae","Melospiza","Melospiza melodia",NA,NA,"Melospiza_melodia","sonspa",980500.391491735
+"Melospiza_lincolnii_22721064.shp","Melospiza_lincolnii","Melospiza lincolnii",5830,"Lincoln's Sparrow","Emberizidae","Melospiza","Melospiza lincolnii",NA,NA,"Melospiza_lincolnii","linspa",2808857.14906138
+"Melospiza_georgiana_22721070.shp","Melospiza_georgiana","Melospiza georgiana",5840,"Swamp Sparrow","Emberizidae","Melospiza","Melospiza georgiana",NA,NA,"Melospiza_georgiana","swaspa",2040129.09986269
+"Zonotrichia_albicollis_22721085.shp","Zonotrichia_albicollis","Zonotrichia albicollis",5580,"White-throated Sparrow","Emberizidae","Zonotrichia","Zonotrichia albicollis",NA,NA,"Zonotrichia_albicollis","whtspa",2011961.98230694
+"Zonotrichia_querula_22721082.shp","Zonotrichia_querula","Zonotrichia querula",5530,"Harris's Sparrow","Emberizidae","Zonotrichia","Zonotrichia querula",NA,NA,"Zonotrichia_querula","harspa",3179664.96133862
+"Zonotrichia_leucophrys_22721088.shp","Zonotrichia_leucophrys","Zonotrichia leucophrys",5540,"White-crowned Sparrow","Emberizidae","Zonotrichia","Zonotrichia leucophrys",NA,NA,"Zonotrichia_leucophrys","whcspa",2677542.56741899
+"Zonotrichia_atricapilla_22721091.shp","Zonotrichia_atricapilla","Zonotrichia atricapilla",5570,"Golden-crowned Sparrow","Emberizidae","Zonotrichia","Zonotrichia atricapilla",NA,NA,"Zonotrichia_atricapilla","gocspa",2540597.91628775
+"Junco_hyemalis_22735032.shp","Junco_hyemalis","Junco hyemalis",5660,"Dark-eyed Junco","Emberizidae","Junco","Junco hyemalis",NA,NA,"Junco_hyemalis",NA,1591010.9165519
+"Junco_phaeonotus_22721107.shp","Junco_phaeonotus","Junco phaeonotus",5700,"Yellow-eyed Junco","Emberizidae","Junco","Junco phaeonotus",NA,NA,"Junco_phaeonotus","yeejun",0
+"Piranga_flava_22722450.shp","Piranga_flava","Piranga flava",6090,"Hepatic Tanager","Cardinalidae","Piranga","Piranga flava",NA,NA,"Piranga_flava","heptan",579906.454742226
+"Piranga_rubra_22722456.shp","Piranga_rubra","Piranga rubra",6100,"Summer Tanager","Cardinalidae","Piranga","Piranga rubra",NA,NA,"Piranga_rubra","sumtan",3469578.65731414
+"Piranga_olivacea_22722466.shp","Piranga_olivacea","Piranga olivacea",6080,"Scarlet Tanager","Cardinalidae","Piranga","Piranga olivacea",NA,NA,"Piranga_olivacea","scatan",4825448.1949159
+"Piranga_ludoviciana_22722471.shp","Piranga_ludoviciana","Piranga ludoviciana",6070,"Western Tanager","Cardinalidae","Piranga","Piranga ludoviciana",NA,NA,"Piranga_ludoviciana","westan",3763921.28670769
+"Cardinalis_cardinalis_22723819.shp","Cardinalis_cardinalis","Cardinalis cardinalis",5930,"Northern Cardinal","Cardinalidae","Cardinalis","Cardinalis cardinalis",NA,NA,"Cardinalis_cardinalis","norcar",0
+"Cardinalis_sinuatus_22723825.shp","Cardinalis_sinuatus","Cardinalis sinuatus",5940,"Pyrrhuloxia","Cardinalidae","Cardinalis","Cardinalis sinuatus",NA,NA,"Cardinalis_sinuatus","pyrrhu",0
+"Pheucticus_ludovicianus_22723813.shp","Pheucticus_ludovicianus","Pheucticus ludovicianus",5950,"Rose-breasted Grosbeak","Cardinalidae","Pheucticus","Pheucticus ludovicianus",NA,NA,"Pheucticus_ludovicianus","robgro",4171350.37353972
+"Pheucticus_melanocephalus_22723816.shp","Pheucticus_melanocephalus","Pheucticus melanocephalus",5960,"Black-headed Grosbeak","Cardinalidae","Pheucticus","Pheucticus melanocephalus",NA,NA,"Pheucticus_melanocephalus","bkhgro",2018523.92141854
+"Passerina_caerulea_22723939.shp","Passerina_caerulea","Passerina caerulea",5970,"Blue Grosbeak","Cardinalidae","Passerina","Passerina caerulea",NA,NA,"Passerina_caerulea","blugrb1",1755067.50061994
+"Passerina_amoena_22723948.shp","Passerina_amoena","Passerina amoena",5990,"Lazuli Bunting","Cardinalidae","Passerina","Passerina amoena",NA,NA,"Passerina_amoena","lazbun",2302308.88074584
+"Passerina_cyanea_22723951.shp","Passerina_cyanea","Passerina cyanea",5980,"Indigo Bunting","Cardinalidae","Passerina","Passerina cyanea",NA,NA,"Passerina_cyanea","indbun",2417276.61209221
+"Passerina_versicolor_22723954.shp","Passerina_versicolor","Passerina versicolor",6000,"Varied Bunting","Cardinalidae","Passerina","Passerina versicolor",NA,NA,"Passerina_versicolor","varbun",489225.601814942
+"Passerina_ciris_22723957.shp","Passerina_ciris","Passerina ciris",6010,"Painted Bunting","Cardinalidae","Passerina","Passerina ciris",NA,NA,"Passerina_ciris","paibun",1731250.51202769
+"Spiza_americana_22723796.shp","Spiza_americana","Spiza americana",6040,"Dickcissel","Cardinalidae","Spiza","Spiza americana",NA,NA,"Spiza_americana","dickci",4039702.75785059
+"Dolichonyx_oryzivorus_22724367.shp","Dolichonyx_oryzivorus","Dolichonyx oryzivorus",4940,"Bobolink","Icteridae","Dolichonyx","Dolichonyx oryzivorus",NA,NA,"Dolichonyx_oryzivorus","boboli",8122701.59148154
+"Agelaius_phoeniceus_22724191.shp","Agelaius_phoeniceus","Agelaius phoeniceus",4980,"Red-winged Blackbird","Icteridae","Agelaius","Agelaius phoeniceus",NA,NA,"Agelaius_phoeniceus","rewbla",917052.921759842
+"Agelaius_tricolor_22724196.shp","Agelaius_tricolor","Agelaius tricolor",5000,"Tricolored Blackbird","Icteridae","Agelaius","Agelaius tricolor",NA,NA,"Agelaius_tricolor","tribla",16863.5867541025
+"Sturnella_magna_22735434.shp","Sturnella_magna","Sturnella magna",5010,"Eastern Meadowlark","Icteridae","Sturnella","Sturnella magna",NA,NA,"Sturnella_magna","easmea",509937.516541788
+"Sturnella_neglecta_22724256.shp","Sturnella_neglecta","Sturnella neglecta",5011,"Western Meadowlark","Icteridae","Sturnella","Sturnella neglecta",NA,NA,"Sturnella_neglecta","wesmea",874688.049812882
+"Xanthocephalus_xanthocephalus_22724169.shp","Xanthocephalus_xanthocephalus","Xanthocephalus xanthocephalus",4970,"Yellow-headed Blackbird","Icteridae","Xanthocephalus","Xanthocephalus xanthocephalus",NA,NA,"Xanthocephalus_xanthocephalus","yehbla",2150118.19309189
+"Euphagus_carolinus_22724329.shp","Euphagus_carolinus","Euphagus carolinus",5090,"Rusty Blackbird","Icteridae","Euphagus","Euphagus carolinus",NA,NA,"Euphagus_carolinus","rusbla",2907320.3664756
+"Euphagus_cyanocephalus_22724332.shp","Euphagus_cyanocephalus","Euphagus cyanocephalus",5100,"Brewer's Blackbird","Icteridae","Euphagus","Euphagus cyanocephalus",NA,NA,"Euphagus_cyanocephalus","brebla",1577171.11302275
+"Quiscalus_quiscula_22724320.shp","Quiscalus_quiscula","Quiscalus quiscula",5110,"Common Grackle","Icteridae","Quiscalus","Quiscalus quiscula",NA,NA,"Quiscalus_quiscula","comgra",958550.659359939
+"Quiscalus_major_22724311.shp","Quiscalus_major","Quiscalus major",5130,"Boat-tailed Grackle","Icteridae","Quiscalus","Quiscalus major",NA,NA,"Quiscalus_major","botgra",31844.1958967788
+"Quiscalus_mexicanus_22724308.shp","Quiscalus_mexicanus","Quiscalus mexicanus",5120,"Great-tailed Grackle","Icteridae","Quiscalus","Quiscalus mexicanus",NA,NA,"Quiscalus_mexicanus","grtgra",0
+"Molothrus_bonariensis_22724345.shp","Molothrus_bonariensis","Molothrus bonariensis",4961,"Shiny Cowbird","Icteridae","Molothrus","Molothrus bonariensis",NA,NA,"Molothrus_bonariensis","shicow",0
+"Molothrus_aeneus_22724349.shp","Molothrus_aeneus","Molothrus aeneus",4960,"Bronzed Cowbird","Icteridae","Molothrus","Molothrus aeneus",NA,NA,"Molothrus_aeneus","brocow",295007.837935436
+"Molothrus_ater_22724354.shp","Molothrus_ater","Molothrus ater",4950,"Brown-headed Cowbird","Icteridae","Molothrus","Molothrus ater",NA,NA,"Molothrus_ater","bnhcow",1174220.09770508
+"Icterus_spurius_22724134.shp","Icterus_spurius","Icterus spurius",5060,"Orchard Oriole","Icteridae","Icterus","Icterus spurius",NA,NA,"Icterus_spurius","orcori",2679961.63852233
+"Icterus_cucullatus_22724131.shp","Icterus_cucullatus","Icterus cucullatus",5050,"Hooded Oriole","Icteridae","Icterus","Icterus cucullatus",NA,NA,"Icterus_cucullatus","hooori",1319520.39164125
+"Icterus_bullockii_22729123.shp","Icterus_bullockii","Icterus bullockii",5080,"Bullock's Oriole","Icteridae","Icterus","Icterus bullockii",NA,NA,"Icterus_bullockii","bulori",2293106.93552153
+"Icterus_pectoralis_22724105.shp","Icterus_pectoralis","Icterus pectoralis",5032,"Spot-breasted Oriole","Icteridae","Icterus","Icterus pectoralis",NA,NA,"Icterus_pectoralis",NA,0
+"Icterus_gularis_22724108.shp","Icterus_gularis","Icterus gularis",5031,"Altamira Oriole","Icteridae","Icterus","Icterus gularis",NA,NA,"Icterus_gularis","altori",0
+"Icterus_graduacauda_22724081.shp","Icterus_graduacauda","Icterus graduacauda",5030,"Audubon's Oriole","Icteridae","Icterus","Icterus graduacauda",NA,NA,"Icterus_graduacauda","audori",0
+"Icterus_galbula_22724126.shp","Icterus_galbula","Icterus galbula",5070,"Baltimore Oriole","Icteridae","Icterus","Icterus galbula",NA,NA,"Icterus_galbula","balori",3184064.56916155
+"Icterus_parisorum_22724160.shp","Icterus_parisorum","Icterus parisorum",5040,"Scott's Oriole","Icteridae","Icterus","Icterus parisorum",NA,NA,"Icterus_parisorum","scoori",818312.615402085
+"Archilochus_alexandri_22688196.shp","Archilochus_alexandri","Archilochus alexandri",4290,"Black-chinned Hummingbird","Trochilidae","Archilochus","Archilochus alexandri",NA,NA,"Archilochus_alexandri",NA,1859106.12190137
+"Calypte_anna_22688199.shp","Calypte_anna","Calypte anna",4310,"Anna's Hummingbird","Trochilidae","Calypte","Calypte anna",NA,NA,"Calypte_anna",NA,323797.022618012
+"Calypte_costae_22688202.shp","Calypte_costae","Calypte costae",4300,"Costa's Hummingbird","Trochilidae","Calypte","Calypte costae",NA,NA,"Calypte_costae",NA,208350.932379821
+"Selasphorus_platycercus_22688293.shp","Selasphorus_platycercus","Selasphorus platycercus",4320,"Broad-tailed Hummingbird","Trochilidae","Selasphorus","Selasphorus platycercus",NA,NA,"Selasphorus_platycercus",NA,1231089.74106993
+"Selasphorus_rufus_22688296.shp","Selasphorus_rufus","Selasphorus rufus",4330,"Rufous Hummingbird","Trochilidae","Selasphorus","Selasphorus rufus",NA,NA,"Selasphorus_rufus",NA,3473630.73414348
+"Selasphorus_sasin_22688299.shp","Selasphorus_sasin","Selasphorus sasin",4340,"Allen's Hummingbird","Trochilidae","Selasphorus","Selasphorus sasin",NA,NA,"Selasphorus_sasin",NA,2860772.31247592
+"Selasphorus_calliope_22688232.shp","Selasphorus_calliope","Selasphorus calliope",4360,"Calliope Hummingbird","Trochilidae","Selasphorus","Selasphorus calliope",NA,NA,"Selasphorus_calliope",NA,3283146.28093942
+"Cynanthus_latirostris_22725767.shp","Cynanthus_latirostris","Cynanthus latirostris",4410,"Broad-billed Hummingbird","Trochilidae","Cynanthus","Cynanthus latirostris",NA,NA,"Cynanthus_latirostris",NA,316631.544106053
+"Amazilia_yucatanensis_22687606.shp","Amazilia_yucatanensis","Amazilia yucatanensis",4390,"Buff-bellied Hummingbird","Trochilidae","Amazilia","Amazilia yucatanensis",NA,NA,"Amazilia_yucatanensis",NA,331091.570674294
+"Amazilia_violiceps_22687624.shp","Amazilia_violiceps","Amazilia violiceps",4391,"Violet-crowned Hummingbird","Trochilidae","Amazilia","Amazilia violiceps",NA,NA,"Amazilia_violiceps",NA,258217.723636474
+"Porphyrio_porphyrio_22692792.shp","Porphyrio_porphyrio","Porphyrio porphyrio",21930,"Purple Swamphen","Rallidae","Porphyrio","Porphyrio porphyrio",NA,NA,"Porphyrio_porphyrio",NA,35933.5292646322
+"Trogon_elegans_22726830.shp","Trogon_elegans","Trogon elegans",3890,"Elegant Trogon","Trogonidae","Trogon","Trogon elegans",NA,NA,"Trogon_elegans",NA,0
+"Melanerpes_lewis_22680801.shp","Melanerpes_lewis","Melanerpes lewis",4080,"Lewis's Woodpecker","Picidae","Melanerpes","Melanerpes lewis",NA,NA,"Melanerpes_lewis",NA,652729.451207822
+"Melanerpes_erythrocephalus_22680810.shp","Melanerpes_erythrocephalus","Melanerpes erythrocephalus",4060,"Red-headed Woodpecker","Picidae","Melanerpes","Melanerpes erythrocephalus",NA,NA,"Melanerpes_erythrocephalus",NA,553736.158869904
+"Melanerpes_formicivorus_22680813.shp","Melanerpes_formicivorus","Melanerpes formicivorus",4070,"Acorn Woodpecker","Picidae","Melanerpes","Melanerpes formicivorus",NA,NA,"Melanerpes_formicivorus",NA,1447.52959861549
+"Melanerpes_uropygialis_22680853.shp","Melanerpes_uropygialis","Melanerpes uropygialis",4110,"Gila Woodpecker","Picidae","Melanerpes","Melanerpes uropygialis",NA,NA,"Melanerpes_uropygialis",NA,0
+"Melanerpes_aurifrons_22680862.shp","Melanerpes_aurifrons","Melanerpes aurifrons",4100,"Golden-fronted Woodpecker","Picidae","Melanerpes","Melanerpes aurifrons",NA,NA,"Melanerpes_aurifrons",NA,0
+"Melanerpes_carolinus_22680856.shp","Melanerpes_carolinus","Melanerpes carolinus",4090,"Red-bellied Woodpecker","Picidae","Melanerpes","Melanerpes carolinus",NA,NA,"Melanerpes_carolinus",NA,0
+"Sphyrapicus_thyroideus_22680877.shp","Sphyrapicus_thyroideus","Sphyrapicus thyroideus",4040,"Williamson's Sapsucker","Picidae","Sphyrapicus","Sphyrapicus thyroideus",NA,NA,"Sphyrapicus_thyroideus",NA,1174958.99581839
+"Sphyrapicus_varius_22680868.shp","Sphyrapicus_varius","Sphyrapicus varius",4020,"Yellow-bellied Sapsucker","Picidae","Sphyrapicus","Sphyrapicus varius",NA,NA,"Sphyrapicus_varius",NA,2858853.90783952
+"Sphyrapicus_nuchalis_22680871.shp","Sphyrapicus_nuchalis","Sphyrapicus nuchalis",4021,"Red-naped Sapsucker","Picidae","Sphyrapicus","Sphyrapicus nuchalis",NA,NA,"Sphyrapicus_nuchalis",NA,1466501.61956729
+"Sphyrapicus_ruber_22680874.shp","Sphyrapicus_ruber","Sphyrapicus ruber",4030,"Red-breasted Sapsucker","Picidae","Sphyrapicus","Sphyrapicus ruber",NA,NA,"Sphyrapicus_ruber",NA,601030.700581525
+"Dryobates_scalaris_22681152.shp","Dryobates_scalaris","Dryobates scalaris",3960,"Ladder-backed Woodpecker","Picidae","Picoides","Picoides scalaris","Dryobates","Dryobates scalaris","Dryobates_scalaris",NA,0
+"Dryobates_nuttallii_22681149.shp","Dryobates_nuttallii","Dryobates nuttallii",3970,"Nuttall's Woodpecker","Picidae","Picoides","Picoides nuttallii","Dryobates","Dryobates nuttallii","Dryobates_nuttallii",NA,0
+"Dryobates_pubescens_22681155.shp","Dryobates_pubescens","Dryobates pubescens",3940,"Downy Woodpecker","Picidae","Picoides","Picoides pubescens","Dryobates","Dryobates pubescens","Dryobates_pubescens",NA,0
+"Leuconotopicus_villosus_22681166.shp","Leuconotopicus_villosus","Leuconotopicus villosus",3930,"Hairy Woodpecker","Picidae","Picoides","Picoides villosus","Leuconotopicus","Leuconotopicus villosus","Leuconotopicus_villosus",NA,0
+"Leuconotopicus_arizonae_22729044.shp","Leuconotopicus_arizonae","Leuconotopicus arizonae",3975,"Arizona Woodpecker","Picidae","Picoides","Picoides arizonae","Leuconotopicus","Leuconotopicus arizonae","Leuconotopicus_arizonae",NA,0
+"Leuconotopicus_borealis_22681158.shp","Leuconotopicus_borealis","Leuconotopicus borealis",3950,"Red-cockaded Woodpecker","Picidae","Picoides","Picoides borealis","Leuconotopicus","Leuconotopicus borealis","Leuconotopicus_borealis",NA,0
+"Leuconotopicus_albolarvatus_22681169.shp","Leuconotopicus_albolarvatus","Leuconotopicus albolarvatus",3990,"White-headed Woodpecker","Picidae","Picoides","Picoides albolarvatus","Leuconotopicus","Leuconotopicus albolarvatus","Leuconotopicus_albolarvatus",NA,0
+"Picoides_arcticus_22681181.shp","Picoides_arcticus","Picoides arcticus",4000,"Black-backed Woodpecker","Picidae","Picoides","Picoides arcticus",NA,NA,"Picoides_arcticus",NA,0
+"Colaptes_auratus_22726404.shp","Colaptes_auratus","Colaptes auratus",4120,"Northern Flicker","Picidae","Colaptes","Colaptes auratus",NA,NA,"Colaptes_auratus",NA,1389057.2017304
+"Colaptes_chrysoides_22681290.shp","Colaptes_chrysoides","Colaptes chrysoides",4140,"Northern Flicker","Picidae","Colaptes","Colaptes chrysoides",NA,NA,"Colaptes_chrysoides",NA,0
+"Hylatomus_pileatus_22681363.shp","Hylatomus_pileatus","Hylatomus pileatus",4050,"Pileated Woodpecker","Picidae","Dryocopus","Dryocopus pileatus","Hylatomus","Hylatomus pileatus","Hylatomus_pileatus",NA,0
+"Myiopsitta_monachus_45427277.shp","Myiopsitta_monachus","Myiopsitta monachus",3824,"Monk Parakeet","Psittacidae","Myiopsitta","Myiopsitta monachus",NA,NA,"Myiopsitta_monachus",NA,0
+"Aratinga_nenday_22685752.shp","Aratinga_nenday","Aratinga nenday",51830,"Nanday Parakeet","Psittacidae","Aratinga","Aratinga nenday",NA,NA,"Aratinga_nenday",NA,0
+"Brotogeris_chiriri_22685963.shp","Brotogeris_chiriri","Brotogeris chiriri",52021,"Yellow-chevroned Parakeet","Psittacidae","Brotogeris","Brotogeris chiriri",NA,NA,"Brotogeris_chiriri",NA,0
+"Amazona_viridigenalis_22686259.shp","Amazona_viridigenalis","Amazona viridigenalis",3826,"Red-crowned Parrot","Psittacidae","Amazona","Amazona viridigenalis",NA,NA,"Amazona_viridigenalis",NA,0
+"Psittacula_krameri_22685441.shp","Psittacula_krameri","Psittacula krameri",3823,"Rose-ringed Parakeet","Psittaculidae","Psittacula","Psittacula krameri",NA,NA,"Psittacula_krameri",NA,0
+"Melopsittacus_undulatus_22685223.shp","Melopsittacus_undulatus","Melopsittacus undulatus",3822,"Budgerigar","Psittaculidae","Melopsittacus","Melopsittacus undulatus",NA,NA,"Melopsittacus_undulatus",NA,0
+"Camptostoma_imberbe_22699177.shp","Camptostoma_imberbe","Camptostoma imberbe",4720,"Northern Beardless-Tyrannulet","Tyrannidae","Camptostoma","Camptostoma imberbe",NA,NA,"Camptostoma_imberbe",NA,162457.178072888
+"Contopus_cooperi_22699787.shp","Contopus_cooperi","Contopus cooperi",4590,"Olive-sided Flycatcher","Tyrannidae","Contopus","Contopus cooperi",NA,NA,"Contopus_cooperi",NA,7348296.63735421
+"Contopus_pertinax_22699798.shp","Contopus_pertinax","Contopus pertinax",4600,"Greater Pewee","Tyrannidae","Contopus","Contopus pertinax",NA,NA,"Contopus_pertinax",NA,480946.035615201
+"Contopus_sordidulus_22699811.shp","Contopus_sordidulus","Contopus sordidulus",4620,"Western Wood-Pewee","Tyrannidae","Contopus","Contopus sordidulus",NA,NA,"Contopus_sordidulus",NA,6735742.4188642
+"Contopus_virens_22699816.shp","Contopus_virens","Contopus virens",4610,"Eastern Wood-Pewee","Tyrannidae","Contopus","Contopus virens",NA,NA,"Contopus_virens",NA,4940005.56723045
+"Empidonax_flaviventris_22699839.shp","Empidonax_flaviventris","Empidonax flaviventris",4630,"Yellow-bellied Flycatcher","Tyrannidae","Empidonax","Empidonax flaviventris",NA,NA,"Empidonax_flaviventris",NA,4143244.148274
+"Empidonax_virescens_22699842.shp","Empidonax_virescens","Empidonax virescens",4650,"Acadian Flycatcher","Tyrannidae","Empidonax","Empidonax virescens",NA,NA,"Empidonax_virescens",NA,3558977.10144642
+"Empidonax_alnorum_22699845.shp","Empidonax_alnorum","Empidonax alnorum",4661,"Alder Flycatcher","Tyrannidae","Empidonax","Empidonax alnorum",NA,NA,"Empidonax_alnorum",NA,7525782.21051844
+"Empidonax_traillii_22699848.shp","Empidonax_traillii","Empidonax traillii",4660,"Willow Flycatcher","Tyrannidae","Empidonax","Empidonax traillii",NA,NA,"Empidonax_traillii",NA,4528366.43177161
+"Empidonax_minimus_22699854.shp","Empidonax_minimus","Empidonax minimus",4670,"Least Flycatcher","Tyrannidae","Empidonax","Empidonax minimus",NA,NA,"Empidonax_minimus",NA,3858801.61942802
