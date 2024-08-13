@@ -216,6 +216,23 @@ mbbs <- mbbs %>%
     dplyr::select(-name)%>%
     left_join(uai, by = c("common_name" = "Species"))
   
+  
+  #urbanization
+  output_urb <- run_gee(formula = 
+                      update(f_pd, ~ .+ observer_quality),
+                    mbbs, species_list) %>%
+    #remove intercept information
+    filter(!value %in% "(Intercept)") %>%
+    #add trend into (exponentiate the esimate)
+    mutate(trend = exp(estimate)-1) %>%
+    #pivot_wider
+    pivot_wider(names_from = value, values_from = c(estimate, std.error, statistic, p.value, trend)) %>%
+    dplyr::select(-name)%>%
+    left_join(uai, by = c("common_name" = "Species"))
+  
+  fit <- lm(trend_year ~ UAI, data = output_urb)
+  
+  
   #---------------------------------bsft---------------------------------------
   output$trend_year <- output$trend_year*100
   output$std.error_year <- output$std.error_year*100
@@ -223,7 +240,7 @@ mbbs <- mbbs %>%
   minout <- min(output$trend_year)
   maxout <- max(output$trend_year)
   output$trend_std <-  round(50*((output$trend_year)-minout)/(maxout - minout),0) +1
-  colorramp = colorRampPalette(c("red", "lightgrey", "blue"))
+  colorramp = colorRampPalette(c("red", "white", "blue"))
   output <- output %>% arrange(trend_year)
   
   hist(output$trend_year, breaks = 15)
@@ -246,8 +263,42 @@ mbbs <- mbbs %>%
   #       x1 = mid, y1 = output$trend_year - output$std.error_year,
   #       angle = 90, code =3, length = 0.01)
   
+  #read in Grace's diet and migration metrics
+  diet <- read.csv("data/gdicecco-avian-range-shifts/diet_niche_breadth.csv", header = TRUE)
+  migdist <- read.csv("data/gdicecco-avian-range-shifts/migratory_distance.csv", header = TRUE)
+  
+  output <- output %>% 
+    left_join(diet, by = c("common_name" = "english_common_name")) %>%
+    left_join(migdist, by = c("common_name" = "english_common_name"))
+  
+  fit <- lm(trend_year ~ shannonE_diet, data = output)
+  summary(fit)
+  fit <- lm(trend_year ~ mig_dist_m, data = output)
+  summary(fit)
+  #nope, either are significant.
   
   #okay. um. some start to visuals for this presentation..
+  average.count <- 
+    mbbs_nozero %>%
+    filter(year < 2003) %>%
+    group_by(common_name) %>%
+    summarize(average.count = mean(count))
+  
+  output <- left_join(output, average.count, by = "common_name")
+  
+  fit <- lm(trend_year ~ average.count, data = output, family = gaussian)
+  summary(fit)
+  plot(output$average.count, output$trend_year,
+       xlab = "Mean Count 1999-2002",
+       ylab = "% Change/Year", 
+       pch = 16,
+       cex = 1.4,
+       cex.axis = 1.5,
+       cex.lab = 1.5
+  )
+  abline(fit, lwd = 2)
+  abline(h = 0, lty = 2, col = "red")
+  text(20, 7, "P = 0.046, R2 = 0.069", cex = 1.5)
   
   #meantime. let's do migratory distance and diet etc. predictions. left_join traits
   traits <- read.csv("data/NC_species_traits.csv", header = TRUE)
@@ -290,6 +341,14 @@ mbbs <- mbbs %>%
   migration.aov <- output %>% anova_test(trend_year ~ Migrate, detailed = T)
   migration.aov  #this is how you do it in base R
   summary(aov(trend_year ~ Winter_Biome, data = output))
+  pwc <- output %>% tukey_hsd(trend_year ~ Migrate)
+  pwc <- pwc %>% add_xy_position(x = "Migrate")
+  ggboxplot(output, x = "Migrate", y = "trend_year") +
+    stat_pvalue_manual(pwc, hide.ns = TRUE) +
+    labs(
+      subtitle = get_test_label(migration.aov, detailed = TRUE),
+      caption = get_pwc_label(pwc)
+    )
   
   #hey, Ivara, this is the wrong way to analyze this data. Rather than fitting a linear line to a category vs trend, this is a t-test style analysis that requires box plots of differences. let's do that and THEN make calls, ok? uai is a continous variable and can be fit with a line, these categorical variables are not and you should treat them like the cat data.
   fit <- lm(trend_year ~ Breeding_Biome, data = output)
