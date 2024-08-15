@@ -81,3 +81,15 @@ add_survey_events <- function(mbbs, mbbs_survey_events) {
   
   return(mbbs)
 } 
+
+
+
+# Function to transform year to a variable where year 1 (1999, 2000, or 2002) is 1
+# rather than the raw year itself. 
+# 
+standardize_year <- function(mbbs, starting_year = 1999) {
+  
+  mbbs <- mbbs %>%
+    mutate(year_standard = year - (starting_year - 1))
+  
+}

@@ -12,6 +12,10 @@ library(MASS) #modeling
 library(geepack) #GEE modeling
 library(mbbs) #data comes from here
 library(broom) #extracts coefficient values out of models, works with geepack
+library(rstan) #stan
+library(StanHeaders) #stan helper
+library(rethinking) #alt. way to model with bayes, from Statistical Rethinking course
+
 
 #prevent scientific notation to make a trend table easier to read
 options(scipen=999)
@@ -21,9 +25,9 @@ options(scipen=999)
 #survey_events <- mbbs_survey_events
 
 #read in data, using most updated versions of the mbbs. 
-mbbs_orange <- mbbs_orange
-mbbs_durham <- mbbs_durham
-mbbs_chatham <- mbbs_chatham
+mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 1999)
+mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2002)
+mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 2000)
 mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three counties together
   mutate(route_ID = route_num + case_when(
     mbbs_county == "orange" ~ 100L,
@@ -48,13 +52,13 @@ ungroup() #this ungroup is necessary
 #filter out species that haven't been seen more than the min number of times on the min number of routes.
 mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 10, min_num_routes = 5)
 
-n_distinct(mbbs$common_name) #ok, 58 species rn make the cut with the borders set at 5 routes and 10 sightings on those routes. Nice!
+n_distinct(mbbs$common_name) #ok, 59 species rn make the cut with the borders set at 5 routes and 10 sightings on those routes. Nice!
 
 #save a version of the mbbs before adding 0s
   mbbs_nozero <- mbbs
 #add in the 0 values for when routes were surveyed but the species that remain in this filtered dataset were not seen.
  mbbs <- mbbs %>% complete(
-  nesting(year, mbbs_county, route_ID, route_num),
+  nesting(year, year_standard, mbbs_county, route_ID, route_num),
   nesting(common_name, sci_name),
   fill = list(count = 0))  
 
@@ -73,6 +77,9 @@ mbbs_nozero <- add_survey_events(mbbs_nozero, mbbs_survey_events)
 mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
 mbbs_nozero <- mbbs_nozero  %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
 
+#---------------------------------
+#Add in landcover information
+#---------------------------------
 
 #leftjoin for landcover information
 #read in nlcd data, filter to just what we're interested in. Otherwise it's a many-to-many join relationship. Right now, just the % developed land. Workflow similar to "calc_freq_remove_rows()" from the generate_percent_change_+_map.. code, but altered for this use.
@@ -121,6 +128,8 @@ mbbs <- add_landfire(mbbs,landfire)
 mbbs_nozero <- add_landfire(mbbs_nozero, landfire)
 
 #------------------------------------------------------------------------------
+# Set up for modeling
+#------------------------------------------------------------------------------
 
 #set up for modeling
 species_list <- unique(mbbs$common_name)
@@ -148,6 +157,85 @@ mbbs <- mbbs %>%
   f_pdobs <- update(f_base, ~ . + percent_developed + observer_quality)
   f_wlandfire <- update(f_pdobs, ~. + lf_mean_route)
 
+#------------------------------------------------------------------------------
+# Bayes model, based on Link and Sauer 2001
+  # https://academic.oup.com/auk/article/128/1/87/5149447
+# Modeling help from review of DiCecco Pop Trends code
+  # https://github.com/gdicecco/poptrends_envchange/tree/master
+#------------------------------------------------------------------------------
+  #can use either brms' 'make_standcode' function
+  #or rethinking's 'ulam' function to build the stan model
+  
+#Okay so, summary: yeah, I can make a poisson model run. BUt the outputs are not making sense, because it's all just giving me the intercept. And none of the other information relevant to the model. This will require another couple statistical rethinking videos I think. Also downloading Grace's poptrends git and working through script_bayes_model_trial.R
+  
+#set up model paramaters
+  #for the moment. Let's begin with the count ~ year specification. I just want to 
+  #get a bayes model running, and from there we will add in observer and the route
+  #hierarchy.
+#Testing purposes - just one species.
+filtered_mbbs <- mbbs %>% filter(common_name == species_list[1] | common_name == "Wood Thrush")
+dat <- list(
+  C = filtered_mbbs$count, #Count. Not sure this should be standardized
+  Y = filtered_mbbs$year_standard, #let's transform year into a format where 1 is the first year the route is run, and so on. This probably needs to happen up top.
+  S = as.factor(filtered_mbbs$common_name) #species.
+  #R = mbbs$route_ID
+)
+  
+  
+#define model and priors
+
+#Count is a function of a poissoin distribution with shape lambda.
+# C ~ dpois( lambda )
+
+
+#matrixes get involved for hierarchical models. Again, right now just run basic. EVEN BASIC-ER. INTERCEPT ONLY.
+#this should be an overdispersed poisson. 
+  mQ <- ulam( 
+    alist(
+      C ~ dpois( lambda ),
+      log(lambda) <- a[S], #just intercept. Each species has a different one.
+      a[S] ~ dnorm(0,1)
+    ), data = dat, chains = 4, cores = 4, log_lik=TRUE
+  )
+  
+plot(precis(mQ, 2))
+  
+#add Year
+mY <- ulam(
+  alist(
+    C ~ dpois( lambda ),
+    log(lambda) <- a[S] + Y[S], #intercept and year effect.
+    a[S] ~ dnorm(0,1),
+    Y[S] ~ dnorm(0,1) #likely a bad prior. Um. We'll let is sit for now.
+  ), data = dat, chains = 4, cores = 4, log_lik=TRUE
+)
+  
+plot(precis(mY, 2))
+precis(mY, 2) #okay fascinating model outputs. Those make no sense. Um. Definitely not reflecting a change per year. What's its outputting are the a[1] and a[2] - the intercepts! That's a part I don't need.
+
+#lets bring in the test data.
+testdata <- read.csv("test/testdata_six_percent_change.csv", header = T) %>% standardize_year(2000)
+
+testdat <- list(
+  C = testdata$count, #Count. Not sure this should be standardized
+  Y = testdata$year_standard, #let's transform year into a format where 1 is the first year the route is run, and so on. This probably needs to happen up top.
+  S = as.factor(testdata$common_name) #species.
+  #R = mbbs$route_ID
+)
+
+#look. let's take this back a step from poisson even. Gaussian. Yep, thissss is just giving sigma, and no output about the mean.
+mT <- ulam(
+  alist(
+    C ~ dnorm(mu, sigma),
+    mu <- Y[S],
+    Y[S] ~ dnorm(0,1),
+    sigma ~ dexp(1)
+  ), data = testdat, chains = 4, cores = 4, log_lik=TRUE
+)
+
+plot(precis(mT,2))
+precis(mT,2)
+  
 #------------------------------------------------------------------------------
 #GEE model  
 #------------------------------------------------------------------------------
@@ -205,7 +293,7 @@ mbbs <- mbbs %>%
   }
   
   output <- run_gee(formula = 
-                     update(f_base, ~ .+ observer_quality),
+                     f_base,
                    mbbs, species_list) %>%
     #remove intercept information
     filter(!value %in% "(Intercept)") %>%
