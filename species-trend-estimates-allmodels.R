@@ -26,8 +26,8 @@ options(scipen=999)
 
 #read in data, using most updated versions of the mbbs. 
 mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 1999)
-mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2002)
-mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 2000)
+mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 1999)
+mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 1999)
 mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three counties together
   mutate(route_ID = route_num + case_when(
     mbbs_county == "orange" ~ 100L,
@@ -36,7 +36,11 @@ mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three co
   filter(count > 0) %>%
   ungroup() %>%
   #clean up for ease of use, lots of columns we don't need rn
-  dplyr::select(-sub_id, -tax_order, -count_raw, -state, -loc, -locid, -lat, -lon, -protocol, -distance_traveled, -area_covered, -all_obs, -breed_code, -checklist_comments, -source)
+  dplyr::select(-sub_id, -tax_order, -count_raw, -state, -loc, -locid, -lat, -lon, -protocol, -distance_traveled, -area_covered, -all_obs, -breed_code, -checklist_comments, -source) %>%
+  #create a route-standard from 1-34
+  group_by(route_ID) %>%
+  mutate(route_standard = dplyr::cur_group_id()) %>%
+  ungroup()
 #help keep the environment clean
 rm(mbbs_chatham); rm(mbbs_durham); rm(mbbs_orange) 
 #load in mbbs_survey_events from current branch (stop_num)
@@ -50,7 +54,12 @@ mbbs <- mbbs %>%
 ungroup() #this ungroup is necessary 
 
 #filter out species that haven't been seen more than the min number of times on the min number of routes.
-mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 10, min_num_routes = 5)
+mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 10, min_num_routes = 5) %>%
+  #create a variable so that has common name from 1:however many species are 
+  #included
+  group_by(common_name) %>%
+  mutate(common_name_standard = dplyr::cur_group_id()) %>%
+  ungroup()
 
 n_distinct(mbbs$common_name) #ok, 59 species rn make the cut with the borders set at 5 routes and 10 sightings on those routes. Nice!
 
@@ -58,8 +67,8 @@ n_distinct(mbbs$common_name) #ok, 59 species rn make the cut with the borders se
   mbbs_nozero <- mbbs
 #add in the 0 values for when routes were surveyed but the species that remain in this filtered dataset were not seen.
  mbbs <- mbbs %>% complete(
-  nesting(year, year_standard, mbbs_county, route_ID, route_num),
-  nesting(common_name, sci_name),
+  nesting(year, year_standard, mbbs_county, route_ID, route_num, route_standard),
+  nesting(common_name, sci_name, common_name_standard),
   fill = list(count = 0))  
 
 #check that no issues have occurred - all species should have the same number of occurences in the df 
@@ -76,6 +85,10 @@ mbbs_nozero <- add_survey_events(mbbs_nozero, mbbs_survey_events)
 # Remove Orange route 11 from 2012 due to uncharacteristically high counts from a one-time observer
 mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
 mbbs_nozero <- mbbs_nozero  %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
+
+#save copies of analysis df.
+write.csv(mbbs, "data/analysis.df.csv", row.names = FALSE)
+write.csv(mbbs_nozero, "data/analysis.df.nozero.csv", row.names = FALSE)
 
 #---------------------------------
 #Add in landcover information
@@ -131,6 +144,9 @@ mbbs_nozero <- add_landfire(mbbs_nozero, landfire)
 # Set up for modeling
 #------------------------------------------------------------------------------
 
+#read in analysis df
+mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
+
 #set up for modeling
 species_list <- unique(mbbs$common_name)
 filtered_mbbs <- mbbs %>% filter(common_name == species_list[1])
@@ -173,69 +189,157 @@ mbbs <- mbbs %>%
   #get a bayes model running, and from there we will add in observer and the route
   #hierarchy.
 #Testing purposes - just one species.
-filtered_mbbs <- mbbs %>% filter(common_name == species_list[1] | common_name == "Wood Thrush")
+filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "Acadian Flycatcher") %>%
+    group_by(common_name) %>%
+    mutate(common_name_standard = cur_group_id()) %>%
+    ungroup()
+  
 dat <- list(
   C = filtered_mbbs$count, #Count. Not sure this should be standardized
-  Y = filtered_mbbs$year_standard, #let's transform year into a format where 1 is the first year the route is run, and so on. This probably needs to happen up top.
-  S = as.factor(filtered_mbbs$common_name) #species.
+  Y = filtered_mbbs$year_standard, #first year is year 1, set as an index veriable
+  S = filtered_mbbs$common_name_standard, #species, as an index variable
+  R = filtered_mbbs$route_standard #route, as an index variable
+  #O = filtered_mbbs$max_qual_observer #variable to account for the quality of the observer
   #R = mbbs$route_ID
 )
   
-  
-#define model and priors
-
-#Count is a function of a poissoin distribution with shape lambda.
-# C ~ dpois( lambda )
-
-
-#matrixes get involved for hierarchical models. Again, right now just run basic. EVEN BASIC-ER. INTERCEPT ONLY.
-#this should be an overdispersed poisson. 
-  mQ <- ulam( 
-    alist(
-      C ~ dpois( lambda ),
-      log(lambda) <- a[S], #just intercept. Each species has a different one.
-      a[S] ~ dnorm(0,1)
-    ), data = dat, chains = 4, cores = 4, log_lik=TRUE
-  )
-  
-plot(precis(mQ, 2))
-  
-#add Year
-mY <- ulam(
+mbasic <- ulam(
   alist(
     C ~ dpois( lambda ),
-    log(lambda) <- a[S] + Y[S], #intercept and year effect.
-    a[S] ~ dnorm(0,1),
-    Y[S] ~ dnorm(0,1) #likely a bad prior. Um. We'll let is sit for now.
-  ), data = dat, chains = 4, cores = 4, log_lik=TRUE
-)
-  
-plot(precis(mY, 2))
-precis(mY, 2) #okay fascinating model outputs. Those make no sense. Um. Definitely not reflecting a change per year. What's its outputting are the a[1] and a[2] - the intercepts! That's a part I don't need.
-
-#lets bring in the test data.
-testdata <- read.csv("test/testdata_six_percent_change.csv", header = T) %>% standardize_year(2000)
-
-testdat <- list(
-  C = testdata$count, #Count. Not sure this should be standardized
-  Y = testdata$year_standard, #let's transform year into a format where 1 is the first year the route is run, and so on. This probably needs to happen up top.
-  S = as.factor(testdata$common_name) #species.
-  #R = mbbs$route_ID
+    log(lambda) <-  a[S] + b[S]*Y, #predicted by year. 
+    a[S] ~ dnorm(1,.5),
+    b[S] ~ dnorm(0,.2)
+  ), data = dat, chains = 4, cores = 4, log_lik = TRUE
 )
 
-#look. let's take this back a step from poisson even. Gaussian. Yep, thissss is just giving sigma, and no output about the mean.
-mT <- ulam(
+precis(mbasic, depth= 2)
+
+
+filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush") %>%
+  group_by(common_name) %>%
+  mutate(common_name_standard = cur_group_id()) %>%
+  ungroup()
+datWT <- list(
+  C = filtered_mbbs$count, #Count. Not sure this should be standardized
+  Y = filtered_mbbs$year_standard, #first year is year 1, set as an index veriable
+  S = filtered_mbbs$common_name_standard, #species, as an index variable, just WT
+  R = filtered_mbbs$route_standard #route, as an index variable
+)
+
+mWThierarch <- ulam(
   alist(
-    C ~ dnorm(mu, sigma),
-    mu <- Y[S],
-    Y[S] ~ dnorm(0,1),
+    C ~ dpois( lambda ),
+    log(lambda) <- a[R] + b*Y, #predicted by year
+    b ~ dnorm(0,.2), #prior for the slope year will have
+    a[R] ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
+    a_bar ~ dnorm(1, .5),
     sigma ~ dexp(1)
-  ), data = testdat, chains = 4, cores = 4, log_lik=TRUE
+  ), data = datWT, chains = 4, log_lik = TRUE
 )
 
-plot(precis(mT,2))
-precis(mT,2)
+#can we add in more species?
+mhierarch <- ulam(
+  alist(
+    C ~ dpois( lambda ),
+    log(lambda) <- a[R,S] + b[S]*Y, #predicted by year
+    b[S] ~ dnorm(0,.2), #prior for the slope year will have
+    matrix[R,S]:a ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
+    a_bar ~ dnorm(1, .5),
+    sigma ~ dexp(1)
+  ), data = dat, chains = 4, log_lik = TRUE
+)
+
+precis(mhierarch, depth = 2)
+
+#what if :) all the species.
+datmbbs <- list(
+  C = mbbs$count, #Count. Not sure this should be standardized
+  Y = mbbs$year_standard, #first year is year 1, set as an index veriable
+  S = mbbs$common_name_standard, #species, as an index variable, just WT
+  R = mbbs$route_standard #route, as an index variable
+)
+
+mhierarchall <- ulam(
+  alist(
+    C ~ dpois( lambda ),
+    log(lambda) <- a[R,S] + b[S]*Y, #predicted by year
+    b[S] ~ dnorm(0,.2), #prior for the slope year will have
+    matrix[R,S]:a ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
+    a_bar ~ dnorm(1, .5),
+    sigma ~ dexp(1)
+  ), data = datmbbs, chains = 4, log_lik = TRUE
+)
+#Warning: 500 of 2000 (25.0%) transitions hit the maximum treedepth limit of 10.
+#See https://mc-stan.org/misc/warnings for details.
+#If this is the only warning you are getting and your ESS and R-hat diagnostics are good, it is likely safe to ignore this warning, but finding the root cause could result in a more efficient model.
+
+#We do not generally recommend increasing max treedepth. In practice, the max treedepth limit being reached can be a sign of model misspecification, and to increase max treedepth can then result in just taking longer to fit a model that you don’t want to be fitting.
+
+precis(mhierarchall, depth = 2)
+
+results <- precis(mhierarchall, depth = 2)
+
+resultsdf <- data.frame(results)
+
+resultsdf$parameter <- c(1:59, "a_bar", "sigma")
+
+species_to_param <- mbbs %>% 
+  group_by(common_name_standard) %>%
+  mutate(common_name_standard = as.character(common_name_standard)) %>%
+  summarize(common_name = first(common_name))
+
+resultsdf <- left_join(resultsdf, species_to_param, by = c("parameter" = "common_name_standard"))
+
+#left_join GEE results
+GEEresults <- read.csv("data/trend-table-GEE.csv", header = TRUE)
+resultsdf <- left_join(resultsdf, GEEresults, by = c("common_name" = "species"))
+
+#remove a_bar and sigma from resultsdf
+resultsdf <- resultsdf %>%
+  filter(parameter != "sigma" & parameter != "a_bar")
+
+par(mfrow = c(1, 1))
+plot(resultsdf$mean, resultsdf$trend)
+
+mST <- ulam(
+  alist(
+    S ~ dbinom( D , p ),
+    logit(p) <- a[T],
+    a[T] ~ dnorm( a_bar, sigma ),
+    a_bar ~ dnorm( 0, 1.5 ),
+    sigma ~ dexp( 1 )
+  ), data = datfrog, chains = 4, log_lik = TRUE
+)
+
   
+#--------------------------------------------------------------------------
+# Chat GPT help
+#-------------------------------------------------------------------------
+
+library(rstan)
+library(loo)
+
+#need to reformat site. It wants it from 1:34
+mbbs <- mbbs %>% 
+  group_by(route_ID) %>%
+  mutate(route_standard = dplyr::cur_group_id()) %>%
+  ungroup()
+
+data_list <- list(
+  count = mbbs$count,
+  site = as.numeric(mbbs$route_standard),
+  year = as.numeric(mbbs$year_standard), #needs update bc it was set to 1999/2000/2002. ok for now.
+  N = nrow(mbbs),
+  n_sites = length(unique(mbbs$route_ID)),
+  n_years = length(unique(mbbs$year))
+)
+
+stan_model <- stan_model("model/test_stanmodel.stan")
+
+fit <- sampling(stan_model, data = data_list, iter = 2000, chains = 4, warmup = 1000, thin = 1)
+
+#neff of three, so, this model is BAD but like... okay okay we're getting somewhere. clearly had STAN running and got a mu year for each year and each route. Of course this one just did it for like iterally all the species at once so LOL. 
+
 #------------------------------------------------------------------------------
 #GEE model  
 #------------------------------------------------------------------------------
