@@ -278,10 +278,12 @@ mhierarchall <- ulam(
 precis(mhierarchall, depth = 2)
 
 results <- precis(mhierarchall, depth = 2)
+write.csv(results, "data/bayes_hierarchical_year_results.csv", row.names = FALSE)
 
 resultsdf <- data.frame(results)
 
 resultsdf$parameter <- c(1:59, "a_bar", "sigma")
+write.csv(resultsdf, "data/bayes_hierarchical_year_results.csv", row.names = FALSE)
 
 species_to_param <- mbbs %>% 
   group_by(common_name_standard) %>%
@@ -300,6 +302,7 @@ resultsdf <- resultsdf %>%
 
 par(mfrow = c(1, 1))
 plot(resultsdf$mean, resultsdf$trend)
+
 
 mST <- ulam(
   alist(
