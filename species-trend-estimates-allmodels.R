@@ -22,7 +22,24 @@ options(scipen=999)
 
 #read in data - not in use right now. Data workflow where I'm making an analysis.df needs a reassessment
 #mbbs <- read.csv("data/analysis.df.csv", header = T)
-#survey_events <- mbbs_survey_events
+
+#get survey events from temporary load instead of from the current github version
+#of the mbbs.
+load("C:/git/mbbs-analysis/data/mbbs_survey_events_obsqual_v3.rda")
+mbbs_survey_events <- mbbs_survey_events %>%
+  mutate(primary_observer = case_when(max_qual_observer == 1 ~ obs1,
+                                      max_qual_observer == 2 ~ obs2,
+                                      max_qual_observer == 3 ~ obs3)) %>%
+  group_by(primary_observer) %>%
+  mutate(observer_ID = cur_group_id()) %>%
+  ungroup()
+#max_qual obs = 1, gets first observer,
+    #where max qual obs =2, gets second observer,
+    #where max qual obs =2 gets third observer
+
+#set up a pipe to make it so that the max_qual_obs (contains a 1,2,3) becomes
+#the primary obs
+  
 
 #read in data, using most updated versions of the mbbs. 
 mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 1999)
@@ -44,7 +61,7 @@ mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three co
 #help keep the environment clean
 rm(mbbs_chatham); rm(mbbs_durham); rm(mbbs_orange) 
 #load in mbbs_survey_events from current branch (stop_num)
-load("C:/git/mbbs/data/mbbs_survey_events.rda")
+#load("C:/git/mbbs/data/mbbs_survey_events.rda")
 
 #Data structure changes in 2019 to have stop-level records. We need to group together this data for analysis. We cannot use date here or it causes problems with future analysis. 
 mbbs <- mbbs %>%
@@ -54,14 +71,15 @@ mbbs <- mbbs %>%
 ungroup() #this ungroup is necessary 
 
 #filter out species that haven't been seen more than the min number of times on the min number of routes.
-mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 10, min_num_routes = 5) %>%
+#9 to include bobwhite!
+mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 9, min_num_routes = 5) %>%
   #create a variable so that has common name from 1:however many species are 
   #included
   group_by(common_name) %>%
   mutate(common_name_standard = dplyr::cur_group_id()) %>%
   ungroup()
 
-n_distinct(mbbs$common_name) #ok, 59 species rn make the cut with the borders set at 5 routes and 10 sightings on those routes. Nice!
+n_distinct(mbbs$common_name) #ok, 61 species rn make the cut with the borders set at 5 routes and 9 sightings on those routes. Nice!
 
 #save a version of the mbbs before adding 0s
   mbbs_nozero <- mbbs
@@ -83,7 +101,10 @@ mbbs <- add_survey_events(mbbs, mbbs_survey_events)
 mbbs_nozero <- add_survey_events(mbbs_nozero, mbbs_survey_events)
   
 # Remove Orange route 11 from 2012 due to uncharacteristically high counts from a one-time observer
-mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
+mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob") %>%
+  group_by(primary_observer) %>%
+  mutate(observer_ID = cur_group_id()) %>%
+  ungroup()
 mbbs_nozero <- mbbs_nozero  %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
 
 #save copies of analysis df.
@@ -230,12 +251,14 @@ mWThierarch <- ulam(
   alist(
     C ~ dpois( lambda ),
     log(lambda) <- a[R] + b*Y, #predicted by year
-    b ~ dnorm(0,.2), #prior for the slope year will have
+    b ~ dnorm(0,10), #prior for the slope year will have
     a[R] ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
     a_bar ~ dnorm(1, .5),
     sigma ~ dexp(1)
   ), data = datWT, chains = 4, log_lik = TRUE
 )
+
+traceplot_ulam(mWThierarch)
 
 #can we add in more species?
 mhierarch <- ulam(
@@ -251,23 +274,41 @@ mhierarch <- ulam(
 
 precis(mhierarch, depth = 2)
 
-#what if :) all the species.
+#what if :) all the species. 
 datmbbs <- list(
   C = mbbs$count, #Count. Not sure this should be standardized
   Y = mbbs$year_standard, #first year is year 1, set as an index veriable
   S = mbbs$common_name_standard, #species, as an index variable, just WT
-  R = mbbs$route_standard #route, as an index variable
+  R = mbbs$route_standard, #route, as an index variable
+  O = mbbs$observer_quality #ought to be observer_ID, but trying it out with the quality instead to see if that improves the model fit. 
 )
 
-mhierarchall <- ulam(
+
+#if using observer_quality
+mhierarchallobs <- ulam(
   alist(
     C ~ dpois( lambda ),
-    log(lambda) <- a[R,S] + b[S]*Y, #predicted by year
+    log(lambda) <- a[R,S] + b[S]*Y + O, #predicted by year
     b[S] ~ dnorm(0,.2), #prior for the slope year will have
     matrix[R,S]:a ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
     a_bar ~ dnorm(1, .5),
     sigma ~ dexp(1)
-  ), data = datmbbs, chains = 4, log_lik = TRUE
+  ), data = datmbbs, chains = 4, cores = 4, log_lik = TRUE
+)
+#hey okay! The metropolis proposals were not automatically causing rejections. Adding the observer and calculating an independent value for each one is causing some problems. 
+
+#also add in observer
+mhierarchallobs <- ulam(
+  alist(
+    C ~ dpois( lambda ),
+    log(lambda) <- a[R,S] + b[S]*Y + c[O], #predicted by year
+    b[S] ~ dnorm(0,.2), #prior for the slope year will have
+    matrix[R,S]:a ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
+    a_bar ~ dnorm(1, .5),
+    sigma ~ dexp(1),
+    c[O] ~ dnorm(0, tau_c),
+    tau_c ~ gamma(0.0001,0.0001)
+  ), data = datmbbs, chains = 4, cores = 4, log_lik = TRUE
 )
 #Warning: 500 of 2000 (25.0%) transitions hit the maximum treedepth limit of 10.
 #See https://mc-stan.org/misc/warnings for details.
@@ -275,15 +316,22 @@ mhierarchall <- ulam(
 
 #We do not generally recommend increasing max treedepth. In practice, the max treedepth limit being reached can be a sign of model misspecification, and to increase max treedepth can then result in just taking longer to fit a model that you don’t want to be fitting.
 
-precis(mhierarchall, depth = 2)
+# Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#   Chain 4 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in 'C:/Users/ivara/AppData/Local/Temp/Rtmp2vndEp/model-3e6813a0328.stan', line 19, column 4 to column 28)
+# Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+# Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 
-results <- precis(mhierarchall, depth = 2)
-write.csv(results, "data/bayes_hierarchical_year_results.csv", row.names = FALSE)
+#OKAY SO - part of the problem is that I think the priors are two wide. the traceplots are kinda buckwild bc things are starting SO far apart for the first guess, which is why those proposals are being rejected. 
+check <- traceplot_ulam(mhierarchallobs)
+
+precis(mhierarchallobs, depth = 2)
+
+results <- precis(mhierarchallobs, depth = 2)
+#write.csv(results, "data/bayes_hierarchical_year_results.csv", row.names = FALSE)
 
 resultsdf <- data.frame(results)
 
-resultsdf$parameter <- c(1:59, "a_bar", "sigma")
-write.csv(resultsdf, "data/bayes_hierarchical_year_results.csv", row.names = FALSE)
+resultsdf$parameter <- c(1:61, "a_bar", "sigma", 64:128)
 
 species_to_param <- mbbs %>% 
   group_by(common_name_standard) %>%
@@ -291,6 +339,8 @@ species_to_param <- mbbs %>%
   summarize(common_name = first(common_name))
 
 resultsdf <- left_join(resultsdf, species_to_param, by = c("parameter" = "common_name_standard"))
+
+write.csv(resultsdf, "data/bayes_hierarchical_year_results_61sp_obs.csv", row.names = FALSE)
 
 #left_join GEE results
 GEEresults <- read.csv("data/trend-table-GEE.csv", header = TRUE)
