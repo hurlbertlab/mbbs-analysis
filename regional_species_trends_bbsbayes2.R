@@ -16,7 +16,7 @@ source("species-trend-estimate-functions.R")
 
 #read in data, using most updated versions of the mbbs. 
 mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 2000)
-mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2000)
+wmbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2000)
 mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 2000)
 mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three counties together
   mutate(route_ID = route_num + case_when(
@@ -41,8 +41,49 @@ mbbs <- filter_to_min_sightings(mbbs, 9, 5)
 
 #get mbbs species list
 species_list <- unique(mbbs$common_name)
-#filter out black vulture, poorly sampled by this method
+#as a df for examination
+species_list_df <- 
+  mbbs %>%
+  group_by(common_name) %>%
+  summarize()
 
+#fetch BBS data
+fetch_bbs_data()
+#  **********************
+#*    Data Citation   *
+#  **********************
+#  Ziolkowski, D.J., Lutmerding, M., English, W.B., Aponte, V.I., and Hudson, M-A.R., 2023, North American Breeding Bird Survey Dataset 1966 - 2022: #U.S. Geological Survey data release, https://doi.org/10.5066/P9GS9K64.
 
 #run bbsbayes for the Bird Conservation Region -- Piedmont region for the species in the list,
 #trends from 2000->2024.
+#Piedmont is bcr #29
+data_bbs <- bbsBayes2::stratify(by = "bcr", species = species_list[1])
+
+for(i in 2:length(species_list)) {
+  
+  s <- bbsBayes2::stratify(by = "bcr", species = species_list[i])
+  print(paste0(i,"/",length(species_list)))
+  
+  data_bbs <- rbind(data_bbs, s)
+}
+#okay, so that doesn't work, I think the whole modeling workflow with setting 
+#the model and everything needs to be run for each species.
+#because of the way this data is all formatted with the lists and everything
+
+testing <- bbsBayes2::stratify(by = "bcr", species = "Wood Thrush")
+#filter to just piedmont bcr
+# Filter the routes_strata where bcr == 29 and assign it back to the original list
+testing$routes_strata <- testing$routes_strata[testing$routes_strata$bcr == 29,]
+testing$birds_strata <- testing$birds_strata[testing$birds_strata$bcr == 29,]
+
+p <- prepare_data(testing, min_year = 2000)
+
+md <- prepare_model(p, model = "first_diff")
+
+m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 1)
+
+# Convergence diagnostics for all parameters
+converge <- get_convergence(m)
+
+# Summary statistics and convergence diagnostics for all parameters
+summary_stats <- get_summary(m)

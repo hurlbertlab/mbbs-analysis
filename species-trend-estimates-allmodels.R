@@ -42,9 +42,9 @@ mbbs_survey_events <- mbbs_survey_events %>%
   
 
 #read in data, using most updated versions of the mbbs. 
-mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 1999)
-mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 1999)
-mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 1999)
+mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 2000)
+mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2000)
+mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 2000)
 mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three counties together
   mutate(route_ID = route_num + case_when(
     mbbs_county == "orange" ~ 100L,
@@ -52,6 +52,8 @@ mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three co
     mbbs_county == "chatham" ~ 300L)) %>%
   filter(count > 0) %>%
   ungroup() %>%
+  #remove the 1999 data, since it's only 1/3 of the routes that were created by then. 
+  filter(year > 1999) %>%
   #clean up for ease of use, lots of columns we don't need rn
   dplyr::select(-sub_id, -tax_order, -count_raw, -state, -loc, -locid, -lat, -lon, -protocol, -distance_traveled, -area_covered, -all_obs, -breed_code, -checklist_comments, -source) %>%
   #create a route-standard from 1-34
