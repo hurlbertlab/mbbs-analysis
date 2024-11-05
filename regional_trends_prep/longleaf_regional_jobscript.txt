@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH --job-name REG_SPECIES
+#SBATCH -p general
+#SBATCH -N 1
+#SBATCH --mem=4g
+##it took 1.6 GB to run the just one loop, and 2.15 GB to run through all 9 nlcds
+#SBATCH --ntasks=1
+#SBATCH --time 0-01:00:00 
+##actual runtime 34 minutes when run fully
+#SBATCH --mail-user ijbg@unc.edu
+#SBATCH --mail-type BEGIN
+#SBATCH --mail-type END
+#SBATCH --mail-type FAIL
+
+module add r
+
+Rscript /proj/hurlbertlab/ijbgoulden/longleaf_clipnlcd_nc.R
+
+##save as sh to run in longleaf, or copy and paste this into a new sh file in longleaf

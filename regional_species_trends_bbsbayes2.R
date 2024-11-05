@@ -3,9 +3,9 @@
 # Uses bbsbayes2
 #---------------------------------------
 
-#install.packages("bbsBayes2",
-#                 repos = c(bbsbayes = 'https://bbsbayes.r-universe.dev',
-#                           CRAN = 'https://cloud.r-project.org'))
+install.packages("bbsBayes2",
+                repos = c(bbsbayes = 'https://bbsbayes.r-universe.dev',
+                          CRAN = 'https://cloud.r-project.org'))
 
 library(bbsBayes2)
 library(mbbs)
@@ -16,7 +16,7 @@ source("species-trend-estimate-functions.R")
 
 #read in data, using most updated versions of the mbbs. 
 mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 2000)
-wmbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2000)
+mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2000)
 mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 2000)
 mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three counties together
   mutate(route_ID = route_num + case_when(
@@ -70,11 +70,12 @@ for(i in 2:length(species_list)) {
 #the model and everything needs to be run for each species.
 #because of the way this data is all formatted with the lists and everything
 
-testing <- bbsBayes2::stratify(by = "bcr", species = "Wood Thrush")
+testing <- bbsBayes2::stratify(by = "bcr", species = "Northern Cardinal")
 #filter to just piedmont bcr
 # Filter the routes_strata where bcr == 29 and assign it back to the original list
-testing$routes_strata <- testing$routes_strata[testing$routes_strata$bcr == 29,]
-testing$birds_strata <- testing$birds_strata[testing$birds_strata$bcr == 29,]
+testing$routes_strata <- testing$routes_strata[testing$routes_strata$bcr == 29:30,]
+testing$meta_strata <- testing$meta_strata[testing$meta_strata$strata_name == "BCR29" | testing$meta_strata$strata_name == "BCR30",]
+testing$birds_strata <- testing$birds_strata[testing$birds_strata$bcr == 29:30,]
 
 p <- prepare_data(testing, min_year = 2000)
 
@@ -84,6 +85,14 @@ m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 1)
 
 # Convergence diagnostics for all parameters
 converge <- get_convergence(m)
+#write csv
 
 # Summary statistics and convergence diagnostics for all parameters
 summary_stats <- get_summary(m)
+#write csv
+
+i <- generate_indices(model_output = m)
+#get trends
+t_10 <- generate_trends(m, min_year = 2000, max_year = 2024)
+#save csv
+t[["trends"]]
