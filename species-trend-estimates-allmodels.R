@@ -751,4 +751,8 @@ fit <- sampling(stan_model, data = data_list, iter = 2000, chains = 4, warmup = 
     
     plot(trend_table$pois_error.x, trend_table$pois_error.y)
     abline(a=0,b=1)
+
+  
+  
+  
     
