@@ -14,7 +14,7 @@ library(mbbs) #data comes from here
 library(broom) #extracts coefficient values out of models, works with geepack
 library(rstan) #stan
 library(StanHeaders) #stan helper
-library(rethinking) #alt. way to model with bayes, from Statistical Rethinking course
+library(rethinking) #alt. way to model with bayes, from Statistical Rethinking course. Can't use for final analysis bc the ulam helper function has some presets that don't fit my needs (eg. 87% standard deviation calculations)
 
 
 #prevent scientific notation to make a trend table easier to read
@@ -81,7 +81,7 @@ mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 9, min_num_route
   mutate(common_name_standard = dplyr::cur_group_id()) %>%
   ungroup()
 
-n_distinct(mbbs$common_name) #ok, 61 species rn make the cut with the borders set at 5 routes and 9 sightings on those routes. Nice!
+n_distinct(mbbs$common_name) #ok, 60 species rn make the cut with the borders set at 5 routes and 9 sightings on those routes. Nice!
 
 #save a version of the mbbs before adding 0s
   mbbs_nozero <- mbbs
@@ -226,6 +226,7 @@ dat <- list(
   #R = mbbs$route_ID
 )
   
+#really basic model
 mbasic <- ulam(
   alist(
     C ~ dpois( lambda ),
@@ -249,6 +250,7 @@ datWT <- list(
   R = filtered_mbbs$route_standard #route, as an index variable
 )
 
+#hierachical model
 mWThierarch <- ulam(
   alist(
     C ~ dpois( lambda ),
@@ -318,10 +320,6 @@ mhierarchallobs <- ulam(
 
 #We do not generally recommend increasing max treedepth. In practice, the max treedepth limit being reached can be a sign of model misspecification, and to increase max treedepth can then result in just taking longer to fit a model that you don’t want to be fitting.
 
-# Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#   Chain 4 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in 'C:/Users/ivara/AppData/Local/Temp/Rtmp2vndEp/model-3e6813a0328.stan', line 19, column 4 to column 28)
-# Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-# Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 
 #OKAY SO - part of the problem is that I think the priors are two wide. the traceplots are kinda buckwild bc things are starting SO far apart for the first guess, which is why those proposals are being rejected. 
 check <- traceplot_ulam(mhierarchallobs)
@@ -368,32 +366,89 @@ mST <- ulam(
 
   
 #--------------------------------------------------------------------------
-# Chat GPT help
+# Stan, some chatgpt help
 #-------------------------------------------------------------------------
 
 library(rstan)
 library(loo)
 
-#need to reformat site. It wants it from 1:34
-mbbs <- mbbs %>% 
-  group_by(route_ID) %>%
-  mutate(route_standard = dplyr::cur_group_id()) %>%
+#filtered mbbs, same as from above is just acadian flycatcher and woodthrush. for testing purposes
+
+filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "Acadian Flycatcher") %>%
+  group_by(common_name) %>%
+  mutate(common_name_standard = cur_group_id()) %>%
   ungroup()
 
-data_list <- list(
-  count = mbbs$count,
-  site = as.numeric(mbbs$route_standard),
-  year = as.numeric(mbbs$year_standard), #needs update bc it was set to 1999/2000/2002. ok for now.
-  N = nrow(mbbs),
-  n_sites = length(unique(mbbs$route_ID)),
-  n_years = length(unique(mbbs$year))
+#prepare the data list for Stan
+datstan <- list(
+  N = nrow(filtered_mbbs), #number of observations
+  S = length(unique(filtered_mbbs$common_name_standard)), #n species
+  R = length(unique(filtered_mbbs$route_standard)), #n routes
+  Y = length(unique(filtered_mbbs$year_standard)), #n years
+  species = filtered_mbbs$common_name_standard, #species indices
+  route = filtered_mbbs$route_standard, #route indicies
+  year = filtered_mbbs$year_standard, #year indices
+  observer_quality = filtered_mbbs$observer_quality,
+  C = filtered_mbbs$count #count data
 )
 
-stan_model <- stan_model("model/test_stanmodel.stan")
+#specify the stan model code
+stan_model_code <- "
+data {
+  int<lower=0> N;
+  int<lower=1> S;
+  int<lower=1> R;
+  int<lower=1> Y;
+  int<lower=1, upper=S> species[N];
+  int<lower=1, upper=R> route[N];
+  int<lower=1, upper=Y> year[N];
+  real observer_quality[N];
+  int<lower=0> C[N];
+}
 
-fit <- sampling(stan_model, data = data_list, iter = 2000, chains = 4, warmup = 1000, thin = 1)
+parameters {
+  real a_bar;
+  real<lower=0> sigma;
+  vector[S] b;
+  matrix[R, S] a;
+}
 
-#neff of three, so, this model is BAD but like... okay okay we're getting somewhere. clearly had STAN running and got a mu year for each year and each route. Of course this one just did it for like iterally all the species at once so LOL. 
+model {
+  a_bar ~ normal(1, 0.5);
+  sigma ~ exponential(1);
+  b ~ normal(0, 0.2);
+  to_vector(a) ~ normal(a_bar, sigma);
+
+  for (n in 1:N) {
+    C[n] ~ poisson_log(a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
+  }
+}
+
+generated quantities {
+  real log_lik[N];
+  for (n in 1:N) {
+    log_lik[n] = poisson_log_lpmf(C[n] | a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
+  }
+}
+"
+
+#compile the stan model
+stan_model <- stan_model(model_code = stan_model_code)
+
+#fit the model to the data
+fit <- sampling(stan_model, data = datstan, chains = 4, cores = 4, iter = 2000, warmup = 1000)
+
+#view results
+#Accessing the contents of a stanfit object:
+#https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html
+print(fit)
+#perfect, that looks great! b[1] and b[2] are as expected, at 0.05 and -0.06
+View(fit)
+fit_summary <- summary(fit)
+View(fit_summary$summary) #R hats and neff look good
+
+#extract posterior samples
+post <- extract(fit)
 
 #------------------------------------------------------------------------------
 #GEE model  
