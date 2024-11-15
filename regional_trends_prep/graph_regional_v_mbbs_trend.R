@@ -13,7 +13,7 @@ library(vioplot) #for the violin plot
 reg_trends <- read.csv("regional_trends_prep/species-list.csv")
 mbbs_trends <- read.csv("data/bayes_hierarchical_year_results_61sp.csv")
 birdcode <- read.csv("data/bird_code_to_common_name.csv") %>%
-  select(common_name, species_code)
+  dplyr::select(common_name, species_code)
 
 trends <- left_join(mbbs_trends, reg_trends, by = "common_name") %>%
   mutate(mean = mean*100,
@@ -28,18 +28,25 @@ trends <- left_join(mbbs_trends, reg_trends, by = "common_name") %>%
 mvrlm <- lm(mean ~ usgs_trend_estimate, data = trends)
 summary(mvrlm)
 
+#set limits for all plots
+set_xlim <- c(-7,7)
+set_ylim <- c(-15,8)
+
+
 #plot
 plot_baser_scatter <- function(){
 plot(trends$usgs_trend_estimate, trends$mean,
      ylab = "Mini Breeding Bird Survey",
      xlab = "Regional Trends",
-     xlim = c(-7,7),
-     ylim = c(-15,8),
+     xlim = set_xlim,
+     ylim = set_ylim,
      col = "black",
      pch = 16,
      type = "n")
-abline(1,1, col = "red4", lty = "dotted")
-abline(mvrlm)
+abline(1,1, col = "red4")
+abline(h = 0, lty = "dotted", col = "gray60")
+abline(v = 0, lty = "dotted", col = "gray60")
+#abline(mvrlm) don't need to graph the regression line, ppl can see the trend visually
 #add segment for the mbbs variation
 segments(trends$usgs_trend_estimate,
          trends$X5.5.,
@@ -88,22 +95,101 @@ violin_trends <- trends %>%
                               names_to = "source",
                               values_to = "trend")
 
-plot_violin <- function() {
-with(violin_trends, vioplot(
-  trend[source == "mean"], trend[source == "usgs_trend_estimate"], trend[source == "difference"], col=c("purple", "salmon", "lightblue"), names = c("MBBS", "Regional Trend", "Difference (M-R)")
-))
+
+plot_violin_mbbs <- function() {
+  
+  plot(0:1,0:1,
+       type = "n",
+       xlim = c(.5,1.5),
+       ylim = c(-15, 10),
+       axes = FALSE,
+       ann = FALSE)
+  
+  vioplot(violin_trends$trend[violin_trends$source  == "mean"],
+          col = "purple",  
+          add = TRUE, 
+          names = "Mini Breeding Bird Survey")
+  axis(side=2,at=c(-15, -10, -5, 0, 5, 10),labels=c(-15, -10, -5, 0, 5, 10))
+  abline(h = 0, lty = "dotted", col = "grey60")
+  
+  
 }
 
 
-#parmfrow and then plot both side by side
-par(mfrow = c(2, 1))
-violin
-baserscatter
+plot_violin_regional <- function() {
+  
+  plot(0:1,0:1,
+       type = "n",
+       xlim = set_ylim,
+       ylim = c(.5,1.5),
+       axes = FALSE,
+       ann = FALSE)
+  
+  vioplot(violin_trends$trend[violin_trends$source  == "usgs_trend_estimate"],
+          col = "salmon",
+          horizontal = TRUE,
+          add = TRUE)
+          #xlab = "Regional Trend"
+  axis(side=1,at=c(-6, -4, -2, 0, 2, 4, 6),labels=c(-6, -4, -2, 0, 2, 4, 6))
+  abline(v = 0, lty = "dotted", col = "grey60")
 
-layout.matrix <- matrix(c(1,2), nrow = 1, ncol = 2)
+}
+
+
+#layout guide: https://bookdown.org/ndphillips/YaRrr/arranging-plots-with-parmfrow-and-layout.html
+layout.matrix <- matrix(c(2,0,1,3), nrow = 2, ncol = 2)
+layout.matrix
 layout(mat = layout.matrix,
-       widths = c(1.5, 2)) #second panel wider
-layout.show(2)
+       widths = c(.75, 1.5), #second column wider
+       heights = c(1.75, 1)) #first row taller
+layout.show(3)
+#improvement would be to have 1 be more square...
+#but I think also, want to remove the text bc it's adding a lot to the plot?
 #plot violin
-plot_violin()
 plot_baser_scatter()
+plot_violin_mbbs()
+plot_violin_regional()
+
+dev.off()
+
+#so, some work to do to get everything lined up nicely, but yeah! :D
+#alternative methods that may work better for arranging plots more tightly together could be par(mfrow), par(mfcol), and split.screen
+
+  par(bg = "white")           # default is likely to be transparent
+  split.screen(c(2, 2))       # split display into two screens
+  screen(2)
+  plot_baser_scatter()
+  screen(1)
+  plot_violin_mbbs()
+  screen(4)
+  plot_violin_regional()
+  close.screen(all = TRUE)
+dev.off()
+
+#not sure how this is supposed to work, but it helps set the area
+#My only issue is that I want to split the screen into unequal sizes. I would like panel 1 (screen 1) to occupy 70% of the final image and screen 2/panel 2 to occupy the rest. Any suggestions on how do I make changes to the split.screen command at the beginning ?
+coord <- matrix(c(c(0, 1, 0, 0.7), c(0, 1, 0.7, 1)), byrow=T, ncol=4)
+split.screen(coord)
+screen(1)
+plot(1:10)
+screen(2)
+plot(1:10)
+
+
+
+
+
+
+
+
+
+#--------------------------
+# Old plots, kept in case of need for reference
+#--------------------------
+
+plot_violin <- function() {
+  with(violin_trends, vioplot(
+    trend[source == "mean"], trend[source == "usgs_trend_estimate"], trend[source == "difference"], col=c("purple", "salmon", "lightblue"), names = c("MBBS", "Regional Trend", "Difference (M-R)")
+  ))
+}
+plot_violin()
