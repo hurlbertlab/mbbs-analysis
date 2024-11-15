@@ -24,35 +24,43 @@ trends <- left_join(mbbs_trends, reg_trends, by = "common_name") %>%
          parameter != "sigma") %>%
   left_join(birdcode, by = "common_name")
 
+#run a linear model
+mvrlm <- lm(mean ~ usgs_trend_estimate, data = trends)
+summary(mvrlm)
 
 #plot
 plot_baser_scatter <- function(){
-plot(trends$mean, trends$usgs_trend_estimate,
-     xlab = "Mini Breeding Bird Survey",
-     ylab = "Regional Trends",
-     xlim = c(-15,8),
-     ylim = c(-10,8),
+plot(trends$usgs_trend_estimate, trends$mean,
+     ylab = "Mini Breeding Bird Survey",
+     xlab = "Regional Trends",
+     xlim = c(-7,7),
+     ylim = c(-15,8),
      col = "black",
      pch = 16,
      type = "n")
 abline(1,1, col = "red4", lty = "dotted")
+abline(mvrlm)
+#add segment for the mbbs variation
+segments(trends$usgs_trend_estimate,
+         trends$X5.5.,
+         trends$usgs_trend_estimate,
+         trends$X94.5.,
+         col = "purple")
 #add segment for the regional trend variation
-segments(trends$mean, 
-         trends$usgs_2.5CI,
+segments(trends$usgs_2.5CI, 
          trends$mean,
          trends$usgs_97.5CI,
+         trends$mean,
          col = "salmon")
-#add segment for the mbbs variation
-segments(trends$X5.5.,
-         trends$usgs_trend_estimate,
-         trends$X94.5., 
-         trends$usgs_trend_estimate, 
-         col = "purple")
 #add text - going to not do this for now bc it's really messy - I know allen has a way to do this. Maybe it should be at the bottom of the usgs trend 2.5?
-text(x = trends$mean,
-     y = trends$usgs_trend_estimate+.28, 
+text(y = trends$mean + .35,
+     x = trends$usgs_trend_estimate, 
      labels = trends$species_code, 
      cex = .6)
+#add r2
+text(x = 6,
+     y = -15,
+     labels = paste("r2 =", signif(summary(mvrlm)$r.squared, 4)))
 }
 
 
@@ -61,13 +69,13 @@ text(x = trends$mean,
 ggscatter <- 
   ggplot(trends, aes(mean,usgs_trend_estimate)) +
   geom_point() +
-  geom_text_repel(aes(label = trends$species_code), max.overlaps = 10) +
+  geom_text_repel(aes(label = species_code), max.overlaps = 10) +
   geom_linerange(aes(x = mean, ymin = usgs_2.5CI, ymax = usgs_97.5CI), colour = "salmon") +
   geom_linerange(aes(y = usgs_trend_estimate, xmin = X5.5., xmax = X94.5.), color = "purple") +
   theme_minimal() +
   labs(x = "Mini Breeding Bird Survey", y = "Regional Trend") +
-  geom_abline(intercept = 1, lty = "dotted", color = "darkred")
-
+  geom_abline(intercept = 1, lty = "dotted", color = "darkred") 
+#need to add a linear regression line
 
 ggscatter
 

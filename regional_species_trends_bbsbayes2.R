@@ -3,6 +3,9 @@
 # Uses bbsbayes2
 #---------------------------------------
 
+##!!!!!!!!!!! Update with what's on longleaf, done a little differently now from
+#how it's done here.
+
 install.packages("bbsBayes2",
                 repos = c(bbsbayes = 'https://bbsbayes.r-universe.dev',
                           CRAN = 'https://cloud.r-project.org'))
