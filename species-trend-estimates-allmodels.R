@@ -12,18 +12,39 @@ library(MASS) #modeling
 library(geepack) #GEE modeling
 library(mbbs) #data comes from here
 library(broom) #extracts coefficient values out of models, works with geepack
+library(rstan) #stan
+library(StanHeaders) #stan helper
+library(rethinking) #alt. way to model with bayes, from Statistical Rethinking course
+
 
 #prevent scientific notation to make a trend table easier to read
 options(scipen=999)
 
 #read in data - not in use right now. Data workflow where I'm making an analysis.df needs a reassessment
 #mbbs <- read.csv("data/analysis.df.csv", header = T)
-#survey_events <- mbbs_survey_events
+
+#get survey events from temporary load instead of from the current github version
+#of the mbbs.
+load("C:/git/mbbs-analysis/data/mbbs_survey_events_obsqual_v3.rda")
+mbbs_survey_events <- mbbs_survey_events %>%
+  mutate(primary_observer = case_when(max_qual_observer == 1 ~ obs1,
+                                      max_qual_observer == 2 ~ obs2,
+                                      max_qual_observer == 3 ~ obs3)) %>%
+  group_by(primary_observer) %>%
+  mutate(observer_ID = cur_group_id()) %>%
+  ungroup()
+#max_qual obs = 1, gets first observer,
+    #where max qual obs =2, gets second observer,
+    #where max qual obs =2 gets third observer
+
+#set up a pipe to make it so that the max_qual_obs (contains a 1,2,3) becomes
+#the primary obs
+  
 
 #read in data, using most updated versions of the mbbs. 
-mbbs_orange <- mbbs_orange
-mbbs_durham <- mbbs_durham
-mbbs_chatham <- mbbs_chatham
+mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 2000)
+mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2000)
+mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 2000)
 mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three counties together
   mutate(route_ID = route_num + case_when(
     mbbs_county == "orange" ~ 100L,
@@ -31,12 +52,18 @@ mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three co
     mbbs_county == "chatham" ~ 300L)) %>%
   filter(count > 0) %>%
   ungroup() %>%
+  #remove the 1999 data, since it's only 1/3 of the routes that were created by then. 
+  filter(year > 1999) %>%
   #clean up for ease of use, lots of columns we don't need rn
-  dplyr::select(-sub_id, -tax_order, -count_raw, -state, -loc, -locid, -lat, -lon, -protocol, -distance_traveled, -area_covered, -all_obs, -breed_code, -checklist_comments, -source)
+  dplyr::select(-sub_id, -tax_order, -count_raw, -state, -loc, -locid, -lat, -lon, -protocol, -distance_traveled, -area_covered, -all_obs, -breed_code, -checklist_comments, -source) %>%
+  #create a route-standard from 1-34
+  group_by(route_ID) %>%
+  mutate(route_standard = dplyr::cur_group_id()) %>%
+  ungroup()
 #help keep the environment clean
 rm(mbbs_chatham); rm(mbbs_durham); rm(mbbs_orange) 
 #load in mbbs_survey_events from current branch (stop_num)
-load("C:/git/mbbs/data/mbbs_survey_events.rda")
+#load("C:/git/mbbs/data/mbbs_survey_events.rda")
 
 #Data structure changes in 2019 to have stop-level records. We need to group together this data for analysis. We cannot use date here or it causes problems with future analysis. 
 mbbs <- mbbs %>%
@@ -46,16 +73,22 @@ mbbs <- mbbs %>%
 ungroup() #this ungroup is necessary 
 
 #filter out species that haven't been seen more than the min number of times on the min number of routes.
-mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 10, min_num_routes = 5)
+#9 to include bobwhite!
+mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 9, min_num_routes = 5) %>%
+  #create a variable so that has common name from 1:however many species are 
+  #included
+  group_by(common_name) %>%
+  mutate(common_name_standard = dplyr::cur_group_id()) %>%
+  ungroup()
 
-n_distinct(mbbs$common_name) #ok, 58 species rn make the cut with the borders set at 5 routes and 10 sightings on those routes. Nice!
+n_distinct(mbbs$common_name) #ok, 61 species rn make the cut with the borders set at 5 routes and 9 sightings on those routes. Nice!
 
 #save a version of the mbbs before adding 0s
   mbbs_nozero <- mbbs
 #add in the 0 values for when routes were surveyed but the species that remain in this filtered dataset were not seen.
  mbbs <- mbbs %>% complete(
-  nesting(year, mbbs_county, route_ID, route_num),
-  nesting(common_name, sci_name),
+  nesting(year, year_standard, mbbs_county, route_ID, route_num, route_standard),
+  nesting(common_name, sci_name, common_name_standard),
   fill = list(count = 0))  
 
 #check that no issues have occurred - all species should have the same number of occurences in the df 
@@ -70,9 +103,19 @@ mbbs <- add_survey_events(mbbs, mbbs_survey_events)
 mbbs_nozero <- add_survey_events(mbbs_nozero, mbbs_survey_events)
   
 # Remove Orange route 11 from 2012 due to uncharacteristically high counts from a one-time observer
-mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
+mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob") %>%
+  group_by(primary_observer) %>%
+  mutate(observer_ID = cur_group_id()) %>%
+  ungroup()
 mbbs_nozero <- mbbs_nozero  %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
 
+#save copies of analysis df.
+write.csv(mbbs, "data/analysis.df.csv", row.names = FALSE)
+write.csv(mbbs_nozero, "data/analysis.df.nozero.csv", row.names = FALSE)
+
+#---------------------------------
+#Add in landcover information
+#---------------------------------
 
 #leftjoin for landcover information
 #read in nlcd data, filter to just what we're interested in. Otherwise it's a many-to-many join relationship. Right now, just the % developed land. Workflow similar to "calc_freq_remove_rows()" from the generate_percent_change_+_map.. code, but altered for this use.
@@ -121,6 +164,11 @@ mbbs <- add_landfire(mbbs,landfire)
 mbbs_nozero <- add_landfire(mbbs_nozero, landfire)
 
 #------------------------------------------------------------------------------
+# Set up for modeling
+#------------------------------------------------------------------------------
+
+#read in analysis df
+mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
 
 #set up for modeling
 species_list <- unique(mbbs$common_name)
@@ -147,6 +195,205 @@ mbbs <- mbbs %>%
   f_obs <- update(f_base, ~ . + observer_quality)
   f_pdobs <- update(f_base, ~ . + percent_developed + observer_quality)
   f_wlandfire <- update(f_pdobs, ~. + lf_mean_route)
+
+#------------------------------------------------------------------------------
+# Bayes model, based on Link and Sauer 2001
+  # https://academic.oup.com/auk/article/128/1/87/5149447
+# Modeling help from review of DiCecco Pop Trends code
+  # https://github.com/gdicecco/poptrends_envchange/tree/master
+#------------------------------------------------------------------------------
+  #can use either brms' 'make_standcode' function
+  #or rethinking's 'ulam' function to build the stan model
+  
+#Okay so, summary: yeah, I can make a poisson model run. BUt the outputs are not making sense, because it's all just giving me the intercept. And none of the other information relevant to the model. This will require another couple statistical rethinking videos I think. Also downloading Grace's poptrends git and working through script_bayes_model_trial.R
+  
+#set up model paramaters
+  #for the moment. Let's begin with the count ~ year specification. I just want to 
+  #get a bayes model running, and from there we will add in observer and the route
+  #hierarchy.
+#Testing purposes - just one species.
+filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "Acadian Flycatcher") %>%
+    group_by(common_name) %>%
+    mutate(common_name_standard = cur_group_id()) %>%
+    ungroup()
+  
+dat <- list(
+  C = filtered_mbbs$count, #Count. Not sure this should be standardized
+  Y = filtered_mbbs$year_standard, #first year is year 1, set as an index veriable
+  S = filtered_mbbs$common_name_standard, #species, as an index variable
+  R = filtered_mbbs$route_standard #route, as an index variable
+  #O = filtered_mbbs$max_qual_observer #variable to account for the quality of the observer
+  #R = mbbs$route_ID
+)
+  
+mbasic <- ulam(
+  alist(
+    C ~ dpois( lambda ),
+    log(lambda) <-  a[S] + b[S]*Y, #predicted by year. 
+    a[S] ~ dnorm(1,.5),
+    b[S] ~ dnorm(0,.2)
+  ), data = dat, chains = 4, cores = 4, log_lik = TRUE
+)
+
+precis(mbasic, depth= 2)
+
+
+filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush") %>%
+  group_by(common_name) %>%
+  mutate(common_name_standard = cur_group_id()) %>%
+  ungroup()
+datWT <- list(
+  C = filtered_mbbs$count, #Count. Not sure this should be standardized
+  Y = filtered_mbbs$year_standard, #first year is year 1, set as an index veriable
+  S = filtered_mbbs$common_name_standard, #species, as an index variable, just WT
+  R = filtered_mbbs$route_standard #route, as an index variable
+)
+
+mWThierarch <- ulam(
+  alist(
+    C ~ dpois( lambda ),
+    log(lambda) <- a[R] + b*Y, #predicted by year
+    b ~ dnorm(0,10), #prior for the slope year will have
+    a[R] ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
+    a_bar ~ dnorm(1, .5),
+    sigma ~ dexp(1)
+  ), data = datWT, chains = 4, log_lik = TRUE
+)
+
+traceplot_ulam(mWThierarch)
+
+#can we add in more species?
+mhierarch <- ulam(
+  alist(
+    C ~ dpois( lambda ),
+    log(lambda) <- a[R,S] + b[S]*Y, #predicted by year
+    b[S] ~ dnorm(0,.2), #prior for the slope year will have
+    matrix[R,S]:a ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
+    a_bar ~ dnorm(1, .5),
+    sigma ~ dexp(1)
+  ), data = dat, chains = 4, log_lik = TRUE
+)
+
+precis(mhierarch, depth = 2)
+
+#what if :) all the species. 
+datmbbs <- list(
+  C = mbbs$count, #Count. Not sure this should be standardized
+  Y = mbbs$year_standard, #first year is year 1, set as an index veriable
+  S = mbbs$common_name_standard, #species, as an index variable, just WT
+  R = mbbs$route_standard, #route, as an index variable
+  O = mbbs$observer_quality #ought to be observer_ID, but trying it out with the quality instead to see if that improves the model fit. 
+)
+
+
+#if using observer_quality
+mhierarchallobs <- ulam(
+  alist(
+    C ~ dpois( lambda ),
+    log(lambda) <- a[R,S] + b[S]*Y + O, #predicted by year
+    b[S] ~ dnorm(0,.2), #prior for the slope year will have
+    matrix[R,S]:a ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
+    a_bar ~ dnorm(1, .5),
+    sigma ~ dexp(1)
+  ), data = datmbbs, chains = 4, cores = 4, log_lik = TRUE
+)
+#hey okay! The metropolis proposals were not automatically causing rejections. Adding the observer and calculating an independent value for each one is causing some problems. 
+
+#also add in observer
+mhierarchallobs <- ulam(
+  alist(
+    C ~ dpois( lambda ),
+    log(lambda) <- a[R,S] + b[S]*Y + c[O], #predicted by year
+    b[S] ~ dnorm(0,.2), #prior for the slope year will have
+    matrix[R,S]:a ~ dnorm( a_bar, sigma ), #prior for the intercept, going to have it vary
+    a_bar ~ dnorm(1, .5),
+    sigma ~ dexp(1),
+    c[O] ~ dnorm(0, tau_c),
+    tau_c ~ gamma(0.0001,0.0001)
+  ), data = datmbbs, chains = 4, cores = 4, log_lik = TRUE
+)
+#Warning: 500 of 2000 (25.0%) transitions hit the maximum treedepth limit of 10.
+#See https://mc-stan.org/misc/warnings for details.
+#If this is the only warning you are getting and your ESS and R-hat diagnostics are good, it is likely safe to ignore this warning, but finding the root cause could result in a more efficient model.
+
+#We do not generally recommend increasing max treedepth. In practice, the max treedepth limit being reached can be a sign of model misspecification, and to increase max treedepth can then result in just taking longer to fit a model that you don’t want to be fitting.
+
+# Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+#   Chain 4 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in 'C:/Users/ivara/AppData/Local/Temp/Rtmp2vndEp/model-3e6813a0328.stan', line 19, column 4 to column 28)
+# Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+# Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+#OKAY SO - part of the problem is that I think the priors are two wide. the traceplots are kinda buckwild bc things are starting SO far apart for the first guess, which is why those proposals are being rejected. 
+check <- traceplot_ulam(mhierarchallobs)
+
+precis(mhierarchallobs, depth = 2)
+
+results <- precis(mhierarchallobs, depth = 2)
+#write.csv(results, "data/bayes_hierarchical_year_results.csv", row.names = FALSE)
+
+resultsdf <- data.frame(results)
+
+resultsdf$parameter <- c(1:61, "a_bar", "sigma", 64:128)
+
+species_to_param <- mbbs %>% 
+  group_by(common_name_standard) %>%
+  mutate(common_name_standard = as.character(common_name_standard)) %>%
+  summarize(common_name = first(common_name))
+
+resultsdf <- left_join(resultsdf, species_to_param, by = c("parameter" = "common_name_standard"))
+
+write.csv(resultsdf, "data/bayes_hierarchical_year_results_61sp_obs.csv", row.names = FALSE)
+
+#left_join GEE results
+GEEresults <- read.csv("data/trend-table-GEE.csv", header = TRUE)
+resultsdf <- left_join(resultsdf, GEEresults, by = c("common_name" = "species"))
+
+#remove a_bar and sigma from resultsdf
+resultsdf <- resultsdf %>%
+  filter(parameter != "sigma" & parameter != "a_bar")
+
+par(mfrow = c(1, 1))
+plot(resultsdf$mean, resultsdf$trend)
+
+
+mST <- ulam(
+  alist(
+    S ~ dbinom( D , p ),
+    logit(p) <- a[T],
+    a[T] ~ dnorm( a_bar, sigma ),
+    a_bar ~ dnorm( 0, 1.5 ),
+    sigma ~ dexp( 1 )
+  ), data = datfrog, chains = 4, log_lik = TRUE
+)
+
+  
+#--------------------------------------------------------------------------
+# Chat GPT help
+#-------------------------------------------------------------------------
+
+library(rstan)
+library(loo)
+
+#need to reformat site. It wants it from 1:34
+mbbs <- mbbs %>% 
+  group_by(route_ID) %>%
+  mutate(route_standard = dplyr::cur_group_id()) %>%
+  ungroup()
+
+data_list <- list(
+  count = mbbs$count,
+  site = as.numeric(mbbs$route_standard),
+  year = as.numeric(mbbs$year_standard), #needs update bc it was set to 1999/2000/2002. ok for now.
+  N = nrow(mbbs),
+  n_sites = length(unique(mbbs$route_ID)),
+  n_years = length(unique(mbbs$year))
+)
+
+stan_model <- stan_model("model/test_stanmodel.stan")
+
+fit <- sampling(stan_model, data = data_list, iter = 2000, chains = 4, warmup = 1000, thin = 1)
+
+#neff of three, so, this model is BAD but like... okay okay we're getting somewhere. clearly had STAN running and got a mu year for each year and each route. Of course this one just did it for like iterally all the species at once so LOL. 
 
 #------------------------------------------------------------------------------
 #GEE model  
@@ -205,7 +452,7 @@ mbbs <- mbbs %>%
   }
   
   output <- run_gee(formula = 
-                     update(f_base, ~ .+ observer_quality),
+                     f_base,
                    mbbs, species_list) %>%
     #remove intercept information
     filter(!value %in% "(Intercept)") %>%
@@ -216,37 +463,139 @@ mbbs <- mbbs %>%
     dplyr::select(-name)%>%
     left_join(uai, by = c("common_name" = "Species"))
   
+  
+  #urbanization
+  output_urb <- run_gee(formula = 
+                      update(f_pd, ~ .+ observer_quality),
+                    mbbs, species_list) %>%
+    #remove intercept information
+    filter(!value %in% "(Intercept)") %>%
+    #add trend into (exponentiate the esimate)
+    mutate(trend = exp(estimate)-1) %>%
+    #pivot_wider
+    pivot_wider(names_from = value, values_from = c(estimate, std.error, statistic, p.value, trend)) %>%
+    dplyr::select(-name)%>%
+    left_join(uai, by = c("common_name" = "Species"))
+  
+  fit <- lm(trend_year ~ UAI, data = output_urb)
+  
+  
   #---------------------------------bsft---------------------------------------
   output$trend_year <- output$trend_year*100
   output$std.error_year <- output$std.error_year*100
   
+  minout <- min(output$trend_year)
+  maxout <- max(output$trend_year)
+  output$trend_std <-  round(50*((output$trend_year)-minout)/(maxout - minout),0) +1
+  colorramp = colorRampPalette(c("red", "white", "blue"))
   output <- output %>% arrange(trend_year)
   
   hist(output$trend_year, breaks = 15)
   
-  colors <- ifelse(output$p.value_year >= 0.05, "skyblue", "white")
   
   mid <- barplot(output$trend_year)
   barplot(height = output$trend_year,
          # names.arg = output$common_name,
          #percent_change - 2 * standard_deviation, percent_change + 2 * standard_deviation),  # Adjust ylim to include error bars,
           #main = "Species Yearly Trends",
-          xlab = "Bird Species",
+         xlab = "Bird Species",
          ylab = "% Yearly Change",
          ylim = c(-7,7),
-         col = "skyblue", #if you want based on significance use colors variable above
-         border = "black")
+         col = colorramp(51)[output$trend_std],
+         border = "black",
+         cex.lab=1.5,
+         cex.axis=1.5,
+         yaxs = "i")
   #arrows(x0 = mid, y0 = output$trend_year + output$std.error_year,
   #       x1 = mid, y1 = output$trend_year - output$std.error_year,
   #       angle = 90, code =3, length = 0.01)
   
+  #read in Grace's diet and migration metrics
+  diet <- read.csv("data/gdicecco-avian-range-shifts/diet_niche_breadth.csv", header = TRUE)
+  migdist <- read.csv("data/gdicecco-avian-range-shifts/migratory_distance.csv", header = TRUE)
+  
+  output <- output %>% 
+    left_join(diet, by = c("common_name" = "english_common_name")) %>%
+    left_join(migdist, by = c("common_name" = "english_common_name"))
+  
+  fit <- lm(trend_year ~ shannonE_diet, data = output)
+  summary(fit)
+  fit <- lm(trend_year ~ mig_dist_m, data = output)
+  summary(fit)
+  #nope, either are significant.
   
   #okay. um. some start to visuals for this presentation..
+  average.count <- 
+    mbbs_nozero %>%
+    filter(year < 2003) %>%
+    group_by(common_name) %>%
+    summarize(average.count = mean(count))
+  
+  output <- left_join(output, average.count, by = "common_name")
+  
+  fit <- lm(trend_year ~ average.count, data = output, family = gaussian)
+  summary(fit)
+  plot(output$average.count, output$trend_year,
+       xlab = "Mean Count 1999-2002",
+       ylab = "% Change/Year", 
+       pch = 16,
+       cex = 1.4,
+       cex.axis = 1.5,
+       cex.lab = 1.5
+  )
+  abline(fit, lwd = 2)
+  abline(h = 0, lty = 2, col = "red")
+  text(20, 7, "P = 0.046, R2 = 0.069", cex = 1.5)
   
   #meantime. let's do migratory distance and diet etc. predictions. left_join traits
   traits <- read.csv("data/NC_species_traits.csv", header = TRUE)
   output <- output %>%
-    left_join(traits, by = c("common_name" = "english_common_name"))
+    left_join(traits, by = c("common_name" = "english_common_name"))  
+  
+  output$Winter_Biome <- as.factor(output$Winter_Biome)
+  output$Diet_5Cat <- as.factor(output$Diet_5Cat)
+  output$Migrate <- as.factor(output$Migrate)
+  output 
+  levels(output$Winter_Biome) 
+  library(ggpubr)
+  library(rstatix)
+  ggboxplot(output, x = "Winter_Biome", y = "trend_year")
+  ggboxplot(output, x = "Diet_5Cat", y = "trend_year",
+            font.label = list(size = 25, color = "black"))
+  ggboxplot(output, x = "Migrate", y = "trend_year")
+  
+  output %>% levene_test(trend_year ~ Winter_Biome) #passes with p > 0.05  #fit an ANOVA
+  winter.aov <- output %>% anova_test(trend_year ~ Winter_Biome, detailed = T)
+  winter.aov
+  #no significance  
+  
+  library(rstatix)
+  
+  #fit an ANOVA for diet
+  diet.aov <- output %>% anova_test(trend_year ~ Diet_5Cat, detailed = T)
+  diet.aov
+  pwc <- output %>% tukey_hsd(trend_year ~ Diet_5Cat)
+  pwc <- pwc %>% add_xy_position(x = "Diet_5Cat")
+  ggboxplot(output, x = "Diet_5Cat", y = "trend_year", add = "jitter") +
+    stat_pvalue_manual(pwc, hide.ns = TRUE) +
+    labs(
+      subtitle = get_test_label(diet.aov, detailed = TRUE),
+      caption = get_pwc_label(pwc)
+    )
+  #no significance  
+  
+  #git an ANOVA for migration
+  migration.aov <- output %>% anova_test(trend_year ~ Migrate, detailed = T)
+  migration.aov  #this is how you do it in base R
+  summary(aov(trend_year ~ Winter_Biome, data = output))
+  pwc <- output %>% tukey_hsd(trend_year ~ Migrate)
+  pwc <- pwc %>% add_xy_position(x = "Migrate")
+  ggboxplot(output, x = "Migrate", y = "trend_year") +
+    stat_pvalue_manual(pwc, hide.ns = TRUE) +
+    labs(
+      subtitle = get_test_label(migration.aov, detailed = TRUE),
+      caption = get_pwc_label(pwc)
+    )
   
   #hey, Ivara, this is the wrong way to analyze this data. Rather than fitting a linear line to a category vs trend, this is a t-test style analysis that requires box plots of differences. let's do that and THEN make calls, ok? uai is a continous variable and can be fit with a line, these categorical variables are not and you should treat them like the cat data.
   fit <- lm(trend_year ~ Breeding_Biome, data = output)
@@ -270,7 +619,9 @@ mbbs <- mbbs %>%
   
   fit <- lm(trend_year ~ UAI, data = output)
   plot(y=output$trend_year, x=output$UAI)
-  plot(trend_year ~ UAI, data = output)
+  plot(trend_year ~ UAI, data = output, 
+       pch = 16,
+       col = colorramp(51)[output$trend_std])
   abline(fit)
   
   plot(count ~ year, data = pw)
@@ -400,4 +751,8 @@ mbbs <- mbbs %>%
     
     plot(trend_table$pois_error.x, trend_table$pois_error.y)
     abline(a=0,b=1)
+
+  
+  
+  
     

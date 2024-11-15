@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+    <idinfo>
+        <citation>
+            <citeinfo>
+                <origin/>
+                <pubdate>20200611</pubdate>
+                <title>North Carolina State and County Boundary Polygons</title>
+                <geoform>vector digital data</geoform>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>The North Carolina State and County Boundary vector polygon data provides location information for North Carolina State and County Boundary lines derived from the best available survey and/or Geographic Information System (GIS) data. Sources for information are the North Carolina Geodetic Survey (NCGS), NC Department of Transportation (NCDOT), United States Geological Survey (USGS), and field surveys conducted by licensed surveyors in North Carolina and neighboring states that have been approved and recorded in their respective counties. North Carolina Geodetic Survey assists counties on a cooperative basis (NC General Statute 153A-18) in defining and monumenting the location of uncertain or disputed boundaries as established by law. Some counties have completed boundary surveys for at least a portion of their county boundary. However, the majority of county boundaries have not been surveyed and are represented by the best currently available data from GIS sources, including NCDOT county maps (which originally came from the USGS) and updated county parcel maps. </abstract>
+            <purpose>Vector polygon dataset defining the official boundaries of the counties within North Carolina as well as the boundaries between North Carolina and the states which border North Carolina.</purpose>
+        </descript>
+        <timeperd>
+            <timeinfo>
+                <sngdate>
+                    <caldate>20190731</caldate>
+                </sngdate>
+            </timeinfo>
+            <current>publication date</current>
+        </timeperd>
+        <status>
+            <progress>In work</progress>
+            <update>As needed</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc>-84.422111</westbc>
+                <eastbc>-75.416034</eastbc>
+                <northbc>36.617257</northbc>
+                <southbc>33.730557</southbc>
+            </bounding>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>ISO 19115 Topic Categories</themekt>
+                <themekey>boundaries</themekey>
+                <themekey>location</themekey>
+            </theme>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>NC</themekey>
+                <themekey>North Carolina</themekey>
+                <themekey>NC OneMap</themekey>
+                <themekey>Department of Public Safety</themekey>
+                <themekey>DPS</themekey>
+                <themekey>North Carolina Emergency Management</themekey>
+                <themekey>NCEM</themekey>
+                <themekey>North Carolina Geodetic Survey</themekey>
+                <themekey>NC Geodetic Survey</themekey>
+                <themekey>NCGS</themekey>
+                <themekey>boundaries</themekey>
+                <themekey>location</themekey>
+                <themekey>County Boundary</themekey>
+                <themekey>State Boundary</themekey>
+                <themekey>State</themekey>
+                <themekey>County</themekey>
+                <themekey>Boundary</themekey>
+                <themekey>Counties</themekey>
+            </theme>
+        </keywords>
+        <accconst>None</accconst>
+        <useconst>None. Please check sources, scale, accuracy, currentness and other available information. Please confirm that you are using the most recent copy of both data and metadata. Although these data have been processed successfully on a computer system at the NC Geodetic Survey, no warranty expressed or implied is made regarding the accuracy or utility of the data on any other system or for general or scientific purposes, nor shall the act of distribution constitute any such warranty. It is also strongly recommended that careful attention be paid to the contents of the metadata file associated with these data to evaluate data set limitations, restrictions or intended use. The NC Geodetic Survey shall not be held liable for improper or incorrect use of the data described.</useconst>
+        <ptcontac>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>North Carolina Geodetic Survey</cntorg>
+                </cntorgp>
+                <cntpos>GIS Manager</cntpos>
+                <cntaddr>
+                    <addrtype>physical</addrtype>
+                    <address>4105 Reedy Creek Rd</address>
+                    <city>Raleigh</city>
+                    <state>NC</state>
+                    <postal>27607</postal>
+                    <country>US</country>
+                </cntaddr>
+                <cntvoice>919-733-3836</cntvoice>
+                <cntinst>More information at https://ncgs.state.nc.us/</cntinst>
+            </cntinfo>
+        </ptcontac>
+        <ptcontac>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>North Carolina Geodetic Survey</cntorg>
+                </cntorgp>
+                <cntpos>GIS Manager</cntpos>
+                <cntaddr>
+                    <addrtype>physical</addrtype>
+                    <address>4105 Reedy Creek Rd</address>
+                    <city>Raleigh</city>
+                    <state>NC</state>
+                    <postal>27607</postal>
+                    <country>US</country>
+                </cntaddr>
+                <cntvoice>919-733-3836</cntvoice>
+                <cntinst>More information at https://ncgs.state.nc.us/</cntinst>
+            </cntinfo>
+        </ptcontac>
+        <datacred>North Carolina Geodetic Survey (NCGS)</datacred>
+        <secinfo>
+            <secsys>FIPS Pub 199</secsys>
+            <secclass>Unclassified</secclass>
+            <sechandl>Standard Technical Controls</sechandl>
+        </secinfo>
+        <native>Esri ArcGIS 10.2.2.3552</native>
+    </idinfo>
+    <spdoinfo>
+        <direct>Vector</direct>
+        <ptvctinf>
+            <sdtsterm>
+                <sdtstype>GT-polygon composed of chains</sdtstype>
+                <ptvctcnt>100</ptvctcnt>
+            </sdtsterm>
+        </ptvctinf>
+    </spdoinfo>
+    <eainfo>
+        <detailed>
+            <enttyp>
+                <enttypl>NC_State_County_Boundary_NAD832011</enttypl>
+                <enttypd>Vector polygon data describing the boundaries of all 100 counties in North Carolina</enttypd>
+                <enttypds>NCGS</enttypds>
+            </enttyp>
+            <attr>
+                <attrlabl>OBJECTID</attrlabl>
+                <attrdef>Internal feature number.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        
+                    
+                    <udom>Sequential unique whole numbers that are automatically generated.</udom>
+                                        
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>Shape</attrlabl>
+                <attrdef>Feature geometry.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        
+                    
+                    <udom>Coordinates defining the features.</udom>
+                                        
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>County</attrlabl>
+                <attrdef>North Carolina County Name</attrdef>
+                <attrdefs>NCGS</attrdefs>
+                <attrdomv>
+                                        
+                    
+                    <udom>Individual common names of counties in North Carolina</udom>
+                                        
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>FIPS</attrlabl>
+                <attrdef>Federal Information Processing Standard (FIPS) code from 1 to 199 for each county but not the same order as the DOT-CODE because it puts McDowell County before 4 counties (Macon, Madison, Martin, &amp; Mecklenburg)</attrdef>
+                <attrdefs>NCDOT</attrdefs>
+                <attrdomv>
+                                        
+                    
+                    <udom>Integers from 1 to 199 representing the FIPS code for the 100 counties in North Carolina</udom>
+                                        
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>Rec_Survey</attrlabl>
+                <attrdef>Indicates if any modern survery information is recorded with the county. If information is available, please visit ncgs.state.nc.us for detailed information.</attrdef>
+                <attrdefs>NCGS</attrdefs>
+                <attrdomv>
+                                        
+                    
+                    <udom>Text description indicating whether or not recorded survey information is available for each county.</udom>
+                                        
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>NCGS_url</attrlabl>
+                <attrdef>Direct URL to online map at North Carolina Geodetic Survey that contains information on where to find recorded survey maps for county and state lines. No value is present if there is no recorded information.</attrdef>
+                <attrdefs>NCGS</attrdefs>
+                <attrdomv>
+                                        
+                    
+                    <udom>For counties with recorded survey information, this field will contain the URL to the NC Geodetic Survey state and county boundary status map, which gives more detailed information as to which portions of the county boundary have been surveyed.</udom>
+                                        
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>ck_date</attrlabl>
+                <attrdef>Date of last review or update.</attrdef>
+                <attrdefs>NCGS</attrdefs>
+                <attrdomv>
+                                        
+                    
+                    <udom>Date indicating the last review or update of the boundary data for each county.</udom>
+                                        
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>Shape_Length</attrlabl>
+                <attrdef>Length of feature in internal units.</attrdef>
+                <attrdefs>Esri</attrdefs>
+                <attrdomv>
+                                        
+                    
+                    <udom>Positive real numbers that are automatically generated.</udom>
+                                        
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>Shape_Area</attrlabl>
+                <attrdef>Area of feature in internal units squared.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        
+                    
+                    <udom>Positive real numbers that are automatically generated.</udom>
+                                        
+                
+                </attrdomv>
+            </attr>
+        </detailed>
+        <overview>
+            <eaover>County boundary polygons</eaover>
+            <eadetcit>North Carolina Geodetic Survey</eadetcit>
+        </overview>
+    </eainfo>
+    <metainfo>
+        <metd>20200611</metd>
+        <metc>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>North Carolina Geodetic Survey</cntorg>
+                </cntorgp>
+                <cntpos>GIS Manager</cntpos>
+                <cntaddr>
+                    <addrtype>physical</addrtype>
+                    <address>4105 Reedy Creek Rd</address>
+                    <city>Raleigh</city>
+                    <state>NC</state>
+                    <postal>27607</postal>
+                    <country>US</country>
+                </cntaddr>
+                <cntvoice>919-733-3836</cntvoice>
+                <cntinst>More information at https://ncgs.state.nc.us/</cntinst>
+            </cntinfo>
+        </metc>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+        <metstdv>FGDC-STD-001-1998</metstdv>
+        <mettc>local time</mettc>
+    </metainfo>
+</metadata>

@@ -1,0 +1,20 @@
+downloaded bbsBayes2 in /work/appscr/r/ijbg/RtmpQ5CmaF/downloaded_packages
+
+it's bbsBayes2.1.1.2.1.tar.gz
+
+
+/nas/longleaf/home/ijbg/R/x86_64-pc-linux-gnu-library/4.2/00LOCK-keyring/00new/keyring/libgs
+
+OR
+
+/nas/longleaf/rhel8/apps/r/4.2.2/lib64/R/include
+
+OR 
+/nas/longleaf/home/ijbg/R/x86_64-pc-linux-gnu-library/4.2
+
+
+
+#package is already installed, just go ahead and modify the script htere, then load it. Might work without a new download. hm. it does not export the code for fetch()
+
+saving to /nas/longleaf/home/ijbg/.local/share/R/bbsBayes2/bbs_state_data_2024.rds
+load_bbs_data() works without specs to the above ^
