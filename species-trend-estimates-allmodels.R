@@ -75,11 +75,13 @@ ungroup() #this ungroup is necessary
 #filter out species that haven't been seen more than the min number of times on the min number of routes.
 #9 to include bobwhite!
 mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 9, min_num_routes = 5) %>%
+  #filter out waterbirds and hawks
+  filter(!common_name %in% excluded_species) %>%
   #create a variable so that has common name from 1:however many species are 
   #included
   group_by(common_name) %>%
   mutate(common_name_standard = dplyr::cur_group_id()) %>%
-  ungroup()
+  ungroup() 
 
 n_distinct(mbbs$common_name) #ok, 60 species rn make the cut with the borders set at 5 routes and 9 sightings on those routes. Nice!
 
