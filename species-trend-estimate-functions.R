@@ -93,3 +93,7 @@ standardize_year <- function(mbbs, starting_year = 1999) {
     mutate(year_standard = year - (starting_year - 1))
   
 }
+
+
+# variables
+excluded_species <- c("Red-shouldered Hawk", "Killdeer", "Great Blue Heron", "Canada Goose")
