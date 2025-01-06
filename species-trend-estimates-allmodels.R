@@ -14,7 +14,7 @@ library(mbbs) #data comes from here
 library(broom) #extracts coefficient values out of models, works with geepack
 library(rstan) #stan
 library(StanHeaders) #stan helper
-library(rethinking) #alt. way to model with bayes, from Statistical Rethinking course. Can't use for final analysis bc the ulam helper function has some presets that don't fit my needs (eg. 87% standard deviation calculations)
+#library(rethinking) #alt. way to model with bayes, from Statistical Rethinking course. Can't use for final analysis bc the ulam helper function has some presets that don't fit my needs (eg. 87% standard deviation calculations)
 
 
 #prevent scientific notation to make a trend table easier to read

@@ -120,7 +120,7 @@ plot_violin_regional <- function() {
   
   plot(0:1,0:1,
        type = "n",
-       xlim = set_ylim,
+       xlim = c(-7,7),
        ylim = c(.5,1.5),
        axes = FALSE,
        ann = FALSE)
@@ -140,8 +140,8 @@ plot_violin_regional <- function() {
 layout.matrix <- matrix(c(2,0,1,3), nrow = 2, ncol = 2)
 layout.matrix
 layout(mat = layout.matrix,
-       widths = c(.75, 1.5), #second column wider
-       heights = c(1.75, 1)) #first row taller
+       widths = c(.5, 2), #second column wider
+       heights = c(2, 1)) #first row taller
 layout.show(3)
 #improvement would be to have 1 be more square...
 #but I think also, want to remove the text bc it's adding a lot to the plot?
