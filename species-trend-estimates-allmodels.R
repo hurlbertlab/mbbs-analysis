@@ -25,7 +25,7 @@ options(scipen=999)
 
 #get survey events from temporary load instead of from the current github version
 #of the mbbs.
-load("C:/git/mbbs-analysis/data/mbbs_survey_events_obsqual_v3.rda")
+load("C:/git/mbbs-analysis/data/mbbs_survey_events.rda")
 mbbs_survey_events <- mbbs_survey_events %>%
   mutate(primary_observer = case_when(max_qual_observer == 1 ~ obs1,
                                       max_qual_observer == 2 ~ obs2,
@@ -83,7 +83,7 @@ mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 9, min_num_route
   mutate(common_name_standard = dplyr::cur_group_id()) %>%
   ungroup() 
 
-n_distinct(mbbs$common_name) #ok, 60 species rn make the cut with the borders set at 5 routes and 9 sightings on those routes. Nice!
+n_distinct(mbbs$common_name) #ok, 56 species rn make the cut with the borders set at 5 routes and 9 sightings on those routes. Nice!
 
 #save a version of the mbbs before adding 0s
   mbbs_nozero <- mbbs
@@ -105,6 +105,7 @@ mbbs <- add_survey_events(mbbs, mbbs_survey_events)
 mbbs_nozero <- add_survey_events(mbbs_nozero, mbbs_survey_events)
   
 # Remove Orange route 11 from 2012 due to uncharacteristically high counts from a one-time observer
+#! In newer versions of the mbbs (that have to be downloaded from the website due to new data handling processes, this checklist is already removed as a data filtering step.)
 mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob") %>%
   group_by(primary_observer) %>%
   mutate(observer_ID = cur_group_id()) %>%
@@ -368,18 +369,35 @@ mST <- ulam(
 
   
 #--------------------------------------------------------------------------
-# Stan, some chatgpt help
+# Stan
 #-------------------------------------------------------------------------
 
-library(rstan)
-library(loo)
+library(rstan) #for running stan
+library(loo) #leave one out, works with testing models and how good they are at replicating the datapoint that's been left out. Well fit models are better at replicating missing data.
 
 #filtered mbbs, same as from above is just acadian flycatcher and woodthrush. for testing purposes
 
 filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "Acadian Flycatcher") %>%
+  #Recreate IDs for common name
   group_by(common_name) %>%
   mutate(common_name_standard = cur_group_id()) %>%
-  ungroup()
+  ungroup() %>%
+  #Recreate IDs for primary observer
+  group_by(primary_observer) %>%
+  mutate(observer_ID = cur_group_id()) %>%
+  ungroup() %>%
+  #add mock trait variables. WOTH is doing poorly and ACFL is doing well
+  mutate(
+    mock_diet = #we'll give WOTH a low diversity diet, ACFL high diversity, so except strong positive effect
+      case_when(common_name == "Wood Thrush" ~ .1,
+                common_name == "Acadian Flycatcher" ~ .8),
+    mock_climate = #let's give them both a medium climate, so expect no effect
+      case_when(common_name == "Wood Thrush" ~ .5,
+                common_name == "Acadian Flycatcher" ~ .5),
+    mock_ssi = #meh. okay these things are going to be multicolinear bc there's only two data points yk. Let's go a with a weak negative effect
+      case_when(common_name == "Wood Thrush" ~ .7, #mock generalist
+                common_name == "Acadian Flycatcher" ~ .3) #mock specialist (confirm that's how ssi works?)
+    ) 
 
 #prepare the data list for Stan
 datstan <- list(
@@ -390,22 +408,28 @@ datstan <- list(
   species = filtered_mbbs$common_name_standard, #species indices
   route = filtered_mbbs$route_standard, #route indicies
   year = filtered_mbbs$year_standard, #year indices
-  observer_quality = filtered_mbbs$observer_quality,
+  observer_quality = filtered_mbbs$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route
+  observer_ID = filtered_mbbs$observer_ID, #observer index
+  O = length(unique(filtered_mbbs$observer_ID)), #n observers
+  trait_diet = filtered_mbbs$mock_diet, #! NOT CENTERED YET
+  trait_climate = filtered_mbbs$mock_climate, #! NOT CENTERED YET
+  trait_habitat = filtered_mbbs$mock_ssi, #! NOT CENTERED YET
   C = filtered_mbbs$count #count data
 )
 
 #specify the stan model code
 stan_model_code <- "
 data {
-  int<lower=0> N;
-  int<lower=1> S;
-  int<lower=1> R;
-  int<lower=1> Y;
-  int<lower=1, upper=S> species[N];
-  int<lower=1, upper=R> route[N];
-  int<lower=1, upper=Y> year[N];
-  real observer_quality[N];
-  int<lower=0> C[N];
+  int<lower=0> N; #number of rows
+  int<lower=1> S; #number of species
+  int<lower=1> R; #number of routes
+  int<lower=1> Y; #number of years
+  array[N] int<lower=1, upper=S> species; #there is a species for every row and it's an integer between 1 and S
+  array[N] int<lower=1, upper=R> route; #there is a route for every row and it's an integer between 1 and R
+  array[N] int<lower=1, upper=Y> year; #there is an integer for every year and it's an integer between 1 and Y
+  array[N] int<lower=1, upper=O> observer_ID; #there is an observer_ID for every row and it is in integer between 1 and 'O'(not a zero)
+  array[N] real observer_quality; #there is an observer quality for every row and it is a real number
+  array[N] int<lower=0> C; #there is a count (my y variable!) for every row and it is an unbounded integer that is at least 0.
 }
 
 parameters {
@@ -420,6 +444,12 @@ model {
   sigma ~ exponential(1);
   b ~ normal(0, 0.2);
   to_vector(a) ~ normal(a_bar, sigma);
+
+###So one thing to fix here: this is the 'unvectorized' version of this model. vecteroize and just remove all the n. 
+#Why is this poisson log?
+#This is poisson_log bc then the predictor does not need to be exponentiated
+#Why does this not include the.....no. Okay, doesn't need a sigma bc its a poisson and poisson distributions only have a lambda parameter.
+C ~ poisson_log(a[route,species] + b[species]*year + observer_quality)
 
   for (n in 1:N) {
     C[n] ~ poisson_log(a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
