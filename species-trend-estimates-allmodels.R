@@ -185,7 +185,7 @@ mbbs <- mbbs %>% mutate(route_ID = as.factor(route_ID))
 mbbs_nozero <- mbbs_nozero %>% mutate(route_ID = as.factor(route_ID))
 
 #add in UAI
-uai <- read.csv("data/UAIs_NCetall.csv") %>%
+uai <- read.csv("data/species-traits/UAI-NateCleg-etall.csv") %>%
   filter(City == "Charlotte_US")
 
 mbbs <- mbbs %>%
@@ -281,7 +281,14 @@ mhierarch <- ulam(
 precis(mhierarch, depth = 2)
 
 #what if :) all the species. 
-datmbbs <- list(
+#not all the species, just wt and acfl
+mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "Acadian Flycatcher") %>%
+  group_by(common_name) %>%
+  mutate(common_name_standard = cur_group_id()) %>%
+  ungroup()
+
+datmbbs <-
+  list(
   C = mbbs$count, #Count. Not sure this should be standardized
   Y = mbbs$year_standard, #first year is year 1, set as an index veriable
   S = mbbs$common_name_standard, #species, as an index variable, just WT
@@ -303,7 +310,12 @@ mhierarchallobs <- ulam(
 )
 #hey okay! The metropolis proposals were not automatically causing rejections. Adding the observer and calculating an independent value for each one is causing some problems. 
 
+
+
+
+
 #also add in observer
+#for Casey meeting, use UAI as species trait
 mhierarchallobs <- ulam(
   alist(
     C ~ dpois( lambda ),
@@ -316,6 +328,11 @@ mhierarchallobs <- ulam(
     tau_c ~ gamma(0.0001,0.0001)
   ), data = datmbbs, chains = 4, cores = 4, log_lik = TRUE
 )
+
+
+
+
+
 #Warning: 500 of 2000 (25.0%) transitions hit the maximum treedepth limit of 10.
 #See https://mc-stan.org/misc/warnings for details.
 #If this is the only warning you are getting and your ESS and R-hat diagnostics are good, it is likely safe to ignore this warning, but finding the root cause could result in a more efficient model.
@@ -368,7 +385,7 @@ mST <- ulam(
 
   
 #--------------------------------------------------------------------------
-# Stan, some chatgpt help
+# Stan
 #-------------------------------------------------------------------------
 
 library(rstan)
