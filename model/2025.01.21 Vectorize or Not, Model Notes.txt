@@ -1,0 +1,8 @@
+2025.01.21 Vectorize or Not, Model Notes
+// So one thing to fix here: this is the 'unvectorized' version of this model. vecteroize and just remove all the n. 
+// Why is this poisson log?
+// This is poisson_log bc then the predictor does not need to be exponentiated
+// Why does this not include the.....no. Okay, doesn't need a sigma bc its a poisson and poisson distributions only have a lambda parameter.
+
+// vectorized (supposedly) version I tried that doesn't work
+//  C ~ poisson_log(a[route,species] + b[species] .* year + c[observer_ID]);

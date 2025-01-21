@@ -1,0 +1,10 @@
+#for adding observer ID to stan code
+
+  c ~ normal(0, tau_c); //observer_ID ONLY
+  tau_c ~ gamma(.001, .001); //observer_ID ONLY
+
+   for (n in 1:N) {
+     C[n] ~ poisson_log(a[route[n], species[n]] + b[species[n]] * year[n] + c[observer_ID[n]]);
+   }
+}
+
