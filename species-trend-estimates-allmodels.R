@@ -429,11 +429,11 @@ datstan <- list(
   route = filtered_mbbs$route_standard, #route indicies
   year = filtered_mbbs$year_standard, #year indices
   observer_quality = filtered_mbbs$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
-  observer_ID = filtered_mbbs$observer_ID, #observer index
-  O = length(unique(filtered_mbbs$observer_ID)), #n observers
-  #trait_diet = filtered_mbbs$mock_diet, #! NOT CENTERED YET
-  #trait_climate = filtered_mbbs$mock_climate, #! NOT CENTERED YET
-  #trait_habitat = filtered_mbbs$mock_ssi, #! NOT CENTERED YET
+  #observer_ID = filtered_mbbs$observer_ID, #observer index
+  #O = length(unique(filtered_mbbs$observer_ID)), #n observers
+  trait_diet = filtered_mbbs$mock_diet, #! NOT CENTERED YET
+  trait_climate = filtered_mbbs$mock_climate, #! NOT CENTERED YET
+  trait_habitat = filtered_mbbs$mock_ssi, #! NOT CENTERED YET
   C = filtered_mbbs$count #count data
 )
 
@@ -444,51 +444,61 @@ data {
   int<lower=1> S; // number of species
   int<lower=1> R; // number of routes
   int<lower=1> Y; // number of years
-  int<lower=1> O; // number of observers
+//  int<lower=1> O; // number of observers
   array[N] int<lower=1, upper=S> species; // there is a species for every row and it's an integer between 1 and S
   array[N] int<lower=1, upper=R> route;  // there is a route for every row and it's an integer between 1 and R
   array[N] int<lower=1, upper=Y> year;  // there is an integer for every year and it's an integer between 1 and Y
-  array[N] int<lower=1, upper=O> observer_ID;  // there is an observer_ID for every row and it is in integer between 1 and 'O'(not a zero)
+//  array[N] int<lower=1, upper=O> observer_ID;  // there is an observer_ID for every row and it is in integer between 1 and 'O'(not a zero)
  vector[N] observer_quality;  // there is an observer quality for every row and it is a real number, because it is continuous it can be a vector instead of an array
   array[N] int<lower=0> C;  // there is a count (my y variable!) for every row and it is an unbounded integer that is at least 0.
+  vector[N] trait_diet; //there is a trait_diet for every row and it is a continuous real number
+  vector[N] trait_climate; //trait_climate for every row and it's a continuous real number
+  vector[N] trait_habitat; //trait_habitat for every row and it's a continuous real number
 }
 
 parameters {
   vector[S] b;
   matrix[R, S] a;
-  real a_bar;
+//  real a_bar;
+  vector[S] a_bar;
   real<lower=0> sigma;
-  vector[O] c;
-//  real<lower=0> tau_c;
-  real<lower = 0> gamma_obs;
-  real<lower = 0> kappa_obs;
-  real<lower = 0> sig_obs;
+  real gamma_b;
+  real kappa_diet;
+  real kappa_climate;
+  real kappa_habitat;
+  real<lower=0> sig_b;
+  
+//  vector[O] c; //for obs_ID
+//  real<lower=0> tau_c; //for obs_ID
+//  real<lower = 0> gamma_obs; //for adding obs quality
+//  real<lower = 0> kappa_obs; //for adding obs quality
+//  real<lower = 0> sig_obs; //for adding obs quality
 }
 
 model {
   a_bar ~ normal(1, 0.5);
   sigma ~ exponential(1);
-  b ~ normal(0, 0.2);
-  to_vector(a) ~ normal(a_bar, sigma);
+//  b ~ normal(0, 0.2); //without traits
+  b ~ normal(gamma_b + kappa_diet*trait_diet[S] + kappa_climate*trait_climate[S] + kappa_habitat*trait_habitat[S], sig_b);
+  gamma_b ~ normal(0, 0.2);
+  kappa_diet ~ normal(0, 0.02); 
+  kappa_climate ~ normal(0, 0.02); //have also set to .05, doesn't seem to make a difference.
+  kappa_habitat ~ normal(0, 0.02);
+  sig_b ~ exponential(1);
+  to_vector(a) ~ normal(a_bar[S], sigma); //uses a species specific a_bar
   
-  gamma_obs ~ exponential(1); //not sure where to set this prior
-  kappa_obs ~ exponential(1); //not sure where to set this prior
-  sig_obs ~ gamma(.001,.001); //not sure where to set this prior
-  c ~ normal(gamma_obs + kappa_obs * observer_quality, sig_obs);
 //  c ~ normal(0, tau_c); //observer_ID ONLY
 //  tau_c ~ gamma(.001, .001); //observer_ID ONLY
 
-// So one thing to fix here: this is the 'unvectorized' version of this model. vecteroize and just remove all the n. 
-// Why is this poisson log?
-// This is poisson_log bc then the predictor does not need to be exponentiated
-// Why does this not include the.....no. Okay, doesn't need a sigma bc its a poisson and poisson distributions only have a lambda parameter.
-
-// vectorized (supposedly) version I tried that doesn't work
-//  C ~ poisson_log(a[route,species] + b[species] .* year + c[observer_ID]);
+// NEW OBSERVER BLOCK, replaces c and tau_c above  
+//  gamma_obs ~ exponential(1); //not sure where to set this prior
+//  kappa_obs ~ exponential(1); //not sure where to set this prior
+//  sig_obs ~ gamma(.001,.001); //not sure where to set this prior
+//  c ~ normal(gamma_obs + kappa_obs * observer_quality, sig_obs);
 
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
    for (n in 1:N) {
-     C[n] ~ poisson_log(a[route[n], species[n]] + b[species[n]] * year[n] + c[observer_ID[n]]);
+     C[n] ~ poisson_log(a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
    }
 }
 
@@ -496,23 +506,25 @@ model {
 generated quantities {
   real log_lik[N];
   for (n in 1:N) {
-    log_lik[n] = poisson_log_lpmf(C[n] | a[route[n], species[n]] + b[species[n]] * year[n] + c[observer_ID[n]]);
+    log_lik[n] = poisson_log_lpmf(C[n] | a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
   }
 }
 "
 
 #compile the stan model
 stan_model <- stan_model(model_code = stan_model_code)
+beepr::beep()
 
 #fit the model to the data
 fit <- sampling(stan_model, data = datstan, chains = 4, cores = 4, iter = 2000, warmup = 1000)
+beepr::beep()
 
 #view results
 #Accessing the contents of a stanfit object:
 #https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html
 print(fit)
 #perfect, that looks great! b[1] and b[2] are as expected, at 0.05 and -0.06
-View(fit)
+#View(fit)
 fit_summary <- summary(fit)
 View(fit_summary$summary) #R hats and neff look good
 
