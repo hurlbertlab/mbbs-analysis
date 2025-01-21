@@ -1,0 +1,10 @@
+english_common_name,avian-range-shifts_climate_vol,bioclim_1.4_10m,bioclim_2.1_10m,species_code,aou,genus,species,binomial,notes,ratio_grace/1.4,ratio_grace/2.1,,math_intuit
+Brown-headed Nuthatch,0.106123614,0.155263318,0.036037918,BHNU,7290,Sitta,pusilla,Sitta pusilla,lowest,1.463042127,0.339584345,,5
+Yellow-throated Warbler,0.182675124,0.29491483,0.065697876,YTWA,6630,Setophaga,dominica,Setophaga dominica,2nd lowest,1.614422498,0.359643254,,4
+Northern Cardinal,1.099151035,1.613719893,0.370000026,NOCA,5930,Cardinalis,cardinalis,Cardinalis cardinalis,mid,1.468151184,0.336623461,,6
+Yellow-breasted Chat,1.673350178,2.56176576,0.593126095,YBCH,6830,Icteria,virens,Icteria virens,about half-way between cardinal and housefinch,1.530920302,0.354454258,,5
+House Finch,2.417080162,3.461011277,0.793722929,HOFI,5190,Haemorhous,mexicanus,Haemorhous mexicanus,highest,1.431897598,0.328380888,,5
+,,,,,,,,,,,,,
+,,,,,,,,,total dif,0.1825249,0.031262366,,2
+,,,,,,,,,dif %,12.15465885,9.094844126,,40
+,,,,,,,,,,,let's use 2.1,,

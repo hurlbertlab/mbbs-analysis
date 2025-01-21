@@ -95,5 +95,16 @@ standardize_year <- function(mbbs, starting_year = 1999) {
 }
 
 
+# Function to leftjoin the species_trait variables
+# Right now, these are dummy variables made within the function for testing purposes.
+#add_test_traits <- function(mbbs) {
+  
+#  common_name <- (unique(mbbs$common_name))
+  
+#  mock_diet
+  
+#} pause on this for now. I like the idea, but my testing stuff I'm just going to set things for WOTH and ACFL. 
+
 # variables
 excluded_species <- c("Red-shouldered Hawk", "Killdeer", "Great Blue Heron", "Canada Goose")
+
