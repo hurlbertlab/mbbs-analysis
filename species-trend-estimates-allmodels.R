@@ -390,7 +390,36 @@ mST <- ulam(
 #-------------------------------------------------------------------------
 
 #read in analysis file created up top.
-mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
+mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 
+
+#read in trait files
+diet <- read.csv("data/species-traits/gdicecco-avian-range-shifts/diet_niche_breadth_mbbs.csv") %>%
+  select(english_common_name, shannonE_diet)
+climate <- read.csv("data/species-traits/gdicecco-avian-range-shifts/climate_niche_breadth_mbbs_WIP.csv") %>%
+  select(english_common_name, climate_vol_2.1)
+habitat <- read.csv("data/species-traits/gdicecco-avian-range-shifts/habitat_niche_ssi_true_zeroes.csv") %>%
+  select(english_common_name, ssi) %>%
+  #for now, we're kinda doing a mock ssi bc we don't have all the species. Stan does not support NAs in data, so let's change all the ssi to 1. It's not interpretable with only half the data and half mock data anyway
+  mutate(ssi = 1,
+         habitat_ssi = ssi) %>% #change name for interpret-ability 
+  select(-ssi)
+regional <- read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv") %>%
+  select(-done, -running, -notes)
+
+#left_joins
+mbbs_traits <- mbbs %>%
+  left_join(diet, by = c("common_name" = "english_common_name" )) %>%
+  left_join(climate, by = c("common_name" = "english_common_name")) %>%
+  left_join(habitat, by = c("common_name" = "english_common_name")) %>%
+  #shannonE_diet
+  #habitat_ssi
+  #climate_vol_2.1
+  filter(!is.na(climate_vol_2.1)) %>% #for now, rm the species we don't have climate volume for.
+  filter(!is.na(habitat_ssi)) %>% #need to add Eastern Whip por Whil to habitat
+  #Recreate IDs for common name
+  group_by(common_name) %>%
+  mutate(common_name_standard = cur_group_id()) %>%
+  ungroup() 
 
 library(rstan) #for running stan
 library(loo) #leave one out, works with testing models and how good they are at replicating the datapoint that's been left out. Well fit models are better at replicating missing data.
@@ -408,33 +437,36 @@ filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "
   ungroup() %>%
   #add mock trait variables. WOTH is doing poorly and ACFL is doing well
   mutate(
-    mock_diet = #we'll give WOTH a low diversity diet, ACFL high diversity, so except strong positive effect
+    shannonE_diet = #we'll give WOTH a low diversity diet, ACFL high diversity, so except strong positive effect
       case_when(common_name == "Wood Thrush" ~ .1,
                 common_name == "Acadian Flycatcher" ~ .8),
-    mock_climate = #let's give them both a medium climate, so expect no effect
+    climate_vol_2.1 = #let's give them both a medium climate, so expect no effect
       case_when(common_name == "Wood Thrush" ~ .5,
                 common_name == "Acadian Flycatcher" ~ .5),
-    mock_ssi = #meh. okay these things are going to be multicolinear bc there's only two data points yk. Let's go a with a weak negative effect
+    habitat_ssi = #meh. okay these things are going to be multicolinear bc there's only two data points yk. Let's go a with a weak negative effect
       case_when(common_name == "Wood Thrush" ~ .7, #mock generalist
                 common_name == "Acadian Flycatcher" ~ .3) #mock specialist (confirm that's how ssi works?)
     ) 
 
+#change to filtered_mbbs for testing, mbbs_traits for the real thing
+mbbs_dataset <- mbbs_traits
+
 #prepare the data list for Stan
 datstan <- list(
-  N = nrow(filtered_mbbs), #number of observations
-  S = length(unique(filtered_mbbs$common_name_standard)), #n species
-  R = length(unique(filtered_mbbs$route_standard)), #n routes
-  Y = length(unique(filtered_mbbs$year_standard)), #n years
-  species = filtered_mbbs$common_name_standard, #species indices
-  route = filtered_mbbs$route_standard, #route indicies
-  year = filtered_mbbs$year_standard, #year indices
-  observer_quality = filtered_mbbs$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
-  #observer_ID = filtered_mbbs$observer_ID, #observer index
-  #O = length(unique(filtered_mbbs$observer_ID)), #n observers
-  trait_diet = filtered_mbbs$mock_diet, #! NOT CENTERED YET
-  trait_climate = filtered_mbbs$mock_climate, #! NOT CENTERED YET
-  trait_habitat = filtered_mbbs$mock_ssi, #! NOT CENTERED YET
-  C = filtered_mbbs$count #count data
+  N = nrow(mbbs_dataset), #number of observations
+  S = length(unique(mbbs_dataset$common_name_standard)), #n species
+  R = length(unique(mbbs_dataset$route_standard)), #n routes
+  Y = length(unique(mbbs_dataset$year_standard)), #n years
+  species = mbbs_dataset$common_name_standard, #species indices
+  route = mbbs_dataset$route_standard, #route indicies
+  year = mbbs_dataset$year_standard, #year indices
+  observer_quality = mbbs_dataset$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
+  #observer_ID = mbbs_dataset$observer_ID, #observer index
+  #O = length(unique(mbbs_dataset$observer_ID)), #n observers
+  trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
+  trait_climate = mbbs_dataset$climate_vol_2.1, #! NOT CENTERED YET
+  trait_habitat = mbbs_dataset$habitat_ssi, #! NOT CENTERED YET
+  C = mbbs_dataset$count #count data
 )
 
 #specify the stan model code
@@ -527,6 +559,7 @@ print(fit)
 #View(fit)
 fit_summary <- summary(fit)
 View(fit_summary$summary) #R hats and neff look good
+write.csv(fit_summary$summary, "data/STAN_output_habitatmock.csv")
 
 #extract posterior samples
 post <- extract(fit)
