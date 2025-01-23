@@ -16,9 +16,8 @@
 
 # libraries
 library(dplyr)
-##library(terra)
-library(sf) #for vectors
-library(stars) #works with sf but for vectors
+library(terra)
+library(sf) 
 
 # species range maps directory
   range_dir <- "Z:/GIS/birds/All/All/"
@@ -44,7 +43,7 @@ library(stars) #works with sf but for vectors
            sd_precipwq = 999)
   
 #####testing env.
-  i = 1
+  i = 30
   ####some error at i = 30
 for(i in 1:nrow(species_list)) {
   # Using package sf (easy to read, but doesn't plot well)
@@ -54,7 +53,7 @@ for(i in 1:nrow(species_list)) {
   )) %>%
     # Re-project to the worldclim crs
     sf::st_transform(sf::st_crs(worldclim_meantempwarmq)) %>%
-    #  Use extant (PRESENCE 1-3) breeding and resident ranges (SEASONAL 1-2) only
+    #  Use extant (PRESENCE 1-3) breeding and resident ranges (SEASONAL 1-2) only 
     filter(PRESENCE %in% c(1:3),
            SEASONAL %in% c(1:2))
   
@@ -91,6 +90,34 @@ for(i in 1:nrow(species_list)) {
   species_list <- species_list %>%
     dplyr::rows_update(temp_row, by = "common_name")
 }
+  
+# save the species_list with the means and standard deviations
+  write.csv(species_list, "data/species-traits/species_list_match_range_files.csv", row.names = FALSE) #this is kinda a bad place to store this. bc likee, this is just an intermediate step we're saving, but also, I do want to go ahead and save this. but I also don't want 600 .csvs with mildly different information so, let's leave it for now.
+  
+# get climate variables from within the study area.
+study_boundaries <- terra::ext(-79.55, -78.74, 35.57, 36.24)
+
+  studyarea_tempwq <- terra::rast("data/species-traits/worldclim2.1_10m_bio/wc2.1_10m_bio_10.tif") %>%
+    terra::crop(study_boundaries) %>%
+    as.data.frame() %>%
+    summarize(studyarea_tempwq = mean(wc2.1_10m_bio_10))
+  
+  studyarea_precipwq <- terra::rast("data/species-traits/worldclim2.1_10m_bio/wc2.1_10m_bio_18.tif") %>%
+    terra::crop(study_boundaries) %>%
+    as.data.frame() %>%
+    summarize(studyarea_precipwq = mean(wc2.1_10m_bio_18))
+  
+# add these new columns to the species list dataframe, now we have everything we need to make the normal distributions and calculate the z-scores
+  final_data <- species_list %>%
+    mutate(studyarea_tempwq,
+           studyarea_precipwq) %>%
+    #calculate z-scores
+    mutate(z_tempwq = ((studyarea_tempwq - mean_tempwq)/sd_tempwq),
+           z_precipwq = ((studyarea_precipwq - mean_precipwq)/sd_precipwq))
+  
+  
+
+  
 #for each species:
 #read in the breeding range
 #clip climate variables to extent of breeding range
