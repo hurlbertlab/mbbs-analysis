@@ -113,19 +113,19 @@ study_boundaries <- terra::ext(-79.55, -78.74, 35.57, 36.24)
            studyarea_precipwq) %>%
     #calculate z-scores
     mutate(z_tempwq = ((studyarea_tempwq - mean_tempwq)/sd_tempwq),
-           z_precipwq = ((studyarea_precipwq - mean_precipwq)/sd_precipwq))
-  
-  
+           z_precipwq = ((studyarea_precipwq - mean_precipwq)/sd_precipwq)) %>%
+    #probability under the curve
+    mutate(probability_tempwq = pnorm(abs(studyarea_tempwq), mean = mean_tempwq, sd = sd_tempwq, lower.tail = TRUE),
+           probability_precipwq = pnorm(abs(studyarea_precipwq), mean = mean_precipwq, sd = sd_precipwq, lower.tail = TRUE)) %>%
+    mutate(climate_position = probability_tempwq * probability_precipwq)
+  #Low values = z-scores central to the niche, not a lot of area yet under the curve bc not far out from the mean. Low climate position -> study area is near center of niche. High climate position -> study area is on edge of species climate niche, z-score far out on the curve and has accumulated a lot behind it. 
 
+  #okay. how correlated is that number with the climate niche hypervolume?
+  climate_niche <- read.csv("data/species-traits/gdicecco-avian-range-shifts/climate_niche_breadth_mbbs.csv") %>%
+    select(english_common_name, climate_vol_2.1) %>%
+    left_join(final_data, by = c("english_common_name" = "common_name")) %>%
+    filter(!is.na(climate_vol_2.1)) #only removed INBU
+  cor(climate_niche$climate_vol_2.1, climate_niche$climate_position) #Correlation is .62 - so related but not exactly the same. Nice!
   
-#for each species:
-#read in the breeding range
-#clip climate variables to extent of breeding range
-#get mean and std of each climate variable
-    #sidebar: I think unnessesary to z-transform these variables first. because what I finally pull out is going to be a z-score. But I think it's the exact same to take a z-score from raw data as from z-transformed data. and that way the numbers remain interpretable to me throughout. 
-#add info to new columns in the species_list
-#save the species_list
-
-#then: get the climate info for chapel hill
-#z-score climate info for chapel hill for each species
-#multiply together
+# write csv
+  write.csv(final_data, "data/species-traits/climate_position.csv", row.names = FALSE)

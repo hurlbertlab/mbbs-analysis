@@ -400,11 +400,12 @@ climate <- read.csv("data/species-traits/gdicecco-avian-range-shifts/climate_nic
 habitat <- read.csv("data/species-traits/gdicecco-avian-range-shifts/habitat_niche_ssi_true_zeroes.csv") %>%
   select(english_common_name, ssi) %>%
   #for now, we're kinda doing a mock ssi bc we don't have all the species. Stan does not support NAs in data, so let's change all the ssi to 1. It's not interpretable with only half the data and half mock data anyway
-  mutate(ssi = 1,
-         habitat_ssi = ssi) %>% #change name for interpret-ability 
+  mutate(habitat_ssi = ssi) %>% #change name for interpret-ability 
   select(-ssi)
 regional <- read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv") %>%
   select(-done, -running, -notes)
+climate_position <- read.csv("data/species-traits/climate_position.csv") %>%
+  select(common_name, climate_position)
 
 #left_joins
 mbbs_traits <- mbbs %>%
@@ -559,7 +560,7 @@ print(fit)
 #View(fit)
 fit_summary <- summary(fit)
 View(fit_summary$summary) #R hats and neff look good
-write.csv(fit_summary$summary, "data/STAN_output_habitatmock.csv")
+write.csv(fit_summary$summary, "data/STAN_output_habitathalf.csv")
 
 #extract posterior samples
 post <- extract(fit)
