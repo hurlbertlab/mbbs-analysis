@@ -1,0 +1,1 @@
+Didan, K. (2021). <i>MODIS/Terra Vegetation Indices Monthly L3 Global 1km SIN Grid V061</i> [Data set]. NASA EOSDIS Land Processes Distributed Active Archive Center. Accessed 2025-01-24 from https://doi.org/10.5067/MODIS/MOD13A3.061
