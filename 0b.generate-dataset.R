@@ -8,6 +8,8 @@
 #FUTURE: removes observations flaged by the mbbs for like, observer only participated once, too high/too low species counts, other things we talked about flagging etc. 
 
 #TODO: Change from route_num unique format - preserve original route numbers and just group_by both county and route_num when working with the dataset. That's a better way to do things
+
+#TODO: 2025-01-28 This should really be deleted with the new workflow
 #---
 
 #load mbbs library

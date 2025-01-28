@@ -2,11 +2,11 @@
 # Functions/workflows for cleaning and processing the observer field
 # Updates survey events
 
-# These functions come from an old version of the mbbs repository
-# When data was handled differently. Some of these functions
-# do not apply directly to mbbs analysis, while others (eg. the survey events updated that has the observer caluclations)
-# may.
-# The important part for calculating observer_quality is the function get_observer_quality around line 490 (last function of the script)
+#! These functions come from an old version of the mbbs repository
+#! When data was handled differently. Some of these functions
+#! do not apply directly to mbbs analysis, while others (eg. the survey events updated that has the observer caluclations)
+#! may.
+#! The important part for calculating observer_quality is the function get_observer_quality around line 490 (last function of the script)
 #------------------------------------------------------------------------------#
 
 #' Full workflow for processing observers
