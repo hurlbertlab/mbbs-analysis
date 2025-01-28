@@ -6,6 +6,94 @@ library(geepack)
 library(mbbs)
 library(broom) #extracts coefficient values out of models, works with geepack
 
+#-------------------------------------------------------------------------
+# from species-trend-estimates-allmodels.R
+#------------------------------------------------------------------------------
+#GEE model  
+#------------------------------------------------------------------------------
+#GEE models from GEEpack assume that things are listed in order of cluster
+#cluster is the route. that's fine, we can sort in order
+mbbs <- mbbs %>% arrange(route_ID, year, common_name)  #also by year and common_name just to improve readability of the datatable
+
+gee_table <- make_trend_table(cols_list = c("common_name", "gee_estimate", "gee_trend","gee_error", "gee_significant", "gee_percdev_estimate", "gee_percdev_significant", "gee_observer_estimate", "gee_Waldtest"),
+                              rows_list = species_list)
+
+#let's try another way of having the trend table. 
+pivot_tidied <- function(model, current_species) {
+  
+  #tidy up the model
+  tidied <- tidy(model) %>%
+    pivot_longer(cols = term) %>% 
+    mutate(common_name = current_species) %>% #add species column
+    relocate(c(common_name, value), .before = estimate)
+  
+  return(tidied)
+  
+}
+
+
+run_gee <- function(formula, mbbs, species_list) {
+  
+  #make first rows of trend table based off the first species
+  current_species <- species_list[1]
+  filtered_mbbs <- mbbs %>% filter(common_name == current_species)
+  model <- geeglm(formula,
+                  family = poisson,
+                  id = route_ID,
+                  data = filtered_mbbs,
+                  corstr = "ar1")
+  gee_table <- pivot_tidied(model, current_species)
+  
+  #do the same thing to the rest of the species list, and rbind those rows together
+  for(s in 2:length(species_list)) {
+    
+    current_species <- species_list[s]
+    
+    filtered_mbbs <- mbbs %>% filter(common_name == current_species)
+    
+    model <- geeglm(formula,
+                    family = poisson,
+                    id = route_ID,
+                    data = filtered_mbbs,
+                    corstr = "ar1")
+    #rbind to gee_table
+    gee_table <- rbind(gee_table, pivot_tidied(model, current_species))
+    
+  }
+  
+  return(gee_table)
+}
+
+output <- run_gee(formula = 
+                    f_base,
+                  mbbs, species_list) %>%
+  #remove intercept information
+  filter(!value %in% "(Intercept)") %>%
+  #add trend into (exponentiate the esimate)
+  mutate(trend = exp(estimate)-1) %>%
+  #pivot_wider
+  pivot_wider(names_from = value, values_from = c(estimate, std.error, statistic, p.value, trend)) %>%
+  dplyr::select(-name)%>%
+  left_join(uai, by = c("common_name" = "Species"))
+
+
+#urbanization
+output_urb <- run_gee(formula = 
+                        update(f_pd, ~ .+ observer_quality),
+                      mbbs, species_list) %>%
+  #remove intercept information
+  filter(!value %in% "(Intercept)") %>%
+  #add trend into (exponentiate the esimate)
+  mutate(trend = exp(estimate)-1) %>%
+  #pivot_wider
+  pivot_wider(names_from = value, values_from = c(estimate, std.error, statistic, p.value, trend)) %>%
+  dplyr::select(-name)%>%
+  left_join(uai, by = c("common_name" = "Species"))
+
+fit <- lm(trend_year ~ UAI, data = output_urb)
+
+#-----------------------------------------------------------------------------
+
 #prevent scientific notation to make a trend table easier to read, if we have one at the end
 options(scipen=999)
 
