@@ -26,7 +26,7 @@ library(sf)
   output_dir <- "data/species-traits/"
 
 # load in species list
-  species_list <- read.csv("data/species-traits/species_list_match_range_files.csv")
+  species_list <- read.csv("data/species-traits/species_list.csv")
 
 # read in the climate data
   worldclim_precipwarmq <- terra::rast("data/species-traits/worldclim2.1_10m_bio/wc2.1_10m_bio_18.tif") %>% #BIO18 = Precipitation of Warmest Quarter
@@ -92,7 +92,7 @@ for(i in 1:nrow(species_list)) {
 }
   
 # save the species_list with the means and standard deviations
-  write.csv(species_list, "data/species-traits/species_list_match_range_files.csv", row.names = FALSE) #this is kinda a bad place to store this. bc likee, this is just an intermediate step we're saving, but also, I do want to go ahead and save this. but I also don't want 600 .csvs with mildly different information so, let's leave it for now.
+  write.csv(species_list, "data/species-traits/species_list.csv", row.names = FALSE) #this is kinda a bad place to store this. bc likee, this is just an intermediate step we're saving, but also, I do want to go ahead and save this. but I also don't want 600 .csvs with mildly different information so, let's leave it for now.
   
 # get climate variables from within the study area.
 study_boundaries <- terra::ext(-79.55, -78.74, 35.57, 36.24)
