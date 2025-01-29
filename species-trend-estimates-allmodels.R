@@ -9,8 +9,8 @@ library(dplyr) #data manip
 library(tidyr) #data manip
 library(lme4) #modeling
 library(MASS) #modeling
-library(geepack) #GEE modeling
-library(mbbs) #data comes from here
+#library(geepack) #GEE modeling
+#library(mbbs) #data comes from here
 library(broom) #extracts coefficient values out of models, works with geepack
 library(rstan) #stan
 library(StanHeaders) #stan helper
@@ -119,85 +119,85 @@ write.csv(mbbs_nozero, "data/analysis.df.nozero.csv", row.names = FALSE)
 #---------------------------------
 #Add in landcover information
 #---------------------------------
-
-#leftjoin for landcover information
-#read in nlcd data, filter to just what we're interested in. Otherwise it's a many-to-many join relationship. Right now, just the % developed land. Workflow similar to "calc_freq_remove_rows()" from the generate_percent_change_+_map.. code, but altered for this use.
-nlcd <- read.csv("data/landtype_byroute.csv", header = TRUE) %>%
-  #filter to nlcd class of interest, here, my classification of all 'developed'
-  filter(ijbg_class == "developed") %>%
-  #group_by, because calc_freq_remove_rows requested an already grouped dataset
-  group_by(mbbs_county, year, route_num, ijbg_class, totpix) %>%
-  transmute(frequency = sum(frequency)) %>%
-  distinct() %>% #remove now extraneous rows
-  mutate(percent_developed = (frequency/totpix) * 100,
-         year = as.integer(year)) %>%
-  ungroup() 
-
-#read in landfire information
-landfire <- read.csv("data/landfire_byroute.csv", header = TRUE) %>%
-  #right now, I'm only concerned here with means. So I want to just have one bit of information for each route, we don't need to keep all the different percent landtypes. If we wanted to do that, we could pivot wider based on landtype and get the % frequency for each category.
-  distinct(mbbs_county, route_num, lf_mean_route, lf_median_route, lf_year, lf_q3_route, lf_difmean_22_16) 
-
-landfire$mbbs_county <- str_to_lower(landfire$mbbs_county)
-
-  
-  #need to now combine all the % developed land into one row for each county/route/year
-##heads up, nlcd data is missing years, assigns it the last value, only change when a new yr that has new data happens. 
-add_nlcd <- function(mbbs, nlcd) {
-  mbbs <- mbbs %>%
-    left_join(nlcd, by = c("mbbs_county", "year", "route_num")) %>%
-    group_by(route_ID, common_name) %>%
-    arrange(common_name, route_ID, year) %>%
-    tidyr::fill(percent_developed, .direction = "downup")
-  #check <- mbbs %>% filter(route_ID == 106)
-  return(mbbs)
-}
-mbbs <- add_nlcd(mbbs, nlcd)
-mbbs_nozero <- add_nlcd(mbbs_nozero, nlcd)
-
-add_landfire <- function(mbbs, landfire) {
-  mbbs <- mbbs %>% 
-    left_join(landfire, by = c("mbbs_county", "route_num", "year" = "lf_year")) %>%
-    group_by(route_ID, common_name) %>%
-    arrange(common_name, route_ID, year) %>%
-    tidyr::fill(lf_mean_route, lf_median_route, lf_q3_route, lf_difmean_22_16, .direction = "downup")
-}
-
-mbbs <- add_landfire(mbbs,landfire)
-mbbs_nozero <- add_landfire(mbbs_nozero, landfire)
+# 
+# #leftjoin for landcover information
+# #read in nlcd data, filter to just what we're interested in. Otherwise it's a many-to-many join relationship. Right now, just the % developed land. Workflow similar to "calc_freq_remove_rows()" from the generate_percent_change_+_map.. code, but altered for this use.
+# nlcd <- read.csv("data/landtype_byroute.csv", header = TRUE) %>%
+#   #filter to nlcd class of interest, here, my classification of all 'developed'
+#   filter(ijbg_class == "developed") %>%
+#   #group_by, because calc_freq_remove_rows requested an already grouped dataset
+#   group_by(mbbs_county, year, route_num, ijbg_class, totpix) %>%
+#   transmute(frequency = sum(frequency)) %>%
+#   distinct() %>% #remove now extraneous rows
+#   mutate(percent_developed = (frequency/totpix) * 100,
+#          year = as.integer(year)) %>%
+#   ungroup() 
+# 
+# #read in landfire information
+# landfire <- read.csv("data/landfire_byroute.csv", header = TRUE) %>%
+#   #right now, I'm only concerned here with means. So I want to just have one bit of information for each route, we don't need to keep all the different percent landtypes. If we wanted to do that, we could pivot wider based on landtype and get the % frequency for each category.
+#   distinct(mbbs_county, route_num, lf_mean_route, lf_median_route, lf_year, lf_q3_route, lf_difmean_22_16) 
+# 
+# landfire$mbbs_county <- str_to_lower(landfire$mbbs_county)
+# 
+#   
+#   #need to now combine all the % developed land into one row for each county/route/year
+# ##heads up, nlcd data is missing years, assigns it the last value, only change when a new yr that has new data happens. 
+# add_nlcd <- function(mbbs, nlcd) {
+#   mbbs <- mbbs %>%
+#     left_join(nlcd, by = c("mbbs_county", "year", "route_num")) %>%
+#     group_by(route_ID, common_name) %>%
+#     arrange(common_name, route_ID, year) %>%
+#     tidyr::fill(percent_developed, .direction = "downup")
+#   #check <- mbbs %>% filter(route_ID == 106)
+#   return(mbbs)
+# }
+# mbbs <- add_nlcd(mbbs, nlcd)
+# mbbs_nozero <- add_nlcd(mbbs_nozero, nlcd)
+# 
+# add_landfire <- function(mbbs, landfire) {
+#   mbbs <- mbbs %>% 
+#     left_join(landfire, by = c("mbbs_county", "route_num", "year" = "lf_year")) %>%
+#     group_by(route_ID, common_name) %>%
+#     arrange(common_name, route_ID, year) %>%
+#     tidyr::fill(lf_mean_route, lf_median_route, lf_q3_route, lf_difmean_22_16, .direction = "downup")
+# }
+# 
+# mbbs <- add_landfire(mbbs,landfire)
+# mbbs_nozero <- add_landfire(mbbs_nozero, landfire)
 
 #------------------------------------------------------------------------------
 # Set up for modeling
 #------------------------------------------------------------------------------
-
-#read in analysis df
-mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
-
-#set up for modeling
-species_list <- unique(mbbs$common_name)
-filtered_mbbs <- mbbs %>% filter(common_name == species_list[1])
-
-#create trend table to store results in
-cols_list <- c("common_name")
-trend_table <- make_trend_table(cols_list, species_list)
-
-#make route_ID a factor
-mbbs <- mbbs %>% mutate(route_ID = as.factor(route_ID))
-mbbs_nozero <- mbbs_nozero %>% mutate(route_ID = as.factor(route_ID))
-
-#add in UAI
-uai <- read.csv("data/species-traits/UAI-NateCleg-etall.csv") %>%
-  filter(City == "Charlotte_US")
-
-mbbs <- mbbs %>%
-  left_join(uai, by = c("common_name" = "Species"))
-
-#formulas to plug into the models
-  f_base <- count ~ year  
-  f_pd <- update(f_base, ~ . + percent_developed)
-  f_obs <- update(f_base, ~ . + observer_quality)
-  f_pdobs <- update(f_base, ~ . + percent_developed + observer_quality)
-  f_wlandfire <- update(f_pdobs, ~. + lf_mean_route)
+# 
+# #read in analysis df
+# mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
+# 
+# #set up for modeling
+# species_list <- unique(mbbs$common_name)
+# filtered_mbbs <- mbbs %>% filter(common_name == species_list[1])
+# 
+# #create trend table to store results in
+# cols_list <- c("common_name")
+# trend_table <- make_trend_table(cols_list, species_list)
+# 
+# #make route_ID a factor
+# mbbs <- mbbs %>% mutate(route_ID = as.factor(route_ID))
+# mbbs_nozero <- mbbs_nozero %>% mutate(route_ID = as.factor(route_ID))
+# 
+# #add in UAI
+# uai <- read.csv("data/species-traits/UAI-NateCleg-etall.csv") %>%
+#   filter(City == "Charlotte_US")
+# 
+# mbbs <- mbbs %>%
+#   left_join(uai, by = c("common_name" = "Species"))
+# 
+# #formulas to plug into the models
+#   f_base <- count ~ year  
+#   f_pd <- update(f_base, ~ . + percent_developed)
+#   f_obs <- update(f_base, ~ . + observer_quality)
+#   f_pdobs <- update(f_base, ~ . + percent_developed + observer_quality)
+#   f_wlandfire <- update(f_pdobs, ~. + lf_mean_route)
 
 #------------------------------------------------------------------------------
 # Bayes model, based on Link and Sauer 2001
@@ -210,44 +210,50 @@ mbbs <- mbbs %>%
 #-------------------------------------------------------------------------
 
 #read in analysis file created up top.
-mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 
+mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
+    dplyr::select(-weather, -vehicles, -notes, -hab_hm, -hab_p, -hab_o, -hab_b, -hab_other, -S, -N, - month, -day, -species_comments)
 
 #read in trait files
-diet <- read.csv("data/species-traits/gdicecco-avian-range-shifts/diet_niche_breadth_mbbs.csv") %>%
-  select(english_common_name, shannonE_diet)
-climate <- read.csv("data/species-traits/gdicecco-avian-range-shifts/climate_niche_breadth_mbbs_WIP.csv") %>%
-  select(english_common_name, climate_vol_2.1)
-habitat <- read.csv("data/species-traits/gdicecco-avian-range-shifts/habitat_niche_ssi_true_zeroes.csv") %>%
-  select(english_common_name, ssi) %>%
+gdic_diet <- read.csv("data/species-traits/gdicecco-avian-range-shifts/diet_niche_breadth_mbbs.csv") %>%
+  dplyr::select(english_common_name, shannonE_diet)
+gdic_climate <- read.csv("data/species-traits/gdicecco-avian-range-shifts/climate_niche_breadth_mbbs.csv") %>%
+  dplyr::select(english_common_name, climate_vol_2.1)
+gdic_habitat <- read.csv("data/species-traits/gdicecco-avian-range-shifts/habitat_niche_ssi_true_zeroes.csv") %>%
+  dplyr::select(english_common_name, ssi) %>%
   #for now, we're kinda doing a mock ssi bc we don't have all the species. Stan does not support NAs in data, so let's change all the ssi to 1. It's not interpretable with only half the data and half mock data anyway
   mutate(habitat_ssi = ssi) %>% #change name for interpret-ability 
-  select(-ssi)
+  dplyr::select(-ssi)
 regional <- read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv") %>%
-  select(-done, -running, -notes)
+  dplyr::select(-done, -running, -notes) 
+  #NOTE: might need to *.001 regional to make it more interpretable? mayybeeee.. just bc output is eg. 0.06 for a 6% change and for regional that same change would be 6.00
 climate_position <- read.csv("data/species-traits/climate_position.csv") %>%
-  select(common_name, climate_position)
+  dplyr::select(common_name, climate_position)
+local_habitat_selection <- read.csv("data/species-traits/ndvi_habitat_selection.csv")
 
 #left_joins
 mbbs_traits <- mbbs %>%
-  left_join(diet, by = c("common_name" = "english_common_name" )) %>%
-  left_join(climate, by = c("common_name" = "english_common_name")) %>%
-  left_join(habitat, by = c("common_name" = "english_common_name")) %>%
   #shannonE_diet
-  #habitat_ssi
+  left_join(gdic_diet, by = c("common_name" = "english_common_name" )) %>%
   #climate_vol_2.1
-  filter(!is.na(climate_vol_2.1)) %>% #for now, rm the species we don't have climate volume for.
-  filter(!is.na(habitat_ssi)) %>% #need to add Eastern Whip por Whil to habitat
+  left_join(gdic_climate, by = c("common_name" = "english_common_name")) %>%
+  #habitat_ssi
+  left_join(gdic_habitat, by = c("common_name" = "english_common_name")) %>%
+  #climate_position
+  left_join(climate_position, by = "common_name") %>%
+  #local habitat selection (mean ndvi of stops observed on)
+  left_join(local_habitat_selection, by = "common_name") %>%
+  left_join(regional, by = "common_name") %>%
   #Recreate IDs for common name
   group_by(common_name) %>%
   mutate(common_name_standard = cur_group_id()) %>%
   ungroup() 
 
 library(rstan) #for running stan
-library(loo) #leave one out, works with testing models and how good they are at replicating the datapoint that's been left out. Well fit models are better at replicating missing data.
+#library(loo) #leave one out, works with testing models and how good they are at replicating the datapoint that's been left out. Well fit models are better at replicating missing data. Not really using right now
 
 #filtered mbbs, same as from above is just acadian flycatcher and woodthrush. for testing purposes
 
-filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "Acadian Flycatcher") %>%
+filtered_mbbs <- mbbs_traits %>% filter(common_name == "Wood Thrush" | common_name == "Acadian Flycatcher") %>%
   #Recreate IDs for common name
   group_by(common_name) %>%
   mutate(common_name_standard = cur_group_id()) %>%
@@ -255,22 +261,12 @@ filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "
   #Recreate IDs for primary observer
   group_by(primary_observer) %>%
   mutate(observer_ID = cur_group_id()) %>%
-  ungroup() %>%
-  #add mock trait variables. WOTH is doing poorly and ACFL is doing well
-  mutate(
-    shannonE_diet = #we'll give WOTH a low diversity diet, ACFL high diversity, so except strong positive effect
-      case_when(common_name == "Wood Thrush" ~ .1,
-                common_name == "Acadian Flycatcher" ~ .8),
-    climate_vol_2.1 = #let's give them both a medium climate, so expect no effect
-      case_when(common_name == "Wood Thrush" ~ .5,
-                common_name == "Acadian Flycatcher" ~ .5),
-    habitat_ssi = #meh. okay these things are going to be multicolinear bc there's only two data points yk. Let's go a with a weak negative effect
-      case_when(common_name == "Wood Thrush" ~ .7, #mock generalist
-                common_name == "Acadian Flycatcher" ~ .3) #mock specialist (confirm that's how ssi works?)
-    ) 
+  ungroup() 
 
 #change to filtered_mbbs for testing, mbbs_traits for the real thing
-mbbs_dataset <- mbbs_traits
+mbbs_dataset <- filtered_mbbs
+#where to save stan code and fit
+save_to <- "model/2025.01.28_testing_kappa_priors_custom/"
 
 #prepare the data list for Stan
 datstan <- list(
@@ -284,9 +280,12 @@ datstan <- list(
   observer_quality = mbbs_dataset$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
   #observer_ID = mbbs_dataset$observer_ID, #observer index
   #O = length(unique(mbbs_dataset$observer_ID)), #n observers
-  trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
-  trait_climate = mbbs_dataset$climate_vol_2.1, #! NOT CENTERED YET
-  trait_habitat = mbbs_dataset$habitat_ssi, #! NOT CENTERED YET
+  #trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
+  #trait_climate = mbbs_dataset$climate_vol_2.1, #! NOT CENTERED YET
+  #trait_habitat = mbbs_dataset$habitat_ssi, #! NOT CENTERED YET
+  trait_climateposition = mbbs_dataset$climate_position, #! NOT CENTERED YE
+  trait_habitatselection = mbbs_dataset$habitat_selection, #! NOT CENTERED YE
+  trait_regional = mbbs_dataset$usgs_trend_estimate,
   C = mbbs_dataset$count #count data
 )
 
@@ -304,9 +303,9 @@ data {
 //  array[N] int<lower=1, upper=O> observer_ID;  // there is an observer_ID for every row and it is in integer between 1 and 'O'(not a zero)
  vector[N] observer_quality;  // there is an observer quality for every row and it is a real number, because it is continuous it can be a vector instead of an array
   array[N] int<lower=0> C;  // there is a count (my y variable!) for every row and it is an unbounded integer that is at least 0.
-  vector[N] trait_diet; //there is a trait_diet for every row and it is a continuous real number
-  vector[N] trait_climate; //trait_climate for every row and it's a continuous real number
-  vector[N] trait_habitat; //trait_habitat for every row and it's a continuous real number
+  vector[N] trait_regional; 
+  vector[N] trait_climateposition; 
+  vector[N] trait_habitatselection; 
 }
 
 parameters {
@@ -316,9 +315,9 @@ parameters {
   vector[S] a_bar;
   real<lower=0> sigma;
   real gamma_b;
-  real kappa_diet;
-  real kappa_climate;
-  real kappa_habitat;
+  real kappa_regional;
+  real kappa_climateposition;
+  real kappa_habitatselection;
   real<lower=0> sig_b;
   
 //  vector[O] c; //for obs_ID
@@ -332,11 +331,11 @@ model {
   a_bar ~ normal(1, 0.5);
   sigma ~ exponential(1);
 //  b ~ normal(0, 0.2); //without traits
-  b ~ normal(gamma_b + kappa_diet*trait_diet[S] + kappa_climate*trait_climate[S] + kappa_habitat*trait_habitat[S], sig_b);
+  b ~ normal(gamma_b + kappa_regional*trait_regional[S] + kappa_climateposition*trait_climateposition[S] + kappa_habitatselection*trait_habitatselection[S], sig_b);
   gamma_b ~ normal(0, 0.2);
-  kappa_diet ~ normal(0, 0.02); 
-  kappa_climate ~ normal(0, 0.02); //have also set to .05, doesn't seem to make a difference.
-  kappa_habitat ~ normal(0, 0.02);
+  kappa_regional ~ normal(0, .02); 
+  kappa_climateposition ~ normal(0, .2); 
+  kappa_habitatselection ~ normal(0, .2);
   sig_b ~ exponential(1);
   to_vector(a) ~ normal(a_bar[S], sigma); //uses a species specific a_bar
   
@@ -364,12 +363,24 @@ generated quantities {
 }
 "
 
+#save stan model text
+cmdstanr::write_stan_file(code = stan_model_code, dir = save_to)
+
 #compile the stan model
 stan_model <- stan_model(model_code = stan_model_code)
 beepr::beep()
 
 #fit the model to the data
-fit <- sampling(stan_model, data = datstan, chains = 4, cores = 4, iter = 2000, warmup = 1000)
+#options(mc.cores = parallel::detectCores())
+fit <- sampling(stan_model, 
+                data = datstan, 
+                chains = 4, 
+                cores = 4, 
+                iter = 2000, 
+                warmup = 1000, 
+                include = TRUE, #this shouldddd mean we only get model returns for the parameters specified in the parameter setup section of the model
+                sample_file = save_to
+                )
 beepr::beep()
 
 #view results
@@ -380,7 +391,14 @@ print(fit)
 #View(fit)
 fit_summary <- summary(fit)
 View(fit_summary$summary) #R hats and neff look good
-write.csv(fit_summary$summary, "data/STAN_output_habitathalf.csv")
+
+rownames <- row.names(fit_summary$summary)
+fit_final <- as.data.frame(fit_summary$summary)
+fit_final$rownames <- rownames  
+fit_final <- fit_final %>%
+  relocate(rownames, .before = mean)
+
+write.csv(fit_summary$summary, paste0(save_to,"fit_summary.csv"), row.names = TRUE)
 
 #extract posterior samples
 post <- extract(fit)
@@ -399,7 +417,7 @@ post <- extract(fit)
 
 
 
-  #---------------------------------bsft---------------------------------------
+#---------------------------------bsft---------------------------------------
   output$trend_year <- output$trend_year*100
   output$std.error_year <- output$std.error_year*100
   
