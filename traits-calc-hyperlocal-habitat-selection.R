@@ -50,7 +50,7 @@ terra::plot(study_area) #some areas are white - that's okay, these are out of bo
   
   buffer_ID <- mbbs_buffers %>%
     as.data.frame() %>%
-    select(county, route, route_num, stop_num) %>%
+    dplyr::select(county, route, route_num, stop_num) %>%
     group_by(route, stop_num) %>%
     mutate(ID = cur_group_id())
     
@@ -67,7 +67,7 @@ terra::plot(study_area) #some areas are white - that's okay, these are out of bo
 #now, we want a record of every stop each bird species on the species list was seen on in 2023/2024. 
   #stop_level_mbbs freshly pulled from the website
 species_list <- read.csv("data/species-traits/species_list.csv") %>%
-  select(common_name)
+  dplyr::select(common_name)
 mbbs_sl <- read.csv("data/mbbs_stops_counts.csv") %>% #sl for stop level 
   filter(common_name %in% species_list$common_name) %>% 
   #for rn at least only want the last two years of habitat selection data
@@ -85,7 +85,7 @@ mbbs_sl <- read.csv("data/mbbs_stops_counts.csv") %>% #sl for stop level
   #one note, stops that the species was recorded on twice are given more weight in this mean. To remove that, would add a layer of unique(common_name, route, stop_num) and get rid of the year aspect.
 
   #done!
-  write.csv(mbbs_sl, "data/species-traits/ndvi_habitat_selection.csv")
+  write.csv(mbbs_sl, "data/species-traits/ndvi_habitat_selection.csv", row.names = FALSE)
   
   #for the species we have grace's habitat selection metric on, what's the degree of correlation?
   dicecco_habitat_niche <- read.csv("data/species-traits/gdicecco-avian-range-shifts/habitat_niche_ssi_true_zeroes.csv") %>%
