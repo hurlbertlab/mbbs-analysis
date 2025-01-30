@@ -267,6 +267,8 @@ filtered_mbbs <- mbbs_traits %>% filter(common_name == "Wood Thrush" | common_na
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
 save_to <- "model/2025.01.28_testing_kappa_priors_custom/"
+#if the output folder doesn't exist, create it
+if (!dir.exists(save_to)) {dir.create(save_to)}
 
 #prepare the data list for Stan
 datstan <- list(
