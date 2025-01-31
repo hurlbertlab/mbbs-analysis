@@ -149,25 +149,12 @@ parameters {
   
 }
 
-transformed parameters {
-  real mu_b; //may cause an error here bc S.....will we still only get one kappa?...ACTUALLY can't define it as vector[S] mu_b bc kappas are real and not vectors
-  
-  mu_b = gamma_b + kappa_regional*trait_regional[S] + kappa_climateposition*trait_climateposition[S] + kappa_habitatselection*trait_habitatselection[S];
-
-
-}
-
-
-
 model {
   a_bar ~ normal(1, 0.5);
   sigma_a ~ exponential(1);
-//GRACE METHODS.......................
-  b ~ normal(mu_b, sig_b); //mu_b defined in transformed parameters
-//^^^^^^^.............................
 //  b ~ normal(0, 0.2); //without traits
-//  b ~ normal(gamma_b + kappa_regional*trait_regional[S] + kappa_climateposition*trait_climateposition[S] + kappa_habitatselection*trait_habitatselection[S], sig_b);
-//  gamma_b ~ normal(0, 0.2);
+  b ~ normal(gamma_b + kappa_regional*trait_regional[S] + kappa_climateposition*trait_climateposition[S] + kappa_habitatselection*trait_habitatselection[S], sig_b);
+  gamma_b ~ normal(0, 0.2);
 //.............BY COMMENTING OUT KAPPAS, DEFAULT UNIFORM PRIORS ARE USED.................
 //  kappa_regional ~ normal(0, .02); 
 //  kappa_climateposition ~ normal(0, .2); 
