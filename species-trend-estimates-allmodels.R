@@ -11,196 +11,18 @@ library(lme4) #modeling
 library(MASS) #modeling
 #library(geepack) #GEE modeling
 #library(mbbs) #data comes from here
-library(broom) #extracts coefficient values out of models, works with geepack
+#library(broom) #extracts coefficient values out of models, works with geepack (not using geepack rn)
 library(rstan) #stan
 library(StanHeaders) #stan helper
 #library(rethinking) #alt. way to model with bayes, from Statistical Rethinking course. Can't use for final analysis bc the ulam helper function has some presets that don't fit my needs (eg. 87% standard deviation calculations)
 
-
 #prevent scientific notation to make a trend table easier to read
 options(scipen=999)
 
-#read in data - not in use right now. Data workflow where I'm making an analysis.df needs a reassessment
 #mbbs <- read.csv("data/analysis.df.csv", header = T)
 
-#get survey events from temporary load instead of from the current github version
-#of the mbbs.
-load("C:/git/mbbs-analysis/data/mbbs_survey_events.rda")
-mbbs_survey_events <- mbbs_survey_events %>%
-  mutate(primary_observer = case_when(max_qual_observer == 1 ~ obs1,
-                                      max_qual_observer == 2 ~ obs2,
-                                      max_qual_observer == 3 ~ obs3)) %>%
-  group_by(primary_observer) %>%
-  mutate(observer_ID = cur_group_id()) %>%
-  ungroup()
-#max_qual obs = 1, gets first observer,
-    #where max qual obs =2, gets second observer,
-    #where max qual obs =2 gets third observer
-
-#set up a pipe to make it so that the max_qual_obs (contains a 1,2,3) becomes
-#the primary obs
-  
-
-#read in data, using most updated versions of the mbbs. 
-mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 2000)
-mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2000)
-mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 2000)
-mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three counties together
-  mutate(route_ID = route_num + case_when(
-    mbbs_county == "orange" ~ 100L,
-    mbbs_county == "durham" ~ 200L,
-    mbbs_county == "chatham" ~ 300L)) %>%
-  filter(count > 0) %>%
-  ungroup() %>%
-  #remove the 1999 data, since it's only 1/3 of the routes that were created by then. 
-  filter(year > 1999) %>%
-  #clean up for ease of use, lots of columns we don't need rn
-  dplyr::select(-sub_id, -tax_order, -count_raw, -state, -loc, -locid, -lat, -lon, -protocol, -distance_traveled, -area_covered, -all_obs, -breed_code, -checklist_comments, -source) %>%
-  #create a route-standard from 1-34
-  group_by(route_ID) %>%
-  mutate(route_standard = dplyr::cur_group_id()) %>%
-  ungroup()
-#help keep the environment clean
-rm(mbbs_chatham); rm(mbbs_durham); rm(mbbs_orange) 
-#load in mbbs_survey_events from current branch (stop_num)
-#load("C:/git/mbbs/data/mbbs_survey_events.rda")
-
-#Data structure changes in 2019 to have stop-level records. We need to group together this data for analysis. We cannot use date here or it causes problems with future analysis. 
-mbbs <- mbbs %>%
-  group_by(common_name, year, route_ID) %>% 
-  mutate(count = sum(count)) %>% 
-  distinct(common_name, year, route_ID, count, .keep_all = TRUE) %>% #keep_all is used to retain all other columns in the dataset
-ungroup() #this ungroup is necessary 
-
-#filter out species that haven't been seen more than the min number of times on the min number of routes.
-#9 to include bobwhite!
-mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 9, min_num_routes = 5) %>%
-  #filter out waterbirds and hawks
-  filter(!common_name %in% excluded_species) %>%
-  #create a variable so that has common name from 1:however many species are 
-  #included
-  group_by(common_name) %>%
-  mutate(common_name_standard = dplyr::cur_group_id()) %>%
-  ungroup() 
-
-n_distinct(mbbs$common_name) #ok, 56 species rn make the cut with the borders set at 5 routes and 9 sightings on those routes. Nice!
-
-#save a version of the mbbs before adding 0s
-  mbbs_nozero <- mbbs
-#add in the 0 values for when routes were surveyed but the species that remain in this filtered dataset were not seen.
- mbbs <- mbbs %>% complete(
-  nesting(year, year_standard, mbbs_county, route_ID, route_num, route_standard),
-  nesting(common_name, sci_name, common_name_standard),
-  fill = list(count = 0))  
-
-#check that no issues have occurred - all species should have the same number of occurences in the df 
- if(length(unique(table(mbbs$common_name))) == 1) { #all species have the same number of occurances
-   print("All species have same number of occurances, good to continue")
-   beep()
- } else {
-     print("ERROR: Adding in the 0 values has led to some species having more occurances than others."); beep(11);}
- 
-#now that everything else is ready to go, leftjoin survey_events so we have observer information
-mbbs <- add_survey_events(mbbs, mbbs_survey_events)
-mbbs_nozero <- add_survey_events(mbbs_nozero, mbbs_survey_events)
-  
-# Remove Orange route 11 from 2012 due to uncharacteristically high counts from a one-time observer
-#! In newer versions of the mbbs (that have to be downloaded from the website due to new data handling processes, this checklist is already removed as a data filtering step.)
-mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob") %>%
-  group_by(primary_observer) %>%
-  mutate(observer_ID = cur_group_id()) %>%
-  ungroup()
-mbbs_nozero <- mbbs_nozero  %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
-
-#save copies of analysis df.
-write.csv(mbbs, "data/analysis.df.csv", row.names = FALSE)
-write.csv(mbbs_nozero, "data/analysis.df.nozero.csv", row.names = FALSE)
-
-#---------------------------------
-#Add in landcover information
-#---------------------------------
-# 
-# #leftjoin for landcover information
-# #read in nlcd data, filter to just what we're interested in. Otherwise it's a many-to-many join relationship. Right now, just the % developed land. Workflow similar to "calc_freq_remove_rows()" from the generate_percent_change_+_map.. code, but altered for this use.
-# nlcd <- read.csv("data/landtype_byroute.csv", header = TRUE) %>%
-#   #filter to nlcd class of interest, here, my classification of all 'developed'
-#   filter(ijbg_class == "developed") %>%
-#   #group_by, because calc_freq_remove_rows requested an already grouped dataset
-#   group_by(mbbs_county, year, route_num, ijbg_class, totpix) %>%
-#   transmute(frequency = sum(frequency)) %>%
-#   distinct() %>% #remove now extraneous rows
-#   mutate(percent_developed = (frequency/totpix) * 100,
-#          year = as.integer(year)) %>%
-#   ungroup() 
-# 
-# #read in landfire information
-# landfire <- read.csv("data/landfire_byroute.csv", header = TRUE) %>%
-#   #right now, I'm only concerned here with means. So I want to just have one bit of information for each route, we don't need to keep all the different percent landtypes. If we wanted to do that, we could pivot wider based on landtype and get the % frequency for each category.
-#   distinct(mbbs_county, route_num, lf_mean_route, lf_median_route, lf_year, lf_q3_route, lf_difmean_22_16) 
-# 
-# landfire$mbbs_county <- str_to_lower(landfire$mbbs_county)
-# 
-#   
-#   #need to now combine all the % developed land into one row for each county/route/year
-# ##heads up, nlcd data is missing years, assigns it the last value, only change when a new yr that has new data happens. 
-# add_nlcd <- function(mbbs, nlcd) {
-#   mbbs <- mbbs %>%
-#     left_join(nlcd, by = c("mbbs_county", "year", "route_num")) %>%
-#     group_by(route_ID, common_name) %>%
-#     arrange(common_name, route_ID, year) %>%
-#     tidyr::fill(percent_developed, .direction = "downup")
-#   #check <- mbbs %>% filter(route_ID == 106)
-#   return(mbbs)
-# }
-# mbbs <- add_nlcd(mbbs, nlcd)
-# mbbs_nozero <- add_nlcd(mbbs_nozero, nlcd)
-# 
-# add_landfire <- function(mbbs, landfire) {
-#   mbbs <- mbbs %>% 
-#     left_join(landfire, by = c("mbbs_county", "route_num", "year" = "lf_year")) %>%
-#     group_by(route_ID, common_name) %>%
-#     arrange(common_name, route_ID, year) %>%
-#     tidyr::fill(lf_mean_route, lf_median_route, lf_q3_route, lf_difmean_22_16, .direction = "downup")
-# }
-# 
-# mbbs <- add_landfire(mbbs,landfire)
-# mbbs_nozero <- add_landfire(mbbs_nozero, landfire)
-
 #------------------------------------------------------------------------------
-# Set up for modeling
-#------------------------------------------------------------------------------
-# 
-# #read in analysis df
-# mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
-# 
-# #set up for modeling
-# species_list <- unique(mbbs$common_name)
-# filtered_mbbs <- mbbs %>% filter(common_name == species_list[1])
-# 
-# #create trend table to store results in
-# cols_list <- c("common_name")
-# trend_table <- make_trend_table(cols_list, species_list)
-# 
-# #make route_ID a factor
-# mbbs <- mbbs %>% mutate(route_ID = as.factor(route_ID))
-# mbbs_nozero <- mbbs_nozero %>% mutate(route_ID = as.factor(route_ID))
-# 
-# #add in UAI
-# uai <- read.csv("data/species-traits/UAI-NateCleg-etall.csv") %>%
-#   filter(City == "Charlotte_US")
-# 
-# mbbs <- mbbs %>%
-#   left_join(uai, by = c("common_name" = "Species"))
-# 
-# #formulas to plug into the models
-#   f_base <- count ~ year  
-#   f_pd <- update(f_base, ~ . + percent_developed)
-#   f_obs <- update(f_base, ~ . + observer_quality)
-#   f_pdobs <- update(f_base, ~ . + percent_developed + observer_quality)
-#   f_wlandfire <- update(f_pdobs, ~. + lf_mean_route)
-
-#------------------------------------------------------------------------------
-# Bayes model, based on Link and Sauer 2001
+# Bayes model, based initially on Link and Sauer 2001
   # https://academic.oup.com/auk/article/128/1/87/5149447
 # Modeling help from review of DiCecco Pop Trends code
   # https://github.com/gdicecco/poptrends_envchange/tree/master
@@ -355,13 +177,6 @@ model {
      C[n] ~ poisson_log(a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
    }
 }
-
-// um, for right now, let's leave the generated quantities alone.
-generated quantities {
-  real log_lik[N];
-  for (n in 1:N) {
-    log_lik[n] = poisson_log_lpmf(C[n] | a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
-  }
 }
 "
 
