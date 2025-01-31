@@ -1,0 +1,19 @@
+#within parameters
+
+//  vector[O] c; //for obs_ID
+//  real<lower=0> tau_c; //for obs_ID
+//  real<lower = 0> gamma_obs; //for adding obs quality
+//  real<lower = 0> kappa_obs; //for adding obs quality
+//  real<lower = 0> sig_obs; //for adding obs quality
+
+#within model
+
+//  c ~ normal(0, tau_c); //observer_ID ONLY
+//  tau_c ~ gamma(.001, .001); //observer_ID ONLY
+
+// NEW OBSERVER BLOCK, replaces c and tau_c above  
+//  gamma_obs ~ exponential(1); //not sure where to set this prior
+//  kappa_obs ~ exponential(1); //not sure where to set this prior
+//  sig_obs ~ gamma(.001,.001); //not sure where to set this prior
+//  c ~ normal(gamma_obs + kappa_obs * observer_quality, sig_obs);
+
