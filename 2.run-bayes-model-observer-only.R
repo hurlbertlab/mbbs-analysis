@@ -31,11 +31,17 @@ filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "
   ungroup() 
 
 #change to filtered_mbbs for testing, mbbs for the real thing
-mbbs_dataset <- filtered_mbbs
+mbbs_dataset <- mbbs
 #where to save stan code and fit
-save_to <- "model/simple_bayes_observer_only/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/simple_bayes_observer_only/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
+
+#write the list of species + their species code
+mbbs_dataset %>%
+  dplyr::select(common_name_standard, common_name) %>%
+  distinct() %>%
+  write.csv(paste0(save_to, "beta_to_common_name.csv"), row.names = FALSE)
 
 #create datalist for stan
 datstan <- list(
@@ -107,6 +113,7 @@ fit <- sampling(stan_model,
                 warmup = 1000, 
                 sample_file = save_to
 )
+#expect 23 minutes to run this model with the full data.
 beepr::beep()
 
 #Save the fit
