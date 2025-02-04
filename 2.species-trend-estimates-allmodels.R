@@ -207,7 +207,10 @@ fit_final <- fit_final %>%
 
 View(fit_final) ##DO NOT HAVE THIS ON LONGLEAF
 
-write.csv(fit_summary$summary, paste0(save_to,"fit_summary.csv"), row.names = TRUE)
+#Save the summary
+write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
+#But we also want to save the fit itself so eg. we can read it back in and work with it.
+saveRDS(fit, paste0(save_to, "stanfit.rds"))
 #####################
 
 #linear model to check inutition
