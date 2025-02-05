@@ -44,7 +44,7 @@ library(sf)
   
 #####testing env.
   i = 30
-  ####some error at i = 30
+####some error at i = 30
 for(i in 1:nrow(species_list)) {
   # Using package sf (easy to read, but doesn't plot well)
   breeding_range <- sf::read_sf(paste0(

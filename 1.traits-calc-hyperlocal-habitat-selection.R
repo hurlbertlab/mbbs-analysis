@@ -68,7 +68,7 @@ terra::plot(study_area) #some areas are white - that's okay, these are out of bo
   #stop_level_mbbs freshly pulled from the website
 species_list <- read.csv("data/species-traits/species_list.csv") %>%
   dplyr::select(common_name)
-mbbs_sl <- read.csv("data/mbbs_stops_counts.csv") %>% #sl for stop level 
+mbbs_sl <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>% #sl for stop level 
   filter(common_name %in% species_list$common_name) %>% 
   #for rn at least only want the last two years of habitat selection data
   filter(year >= 2023) %>% 
