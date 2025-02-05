@@ -1,6 +1,7 @@
 #file to have all the trend estimate modeling on one file, ideally just adding everything to one nice datasheet as I go
 
 #get the functions we need for this script that are stored elsewhere
+#some variables of importance as well eg. excluded species
 source("species-trend-estimate-functions.R")
 
 #libraries

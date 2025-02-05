@@ -1,76 +1,58 @@
-#---
-#Todo: create dataset
+#########################
+#
+# Take the mbbs dataset
+# and apply anything needed
+# to create our dataset
+#
+# eg: mostly removing species that
+# are not observed enough to be used
+# in the analysis
+#
+#########################
 
-#what this does
-#merges mbbs counties to mbbs all
-#creates survey.event dataset
-#removes species with less than 10 sightings 
-#FUTURE: removes observations flaged by the mbbs for like, observer only participated once, too high/too low species counts, other things we talked about flagging etc. 
-
-#TODO: Change from route_num unique format - preserve original route numbers and just group_by both county and route_num when working with the dataset. That's a better way to do things
-
-#TODO: 2025-01-28 This should really be deleted with the new workflow, or is going to be altered a lot in the future with using the new mbbs format dataset, that's already grouped to route etc.
-#---
-
-#load mbbs library
-library(mbbs)
+#load libraries
 library(dplyr)
+library(tidyr)
 library(stringr)
-#get the functions we need for this script that are stored elsewhere
-source("species-trend-estimate-functions.R")
+library(beepr)
 
-#get survey events from temporary load instead of from the current github version
-#of the mbbs.
-load("C:/git/mbbs-analysis/data/mbbs_survey_events.rda")
+#get the functions we need for this script that are stored elsewhere
+source("2.species-trend-estimate-functions.R")
+
+#load in survey events
+#we load in a version where we've created observer quality.
+load("C:/git/mbbs-analysis/data/mbbs/mbbs_survey_events.rda")
 mbbs_survey_events <- mbbs_survey_events %>%
+  #add updated route id style
+  mutate(route = make_route(mbbs_county, route_num)) %>%
+  dplyr::relocate(route, .before = mbbs_county) %>%
+  #give primary observer to whoever had the highest max quality
   mutate(primary_observer = case_when(max_qual_observer == 1 ~ obs1,
                                       max_qual_observer == 2 ~ obs2,
                                       max_qual_observer == 3 ~ obs3)) %>%
   group_by(primary_observer) %>%
   mutate(observer_ID = cur_group_id()) %>%
-  ungroup()
-#max_qual obs = 1, gets first observer,
-#where max qual obs =2, gets second observer,
-#where max qual obs =2 gets third observer
-
-#set up a pipe to make it so that the max_qual_obs (contains a 1,2,3) becomes
-#the primary obs
-
-
-#read in data, using most updated versions of the mbbs. 
-mbbs_orange <- mbbs_orange %>% standardize_year(starting_year = 2000)
-mbbs_durham <- mbbs_durham %>% standardize_year(starting_year = 2000)
-mbbs_chatham <- mbbs_chatham %>% standardize_year(starting_year = 2000)
-mbbs <- bind_rows(mbbs_orange, mbbs_chatham, mbbs_durham) %>% #bind all three counties together
-  mutate(route_ID = route_num + case_when(
-    mbbs_county == "orange" ~ 100L,
-    mbbs_county == "durham" ~ 200L,
-    mbbs_county == "chatham" ~ 300L)) %>%
-  filter(count > 0) %>%
   ungroup() %>%
-  #remove the 1999 data, since it's only 1/3 of the routes that were created by then. 
+  #select just the variables we need
+  dplyr::select(route, mbbs_county, route_num, year, primary_observer, max_qual_observer, observer_ID)
+
+#read in the mbbs route data
+#this already includes the 0s for when species are not observed.
+mbbs <- read.csv("data/mbbs/mbbs_route_counts.csv") %>%
+  #remove the 1999 data, since only 1/3 of the routes were created by then
   filter(year > 1999) %>%
-  #clean up for ease of use, lots of columns we don't need rn
-  dplyr::select(-sub_id, -tax_order, -count_raw, -state, -loc, -locid, -lat, -lon, -protocol, -distance_traveled, -area_covered, -all_obs, -breed_code, -checklist_comments, -source) %>%
+  standardize_year(starting_year = 2000) %>%
   #create a route-standard from 1-34
-  group_by(route_ID) %>%
+  group_by(route) %>%
   mutate(route_standard = dplyr::cur_group_id()) %>%
   ungroup()
-#help keep the environment clean
-rm(mbbs_chatham); rm(mbbs_durham); rm(mbbs_orange) 
-#load in mbbs_survey_events from current branch (stop_num)
-#load("C:/git/mbbs/data/mbbs_survey_events.rda")
 
-#Data structure changes in 2019 to have stop-level records. We need to group together this data for analysis. We cannot use date here or it causes problems with future analysis. 
-mbbs <- mbbs %>%
-  group_by(common_name, year, route_ID) %>% 
-  mutate(count = sum(count)) %>% 
-  distinct(common_name, year, route_ID, count, .keep_all = TRUE) %>% #keep_all is used to retain all other columns in the dataset
-  ungroup() #this ungroup is necessary 
 
 #filter out species that haven't been seen more than the min number of times on the min number of routes.
 #9 to include bobwhite!
-mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 9, min_num_routes = 5) %>%
+mbbs <- filter_to_min_sightings(mbbs, 
+                                min_sightings_per_route = 9,
+                                min_num_routes = 5) %>%
   #filter out waterbirds and hawks
   filter(!common_name %in% excluded_species) %>%
   #create a variable so that has common name from 1:however many species are 
@@ -79,13 +61,11 @@ mbbs <- filter_to_min_sightings(mbbs, min_sightings_per_route = 9, min_num_route
   mutate(common_name_standard = dplyr::cur_group_id()) %>%
   ungroup() 
 
-n_distinct(mbbs$common_name) #ok, 56 species rn make the cut with the borders set at 5 routes and 9 sightings on those routes. Nice!
+n_distinct(mbbs$common_name) #61
 
-#save a version of the mbbs before adding 0s
-mbbs_nozero <- mbbs
-#add in the 0 values for when routes were surveyed but the species that remain in this filtered dataset were not seen.
+#OK. The mbbs has zeros already added, but we've gone and removed some by filtering the species that have only been seen on minimun n routes. So we'll add in the 0 values for when routes were surveyed but the species that remain in this filtered dataset were not seen.
 mbbs <- mbbs %>% complete(
-  nesting(year, year_standard, mbbs_county, route_ID, route_num, route_standard),
+  nesting(year, year_standard, county, route, route_num, route_standard),
   nesting(common_name, sci_name, common_name_standard),
   fill = list(count = 0))  
 
@@ -98,16 +78,6 @@ if(length(unique(table(mbbs$common_name))) == 1) { #all species have the same nu
 
 #now that everything else is ready to go, leftjoin survey_events so we have observer information
 mbbs <- add_survey_events(mbbs, mbbs_survey_events)
-mbbs_nozero <- add_survey_events(mbbs_nozero, mbbs_survey_events)
 
-# Remove Orange route 11 from 2012 due to uncharacteristically high counts from a one-time observer
-#! In newer versions of the mbbs (that have to be downloaded from the website due to new data handling processes, this checklist is already removed as a data filtering step.)
-mbbs <- mbbs %>% dplyr::filter(!primary_observer %in% "Ali Iyoob") %>%
-  group_by(primary_observer) %>%
-  mutate(observer_ID = cur_group_id()) %>%
-  ungroup()
-mbbs_nozero <- mbbs_nozero  %>% dplyr::filter(!primary_observer %in% "Ali Iyoob")
-
-#save copies of analysis df.
+#save df as our analysis df
 write.csv(mbbs, "data/analysis.df.csv", row.names = FALSE)
-write.csv(mbbs_nozero, "data/analysis.df.nozero.csv", row.names = FALSE)

@@ -5,6 +5,7 @@
 #Current method
 #Download a new copy of the mbbs data from the publicly available website,
 #https://nc-minibbs.github.io/mbbs/
+#and add it to data/mbbs
 
 #----------------------
 #Prev method, from earlier branches of the mbbs github repository
