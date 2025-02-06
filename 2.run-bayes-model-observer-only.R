@@ -16,11 +16,10 @@ library(StanHeaders) #stan helper
 options(scipen=999)
 
 #read in analysis file 
-mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
-  dplyr::select(-weather, -vehicles, -notes, -hab_hm, -hab_p, -hab_o, -hab_b, -hab_other, -S, -N, - month, -day, -species_comments)
+mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 
 
 #create testing dataset also
-filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "Acadian Flycatcher") %>%
+filtered_mbbs <- mbbs %>% filter(common_name %in% c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse")) %>%
   #Recreate IDs for common name
   group_by(common_name) %>%
   mutate(common_name_standard = cur_group_id()) %>%
@@ -31,7 +30,7 @@ filtered_mbbs <- mbbs %>% filter(common_name == "Wood Thrush" | common_name == "
   ungroup() 
 
 #change to filtered_mbbs for testing, mbbs for the real thing
-mbbs_dataset <- mbbs
+mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
 save_to <- "Z:/Goulden/mbbs-analysis/model/simple_bayes_observer_only/"
 #if the output folder doesn't exist, create it

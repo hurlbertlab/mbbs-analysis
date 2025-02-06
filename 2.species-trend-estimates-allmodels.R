@@ -31,56 +31,13 @@ options(scipen=999)
 #-------------------------------------------------------------------------
 
 #read in analysis file 
-mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
-    dplyr::select(-weather, -vehicles, -notes, -hab_hm, -hab_p, -hab_o, -hab_b, -hab_other, -S, -N, - month, -day, -species_comments)
+mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 
 
-#read in trait files
-##########################################
-  gdic_diet <- read.csv("data/species-traits/gdicecco-avian-range-shifts/diet_niche_breadth_mbbs.csv") %>%
-    dplyr::select(english_common_name, shannonE_diet)
-  
-  gdic_climate <- read.csv("data/species-traits/gdicecco-avian-range-shifts/climate_niche_breadth_mbbs.csv") %>%
-    dplyr::select(english_common_name, climate_vol_2.1)
-  
-  gdic_habitat <- read.csv("data/species-traits/gdicecco-avian-range-shifts/habitat_niche_ssi_true_zeroes.csv") %>%
-    dplyr::select(english_common_name, ssi) %>%
-    #for now, we're kinda doing a mock ssi bc we don't have all the species. Stan does not support NAs in data, so let's change all the ssi to 1. It's not interpretable with only half the data and half mock data anyway
-    mutate(habitat_ssi = ssi) %>% #change name for interpret-ability 
-    dplyr::select(-ssi)
-  
-  regional <- read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv") %>%
-    dplyr::select(-done, -running, -notes) 
-  
-    #NOTE: might need to *.001 regional to make it more interpretable? mayybeeee.. just bc output is eg. 0.06 for a 6% change and for regional that same change would be 6.00
-  climate_position <- read.csv("data/species-traits/climate_position.csv") %>%
-    dplyr::select(common_name, climate_position)
-  
-  habitat_selection <- read.csv("data/species-traits/ndvi_habitat_selection.csv")
-#############################################
+#add traits
+mbbs_traits <- add_all_traits(mbbs)
 
-#left join trait files
-mbbs_traits <- mbbs %>%
-  #shannonE_diet
-  left_join(gdic_diet, by = c("common_name" = "english_common_name" )) %>%
-  #climate_vol_2.1
-  left_join(gdic_climate, by = c("common_name" = "english_common_name")) %>%
-  #habitat_ssi
-  left_join(gdic_habitat, by = c("common_name" = "english_common_name")) %>%
-  #climate_position
-  left_join(climate_position, by = "common_name") %>%
-  #local habitat selection (mean ndvi of stops observed on)
-  left_join(habitat_selection, by = "common_name") %>%
-  left_join(regional, by = "common_name") %>%
-  #Recreate IDs for common name
-  group_by(common_name) %>%
-  mutate(common_name_standard = cur_group_id()) %>%
-  ungroup() 
-  #sweep up envrionment
-  rm(gdic_diet, gdic_climate, gdic_habitat)
-
-#filtered mbbs, is just acadian flycatcher and woodthrush. for testing purposes
-
-filtered_mbbs <- mbbs_traits %>% filter(common_name == "Wood Thrush" | common_name == "Acadian Flycatcher") %>%
+#filtered mbbs, 5 species for testing purposes.
+filtered_mbbs <- mbbs_traits %>% filter(common_name %in% c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse")) %>%
   #Recreate IDs for common name
   group_by(common_name) %>%
   mutate(common_name_standard = cur_group_id()) %>%
@@ -93,9 +50,15 @@ filtered_mbbs <- mbbs_traits %>% filter(common_name == "Wood Thrush" | common_na
 #change to filtered_mbbs for testing, mbbs_traits for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "model/2025.01.31_Grace_style_model_definition/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.06_Changing_indexing/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
+
+#write the list of species + their species code
+mbbs_dataset %>%
+  dplyr::select(common_name_standard, common_name) %>%
+  distinct() %>%
+  write.csv(paste0(save_to, "beta_to_common_name.csv"), row.names = FALSE)
 
 #prepare the data list for Stan
 datstan <- list(
@@ -112,63 +75,78 @@ datstan <- list(
   #trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
   #trait_climate = mbbs_dataset$climate_vol_2.1, #! NOT CENTERED YET
   #trait_habitat = mbbs_dataset$habitat_ssi, #! NOT CENTERED YET
-  trait_climateposition = mbbs_dataset$climate_position, #! NOT CENTERED YE
-  trait_habitatselection = mbbs_dataset$habitat_selection, #! NOT CENTERED YE
-  trait_regional = mbbs_dataset$usgs_trend_estimate,
+  t_climate_pos = mbbs_dataset$climate_position, #! NOT CENTERED YE
+  t_habitat_selection = mbbs_dataset$habitat_selection, #! NOT CENTERED YE
+  t_regional = mbbs_dataset$usgs_trend_estimate,
   C = mbbs_dataset$count #count data
 )
 
 #specify the stan model code
 stan_model_code <- "
 data {
-  int<lower=0> N; // number of rows
-  int<lower=1> S; // number of species
-  int<lower=1> R; // number of routes
-  int<lower=1> Y; // number of years
-//  int<lower=1> O; // number of observers
-  array[N] int<lower=1, upper=S> species; // there is a species for every row and it's an integer between 1 and S
-  array[N] int<lower=1, upper=R> route;  // there is a route for every row and it's an integer between 1 and R
-  array[N] int<lower=1, upper=Y> year;  // there is an integer for every year and it's an integer between 1 and Y
-//  array[N] int<lower=1, upper=O> observer_ID;  // there is an observer_ID for every row and it is in integer between 1 and 'O'(not a zero)
- vector[N] observer_quality;  // there is an observer quality for every row and it is a real number, because it is continuous it can be a vector instead of an array
-  array[N] int<lower=0> C;  // there is a count (my y variable!) for every row and it is an unbounded integer that is at least 0.
-  vector[N] trait_regional; 
-  vector[N] trait_climateposition; 
-  vector[N] trait_habitatselection; 
+  int<lower=0> N; // number of observations or rows
+  int<lower=1> Nsp; // number of species
+  int<lower=1> Nsprt; // number of species+route combinations
+  int<lower=1> Nyr; //number of years
+  array[N] int<lower=1, upper=Nsp> sp; //species id for each observation
+  array[N] int<lower=1, upper = Nsprt> sprt; //species+route combo for each observation
+  array[Nsprt] int<lower=1, upper=Nsp> sp_sprt; //species id for each species+route combo.
+  //note: the 'for each x' that 'x' is what the array length is.
+  array[N] int<lower=1, upper=Nyr> year; //year for each observation
+  vector[N] observer_quality; //there is an observer_quality for each observation..but not really! 
+//...........................................
+//when I back back in observer intercepts or w/e...
+// int<lower=1> Nobs; //number of observers
+// array[N] int<lower=1, upper=Nobs> obs; //there is an observer for every observation
+// vector[obs] observer_quality; //there is an observer_quality for every observer
+//...........................................
+  array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is an unbounded integer that is at least 0.
+//.................okay, now for the predictor variables.....................
+  array[Nsp] int<lower=1, upper=Nsp> b_sp_idx; //species id for each beta I'm going to fit. there is a beta for every species.
+  vector[b_sp_idx] t_regional; //regional trait value for every species beta (or TREND) that I fit.
+  vector[b_sp_idx] t_climate_pos; //climate position value for every species beta (TREND)
+  vector[b_sp_idx] t_habitat_selection; //ndvi habitat selection for every species beta (TREND)
+  
 }
 
 parameters {
-  vector[S] b; //species trend
-  matrix[R, S] a; //species trend along a specific route
-  vector[S] a_bar; //the intercept eg. initial count at yr 0 along a route, is allowed to vary by species
+  vector[sp] b; //species trend, fit one for each species
+  vector[sprt] a; //species trend along a specific route, fit one for each sp+rt combo
+  vector[sp_sprt] a_bar; // the intercept eg. initial count at yr 0 along each sp+rt combo. fit one for each species across it's species route combos. eg. this is allowed to vary by species. 
   real<lower=0> sigma_a; //standard deviation in a
-  real gamma_b; //intercept 
-  real kappa_regional;
-  real kappa_climateposition;
-  real kappa_habitatselection;
-  real<lower=0> sig_b;
+  real gamma_b; //intercept for species trends. calculated across species, and we only want one value, so this is not a vector.
+  real kappa_regional; //effect of t_regional on betas. real b/c we only want one.
+  real kappa_climate_pos; //effect of t_climate_pos on betas. real b/c we only want one.
+  real kappa_habitat_selection; //effect of t_habitat_selection on betas. real b/c we only want one.
+  real<lower=0> sig_b; //deviation from explanatory power of the traits on predicting the trends. Represents residual variance / measure of scatter. ...In some ways, R2??
   
 }
 
 model {
-  a_bar ~ normal(1, 0.5);
-  sigma_a ~ exponential(1);
-//  b ~ normal(0, 0.2); //without traits
-  b ~ normal(gamma_b + kappa_regional*trait_regional[S] + kappa_climateposition*trait_climateposition[S] + kappa_habitatselection*trait_habitatselection[S], sig_b);
-  gamma_b ~ normal(0, 0.2);
-//.............BY COMMENTING OUT KAPPAS, DEFAULT UNIFORM PRIORS ARE USED.................
-//  kappa_regional ~ normal(0, .02); 
-//  kappa_climateposition ~ normal(0, .2); 
-//  kappa_habitatselection ~ normal(0, .2);
-//.............^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^..................
-  sig_b ~ exponential(1);
-  to_vector(a) ~ normal(a_bar[S], sigma_a); //uses a species specific a_bar
-  
 
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
    for (n in 1:N) {
      C[n] ~ poisson_log(a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
    }
+// eg... for every row/observation in the data.
+// The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
+
+  a ~ normal(a_bar[sp_sprt], sigma_a); //do I have to [sp_sprt] a_bar again here? I already specify it as a vector of sp_sprt
+  a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
+  sigma_a ~ exponential(1);
+  
+  b ~ normal(gamma_b + 
+             kappa_regional*t_regional[b_sp_idx] +
+             kappa_climate_pos*t_climate_pos[b_sp_idx] +
+             kappa_habitat_selection*t_habitat_selection[b_sp_idx],
+             sig_b);
+  gamma_b ~ normal(0, 0.2);
+  sig_b ~ exponential(1);
+//.............BY COMMENTING OUT KAPPAS, DEFAULT UNIFORM PRIORS ARE USED.................
+//  kappa_regional ~ normal(0, .02); 
+//  kappa_climate_pos ~ normal(0, .2); 
+//  kappa_habitat_selection ~ normal(0, .2);
+//.............^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^..................
 }
 "
 
@@ -186,32 +164,29 @@ fit <- sampling(stan_model,
                 chains = 4,
                 cores = 4, 
                 iter = 2000, 
-                warmup = 1000, 
-                sample_file = save_to
+                warmup = 1000
                 )
 beepr::beep()
 
 #view results
 #Accessing the contents of a stanfit object:
 #https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html
-#print(fit)
-#perfect, that looks great! b[1] and b[2] are as expected, at 0.05 and -0.06
 
+#Save the fit
+saveRDS(fit, paste0(save_to, "stanfit.rds"))
+
+#get the summary, save as well
 fit_summary <- summary(fit)
-#View(fit_summary$summary) #check R hats and neff
-
 rownames <- row.names(fit_summary$summary)
 fit_final <- as.data.frame(fit_summary$summary)
 fit_final$rownames <- rownames  
 fit_final <- fit_final %>%
   relocate(rownames, .before = mean)
-
-View(fit_final) ##DO NOT HAVE THIS ON LONGLEAF
-
 #Save the summary
 write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
-#But we also want to save the fit itself so eg. we can read it back in and work with it.
-saveRDS(fit, paste0(save_to, "stanfit.rds"))
+
+
+View(fit_final) ##DO NOT HAVE THIS ON LONGLEAF
 #####################
 
 #linear model to check inutition

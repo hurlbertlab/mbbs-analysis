@@ -130,3 +130,57 @@ make_route <- function(county, route_num) {
     )
   )
 }
+
+
+
+#' Add trait data
+#' @returns the imput dataset with all the traits listed in the function left_joined in
+add_all_traits <- function(mbbs) {
+  
+  #read in trait files
+  ##########################################
+  gdic_diet <- read.csv("data/species-traits/gdicecco-avian-range-shifts/diet_niche_breadth_mbbs.csv") %>%
+    dplyr::select(english_common_name, shannonE_diet)
+  
+  gdic_climate <- read.csv("data/species-traits/gdicecco-avian-range-shifts/climate_niche_breadth_mbbs.csv") %>%
+    dplyr::select(english_common_name, climate_vol_2.1)
+  
+  gdic_habitat <- read.csv("data/species-traits/gdicecco-avian-range-shifts/habitat_niche_ssi_true_zeroes.csv") %>%
+    dplyr::select(english_common_name, ssi) %>%
+    #for now, we're kinda doing a mock ssi bc we don't have all the species. Stan does not support NAs in data, so let's change all the ssi to 1. It's not interpretable with only half the data and half mock data anyway
+    mutate(habitat_ssi = ssi) %>% #change name for interpret-ability 
+    dplyr::select(-ssi)
+  
+  regional <- read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv") %>%
+    dplyr::select(-done, -running, -notes) 
+  
+  #NOTE: might need to *.001 regional to make it more interpretable? mayybeeee.. just bc output is eg. 0.06 for a 6% change and for regional that same change would be 6.00
+  climate_position <- read.csv("data/species-traits/climate_position.csv") %>%
+    dplyr::select(common_name, climate_position)
+  
+  habitat_selection <- read.csv("data/species-traits/ndvi_habitat_selection.csv")
+  #############################################
+  
+  
+  #left join trait files
+  mbbs_traits <- mbbs %>%
+    #shannonE_diet
+    left_join(gdic_diet, by = c("common_name" = "english_common_name" )) %>%
+    #climate_vol_2.1
+    left_join(gdic_climate, by = c("common_name" = "english_common_name")) %>%
+    #habitat_ssi
+    left_join(gdic_habitat, by = c("common_name" = "english_common_name")) %>%
+    #climate_position
+    left_join(climate_position, by = "common_name") %>%
+    #local habitat selection (mean ndvi of stops observed on)
+    left_join(habitat_selection, by = "common_name") %>%
+    left_join(regional, by = "common_name") %>%
+    #Recreate IDs for common name
+    group_by(common_name) %>%
+    mutate(common_name_standard = cur_group_id()) %>%
+    ungroup() 
+  
+  #return
+  mbbs_traits
+  
+}
