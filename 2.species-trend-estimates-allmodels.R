@@ -2,14 +2,14 @@
 
 #get the functions we need for this script that are stored elsewhere
 #some variables of importance as well eg. excluded species
-source("species-trend-estimate-functions.R")
+source("2.species-trend-estimate-functions.R")
 
 #libraries
 library(beepr) #beeps
 library(dplyr) #data manip
 library(tidyr) #data manip
-library(lme4) #modeling
-library(MASS) #modeling
+#library(lme4) #modeling
+#library(MASS) #modeling
 #library(geepack) #GEE modeling
 #library(mbbs) #data comes from here
 #library(broom) #extracts coefficient values out of models, works with geepack (not using geepack rn)
@@ -33,8 +33,16 @@ options(scipen=999)
 #read in analysis file 
 mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 
 
+  #routes with errors
+  temp_rm <- mbbs %>% filter(route == "drhm-04", year == 2010)
+  mbbs <- anti_join(mbbs, temp_rm)
+
 #add traits
-mbbs_traits <- add_all_traits(mbbs)
+mbbs_traits <- add_all_traits(mbbs) %>%
+  mutate(sprt = paste0(route,common_name)) %>%
+  group_by(sprt) %>%
+  mutate(sprt_standard = cur_group_id()) %>%
+  ungroup()
 
 #filtered mbbs, 5 species for testing purposes.
 filtered_mbbs <- mbbs_traits %>% filter(common_name %in% c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse")) %>%
@@ -45,12 +53,16 @@ filtered_mbbs <- mbbs_traits %>% filter(common_name %in% c("Wood Thrush", "Acadi
   #Recreate IDs for primary observer
   group_by(primary_observer) %>%
   mutate(observer_ID = cur_group_id()) %>%
-  ungroup() 
+  ungroup() %>% 
+  #Recreate IDs for species route
+  group_by(sprt) %>%
+  mutate(sprt_standard = cur_group_id()) %>%
+  ungroup()
 
 #change to filtered_mbbs for testing, mbbs_traits for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.06_Changing_indexing/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.07_Changing_indexing/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -63,11 +75,11 @@ mbbs_dataset %>%
 #prepare the data list for Stan
 datstan <- list(
   N = nrow(mbbs_dataset), #number of observations
-  S = length(unique(mbbs_dataset$common_name_standard)), #n species
-  R = length(unique(mbbs_dataset$route_standard)), #n routes
-  Y = length(unique(mbbs_dataset$year_standard)), #n years
-  species = mbbs_dataset$common_name_standard, #species indices
-  route = mbbs_dataset$route_standard, #route indicies
+  Nsp = length(unique(mbbs_dataset$common_name_standard)), #n species
+  Nsprt = length(unique(mbbs_dataset$sprt_standard)), #n species route combos
+  Nyr = length(unique(mbbs_dataset$year_standard)), #n years
+  sp = mbbs_dataset$common_name_standard, #species indices
+  sprt = mbbs_dataset$sprt_standard, #species route indices
   year = mbbs_dataset$year_standard, #year indices
   observer_quality = mbbs_dataset$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
   #observer_ID = mbbs_dataset$observer_ID, #observer index
@@ -75,8 +87,8 @@ datstan <- list(
   #trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
   #trait_climate = mbbs_dataset$climate_vol_2.1, #! NOT CENTERED YET
   #trait_habitat = mbbs_dataset$habitat_ssi, #! NOT CENTERED YET
-  t_climate_pos = mbbs_dataset$climate_position, #! NOT CENTERED YE
-  t_habitat_selection = mbbs_dataset$habitat_selection, #! NOT CENTERED YE
+  t_climate_pos = mbbs_dataset$climate_position, #! NOT CENTERED YET
+  t_habitat_selection = mbbs_dataset$habitat_selection, #! NOT CENTERED YET
   t_regional = mbbs_dataset$usgs_trend_estimate,
   C = mbbs_dataset$count #count data
 )
@@ -90,7 +102,6 @@ data {
   int<lower=1> Nyr; //number of years
   array[N] int<lower=1, upper=Nsp> sp; //species id for each observation
   array[N] int<lower=1, upper = Nsprt> sprt; //species+route combo for each observation
-  array[Nsprt] int<lower=1, upper=Nsp> sp_sprt; //species id for each species+route combo.
   //note: the 'for each x' that 'x' is what the array length is.
   array[N] int<lower=1, upper=Nyr> year; //year for each observation
   vector[N] observer_quality; //there is an observer_quality for each observation..but not really! 
@@ -102,17 +113,17 @@ data {
 //...........................................
   array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is an unbounded integer that is at least 0.
 //.................okay, now for the predictor variables.....................
-  array[Nsp] int<lower=1, upper=Nsp> b_sp_idx; //species id for each beta I'm going to fit. there is a beta for every species.
-  vector[b_sp_idx] t_regional; //regional trait value for every species beta (or TREND) that I fit.
-  vector[b_sp_idx] t_climate_pos; //climate position value for every species beta (TREND)
-  vector[b_sp_idx] t_habitat_selection; //ndvi habitat selection for every species beta (TREND)
+  vector[Nsp] t_regional; //regional trait value for every species 
+  vector[Nsp] t_climate_pos; //climate position value for every species 
+  vector[Nsp] t_habitat_selection; //ndvi habitat selection for every species
+  //here, you give it the LENGTH of the vector (Nsp), eg. same as the number of species. Later, in the model section, you give it the SPECIES (sp)
   
 }
 
 parameters {
-  vector[sp] b; //species trend, fit one for each species
-  vector[sprt] a; //species trend along a specific route, fit one for each sp+rt combo
-  vector[sp_sprt] a_bar; // the intercept eg. initial count at yr 0 along each sp+rt combo. fit one for each species across it's species route combos. eg. this is allowed to vary by species. 
+  vector[Nsp] b; //species trend, fit one for each species
+  vector[Nsprt] a; //species trend along a specific route, fit one for each sp+rt combo
+  vector[Nsp] a_bar; // the intercept eg. initial count at yr 0 along each sp+rt combo. fit one for each species eg. this is allowed to vary by species. 
   real<lower=0> sigma_a; //standard deviation in a
   real gamma_b; //intercept for species trends. calculated across species, and we only want one value, so this is not a vector.
   real kappa_regional; //effect of t_regional on betas. real b/c we only want one.
@@ -126,19 +137,19 @@ model {
 
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
    for (n in 1:N) {
-     C[n] ~ poisson_log(a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
+     C[n] ~ poisson_log(a[sprt[n]] + b[sp[n]] * year[n] + observer_quality[n]);
    }
 // eg... for every row/observation in the data.
 // The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
 
-  a ~ normal(a_bar[sp_sprt], sigma_a); //do I have to [sp_sprt] a_bar again here? I already specify it as a vector of sp_sprt
+  a ~ normal(a_bar[sp], sigma_a); //sp_sprt might ? instead be sp
   a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
   sigma_a ~ exponential(1);
   
   b ~ normal(gamma_b + 
-             kappa_regional*t_regional[b_sp_idx] +
-             kappa_climate_pos*t_climate_pos[b_sp_idx] +
-             kappa_habitat_selection*t_habitat_selection[b_sp_idx],
+             kappa_regional*t_regional[sp] +
+             kappa_climate_pos*t_climate_pos[sp] +
+             kappa_habitat_selection*t_habitat_selection[sp],
              sig_b);
   gamma_b ~ normal(0, 0.2);
   sig_b ~ exponential(1);
@@ -163,8 +174,8 @@ fit <- sampling(stan_model,
                 data = datstan, 
                 chains = 4,
                 cores = 4, 
-                iter = 2000, 
-                warmup = 1000
+                iter = 1000, 
+                warmup = 500
                 )
 beepr::beep()
 

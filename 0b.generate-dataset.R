@@ -34,7 +34,7 @@ mbbs_survey_events <- mbbs_survey_events %>%
   mutate(observer_ID = cur_group_id()) %>%
   ungroup() %>%
   #select just the variables we need
-  dplyr::select(route, mbbs_county, route_num, year, primary_observer, max_qual_observer, observer_ID)
+  dplyr::select(route, mbbs_county, route_num, year, primary_observer, max_qual_observer, observer_ID, observer_quality)
 
 #read in the mbbs route data
 #this already includes the 0s for when species are not observed.

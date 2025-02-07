@@ -6,41 +6,69 @@
 //    http://mc-stan.org/users/interfaces/rstan.html
 //    https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started
 //
-
 data {
-  int<lower=0> N; // number of rows
-  int<lower=1> S; // number of species
-  int<lower=1> R; // number of routes
-  int<lower=1> Y; // number of years
-  array[N] vector<lower=1, upper=S> species; // there is a species for every row and it's an integer between 1 and S
-  array[N] int<lower=1, upper=R> route;  // there is a route for every row and it's an integer between 1 and R
-  array[N] int<lower=1, upper=Y> year;  // there is an integer for every year and it's an integer between 1 and Y
- vector[N] observer_quality;  // there is an observer quality for every row and it is a real number, because it is continuous it can be a vector instead of an array
-  array[N] int<lower=0> C;  // there is a count (my y variable!) for every row and it is an unbounded integer that is at least 0.
+  int<lower=0> N; // number of observations or rows
+  int<lower=1> Nsp; // number of species
+  int<lower=1> Nsprt; // number of species+route combinations
+  int<lower=1> Nyr; //number of years
+  array[N] int<lower=1, upper=Nsp> sp; //species id for each observation
+  array[N] int<lower=1, upper = Nsprt> sprt; //species+route combo for each observation
+  array[Nsprt] int<lower=1, upper=Nsp> sp_sprt; //species id for each species+route combo.
+  //note: the 'for each x' that 'x' is what the array length is.
+  array[N] int<lower=1, upper=Nyr> year; //year for each observation
+  vector[N] observer_quality; //there is an observer_quality for each observation..but not really! 
+//...........................................
+//when I back back in observer intercepts or w/e...
+// int<lower=1> Nobs; //number of observers
+// array[N] int<lower=1, upper=Nobs> obs; //there is an observer for every observation
+// vector[obs] observer_quality; //there is an observer_quality for every observer
+//...........................................
+  array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is an unbounded integer that is at least 0.
+//.................okay, now for the predictor variables.....................
+  vector[Nsp] t_regional; //regional trait value for every species 
+  vector[Nsp] t_climate_pos; //climate position value for every species 
+  vector[Nsp] t_habitat_selection; //ndvi habitat selection for every species
+  //here, you give it the LENGTH of the vector (Nsp), eg. same as the number of species. Later, in the model section, you give it the SPECIES (sp)
+  
 }
 
 parameters {
-  vector[S] b; //species trend
-  matrix[R, S] a; //species trend along a specific route
-  vector[S] a_bar; //the intercept eg. initial count at yr 0 along a route, is allowed to vary by species
+  vector[Nsp] b; //species trend, fit one for each species
+  vector[Nsprt] a; //species trend along a specific route, fit one for each sp+rt combo
+  vector[Nsp] a_bar; // the intercept eg. initial count at yr 0 along each sp+rt combo. fit one for each species eg. this is allowed to vary by species. 
   real<lower=0> sigma_a; //standard deviation in a
-  real gamma_b; //intercept 
-  real<lower=0> sig_b;
+  real gamma_b; //intercept for species trends. calculated across species, and we only want one value, so this is not a vector.
+  real kappa_regional; //effect of t_regional on betas. real b/c we only want one.
+  real kappa_climate_pos; //effect of t_climate_pos on betas. real b/c we only want one.
+  real kappa_habitat_selection; //effect of t_habitat_selection on betas. real b/c we only want one.
+  real<lower=0> sig_b; //deviation from explanatory power of the traits on predicting the trends. Represents residual variance / measure of scatter. ...In some ways, R2??
   
 }
 
 model {
-  a_bar ~ normal(1, 0.5);
-  sigma_a ~ exponential(1);
-  b ~ normal(gamma_b, sig_b); //without traits
-  gamma_b ~ normal(0, 0.2);
-  sig_b ~ exponential(1);
-  to_vector(a) ~ normal(a_bar[S], sigma_a); //uses a species specific a_bar
-  
 
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
    for (n in 1:N) {
      C[n] ~ poisson_log(a[route[n], species[n]] + b[species[n]] * year[n] + observer_quality[n]);
    }
+// eg... for every row/observation in the data.
+// The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
+
+  a ~ normal(a_bar[sp_sprt], sigma_a); //do I have to [sp_sprt] a_bar again here? I already specify it as a vector of sp_sprt
+  a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
+  sigma_a ~ exponential(1);
+  
+  b ~ normal(gamma_b + 
+             kappa_regional*t_regional[sp] +
+             kappa_climate_pos*t_climate_pos[sp] +
+             kappa_habitat_selection*t_habitat_selection[sp],
+             sig_b);
+  gamma_b ~ normal(0, 0.2);
+  sig_b ~ exponential(1);
+//.............BY COMMENTING OUT KAPPAS, DEFAULT UNIFORM PRIORS ARE USED.................
+//  kappa_regional ~ normal(0, .02); 
+//  kappa_climate_pos ~ normal(0, .2); 
+//  kappa_habitat_selection ~ normal(0, .2);
+//.............^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^..................
 }
 
