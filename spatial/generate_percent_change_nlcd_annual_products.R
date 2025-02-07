@@ -36,6 +36,15 @@ landtype_bystop <- landcover %>%
   #add nlcd classification information
   left_join(nlcd_classif, by = c("nlcd_code" = "code"))
 
+  #ensure nothing went wrong, the landtype counts add up to the same number as numpix for all the stops.
+  test <- landtype_bystop %>% 
+    group_by(ID, year, numpix) %>%
+    summarize(sum_landtype_counts = sum(count)) %>%
+    mutate(dif = sum_landtype_counts - numpix)
+    assertthat::assert_that(
+      sum(test$dif) == 0
+    )
+
   #save .csv
 write.csv(landtype_bystop, "data/nlcd-landcover/nlcd_annual_landtype_bystop.csv", row.names = FALSE)
 
