@@ -127,7 +127,7 @@ landtype_byroutequarter <- create_ltbypartialroute(landtype_bybuff, nlcd_classif
 
 #-----------------------------------
 #Save csvs
-write.csv(landtype_byroutestop, "data/landtype_byroutestop.csv", row.names = FALSE)
+write.csv(landtype_byroutestop, "data/landtype_bystop.csv", row.names = FALSE)
 write.csv(landtype_byroute, "data/landtype_byroute.csv", row.names = FALSE)
 write.csv(landtype_byroutehalf, "data/landtype_byroutehalf.csv", row.names = FALSE)
 write.csv(landtype_byroutequarter, "data/landtype_byroutequarter.csv", row.names = FALSE)
