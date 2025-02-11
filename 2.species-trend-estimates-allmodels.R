@@ -45,24 +45,12 @@ mbbs_traits <- add_all_traits(mbbs) %>%
   ungroup()
 
 #filtered mbbs, 5 species for testing purposes.
-filtered_mbbs <- mbbs_traits %>% filter(common_name %in% c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse")) %>%
-  #Recreate IDs for common name
-  group_by(common_name) %>%
-  mutate(common_name_standard = cur_group_id()) %>%
-  ungroup() %>%
-  #Recreate IDs for primary observer
-  group_by(primary_observer) %>%
-  mutate(observer_ID = cur_group_id()) %>%
-  ungroup() %>% 
-  #Recreate IDs for species route
-  group_by(sprt) %>%
-  mutate(sprt_standard = cur_group_id()) %>%
-  ungroup()
+filtered_mbbs <- make_testing_df(mbbs_traits)
 
 #change to filtered_mbbs for testing, mbbs_traits for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.07_Changing_indexing/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.11_Changing_indexing/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -72,6 +60,18 @@ mbbs_dataset %>%
   distinct() %>%
   write.csv(paste0(save_to, "beta_to_common_name.csv"), row.names = FALSE)
 
+#get traits so it's one trait per species, so we can put this in datlist
+#this is in the same order as the mbbs_dataset. Still, check intuition works?
+traits <- mbbs_dataset %>%
+  dplyr::select(common_name_standard, shannonE_diet:sprt_standard) %>%
+  distinct(common_name_standard, .keep_all = TRUE)
+
+#make sp_sprt, we make it separate because it's shorter and requires some manuvering
+sp_sprt_base <- mbbs_dataset %>% 
+  select(common_name_standard, sprt_standard) %>%
+  distinct()
+
+
 #prepare the data list for Stan
 datstan <- list(
   N = nrow(mbbs_dataset), #number of observations
@@ -80,6 +80,7 @@ datstan <- list(
   Nyr = length(unique(mbbs_dataset$year_standard)), #n years
   sp = mbbs_dataset$common_name_standard, #species indices
   sprt = mbbs_dataset$sprt_standard, #species route indices
+  sp_sprt = sp_sprt_base$common_name_standard, #species for each species route
   year = mbbs_dataset$year_standard, #year indices
   observer_quality = mbbs_dataset$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
   #observer_ID = mbbs_dataset$observer_ID, #observer index
@@ -87,9 +88,10 @@ datstan <- list(
   #trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
   #trait_climate = mbbs_dataset$climate_vol_2.1, #! NOT CENTERED YET
   #trait_habitat = mbbs_dataset$habitat_ssi, #! NOT CENTERED YET
-  t_climate_pos = mbbs_dataset$climate_position, #! NOT CENTERED YET
-  t_habitat_selection = mbbs_dataset$habitat_selection, #! NOT CENTERED YET
-  t_regional = mbbs_dataset$usgs_trend_estimate,
+  t_climate_pos = traits$climate_position, #! NOT CENTERED YET
+  t_habitat_selection = traits$habitat_selection, #! NOT CENTERED YET
+  t_regional = traits$usgs_trend_estimate,
+  sp_t = traits$common_name_standard, #species for each trait
   C = mbbs_dataset$count #count data
 )
 
@@ -102,6 +104,7 @@ data {
   int<lower=1> Nyr; //number of years
   array[N] int<lower=1, upper=Nsp> sp; //species id for each observation
   array[N] int<lower=1, upper = Nsprt> sprt; //species+route combo for each observation
+  array[Nsprt] int<lower=1, upper=Nsp> sp_sprt; //species id for each species+route combo
   //note: the 'for each x' that 'x' is what the array length is.
   array[N] int<lower=1, upper=Nyr> year; //year for each observation
   vector[N] observer_quality; //there is an observer_quality for each observation..but not really! 
@@ -113,6 +116,7 @@ data {
 //...........................................
   array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is an unbounded integer that is at least 0.
 //.................okay, now for the predictor variables.....................
+  array[Nsp] int<lower=1, upper = Nsp> sp_t; //species ID to associate with each species trait
   vector[Nsp] t_regional; //regional trait value for every species 
   vector[Nsp] t_climate_pos; //climate position value for every species 
   vector[Nsp] t_habitat_selection; //ndvi habitat selection for every species
@@ -123,7 +127,7 @@ data {
 parameters {
   vector[Nsp] b; //species trend, fit one for each species
   vector[Nsprt] a; //species trend along a specific route, fit one for each sp+rt combo
-  vector[Nsp] a_bar; // the intercept eg. initial count at yr 0 along each sp+rt combo. fit one for each species eg. this is allowed to vary by species. 
+  vector[Nsp] a_bar; // the intercept eg. initial count at yr 0, fit one per species
   real<lower=0> sigma_a; //standard deviation in a
   real gamma_b; //intercept for species trends. calculated across species, and we only want one value, so this is not a vector.
   real kappa_regional; //effect of t_regional on betas. real b/c we only want one.
@@ -142,14 +146,14 @@ model {
 // eg... for every row/observation in the data.
 // The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
 
-  a ~ normal(a_bar[sp], sigma_a); //sp_sprt might ? instead be sp
+  a ~ normal(a_bar[sp_sprt], sigma_a); //sp_sprt maps species+route combos to species
   a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
   sigma_a ~ exponential(1);
   
   b ~ normal(gamma_b + 
-             kappa_regional*t_regional[sp] +
-             kappa_climate_pos*t_climate_pos[sp] +
-             kappa_habitat_selection*t_habitat_selection[sp],
+             kappa_regional*t_regional[sp_t] +
+             kappa_climate_pos*t_climate_pos[sp_t] +
+             kappa_habitat_selection*t_habitat_selection[sp_t],
              sig_b);
   gamma_b ~ normal(0, 0.2);
   sig_b ~ exponential(1);
@@ -174,8 +178,8 @@ fit <- sampling(stan_model,
                 data = datstan, 
                 chains = 4,
                 cores = 4, 
-                iter = 1000, 
-                warmup = 500
+                iter = 2000, 
+                warmup = 1000
                 )
 beepr::beep()
 
