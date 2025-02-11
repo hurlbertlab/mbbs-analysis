@@ -184,3 +184,25 @@ add_all_traits <- function(mbbs) {
   mbbs_traits
   
 }
+
+
+#' make_testing_df
+#' Function to trim down the mbbs to just a few test species
+#' @returns a trimmed down version of the mbbs, filtered to just a few species
+make_testing_df <- function(mbbs) {
+  
+  filtered_mbbs <- mbbs %>% filter(common_name %in% c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse")) %>%
+    #Recreate IDs for common name
+    group_by(common_name) %>%
+    mutate(common_name_standard = cur_group_id()) %>%
+    ungroup() %>%
+    #Recreate IDs for primary observer
+    group_by(primary_observer) %>%
+    mutate(observer_ID = cur_group_id()) %>%
+    ungroup() %>% 
+    #Recreate IDs for species route
+    group_by(sprt) %>%
+    mutate(sprt_standard = cur_group_id()) %>%
+    ungroup()
+
+}
