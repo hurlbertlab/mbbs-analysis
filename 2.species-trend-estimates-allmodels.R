@@ -3,6 +3,7 @@
 #get the functions we need for this script that are stored elsewhere
 #some variables of importance as well eg. excluded species
 source("2.species-trend-estimate-functions.R")
+source("2.ste-datstan-lists.R")
 
 #libraries
 library(beepr) #beeps
