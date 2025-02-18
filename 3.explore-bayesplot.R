@@ -23,10 +23,11 @@ color_scheme_set("brightblue")
 mcmc_hist(x) + panel_bg(fill = "black")
 
 #ok! let's load in a stanfit
-  load_from <- "Z:/Goulden/mbbs-analysis/model/simple_bayes_observer_only/"
+  load_from <- "Z:/Goulden/mbbs-analysis/model/2025.02.11_allspecies_traits_index_fixed/"
   stanfit <- "stanfit.rds"
 #Load the stanfit object
 fit <- readRDS(paste0(load_from, stanfit))
+fit_summary <- read.csv(paste0(load_from, "fit_summary.csv"))
 fit@model_pars
 
 #plot posterior distributions

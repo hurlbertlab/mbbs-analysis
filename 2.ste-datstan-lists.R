@@ -26,8 +26,8 @@ datstan_traits_influence_mbbs <- function(mbbs_dataset) {
     sp_sprt = sp_sprt_base$common_name_standard, #species for each species route
     year = mbbs_dataset$year_standard, #year indices
     observer_quality = mbbs_dataset$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
-    #observer_ID = mbbs_dataset$observer_ID, #observer index
-    #O = length(unique(mbbs_dataset$observer_ID)), #n observers
+    Nobs = length(unique(mbbs_dataset$observer_ID)), #n observers
+    obs = mbbs_dataset$observer_ID, #observer index
     #trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
     #trait_climate = mbbs_dataset$climate_vol_2.1, #! NOT CENTERED YET
     #trait_habitat = mbbs_dataset$habitat_ssi, #! NOT CENTERED YET
