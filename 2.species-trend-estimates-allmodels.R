@@ -78,8 +78,7 @@ sp_sprt_base <- mbbs_dataset %>%
 
 #make observer quality seperate
 obs_q_base <- mbbs_dataset %>%
-  distinct(observer_ID,observer_quality) %>%
-  select(observer_quality)
+  distinct(observer_ID,observer_quality)
 
 #prepare the data list for Stan
 datstan <- list(
@@ -91,7 +90,7 @@ datstan <- list(
   sprt = mbbs_dataset$sprt_standard, #species route indices
   sp_sprt = sp_sprt_base$common_name_standard, #species for each species route
   year = mbbs_dataset$year_standard, #year indices
-  observer_quality = mbbs_dataset$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
+  observer_quality = obs_q_base$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
   Nobs = length(unique(mbbs_dataset$observer_ID)), #n observers
   obs = mbbs_dataset$observer_ID, #observer index
   #trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
@@ -105,7 +104,7 @@ datstan <- list(
 )
 
 #specify the stan model code
-stan_model_code <- stan_model(file = "2.active_development_model.stan")
+stan_model_file <- "2.active_development_model.stan"
 stan_model_code <- "
 data {
   int<lower=0> N; // number of observations or rows
@@ -161,7 +160,7 @@ model {
 // The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
 
 //2025.02.18 - set a link and saur style
-  a ~ normal(0, 10^6)
+  a ~ normal(0, 10^6);
 //  a ~ normal(a_bar[sp_sprt], sigma_a); //sp_sprt maps species+route combos to species
 //  a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
 //  sigma_a ~ exponential(1);
@@ -184,11 +183,13 @@ model {
 "
 
 #compile the stan model
-stan_model <- stan_model(model_code = stan_model_code)
+stan_model <- stan_model(file = stan_model_file)
+#stan_model <- stan_model(model_code = stan_model_code)
 beepr::beep()
 
+
 #save stan model text if it compiled without errors
-cmdstanr::write_stan_file(code = stan_model_code, dir = save_to)
+#cmdstanr::write_stan_file(code = stan_model, dir = save_to)
 
 #fit the model to the data
 #options(mc.cores = parallel::detectCores())

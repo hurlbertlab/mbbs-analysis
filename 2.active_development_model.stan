@@ -37,8 +37,8 @@ data {
 
 parameters {
   vector[Nsprt] a; //species trend along a specific route, fit one for each sp+rt combo
-  vector[Nsp] a_bar; // the intercept eg. initial count at yr 0, fit one per species
-  real<lower=0> sigma_a; //standard deviation in a
+//  vector[Nsp] a_bar; // the intercept eg. initial count at yr 0, fit one per species
+//  real<lower=0> sigma_a; //standard deviation in a
   
   vector[Nsp] b; //species trend, fit one for each species
   real gamma_b; //intercept for species trends. calculated across species, and we only want one value, so this is not a vector.
@@ -64,7 +64,7 @@ model {
 // The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
 
 //2025.02.18 - set a link and saur style
-  a ~ normal(0, 10^6)
+  a ~ normal(0, 10^6);
 //  a ~ normal(a_bar[sp_sprt], sigma_a); //sp_sprt maps species+route combos to species
 //  a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
 //  sigma_a ~ exponential(1);
@@ -83,5 +83,6 @@ model {
 //.............^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^..................
 
     c ~ normal(gamma_c + kappa_obs*observer_quality, sig_c); //observer quality may need some indexing? 
+    
 }
 
