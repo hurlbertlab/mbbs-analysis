@@ -51,7 +51,7 @@ filtered_mbbs <- make_testing_df(mbbs_traits)
 #change to filtered_mbbs for testing, mbbs_traits for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.18_Set_a_linkandsaur_style/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.24_testing_maxtrix_narrowaplha_abar2-2/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -84,10 +84,13 @@ obs_q_base <- mbbs_dataset %>%
 datstan <- list(
   N = nrow(mbbs_dataset), #number of observations
   Nsp = length(unique(mbbs_dataset$common_name_standard)), #n species
+  Nrt = length(unique(mbbs_dataset$route_standard)), #n routes
   Nsprt = length(unique(mbbs_dataset$sprt_standard)), #n species route combos
   Nyr = length(unique(mbbs_dataset$year_standard)), #n years
-  sp = mbbs_dataset$common_name_standard, #species indices
-  sprt = mbbs_dataset$sprt_standard, #species route indices
+  sp = mbbs_dataset$common_name_standard, #species indices for each observation
+  rt = mbbs_dataset$route_standard, #route indices for each observation
+#  sp_a = unique(mbbs_dataset$common_name_standard), #the unique species ids
+  #sprt = mbbs_dataset$sprt_standard, #species route indices
   sp_sprt = sp_sprt_base$common_name_standard, #species for each species route
   year = mbbs_dataset$year_standard, #year indices
   observer_quality = obs_q_base$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
@@ -105,87 +108,13 @@ datstan <- list(
 
 #specify the stan model code
 stan_model_file <- "2.active_development_model.stan"
-stan_model_code <- "
-data {
-  int<lower=0> N; // number of observations or rows
-  int<lower=1> Nsp; // number of species
-  int<lower=1> Nsprt; // number of species+route combinations
-  int<lower=1> Nyr; //number of years
-  array[N] int<lower=1, upper=Nsp> sp; //species id for each observation
-  array[N] int<lower=1, upper = Nsprt> sprt; //species+route combo for each observation
-  array[Nsprt] int<lower=1, upper=Nsp> sp_sprt; //species id for each species+route combo
-  //note: the 'for each x' that 'x' is what the array length is.
-  array[N] int<lower=1, upper=Nyr> year; //year for each observation
-//.............observer section....................................
-  int<lower=1> Nobs; //number of observers
-  array[N] int<lower=1, upper=Nobs> obs; //there is an observer for every observation
-  vector[Nobs] observer_quality; //there is an observer_quality for every observer
-//..............count................................................
-  array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is an unbounded integer that is at least 0.
-//...............predictor variables.....................
-  array[Nsp] int<lower=1, upper = Nsp> sp_t; //species ID to associate with each species trait
-  vector[Nsp] t_regional; //regional trait value for every species 
-  vector[Nsp] t_climate_pos; //climate position value for every species 
-  vector[Nsp] t_habitat_selection; //ndvi habitat selection for every species
-  //here, you give it the LENGTH of the vector (Nsp), eg. same as the number of species. Later, in the model section, you give it the SPECIES (sp)
-  
-}
-
-parameters {
-  vector[Nsprt] a; //species trend along a specific route, fit one for each sp+rt combo
-  vector[Nsp] a_bar; // the intercept eg. initial count at yr 0, fit one per species
-  real<lower=0> sigma_a; //standard deviation in a
-  
-  vector[Nsp] b; //species trend, fit one for each species
-  real gamma_b; //intercept for species trends. calculated across species, and we only want one value, so this is not a vector.
-  real kappa_regional; //effect of t_regional on betas. real b/c we only want one.
-  real kappa_climate_pos; //effect of t_climate_pos on betas. real b/c we only want one.
-  real kappa_habitat_selection; //effect of t_habitat_selection on betas. real b/c we only want one.
-  real<lower=0> sig_b; //deviation from explanatory power of the traits on predicting the trends. Represents residual variance / measure of scatter. ...In some ways, R2??
-  
-  vector[Nobs] c; //effect of observer, fit one for each observer
-  real gamma_c; //fit one intercept across observers. Let's keep this simple, bc we don't need to super complicate the role observers play
-  real kappa_obs; //fit one effect of observer quality
-  real <lower=0> sig_c; //deviation btwn observed offset for count and score I gave each observer
-  
-}
-
-model {
-
-// Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
-   for (n in 1:N) {
-     C[n] ~ poisson_log(a[sprt[n]] + b[sp[n]] * year[n] + c[obs[n]]);
-   }
-// eg... for every row/observation in the data.
-// The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
-
-//2025.02.18 - set a link and saur style
-  a ~ normal(0, 10^6);
-//  a ~ normal(a_bar[sp_sprt], sigma_a); //sp_sprt maps species+route combos to species
-//  a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
-//  sigma_a ~ exponential(1);
-  
-  b ~ normal(gamma_b + 
-             kappa_regional*t_regional[sp_t] +
-             kappa_climate_pos*t_climate_pos[sp_t] +
-             kappa_habitat_selection*t_habitat_selection[sp_t],
-             sig_b);
-  gamma_b ~ normal(0, 0.2);
-  sig_b ~ exponential(1);
-//.............BY COMMENTING OUT KAPPAS, DEFAULT UNIFORM PRIORS ARE USED.................
-//  kappa_regional ~ normal(0, .02); 
-//  kappa_climate_pos ~ normal(0, .2); 
-//  kappa_habitat_selection ~ normal(0, .2);
-//.............^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^..................
-
-    c ~ normal(gamma_c + kappa_obs*observer_quality, sig_c); //observer quality may need some indexing? 
-}
-"
 
 #compile the stan model
 stan_model <- stan_model(file = stan_model_file)
-#stan_model <- stan_model(model_code = stan_model_code)
 beepr::beep()
+#save the model text
+file.copy(stan_model_file, save_to, overwrite = TRUE)
+
 
 
 #save stan model text if it compiled without errors

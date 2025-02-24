@@ -13,10 +13,12 @@
 data {
   int<lower=0> N; // number of observations or rows
   int<lower=1> Nsp; // number of species
+  int<lower=1> Nrt; //number of routes
   int<lower=1> Nsprt; // number of species+route combinations
   int<lower=1> Nyr; //number of years
   array[N] int<lower=1, upper=Nsp> sp; //species id for each observation
-  array[N] int<lower=1, upper = Nsprt> sprt; //species+route combo for each observation
+  array[N] int<lower=1, upper=Nrt> rt; //route id for each observation
+  //array[N] int<lower=1, upper = Nsprt> sprt; //species+route combo for each observation
   array[Nsprt] int<lower=1, upper=Nsp> sp_sprt; //species id for each species+route combo
   //note: the 'for each x' that 'x' is what the array length is.
   array[N] int<lower=1, upper=Nyr> year; //year for each observation
@@ -36,9 +38,10 @@ data {
 }
 
 parameters {
-  vector[Nsprt] a; //species trend along a specific route, fit one for each sp+rt combo
-//  vector[Nsp] a_bar; // the intercept eg. initial count at yr 0, fit one per species
-//  real<lower=0> sigma_a; //standard deviation in a
+  matrix[Nsp, Nrt] a; //species-route interaction matrix, fit a species trend along each sp+rt combo.
+  vector[Nsp] a_bar; // the intercept eg. initial count at yr 0, fit one per species. species-level mean for the intercept a
+  vector<lower=0>[Nsp] sigma_a; //standard deviation in a, if we're fitting a_bar we ought to also fit a species-specific sigma_a... if they all look similar we can re-assess
+  //vector[Nsprt] a; //species trend along a specific route, fit one for each sp+rt combo
   
   vector[Nsp] b; //species trend, fit one for each species
   real gamma_b; //intercept for species trends. calculated across species, and we only want one value, so this is not a vector.
@@ -58,13 +61,14 @@ model {
 
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
    for (n in 1:N) {
-     C[n] ~ poisson_log(a[sprt[n]] + b[sp[n]] * year[n] + c[obs[n]]);
+     C[n] ~ poisson_log(a[sp[n], rt[n]] + b[sp[n]] * year[n] + c[obs[n]] + epsilon[sp[n]]);
    }
 // eg... for every row/observation in the data.
 // The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
 
-//2025.02.18 - set a link and saur style
-  a ~ normal(0, 10^6);
+  to_vector(a) ~ normal(a_bar[sp_sprt], sigma_a[sp_sprt]); //use sp_sprt to index a_bar and sigma_a because a is a vector of length sp*rt after we to_vector the matrix
+  a_bar ~ normal(2, 2); //bc a_bar is a vector of sp_a, fits once for each species. Keeping narrow for now...with bad neffs the average ranges from -4 -> 4, so perhaps this prior should be expanded. Fitting it mean 2 with stdev of 2, so 0 is a reasonable value and as is 0. Gives it a little more space to explore.
+  sigma_a ~ exponential(1);
 //  a ~ normal(a_bar[sp_sprt], sigma_a); //sp_sprt maps species+route combos to species
 //  a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
 //  sigma_a ~ exponential(1);
@@ -82,7 +86,11 @@ model {
 //  kappa_habitat_selection ~ normal(0, .2);
 //.............^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^..................
 
-    c ~ normal(gamma_c + kappa_obs*observer_quality, sig_c); //observer quality may need some indexing? 
+    c ~ normal(gamma_c + kappa_obs*observer_quality, sig_c); //observer quality may need some indexing? no, b/c dependent on both observer and route.
+    //add priors for gamma_c and sig_c
+    gamma_c ~ normal(0,0.5);
+    sig_c ~ exponential(1);
     
-}
+    epsilon ~ //overdispersion parameter
 
+}
