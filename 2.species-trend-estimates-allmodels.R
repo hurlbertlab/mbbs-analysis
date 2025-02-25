@@ -15,6 +15,7 @@ library(tidyr) #data manip
 #library(mbbs) #data comes from here
 #library(broom) #extracts coefficient values out of models, works with geepack (not using geepack rn)
 library(rstan) #stan
+library(stringr)
 library(StanHeaders) #stan helper
 #library(rethinking) #alt. way to model with bayes, from Statistical Rethinking course. Can't use for final analysis bc the ulam helper function has some presets that don't fit my needs (eg. 87% standard deviation calculations)
 
@@ -49,7 +50,7 @@ mbbs_traits <- add_all_traits(mbbs) %>%
 filtered_mbbs <- make_testing_df(mbbs_traits)
 
 #change to filtered_mbbs for testing, mbbs_traits for the real thing
-mbbs_dataset <- filtered_mbbs
+mbbs_dataset <- mbbs_traits
 #where to save stan code and fit
 save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.25_testing_regional_dif/"
 #if the output folder doesn't exist, create it
@@ -103,7 +104,7 @@ datstan <- list(
   t_habitat_selection = traits$habitat_selection, #! NOT CENTERED YET
   t_regional = traits$usgs_trend_estimate,
   sp_t = traits$common_name_standard, #species for each trait
-  C = mbbs_dataset$count, #count data
+  C = mbbs_dataset$count #count data
   
 )
 
@@ -161,15 +162,22 @@ View(fit_final) ##DO NOT HAVE THIS ON LONGLEAF
   #load in stanfit if needed...
   #fit <- readRDS(paste0(save_to, "stanfit.rds"))
   
+  #posterior <- extract(fit, pars = "b")
   posterior <- as.data.frame(fit) %>%
-    dplyr::select("b[1]":"b[61]") #or select("b[1]:gamma_b") and then -gamma_b
+    dplyr::select("b[1]":"b[61]") %>% #or select("b[1]:gamma_b") and then -gamma_b
   #keep only the betas
+    pivot_longer(cols = "b[1]":"b[61]", names_to = "beta", values_to = "posterior") %>%
+    mutate(common_name_standard_p = stringr::str_extract(beta, "(?<=\\[)([^]]+)(?=\\])"),
+           common_name_standard_p = as.integer(common_name_standard_p)) %>%
+    arrange(common_name_standard_p) %>%
+    #regional is on a dif scale, let's multiply to that same scale.
+    mutate(posterior = posterior*100) #great.
   #pivot 
   #^ why do we do the as.data.frame and don't have to like, extract anything?
 
 
   #bootstrap a regional trend to use to predict the difference between beta and regional with traits
-  num_bootstrap <- nrow(posterior)
+  num_bootstrap <- nrow(posterior %>% dplyr::filter(common_name_standard == 1))
   bootstrap_regional <- mbbs_dataset %>%
     dplyr::select(common_name, common_name_standard, usgs_trend_estimate:usgs_startyear) %>%
     group_by(common_name) %>%
@@ -181,20 +189,65 @@ View(fit_final) ##DO NOT HAVE THIS ON LONGLEAF
       bootstrapped_regional = list(rnorm(num_bootstrap, mean = usgs_trend_estimate, sd = sd))
     ) %>%
     unnest(bootstrapped_regional) %>%
-    ungroup()
+    ungroup() %>%
+    arrange(common_name_standard)
+  
+  #notably, we will NOT leftjoin these. just check they're the same length
+  assertthat::assert_that(
+    nrow(bootstrap_regional) == nrow(posterior)
+  )
+  #and we've already sorted them the same so we're OK to bind columns
+  assertthat::assert_that(
+    sum(dif_data$common_name_standard == dif_data$common_name_standard_p) == 244000
+  ) #checks that they're sorted the same, all the common names standards match for each sample.
+  
+  
+  dif_data <- bind_cols(bootstrap_regional, posterior)  %>%
+    mutate(D = bootstrapped_regional - posterior) 
+  
+  #For traits as well... we should be bootstrapping samples from the habitat selection and climate_position standard deviations. It's information we have and that we can add to this model. It matters if species have a wide esimate for habitat selection or not, and same with climate_position. We can, within this stan model, ''recreate'' these variables and build in that uncertainty.
   
   datstan_dif <- list(
     #unique for calculating the difference between regional and local trends
-    Nboot = nrow(bootstrap_regional), #number of bootstrap obs overall
-    Nboot_sample = num_bootstrap, #number of regional and b samples per species
-    boot_regional = bootstrap_regional$bootstrapped_regional, #regional trend for each bootstrapped observation
-    boot_sp = bootstrap_regional$common_name_standard #species index for each bootstrapped observation
+    Nsp = length(unique(dif_data$common_name)),
+    N = nrow(dif_data), #number of bootstrap obs overall
+    Nsp_sample = num_bootstrap, #number of regional and b samples per species
+    sample_regional = dif_data$bootstrapped_regional, #regional trend for each bootstrapped observation
+    sp = dif_data$common_name_standard, #species index for each bootstrapped observation
+    sample_local = dif_data$posterior,
+    D = dif_data$D,
+    #traits!
+    t_climate_pos = traits$climate_position, #! NOT CENTERED YET
+    t_habitat_selection = traits$habitat_selection, #! NOT CENTERED YET
+    sp_t = traits$common_name_standard #species for each trait
   )
   
 
 #####################
 
 #linear model to check inutition
+  
+  dif_intuit <- dif_data %>%
+    left_join(traits, by = "common_name_standard")
+  
+  dif_model <- glm(D ~ habitat_selection + climate_position, data = dif_intuit)
+    plot(dif_intuit$habitat_selection, dif_intuit$D)
+      # Extract coefficients from the model
+      coefs <- coef(dif_model)
+      
+      # Calculate the mean of climate_position to hold it constant
+      mean_climate_position <- mean(dif_intuit$climate_position, na.rm = TRUE)
+      
+      # Add the regression line for habitat_selection, holding climate_position at its mean
+      abline(a = coefs[1] + coefs[3] * mean_climate_position, b = coefs[2], col = "red")
+    
+    plot(dif_intuit$climate_position, dif_intuit$D)
+      # Calculate the mean of habitat_selection to hold it constant
+      mean_habitat_selection <- mean(dif_intuit$habitat_selection, na.rm = TRUE)
+      abline(a = coefs[1] + coefs[2] * mean_habitat_selection, b = coefs[3], col = "red")
+  
+  summary(dif_model)
+  
   #need one record for every species
   mbbs_test <- mbbs_traits %>%
     distinct(common_name, .keep_all = TRUE) %>%

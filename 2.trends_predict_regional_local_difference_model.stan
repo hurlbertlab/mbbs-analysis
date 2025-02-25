@@ -12,36 +12,24 @@
 data {
   int<lower=0> N; // number of observations or rows
   int<lower=1> Nsp; // number of species
-  int<lower=1> Nrt; //number of routes
-  int<lower=1> Nsprt; // number of species+route combinations
-  int<lower=1> Nyr; //number of years
+  int<lower=1> Nsp_sample; //number of samples per species
   array[N] int<lower=1, upper=Nsp> sp; //species id for each observation
-  array[N] int<lower=1, upper=Nrt> rt; //route id for each observation
-  //array[N] int<lower=1, upper = Nsprt> sprt; //species+route combo for each observation
-  array[Nsprt] int<lower=1, upper=Nsp> sp_sprt; //species id for each species+route combo
-  //note: the 'for each x' that 'x' is what the array length is.
-  array[N] int<lower=1, upper=Nyr> year; //year for each observation
-//.............observer section....................................
-  int<lower=1> Nobs; //number of observers
-  array[N] int<lower=1, upper=Nobs> obs; //there is an observer for every observation
-  vector[Nobs] observer_quality; //there is an observer_quality for every observer
-//..............count................................................
-  array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is an unbounded integer that is at least 0.
-//...............predictor variables.....................
-  array[Nsp] int<lower=1, upper = Nsp> sp_t; //species ID to associate with each species trait
-//  vector[Nsp] t_regional; //regional trait value for every species 
+  vector[N] sample_local; //local trend for each row
+  vector[N] sample_regional; //regional trend for each row
+  vector[N] D; //there is a difference between local and regional for every row!
+    array[Nsp] int<lower=1, upper = Nsp> sp_t; //species ID to associate with each species trait
   vector[Nsp] t_climate_pos; //climate position value for every species 
-  vector[Nsp] t_habitat_selection; //ndvi habitat selection for every species
-  //here, you give it the LENGTH of the vector (Nsp), eg. same as the number of species. Later, in the model section, you give it the SPECIES (sp)
-  //...........regional dif section.......................
-  int<lower=0> Nboot; //number of bootstrapped observations
-  int<lower=0> Nboot_sample; //number of observations per bootstrapped species
-  array[Nboot] int<lower=1, upper=Nsp> boot_sp; //species ID for each bootstrapped observation
-  vector[Nboot] boot_regional; //regional trend for each bootstrapped observation
+  vector[Nsp] t_habitat_selection; //ndvi habitat
   
 }
 
 parameters {
+  
+  
+  
+  
+  
+  
   matrix[Nsp, Nrt] a; //species-route interaction matrix, fit a species trend along each sp+rt combo.
   vector[Nsp] a_bar; // the intercept eg. initial count at yr 0, fit one per species. species-level mean for the intercept a
   vector<lower=0>[Nsp] sigma_a; //standard deviation in a, if we're fitting a_bar we ought to also fit a species-specific sigma_a... if they all look similar we can re-assess
