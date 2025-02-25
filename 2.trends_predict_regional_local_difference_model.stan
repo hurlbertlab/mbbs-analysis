@@ -1,15 +1,14 @@
 //
-// This Stan program defines a hierarchical model
+// This Stan program defines a simple model, with a
+// vector of values 'y' modeled as normally distributed
+// with mean 'mu' and standard deviation 'sigma'.
 //
 // Learn more about model development with Stan at:
 //
 //    http://mc-stan.org/users/interfaces/rstan.html
 //    https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started
 //
-// Looking for a specific model run previously? check out Z:/Hurlbertlab/Goulden/
-// mbbs-analysis and the models that are stored there. They include a txt file 
-// with the stan code.
-//
+
 data {
   int<lower=0> N; // number of observations or rows
   int<lower=1> Nsp; // number of species
@@ -34,6 +33,11 @@ data {
   vector[Nsp] t_climate_pos; //climate position value for every species 
   vector[Nsp] t_habitat_selection; //ndvi habitat selection for every species
   //here, you give it the LENGTH of the vector (Nsp), eg. same as the number of species. Later, in the model section, you give it the SPECIES (sp)
+  //...........regional dif section.......................
+  int<lower=0> Nboot; //number of bootstrapped observations
+  int<lower=0> Nboot_sample; //number of observations per bootstrapped species
+  array[Nboot] int<lower=1, upper=Nsp> boot_sp; //species ID for each bootstrapped observation
+  vector[Nboot] boot_regional; //regional trend for each bootstrapped observation
   
 }
 
@@ -74,7 +78,7 @@ model {
 //  sigma_a ~ exponential(1);
   
   b ~ normal(gamma_b + 
-           //  kappa_regional*t_regional[sp_t] +
+            // kappa_regional*t_regional[sp_t] +
              kappa_climate_pos*t_climate_pos[sp_t] +
              kappa_habitat_selection*t_habitat_selection[sp_t],
              sig_b);
@@ -91,4 +95,14 @@ model {
     gamma_c ~ normal(0,0.5);
     sig_c ~ exponential(1);
 
+}
+
+generated quantities {
+  vector[Nsp] d_bar;
+  
+  // Compute 'd_bar' based on 'b' and 'r'
+  for (n in 1:Nboot) {
+    d_bar[n] = b[sp[n]] - boot_regional[boot_sp[n]];  // Example computation, replace with your actual formula
+  }
+  
 }

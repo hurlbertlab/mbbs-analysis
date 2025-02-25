@@ -51,7 +51,7 @@ filtered_mbbs <- make_testing_df(mbbs_traits)
 #change to filtered_mbbs for testing, mbbs_traits for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.24_testing_maxtrix_narrowaplha_abar2-2/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.25_testing_regional_dif/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -103,11 +103,13 @@ datstan <- list(
   t_habitat_selection = traits$habitat_selection, #! NOT CENTERED YET
   t_regional = traits$usgs_trend_estimate,
   sp_t = traits$common_name_standard, #species for each trait
-  C = mbbs_dataset$count #count data
+  C = mbbs_dataset$count, #count data
+  
 )
 
 #specify the stan model code
 stan_model_file <- "2.active_development_model.stan"
+stan_model_file <- "2.trends_predict_regional_local_difference_model.stan"
 
 #compile the stan model
 stan_model <- stan_model(file = stan_model_file)
@@ -150,6 +152,46 @@ write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 
 
 View(fit_final) ##DO NOT HAVE THIS ON LONGLEAF
+
+
+### NEXT STEP: Predict difference between regional and local trends!
+
+#make new variables
+  #pull posterior samples for the betas from the stanfit.
+  #load in stanfit if needed...
+  #fit <- readRDS(paste0(save_to, "stanfit.rds"))
+  
+  posterior <- as.data.frame(fit) %>%
+    dplyr::select("b[1]":"b[61]") #or select("b[1]:gamma_b") and then -gamma_b
+  #keep only the betas
+  #pivot 
+  #^ why do we do the as.data.frame and don't have to like, extract anything?
+
+
+  #bootstrap a regional trend to use to predict the difference between beta and regional with traits
+  num_bootstrap <- nrow(posterior)
+  bootstrap_regional <- mbbs_dataset %>%
+    dplyr::select(common_name, common_name_standard, usgs_trend_estimate:usgs_startyear) %>%
+    group_by(common_name) %>%
+    distinct() %>%
+    ungroup() %>%
+    mutate(sd = ((usgs_97.5CI - usgs_2.5CI)/(2*1.96))) %>%
+    group_by(common_name, common_name_standard) %>%
+    dplyr::summarize(
+      bootstrapped_regional = list(rnorm(num_bootstrap, mean = usgs_trend_estimate, sd = sd))
+    ) %>%
+    unnest(bootstrapped_regional) %>%
+    ungroup()
+  
+  datstan_dif <- list(
+    #unique for calculating the difference between regional and local trends
+    Nboot = nrow(bootstrap_regional), #number of bootstrap obs overall
+    Nboot_sample = num_bootstrap, #number of regional and b samples per species
+    boot_regional = bootstrap_regional$bootstrapped_regional, #regional trend for each bootstrapped observation
+    boot_sp = bootstrap_regional$common_name_standard #species index for each bootstrapped observation
+  )
+  
+
 #####################
 
 #linear model to check inutition
@@ -160,10 +202,11 @@ View(fit_final) ##DO NOT HAVE THIS ON LONGLEAF
   
   #get trend from fit_final
   #ideally this ought to be from the model we just ran, but for testing purposes:
-  fit_final <- read.csv("data/STAN_output_localtraits2025.01.28.csv") 
+load_from <- "Z:/Goulden/mbbs-analysis/model/2025.02.11_allspecies_traits_index_fixed/"
+  fit_final <- read.csv(paste0(load_from, "fit_summary.csv")) 
   data_test = fit_final %>%
-    mutate(b = stringr::str_detect(fit_final$rownames, "b\\["),
-           withinbracket = stringr::str_extract(fit_final$rownames, "(?<=\\[)([^]]+)(?=\\])")) %>%
+    mutate(b = stringr::str_detect(fit_final$X, "b\\["),
+           withinbracket = stringr::str_extract(fit_final$X, "(?<=\\[)([^]]+)(?=\\])")) %>%
     filter(b == TRUE) %>%
     #add in species traits
     left_join(mbbs_test, by = c("withinbracket" = "common_name_standard"))
