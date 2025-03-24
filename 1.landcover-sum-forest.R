@@ -33,9 +33,10 @@ forest <- read.csv("data/nlcd-landcover/nlcd_annual_landtype_bystop.csv") %>%
                                    stop_num > 5 ~ 2,
                                    stop_num > 0 ~ 1)) %>%
   group_by(route, quarter_route, year) %>%
-  mutate(perc_forest_quarter = sum(perc_forest_stop))
+  mutate(perc_forest_quarter = mean(perc_forest_stop)) %>%
+  ungroup()
 
-  write.csv(forest, "data/nlcd-landcover/nlcd_annual_sum_forest.csv")
+  write.csv(forest, "data/nlcd-landcover/nlcd_annual_sum_forest.csv", row.names = FALSE)
 
 #now plot
 #the thing to look out for is dips and then peaks for several years, indicative of an overall pixel categorization / some kinda error. There, we ..mayy.. wind up applying some kind of smoothing
