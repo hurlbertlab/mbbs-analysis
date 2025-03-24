@@ -23,9 +23,9 @@ data {
   //note: the 'for each x' that 'x' is what the array length is.
   array[N] int<lower=1, upper=Nyr> year; //year for each observation
 //.............observer section....................................
-  int<lower=1> Nobs; //number of observers
-  array[N] int<lower=1, upper=Nobs> obs; //there is an observer for every observation
-  vector[Nobs] observer_quality; //there is an observer_quality for every observer
+//  int<lower=1> Nobs; //number of observers
+//  array[N] int<lower=1, upper=Nobs> obs; //there is an observer for every observation
+  vector[N] observer_quality; //there is an observer_quality for every observation [vector of Nobs otherwise]
 //..............count................................................
   array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is an unbounded integer that is at least 0.
 //...............predictor variables.....................

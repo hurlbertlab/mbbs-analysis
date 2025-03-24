@@ -22,12 +22,21 @@
 
 library(dplyr)
 
-landcover <- read.csv("data/nlcd-landcover/nlcd_annual_landtype_bystop.csv") %>%
+forest <- read.csv("data/nlcd-landcover/nlcd_annual_landtype_bystop.csv") %>%
   group_by(route, stop_num, year) %>%
   filter(ijbg_class %in% 
            c("deciduous forest", "mixed forest", "evergreen forest")) %>%
-  mutate(perc_forest = sum(percent)) %>%
-  distinct(route, stop_num, year, perc_forest)
+  mutate(perc_forest_stop = sum(percent)) %>%
+  distinct(route, stop_num, year, perc_forest_stop) %>%
+  mutate(quarter_route = case_when(stop_num > 15 ~ 4,
+                                   stop_num > 10 ~ 3,
+                                   stop_num > 5 ~ 2,
+                                   stop_num > 0 ~ 1)) %>%
+  group_by(route, quarter_route, year) %>%
+  mutate(perc_forest_quarter = sum(perc_forest_stop))
+
+  write.csv(forest, "data/nlcd-landcover/nlcd_annual_sum_forest.csv")
 
 #now plot
 #the thing to look out for is dips and then peaks for several years, indicative of an overall pixel categorization / some kinda error. There, we ..mayy.. wind up applying some kind of smoothing
+

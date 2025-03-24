@@ -52,7 +52,7 @@ filtered_mbbs <- make_testing_df(mbbs_traits)
 #change to filtered_mbbs for testing, mbbs_traits for the real thing
 mbbs_dataset <- mbbs_traits
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.02.25_testing_regional_dif/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.03.21_obs_quality_only_again/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
