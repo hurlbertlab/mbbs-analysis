@@ -35,3 +35,14 @@ forest <- read.csv("data/nlcd-landcover/nlcd_annual_sum_forest.csv") %>%
 save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.24_designing"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
+
+# really basic glm, how would this go?
+testdata <- stopdata %>% 
+  filter(common_name == "Wood Thrush") %>%
+  mutate(quarter_route = case_when(stop_num > 15 ~ 4,
+                                   stop_num > 10 ~ 3,
+                                   stop_num > 5 ~ 2,
+                                   stop_num > 0 ~ 1)) %>%
+  left_join(dev, by = c("quarter_route", "route", "year"))
+
+test <- glm(count ~ year + rmax_dev_quarter, family = quasipoisson, data = testdata)
