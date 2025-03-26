@@ -35,6 +35,12 @@ dev <- read.csv("data/nlcd-landcover/nlcd_annual_running_max_developed.csv") %>%
 #the intercept represents the expected bird counts at the average urbanization (a quarter urbanized)
 #a 1 unit change in the z score is 1 SD above the mean. the SD is 21.1% change. So 
 
+forest <- read.csv("data/nlcd-landcover/nlcd_annual_sum_forest.csv") %>%
+  #summarize bc we only need 1 entry per route quarter
+  group_by(route, quarter_route, year, perc_forest_quarter) %>%
+  summarize() %>%
+  ungroup
+
 max_nlcd_year <- max(dev$year)
 
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
@@ -57,43 +63,35 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   standardize_year(starting_year = 2012) %>% #current stopdata max year is 2023 (huh! pull the 2024 data, might as well use it! actually this might be happening b/c we don't have 2024 landcover data..... anyway! we'll standardize on year 2012 (abt halfway btwn 2000 and 2023))
 #maybe year should be GENUINELY standardized. that would make the intercept lean towards the years where we have the most data.
   ####let's genuinely standardize year. like, the same way we z_score development.
-  mutate(z_score_year = (year-mean(year))/sd(year))
+  mutate(z_score_year = (year-mean(year))/sd(year)) %>%
 #mean year is 2014.36
 #sd year is 7.87
+  #let's pull out the species that are unscientific, waterbirds, etc.
+  filter(!common_name %in% excluded_species) %>%
+  #let's left_join in the landcover data
+  left_join(dev, by = c("route", "quarter" = "quarter_route", "year")) %>%
+  left_join(forest, by = c("route", "quarter" = "quarter_route", "year"))
 
 ## step to pull out only the species that have enough non-zero data included.
-
-forest <- read.csv("data/nlcd-landcover/nlcd_annual_sum_forest.csv") %>%
-  #summarize bc we only need 1 entry per route quarter
-  group_by(route, quarter_route, year, perc_forest_quarter) %>%
-  summarize() %>%
-  ungroup
-
-#Let's leftjoin, the dataset isn't so huge at 160k entries before filtering
-  stopdata <- stopdata %>%
-    left_join(dev, by = c("route", "quarter" = "quarter_route", "year")) %>%
-    left_join(forest, by = c("route", "quarter" = "quarter_route", "year"))
+#so, actually going to skip this step! and fit the model even for the species that we have very low data on. One of the benefits of bayes models is that the number of datapoints you need is 0... and if it turns out we ought to exclude these anyway, then we'll do that, but no need to cut ourselves off early.
 
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.25_designing_fullystandardizeyear"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.26_runthroughspecies"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
 # really basic glm, how would this go?
-testdata <- stopdata %>% 
+one_species <- stopdata %>% 
   filter(common_name == "Wood Thrush")
-
-test <- glm(count ~ year + rmax_dev_quarter, family = quasipoisson, data = testdata)
-summary(test)
 
 # let's start simple. all we want is to predict the intercepts of the different quarter routes
 datstan <- list(
-  N = nrow(testdata), #number of observations
-  Nqrt = length(unique(testdata$q_rt_standard)), #number of unique quarter routes
-  qrt = testdata$q_rt_standard, #qrt index for each observation
-  perc_dev = testdata$z_score_rmax_dev, #percent developed for each observation
-  year = testdata$year_standard, #year for each observation
-  C = testdata$q_rt_count #count data for each observation
+  N = nrow(one_species), #number of observations
+  Nqrt = length(unique(one_species$q_rt_standard)), #number of unique quarter routes
+  qrt = one_species$q_rt_standard, #qrt index for each observation
+  perc_dev = one_species$z_score_rmax_dev, #percent developed for each observation
+  year = one_species$year_standard, #year for each observation
+  C = one_species$q_rt_count #count data for each observation
   )
 
 #stan model specified in landcover_model.stan
@@ -134,9 +132,13 @@ saveRDS(fit, paste0(save_to, "/stanfit.rds"))
 #Save the summary
 write.csv(fit_final, paste0(save_to,"/fit_summary.csv"), row.names = FALSE)
 
+#What we also want is those beta values at the end, and to pull a sample from all those betas so we don't have to re-load the .rds for EVERY SPECIES but we can still get the samples. I want a dataframe where I sample both b_year and b_dev 4k times. And then I want to add on each species as we go.
+
+#cor(stopdata$rmax_dev_quarter, stopdata$perc_forest_quarter)
+#correlation is right at -.7 so, we should not use both of them in the model.
 
 #plot the means without any information added
-c <- testdata %>%
+c <- one_species %>%
   group_by(q_rt_standard) %>%
   summarize(mean_count = mean(q_rt_count))
 plot(c$q_rt_standard, c$mean_count,

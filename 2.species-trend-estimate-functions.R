@@ -110,7 +110,8 @@ standardize_year <- function(mbbs, starting_year = 1999) {
 #} pause on this for now. I like the idea, but my testing stuff I'm just going to set things for WOTH and ACFL. 
 
 # variables
-excluded_species <- c("Red-shouldered Hawk", "Killdeer", "Great Blue Heron", "Canada Goose", "Turkey Vulture", "Black Vulture")
+excluded_species <- c("Red-shouldered Hawk", "Killdeer", "Great Blue Heron", "Canada Goose", "Turkey Vulture", "Black Vulture",
+"crow sp.","duck sp.","hawk sp.","passerine sp.", "swallow sp.","waterfowl sp.","woodpecker sp.", "Summer/Scarlet Tanager", "Sharp-shinned/Cooper's Hawk"  ,"Mute Swan"  ,"Mississippi Kite", "Mallard","Green Heron"   ,"Great Horned Owl", "Great Egret" ,"Eastern Screech-Owl","Double-crested Cormorant","Cooper's Hawk" ,"Sharp-shinned Hawk","Broad-winged Hawk","Belted Kingfisher","Barred Owl", "American/Fish Crow", "Accipitrine hawk sp.", "Yellow-crowned Night Heron","Wood Duck", "Osprey" , "Bald Eagle")
 
 
 
