@@ -14,34 +14,50 @@
   int<lower=0> N; //number of observations
   int<lower=1> Nqrt; //number of quarter routes
   array[N] int<lower=1, upper=Nqrt> qrt; //quarter route for each observation
+  vector[N] perc_dev; //percent developed for each observation, this is a standardized z-score
+  vector[N] year; //year for each observation, z-scored
   array[N] int<lower=0> C; //count for each row
   }
   
   parameters {
-    vector[Nqrt] a; //fit an intercept for each q_route
+//We use non-centered z-score variables to make the MCMC chain dramatically easier to fit. 
+    vector[Nqrt] a_z; //fit an intercept for each q_route, z-score
     real a_bar; //'average q_route'
     real<lower=0> sig_a; //variance from average q_route
+    
+    real b_dev; //effect of development, across routes.
+    real b_year; //effect of year, across routes.
     
     real<lower=0> overdispersion_param;
     //define lambda and overdis param here?
   
   }
+  transformed parameters {
+    vector[Nqrt] a = a_bar + a_z*sig_a; //how to transform a
+  }
   
   model {
     //Non-vectorized alas! neg binomial
     for (n in 1:N) {
-    C[n] ~ neg_binomial(exp(a[qrt[n]]), overdispersion_param);
+    C[n] ~ neg_binomial(exp(a[qrt[n]] + b_dev*perc_dev[n] + b_year*year[n]), overdispersion_param);
     }
   
   //Vectorize attempt
-  //  C ~ neg_binomial_2(exp(a[qrt]), overdispersion_param);
+  //  C ~ neg_binomial(exp(a[qrt] + b[qrt] * perc_dev), overdispersion_param);
 
     //priors
    // lambda = exp(a[]); //intercept only right now. in a more advanced model, you have eg. + b*year + b*landcover
    //we substitute the equasion for lambda directly into the model above. No need to mess around with where lambda gets declared - it's a placeholder value anyway.
-    a ~ normal(a_bar, sig_a); //partially pool the intercepts
-    a_bar ~ normal(2,2); //or some prior. this is kinda large and maybe should be narrowed but whatever. Let's go with it for now.
+    a_z ~ normal(0,1); //partially pool the intercepts
+    a_bar ~ normal(0,2); //or some prior. this is kinda large and maybe should be narrowed but whatever. Let's go with it for now.
     sig_a ~ exponential(1);
+    
+    
+    //there is one effect of urbanzation across routes
+    b_dev ~ normal(0,1);
+    //there is one effect of year across routes
+    b_year ~ normal(0,1);
+    
     //chatgpt says typical prior for the overdispersion param is a gamma prior. I've seen a beta used as well, some questions remain here.
     overdispersion_param ~ gamma(2,1);
     
