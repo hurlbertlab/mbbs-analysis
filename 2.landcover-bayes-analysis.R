@@ -163,6 +163,7 @@ for (i in species_list) {
     #save
     write.csv(posterior_samples, paste0(save_to,"/posterior_samples.csv"), row.names = FALSE)
     paste("datasets saved")
+    timestamp()
 }
 
 
