@@ -76,61 +76,101 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
 #so, actually going to skip this step! and fit the model even for the species that we have very low data on. One of the benefits of bayes models is that the number of datapoints you need is 0... and if it turns out we ought to exclude these anyway, then we'll do that, but no need to cut ourselves off early.
 
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.26_runthroughspecies"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
-# really basic glm, how would this go?
-one_species <- stopdata %>% 
-  filter(common_name == "Wood Thrush")
-
-# let's start simple. all we want is to predict the intercepts of the different quarter routes
-datstan <- list(
-  N = nrow(one_species), #number of observations
-  Nqrt = length(unique(one_species$q_rt_standard)), #number of unique quarter routes
-  qrt = one_species$q_rt_standard, #qrt index for each observation
-  perc_dev = one_species$z_score_rmax_dev, #percent developed for each observation
-  year = one_species$year_standard, #year for each observation
-  C = one_species$q_rt_count #count data for each observation
-  )
-
-#stan model specified in landcover_model.stan
+#stan model specified in landcover_model.stan, let R know where to find it
 stan_model_file <- "2.landcover_model.stan"
-
 #compile the stan model
 stan_model <- stan_model(file = stan_model_file)
 beepr::beep()
+print("model compiled")
 #save the model text
 file.copy(stan_model_file, save_to, overwrite = TRUE)
+print("model saved")
 
-#fit the model to the data
-fit <- sampling(stan_model,
-                data = datstan,
-                chains = 4,
-                cores = 4, 
-                iter = 2000,
-                warmup = 1000)
-beepr::beep()
+#loop through the species
+species_list <- unique(stopdata$common_name)
+#testing
+species_list <- species_list[1:2]
 
-fit_summary <- summary(fit)
-fit_final <- as.data.frame(fit_summary$summary)
-fit_final$rownames <- rownames(fit_final)
-fit_final <- fit_final %>%
-  relocate(rownames, .before = mean) %>%
-  mutate(exp_mean = exp(mean),
-         exp_minconf = exp(`2.5%`),
-         exp_maxconf = exp(`97.5%`),
-         q_rt_standard = as.numeric(ifelse(
-           str_detect(rownames, "a\\[\\d+\\]"),
-           str_extract(rownames, "\\d+"),
-           NA))
-         ) %>%
-  filter(str_detect(rownames, "a_z") == FALSE)
-#save fitfinal
-#Save the fit
-saveRDS(fit, paste0(save_to, "/stanfit.rds"))
-#Save the summary
-write.csv(fit_final, paste0(save_to,"/fit_summary.csv"), row.names = FALSE)
+#blankdata set everything will be saved to
+fit_summaries <- as.data.frame(NA)
+posterior_samples <-  as.data.frame(NA)
+
+for (i in species_list) {
+  #filter to one species
+  one_species <- stopdata %>% 
+    filter(common_name == i)
+  #print species name
+  print(i)
+  
+  #set up the data to feed into the model
+  datstan <- list(
+    N = nrow(one_species), #number of observations
+    Nqrt = length(unique(one_species$q_rt_standard)), #number of unique quarter routes
+    qrt = one_species$q_rt_standard, #qrt index for each observation
+    perc_dev = one_species$z_score_rmax_dev, #percent developed for each observation
+    year = one_species$year_standard, #year for each observation
+    C = one_species$q_rt_count #count data for each observation
+  )
+  print("datstan set")
+  
+  
+  #fit the model to the data
+  fit <- sampling(stan_model,
+                  data = datstan,
+                  chains = 4,
+                  cores = 4, 
+                  iter = 2000,
+                  warmup = 1000)
+  beepr::beep()
+  print(paste0("model fit for: ",i))
+  
+  #save the output
+  fit_temp <- as.data.frame(summary(fit)$summary) %>%
+    mutate(rownames = rownames(.)) %>%
+    relocate(rownames, .before = mean) %>%
+    #filter out the z-score intercept calculations
+    filter(str_detect(rownames, "a_z") == FALSE) %>%
+    #exponentiate (not sure we need this!)
+    mutate(exp_mean = exp(mean),
+           exp_minconf = exp(`2.5%`),
+           exp_maxconf = exp(`97.5%`),
+           q_rt_standard = as.numeric(ifelse(
+             str_detect(rownames, "a\\[\\d+\\]"),
+             str_extract(rownames, "\\d+"),
+             NA)),
+          slope = ifelse(str_detect(rownames, "b"), 
+                         str_extract(rownames, "year|dev"),
+                         NA),
+          common_name = i)
+    #bind rows
+    fit_summaries <- bind_rows(fit_summaries, fit_temp)
+    #save
+    write.csv(fit_summaries, paste0(save_to,"/fit_summaries.csv"), row.names = FALSE)
+  
+    
+    #extract posterior samples and save those also
+    temp_posterior <- as.data.frame(fit) %>%
+      select(starts_with("b_")) %>%
+      mutate(row_id = row_number(),
+             common_name = i)
+    #bind rows
+    posterior_samples <- bind_rows(posterior_samples, temp_posterior) %>%
+      dplyr::select(b_year, b_dev, row_id, common_name)
+    #save
+    write.csv(posterior_samples, paste0(save_to,"/posterior_samples.csv"), row.names = FALSE)
+    paste("datasets saved")
+}
+
+
+###########################################
+##########################################
+###########################################
+
+
 
 #What we also want is those beta values at the end, and to pull a sample from all those betas so we don't have to re-load the .rds for EVERY SPECIES but we can still get the samples. I want a dataframe where I sample both b_year and b_dev 4k times. And then I want to add on each species as we go.
 
