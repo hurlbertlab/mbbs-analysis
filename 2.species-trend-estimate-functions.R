@@ -43,6 +43,24 @@ filter_to_min_sightings <- function(mbbs, min_sightings_per_route, min_num_route
 }
 
 
+###filter to min sightings but for quarter route observations
+filter_to_min_qrts <- function(mbbs, min_quarter_routes) {
+  
+  species_select <- mbbs %>%
+    group_by(common_name, quarter_route) %>% 
+    summarize(nyears = sum(q_rt_count > 0)) %>% #mid step that can be examined if interested
+    ungroup() %>% 
+    group_by(common_name) %>% 
+    filter(quarter_route > 0) %>% 
+    summarize(nqr = sum(nyears > 0)) %>%
+    #filter to species with the minimum number of quarter routes where they've been observed at least once
+    filter(nqr >= min_quarter_routes)
+  
+  #filter the mbbs to only the species that meet the minimum, return the mbbs
+  mbbs <- mbbs %>% filter(common_name %in% species_select$common_name)
+  
+}
+
 #
 #
 # Function to create and initialize a trend table, based off a list of the names of columns
@@ -110,8 +128,8 @@ standardize_year <- function(mbbs, starting_year = 1999) {
 #} pause on this for now. I like the idea, but my testing stuff I'm just going to set things for WOTH and ACFL. 
 
 # variables
-excluded_species <- c("Red-shouldered Hawk", "Killdeer", "Great Blue Heron", "Canada Goose", "Turkey Vulture", "Black Vulture",
-"crow sp.","duck sp.","hawk sp.","passerine sp.", "swallow sp.","waterfowl sp.","woodpecker sp.", "Summer/Scarlet Tanager", "Sharp-shinned/Cooper's Hawk"  ,"Mute Swan"  ,"Mississippi Kite", "Mallard","Green Heron"   ,"Great Horned Owl", "Great Egret" ,"Eastern Screech-Owl","Double-crested Cormorant","Cooper's Hawk" ,"Sharp-shinned Hawk","Broad-winged Hawk","Belted Kingfisher","Barred Owl", "American/Fish Crow", "Accipitrine hawk sp.", "Yellow-crowned Night Heron","Wood Duck", "Osprey" , "Bald Eagle")
+#Exclude hawks and owls, waterbirds, and categories that are not species-specific. Also rock pigeon because of issues with calculating climate data.
+excluded_species <- c("Red-shouldered Hawk", "Killdeer", "Great Blue Heron", "Canada Goose", "Turkey Vulture", "Black Vulture", "crow sp.","duck sp.","hawk sp.","passerine sp.", "swallow sp.","waterfowl sp.","woodpecker sp.", "Summer/Scarlet Tanager", "Sharp-shinned/Cooper's Hawk", "Mute Swan", "Mississippi Kite", "Mallard", "Green Heron","Great Horned Owl", "Great Egret", "Eastern Screech-Owl", "Double-crested Cormorant", "Cooper's Hawk" , "Sharp-shinned Hawk", "Broad-winged Hawk", "Belted Kingfisher", "Barred Owl", "American/Fish Crow", "Accipitrine hawk sp.", "Yellow-crowned Night Heron", "Wood Duck", "Osprey", "Bald Eagle", "Rock Pigeon", "Red-tailed Hawk")
 
 
 

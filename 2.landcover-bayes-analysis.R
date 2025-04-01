@@ -10,6 +10,7 @@
 library(dplyr)
 library(rstan)
 library(stringr)
+unloadNamespace("rethinking")
 
 source("2.species-trend-estimate-functions.R")
 
@@ -68,6 +69,9 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
 #sd year is 7.87
   #let's pull out the species that are unscientific, waterbirds, etc.
   filter(!common_name %in% excluded_species) %>%
+  #let's also remove species that don't meet our minimum bound observations 
+  #set right now at 20 quarter routes
+  filter_to_min_qrts(min_quarter_routes = 20) %>%
   #let's left_join in the landcover data
   left_join(dev, by = c("route", "quarter" = "quarter_route", "year")) %>%
   left_join(forest, by = c("route", "quarter" = "quarter_route", "year"))
@@ -93,7 +97,7 @@ print("model saved")
 #loop through the species
 species_list <- unique(stopdata$common_name)
 #testing
-species_list <- species_list[1:2]
+#species_list <- species_list[1:2]
 
 #blankdata set everything will be saved to
 fit_summaries <- as.data.frame(NA)
