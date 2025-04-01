@@ -71,6 +71,8 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   filter(!common_name %in% excluded_species) %>%
   #let's also remove species that don't meet our minimum bound observations 
   #set right now at 20 quarter routes
+  #this excludes species that are not seen enough to make any sort of confident estimate on their trends, although one benefit of the bayes model is that the number of datapoints you need is 0, the slopes we fit are also going to SPAN 0 and be insigificant. 
+  #this represents species that just do not commonly breed in the area and that we ought not make assumptions about anyway bc this isn't their usual breeding location.
   filter_to_min_qrts(min_quarter_routes = 20) %>%
   #let's left_join in the landcover data
   left_join(dev, by = c("route", "quarter" = "quarter_route", "year")) %>%
@@ -80,12 +82,12 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
 #so, actually going to skip this step! and fit the model even for the species that we have very low data on. One of the benefits of bayes models is that the number of datapoints you need is 0... and if it turns out we ought to exclude these anyway, then we'll do that, but no need to cut ourselves off early.
 
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.01_iale_uncenter_betas"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
-#stan model specified in landcover_model.stan, let R know where to find it
-stan_model_file <- "2.landcover_model.stan"
+#stan model specified in landcover_qrt_trends.stan, let R know where to find it
+stan_model_file <- "2.landcover_qrt_trends.stan"
 #compile the stan model
 stan_model <- stan_model(file = stan_model_file)
 beepr::beep()
