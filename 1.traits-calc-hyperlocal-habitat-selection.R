@@ -10,7 +10,7 @@
 # (the habitat selection metric, 
 #     captures secondary v. primary forest difs)
 # from every stop w/in the mbbs that the species has been observed
-#     on in the last year or two (2024/2023)
+#     on in the last four years (2024/2023/2022/2021)
 # This mean represents their local habitat selection metric
 ########################
 
@@ -70,8 +70,8 @@ species_list <- read.csv("data/species-traits/species_list.csv") %>%
   dplyr::select(common_name)
 mbbs_sl <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>% #sl for stop level 
   filter(common_name %in% species_list$common_name) %>% 
-  #for rn at least only want the last two years of habitat selection data
-  filter(year >= 2023) %>% 
+  #for rn at least only want the last three years of habitat selection data
+  filter(year >= 2021) %>% 
   #filter out where the species count was 0
   filter(count > 0) %>%
   #left_join the information about the buffers so we can move to summarizing
