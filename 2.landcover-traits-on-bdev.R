@@ -152,9 +152,13 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
   b_hab <- temp %>% filter(rownames == "b_habitat")
   hist(b_clim$`2.5%`) #almost always negative
   hist(b_clim$`97.5%`) #always positive
+  hist(b_clim$mean)
   
   hist(b_hab$`2.5%`) #always negative
   hist(b_hab$`97.5%`) #always positive..
+  hist(b_hab$mean)
+  
+  #in terms of summarizing, these should still be like the confidence intervals! With both the mean, the 87% and the 95%. Even though they graze 0 in the 2.5...it's the whole distribution that matters. Are they all important or only some of them?
   
   #scatterplots of data
   plot(df$mean, df$habitat_selection) #but it looks like habitat does have a relationship?
@@ -162,7 +166,53 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
   df <- df %>%
     filter(!common_name == "Wild Turkey")
   plot(df$mean, df$Mass)
-
+  
+  ggplot(df, aes(x=mean, y=Mass, col = SPECIES_GROUP)) + 
+    geom_point()
+  
+  #let's also run a quick model with uai
+  
+  datstanuai <- list(
+    N = nrow(df),
+    uai = df$UAI,
+    #year?
+    #size?
+    #UAI? - nope, measured too close to the same way.
+    effect_of_development = df$mean
+  )
+  
+  stan_model_file <- "2.landcover_uai_on_bdev.stan"
+  #compile the stan model first thing.
+  stan_model <- stan_model(file = stan_model_file)
+  
+  fit <- sampling(stan_model,
+                  data = datstanuai,
+                  chains = 4,
+                  cores = 4, 
+                  iter = 2000,
+                  warmup = 1000)
+  
+  fit_temp <- as.data.frame(summary(fit)$summary) %>%
+    mutate(rownames = rownames(.)) %>%
+    relocate(rownames, .before = mean)
+  
+  post_uai <- as.data.frame(fit) %>%
+    select(b_uai)
+  plot(df$mean, df$UAI)
+  library(bayesplot)
+  mcmc_areas(post_uai,
+                 prob_outer = 0.95)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 # int<lower=0> N; //number of observations
 # vector[N] climate_position; //x variable, eg. climate position
 # vector[N] dev_mean; //y variable, known mean for each species

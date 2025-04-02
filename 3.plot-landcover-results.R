@@ -80,3 +80,27 @@ seperate_betas_pivot <- function(posterior_samples, column_select_list, values_f
   #seems like rather than the slopes, want to plot these with like, the same way Allen plots for all the species of plants....like with a thick bar representing the middle of the distribution and then a thin bar outside that
   
   
+# hist of species more strongly affected by development than by year
+  df_hist <- read.csv(paste0(load_from, "fit_summaries.csv")) %>%
+    #filter to just species we're keeping, and we only want our slopes
+    filter(common_name %in% species_list$common_name,
+           is.na(slope) == FALSE) %>%
+    dplyr::select(-NA., -q_rt_standard) %>%
+    relocate(slope:common_name, .before = rownames) %>%
+    dplyr::select(-rownames) 
+  
+  year_effect <- df_hist %>%
+    filter(slope == "year") %>%
+    mutate(year_effect = mean) %>%
+    select(common_name, year_effect)
+  
+  df_hist <- df_hist %>%
+    filter(slope == "dev") %>%
+    left_join(year_effect) %>%
+    mutate(dev_minus_year = mean - year_effect)
+  
+  hist(df_hist$dev_minus_year)
+  plot(df_hist$mean, df_hist$year_effect) + 
+    abline(h = 0) + 
+    abline(v = 0)
+  
