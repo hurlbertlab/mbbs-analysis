@@ -1,31 +1,38 @@
 //
 // This Stan program defines a simple model, with a
 // vector of values 'y' modeled as normally distributed
-// with mean 'mu' and standard deviation 'sigma'.
-//
-// Learn more about model development with Stan at:
-//
-//    http://mc-stan.org/users/interfaces/rstan.html
-//    https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started
-//
-
 // The input data is a vector 'y' of length 'N'.
 data {
-  int<lower=0> N;
-  vector[N] y;
+  int<lower=0> N; //number of observations
+  vector[N] climate_position; //x variable, eg. climate position
+  vector[N] habitat;
+  vector[N] effect_of_development; //y variable, known mean for each species
+
+  //int<lower=1> Nsp; //number of species
+  //int<lower=1> Ngroup; //number of groups
+  //array[N] int<lower=1, upper=Ngroup> group; //species group for each mass observation.
+  //vector[N] dev_mean; //effect of development for each observation
+  //vector[N] dev_sd; //effect of development for each observation
+  //vector[N] climate_position;
+  //vector[N] habitat;
+  //vector[N] mass;
 }
 
-// The parameters accepted by the model. Our model
-// accepts two parameters 'mu' and 'sigma'.
+
 parameters {
-  real mu;
-  real<lower=0> sigma;
+  real a;
+  real b_climate;
+  real b_habitat;
+  real<lower=0> sig;
 }
+
 
 // The model to be estimated. We model the output
 // 'y' to be normally distributed with mean 'mu'
 // and standard deviation 'sigma'.
 model {
-  y ~ normal(mu, sigma);
+  effect_of_development ~ normal(a + b_climate*climate_position + b_habitat*habitat, sig); #regression
+  
+  b_climate ~ normal(0,1); #start off simple.
+  b_habitat ~ normal(0,1);
 }
-afoei

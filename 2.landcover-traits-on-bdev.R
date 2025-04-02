@@ -33,6 +33,12 @@ unloadNamespace("rethinking")
     select(common_name, z_tempwq, z_precipwq, climate_position)
   #ndvi selection
   habitat <- read.csv("data/species-traits/ndvi_habitat_selection.csv")
+  #uai from Neate-Clegg et al.
+  uai <- read.csv("data/species-traits/UAI-NateCleg-etall.csv") %>%
+    mutate(Species = case_when(Species == "House Wren" ~ "Northern House Wren",
+                               TRUE ~ Species)) %>%
+    filter(City == "Charlotte_US", 
+           Species %in% species_list$common_name)
 
 
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
@@ -49,6 +55,7 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
     left_join(size, by = c("common_name", "SPECIES_GROUP")) %>%
     left_join(climate_position, by = "common_name") %>%
     left_join(habitat, by = "common_name") %>%
+    left_join(uai, by = c("common_name" = "Species")) %>%
     #create groups
     group_by(common_name) %>%
     mutate(sp_standard = cur_group_id()) %>%
@@ -72,26 +79,127 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
   #k yeah, that looks better. Accounting for the variance now when I use these.
   #BUT STILLLLLLLL you need to bring them together and account for that they're samples from the same thing. Otherwise the model is going to come out significant bc it can predict things really well... but it can do that bc there's a ton of samples and things are closely correlated w parts of those samples.
   
+  #each row_id in posterior samples represents a bootstrapped value, so, to get a dataset to run each time I can select i = 
+  
 ####################################################
   
   #simple glm
   m <- glm(mean ~ habitat_selection + climate_position + Mass + se_mean, data = df, family = gaussian)
   summary(m)
  #Set up for stan
-  #or..... load in the posterior samples. Those are my bootstrapped amounts. Connect everything by common_name?...
-  #hmmmmmmmmmmmmmmmmmmmmmmmmmmmm, it would again be like.....
-  #bootstrap the means
-  #and fit a different intercept for each species? To be like, I know these species are different..........
-  #but ah, I don't want a different intercept for each species! or, do I? That way I get the 'mean' for each.........
-  #but REALLY it's that the se/sd is error in there somewhere......
-  #like I want to model the whole distribution with the rest....
-datstan <- list(
-  N = nrow(df), #number of observations
-  Nsp = length(unique(df$sp_standard)), #number of species (same as n observations)
-  dev_mean = df$mean, #effect of development for each observation
-  dev_sd = df$sd, #standard deviation of development for each observations
-  climate_position = df$climate_position,
+  #we will be BAGGING the data, where we bootstrap the data, fit the model, and then average over our predictions at the end.
+  #set where to save things
+  save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.01_bootstrap/"
+  #load the stan file
+  stan_model_file <- "2.landcover_traits_on_bdev.stan"
+  #compile the stan model first thing.
+  stan_model <- stan_model(file = stan_model_file)
+  #create blank dfs for the data to go into
+  fit_summaries <- as.data.frame(NA)
+  posterior_results <-  as.data.frame(NA)
+  for(i in 1:max(posterior_samples$row_id)) {
+ # for(i in 1:10) {
+    standf <- posterior_samples %>%
+      filter(row_id == i)
+    
+    datstan <- list(
+      N = nrow(standf),
+      climate_position = standf$climate_position,
+      habitat = standf$habitat_selection,
+      #year?
+      #size?
+      #UAI? - nope, measured too close to the same way.
+      effect_of_development = standf$b_dev
+    )
+    
+    fit <- sampling(stan_model,
+                    data = datstan,
+                    chains = 4,
+                    cores = 4, 
+                    iter = 2000,
+                    warmup = 1000)
+    
+    fit_temp <- as.data.frame(summary(fit)$summary) %>%
+      mutate(rownames = rownames(.),
+             bootstrap_run = i) %>%
+      relocate(rownames, .before = mean)
+    #bind rows
+    fit_summaries <- bind_rows(fit_summaries, fit_temp)
+    #save
+    write.csv(fit_summaries, paste0(save_to,"fit_summaries.csv"), row.names = FALSE)
+    #extract posterior samples and save those also
+    #temp_posterior <- as.data.frame(fit) %>%
+    #  select(starts_with("b_")) %>%
+    #  mutate(row_id = row_number(),
+    #         bootstrap_run = i)
+    ##bind rows
+    #posterior_results <- bind_rows(posterior_results, temp_posterior)
+    ##save
+    #write.csv(posterior_results, paste0(save_to,"/posterior_samples.csv"), row.names = FALSE)
+    
+    timestamp()
+    print(paste0("bootstrap ", i," completed"))
+    
+  }
   
+  #i got to 2460 overnight - so this is a quite slow way to work with the data. 
+  fit_summaries <- read.csv(paste0(save_to,"fit_summaries.csv"))
+  View(fit_summaries)
+  
+  temp <- fit_summaries %>% filter(rownames %in% c("b_climate", "b_habitat"))
+   View(temp)
+  b_clim <- temp %>% filter(rownames == "b_climate")
+  b_hab <- temp %>% filter(rownames == "b_habitat")
+  hist(b_clim$`2.5%`) #almost always negative
+  hist(b_clim$`97.5%`) #always positive
+  
+  hist(b_hab$`2.5%`) #always negative
+  hist(b_hab$`97.5%`) #always positive..
+  
+  #scatterplots of data
+  plot(df$mean, df$habitat_selection) #but it looks like habitat does have a relationship?
+  plot(df$mean, df$climate_position) #so climate position is quite scattered
+  df <- df %>%
+    filter(!common_name == "Wild Turkey")
+  plot(df$mean, df$Mass)
+
+# int<lower=0> N; //number of observations
+# vector[N] climate_position; //x variable, eg. climate position
+# vector[N] dev_mean; //y variable, known mean for each species
+# vector[N] dev_sd; //for use in re-sampling y, known SD for each species
+# int<lower=0, upper=1> resample;
+
+datstan <- list(
+  N = nrow(standf),
+  climate_position = standf$climate_position,
+  dev_mean = standf$mean, #effect of development for each observation
+  dev_sd = standf$sd, #standard deviation of development for each observations, 
+  resample = 1
+)
+
+stan_model_file <- "2.landcover_traits_on_bdev.stan"
+#compile the stan model
+stan_model <- stan_model(file = stan_model_file)
+
+fit <- sampling(stan_model,
+                data = datstan,
+                chains = 4,
+                cores = 4, 
+                iter = 2000,
+                warmup = 1000)
+
+fit_temp <- as.data.frame(summary(fit)$summary) %>%
+  mutate(rownames = rownames(.)) %>%
+  relocate(rownames, .before = mean)
+  
+datstan <- list(
+  N = nrow(standf), #number of observations
+  Nsp = length(unique(standf$sp_standard)), #number of species (same as n observations)
+  dev_mean = standf$mean, #effect of development for each observation
+  dev_sd = standf$sd, #standard deviation of development for each observations
+  climate_position = standf$climate_position,
+  habitat = standf$habitat_selection,
+  mass = standf$Mass
 )
 
   
