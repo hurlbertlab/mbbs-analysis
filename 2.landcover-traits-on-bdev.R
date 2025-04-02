@@ -20,6 +20,9 @@ unloadNamespace("rethinking")
 
 #load in dataframes
 ###################################
+load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
+species_list <- read.csv(paste0(load_from, "species_list.csv"))
+
   #get species groups
   taxonomy <- read.csv("data/species-traits/eBird_taxonomy_v2024.csv") %>%
     select(PRIMARY_COM_NAME, SPECIES_GROUP, SCI_NAME)
@@ -41,8 +44,6 @@ unloadNamespace("rethinking")
            Species %in% species_list$common_name)
 
 
-load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
-  species_list <- read.csv(paste0(load_from, "species_list.csv"))
   df <- read.csv(paste0(load_from, "fit_summaries.csv")) %>%
     #filter to just species we're keeping, and we only want our slopes
     filter(common_name %in% species_list$common_name,
@@ -89,13 +90,10 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
   
 ####################################################
   
-  #simple glm
-  m <- glm(mean ~ habitat_selection + climate_position + Mass + se_mean, data = df, family = gaussian)
-  summary(m)
  #Set up for stan
   #we will be BAGGING the data, where we bootstrap the data, fit the model, and then average over our predictions at the end.
   #set where to save things
-  save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.01_bootstrap/"
+  save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.02_traits_on_bdev_addsize_bootstrap/"
   #load the stan file
   stan_model_file <- "2.landcover_traits_on_bdev.stan"
   #compile the stan model first thing.
@@ -114,6 +112,7 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
       habitat = standf$habitat_selection,
       mass = standf$z_mass_spg,
       Nspg = length(unique(standf$group_standard)),
+      species_group = standf$group_standard,
       #UAI? - nope, measured too close to the same way.
       effect_of_development = standf$b_dev
     )
@@ -134,14 +133,17 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
     #save
     write.csv(fit_summaries, paste0(save_to,"fit_summaries.csv"), row.names = FALSE)
     #extract posterior samples and save those also
-    #temp_posterior <- as.data.frame(fit) %>%
-    #  select(starts_with("b_")) %>%
-    #  mutate(row_id = row_number(),
-    #         bootstrap_run = i)
-    ##bind rows
-    #posterior_results <- bind_rows(posterior_results, temp_posterior)
-    ##save
-    #write.csv(posterior_results, paste0(save_to,"/posterior_samples.csv"), row.names = FALSE)
+    temp_posterior <- as.data.frame(fit) %>%
+      select(starts_with("b_")) %>%
+      mutate(row_id = row_number(),
+             bootstrap_run = i) %>%
+      #but we don't need to save 4000 from each sample, we're also bootstrapping.
+      #save the first 1000
+      filter(row_id < 1001)
+    #bind rows
+    posterior_results <- bind_rows(posterior_results, temp_posterior)
+    #save
+    write.csv(posterior_results, paste0(save_to,"/posterior_samples.csv"), row.names = FALSE)
     
     timestamp()
     print(paste0("bootstrap ", i," completed"))
