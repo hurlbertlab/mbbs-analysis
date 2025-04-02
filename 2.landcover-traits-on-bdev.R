@@ -62,8 +62,14 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
     ungroup() %>%
     group_by(SPECIES_GROUP) %>%
     mutate(group_standard = cur_group_id())%>%
-    ungroup()
-  
+    #within each species group we ought to also z-score the mass. 
+    mutate(spg_mean_mass = mean(Mass),
+           spg_sd_mass = sd(Mass),
+           z_mass_spg = ((Mass - spg_mean_mass)/spg_sd_mass),
+           z_mass_spg = ifelse(is.na(z_mass_spg), 0, z_mass_spg)) %>%
+    ungroup() 
+    
+
   #separate out year effects
   year_effect <- df %>%
     filter(slope == "year")
@@ -106,8 +112,8 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
       N = nrow(standf),
       climate_position = standf$climate_position,
       habitat = standf$habitat_selection,
-      #year?
-      #size?
+      mass = standf$z_mass_spg,
+      Nspg = length(unique(standf$group_standard)),
       #UAI? - nope, measured too close to the same way.
       effect_of_development = standf$b_dev
     )
