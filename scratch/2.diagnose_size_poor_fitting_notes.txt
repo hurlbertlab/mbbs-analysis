@@ -1,0 +1,49 @@
+The two ways of setting up `b_size` represent different parameterizations of the same underlying model, but they have important differences in terms of computational efficiency and interpretability. Let's break down each approach:
+
+### Way 1: Non-centered Parameterization
+```stan
+transformed parameters {
+  vector[Nspg] b_size = b_bar_size + b_sig_size * b_size_raw;
+}
+
+model {
+  effect_of_development ~ normal(a + b_size[Nspg]*mass, sig);
+  b_size_raw ~ normal(0,1); // Implies b_size ~ normal(b_bar_size, b_sigma_size)
+  b_bar_size ~ normal(0, 1);
+  b_sig_size ~ normal(0, 0.5);  
+  sig ~ exponential(1);
+}
+```
+
+Key characteristics:
+1. **Non-centered parameterization**: The random effects (`b_size`) are constructed by scaling a standard normal variable (`b_size_raw`) with the standard deviation parameter (`b_sig_size`) and shifting by the mean (`b_bar_size`).
+2. **Explicit transformation**: The relationship between `b_size_raw` and `b_size` is clearly defined in the `transformed parameters` block.
+3. **Sampling efficiency**: This form often samples better in hierarchical models because it reduces dependence between the location and scale parameters in the posterior.
+4. **Prior specification**: The prior is specified on the standardized (`b_size_raw`) version, which makes the prior more interpretable.
+
+### Way 2: Centered Parameterization
+```stan
+model {
+  effect_of_development ~ normal(a + b_size[Nspg]*mass, sig);
+  b_size_raw ~ normal(b_bar_size, b_sig_size); 
+  b_bar_size ~ normal(0, 1);
+  b_sig_size ~ normal(0, 0.5);  
+  sig ~ exponential(1);
+}
+```
+
+Key characteristics:
+1. **Centered parameterization**: The random effects (`b_size_raw` in this case, which is equivalent to `b_size` in Way 1) are directly sampled from their conditional distribution.
+2. **Implicit relationship**: The hierarchical structure is specified directly in the model block.
+3. **Potential sampling issues**: This can lead to inefficient sampling (especially when the data is sparse) because of strong dependencies between the group means (`b_bar_size`) and the deviations (`b_size_raw`).
+4. **Prior specification**: The prior is specified directly on the random effects.
+
+### Key Differences:
+1. **Computational Efficiency**: Way 1 (non-centered) is generally more computationally efficient, especially when the group-level variance is small or the data is sparse.
+2. **Interpretability**: Way 1 makes the transformation from standardized to unstandardized parameters explicit.
+3. **Parameter Names**: Note that in Way 2, what's called `b_size_raw` is actually equivalent to `b_size` in Way 1 - the naming might be confusing here.
+
+### Recommendation:
+The non-centered parameterization (Way 1) is generally preferred for hierarchical models in Stan, as it often leads to better sampling behavior. The centered parameterization (Way 2) can work well when you have abundant data per group and the hierarchical variance is not too small.
+
+In both cases, you're ultimately specifying that the `b_size` parameters (the size effects for each species group) come from a normal distribution with mean `b_bar_size` and standard deviation `b_sig_size`. The difference is in how this relationship is implemented in the Stan code.
