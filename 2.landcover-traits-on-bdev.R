@@ -20,6 +20,7 @@ unloadNamespace("rethinking")
 
 #load in dataframes
 ###################################
+#Get the b_dev data from the last run of the first step of the landcover modeling
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
 species_list <- read.csv(paste0(load_from, "species_list.csv"))
 
@@ -93,11 +94,16 @@ species_list <- read.csv(paste0(load_from, "species_list.csv"))
  #Set up for stan
   #we will be BAGGING the data, where we bootstrap the data, fit the model, and then average over our predictions at the end.
   #set where to save things
-  save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.02_traits_on_bdev_addsize_bootstrap/"
+  save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.07_traits_on_bdev_fixsize_bootstrap/"
+  #if the output folder doesn't exist, create it
+  if (!dir.exists(save_to)) {dir.create(save_to)}
   #load the stan file
   stan_model_file <- "2.landcover_traits_on_bdev.stan"
   #compile the stan model first thing.
   stan_model <- stan_model(file = stan_model_file)
+  beepr::beep()
+  #save the model text
+  file.copy(stan_model_file, save_to, overwrite = TRUE)
   #create blank dfs for the data to go into
   fit_summaries <- as.data.frame(NA)
   posterior_results <-  as.data.frame(NA)

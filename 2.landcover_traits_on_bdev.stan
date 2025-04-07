@@ -8,17 +8,8 @@ data {
   vector[N] habitat;
   vector[N] effect_of_development; //y variable, known mean for each species
   int<lower=0> Nspg; //number of species groups
-  array[N] int<lower=1, upper=Nspg> species_group; //species group for each mass observation
+  array[N] int<lower=1, upper=Nspg> species_group; //species group id for each mass observation
   vector[N] mass; //mass of species, scaled with a z-score within each group
-
-  //int<lower=1> Nsp; //number of species
-  //int<lower=1> Ngroup; //number of groups
-  //array[N] int<lower=1, upper=Ngroup> group; //species group for each mass observation.
-  //vector[N] dev_mean; //effect of development for each observation
-  //vector[N] dev_sd; //effect of development for each observation
-  //vector[N] climate_position;
-  //vector[N] habitat;
-  //vector[N] mass;
 }
 
 
@@ -26,22 +17,25 @@ parameters {
   real a;
   real b_climate;
   real b_habitat;
-  vector[Nspg] b_size;
+  vector[Nspg] b_size_raw; //de-centering parameters.
   real b_bar_size;
-  real b_sig_size;
+  real<lower=0> b_sig_size;
   real<lower=0> sig;
 }
 
+transformed parameters {
+  vector[Nspg] b_size = b_bar_size + b_sig_size * b_size_raw;
+}
 
 // The model to be estimated. We model the output
 // 'y' to be normally distributed with mean 'mu'
 // and standard deviation 'sigma'.
 model {
-  effect_of_development ~ normal(a + b_climate*climate_position + b_habitat*habitat + b_size[Nspg]*b_size, sig); #regression
+  effect_of_development ~ normal(a + b_climate*climate_position + b_habitat*habitat + b_size[Nspg]*mass, sig); #regression
   
   b_climate ~ normal(0,1); #start off simple.
   b_habitat ~ normal(0,1);
-  b_size ~ normal(b_bar_size, b_sig_size);
-  b_bar_size ~ normal(0,1);
-  b_bar_size ~ exponential(1);
+  b_size_raw ~ normal(0,1);
+  b_bar_size ~ normal(0, 1);
+  b_sig_size ~ normal(0, 0.5);  // half-normal, expect not much variation between groups but leave it open to the possibility there is some. exp(1) would mean I really don't expect variation between groups and want to be cautious about expecting that.
 }
