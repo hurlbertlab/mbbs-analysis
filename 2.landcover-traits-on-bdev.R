@@ -104,10 +104,12 @@ species_list <- read.csv(paste0(load_from, "species_list.csv"))
   beepr::beep()
   #save the model text
   file.copy(stan_model_file, save_to, overwrite = TRUE)
+  #also save the base df for info about the groupings
+  write.csv(df, paste0(save_to, "species_variables.csv"), row.names = FALSE)
   #create blank dfs for the data to go into
   fit_summaries <- as.data.frame(NA)
   posterior_results <-  as.data.frame(NA)
-  for(i in 1:max(posterior_samples$row_id)) {
+for(i in 489:max(posterior_samples$row_id)) {
  # for(i in 1:10) {
     standf <- posterior_samples %>%
       filter(row_id == i)
@@ -127,8 +129,8 @@ species_list <- read.csv(paste0(load_from, "species_list.csv"))
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 2000,
-                    warmup = 1000)
+                    iter = 4000,
+                    warmup = 2000)
     
     fit_temp <- as.data.frame(summary(fit)$summary) %>%
       mutate(rownames = rownames(.),
@@ -148,13 +150,17 @@ species_list <- read.csv(paste0(load_from, "species_list.csv"))
       filter(row_id < 1001)
     #bind rows
     posterior_results <- bind_rows(posterior_results, temp_posterior)
-    #save
-    write.csv(posterior_results, paste0(save_to,"/posterior_samples.csv"), row.names = FALSE)
+    #save, we'll save at the end actually :)
+    #write.csv(posterior_results, paste0(save_to,"/posterior_samples.csv"), row.names = FALSE)
     
     timestamp()
     print(paste0("bootstrap ", i," completed"))
     
   }
+  #save at end bc it takes a bit, huge dataset
+  write.csv(posterior_results, paste0(save_to,"/posterior_samples1-900.csv"), row.names = FALSE)
+  beepr::beep()
+  write.csv(fit_summaries, paste0(save_to,"fit_summaries1-900.csv"), row.names = FALSE)
   
   #i got to 2460 overnight - so this is a quite slow way to work with the data. 
   fit_summaries <- read.csv(paste0(save_to,"fit_summaries.csv"))

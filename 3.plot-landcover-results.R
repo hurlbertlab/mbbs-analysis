@@ -4,7 +4,7 @@
 # for chapter 2. 
 # Figures include:
 # two-panel effect of b_yr and b_dev
-#
+# effect of habitat/climate/size on b_dev
 #
 ##################################
 
@@ -16,6 +16,7 @@ library(cowplot) #used to make multi-panel figures
 
 #where are we pulling data from?
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
+load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.07_traits_on_bdev_fixsize_bootstrap/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -23,6 +24,7 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
   #families are "serif" for times new roman, "sans" for TT Arial, and "mono" for very typewriter
   bayesplot_theme_set(theme_minimal())
   color_scheme_set("purple")
+  color_scheme_set("blue")
 ######## 
 
 
@@ -103,4 +105,36 @@ seperate_betas_pivot <- function(posterior_samples, column_select_list, values_f
   plot(df_hist$mean, df_hist$year_effect) + 
     abline(h = 0) + 
     abline(v = 0)
+  
+############################ effect of habitat/climate/size on b_dev
+  posterior_samples <- read.csv(paste0(load_from_bdev, "posterior_samples1-400.csv"))
+  #so, this is still about double the number of samples from the first, but thankfully once we cut it to the first 400 bootstrap runs we can actually get some info!
+  
+  mcmc_intervals(posterior_samples,
+                 regex_pars = "^b_")
+  #need to bring back info about what groups are each b_size[number]
+  species_variables <- read.csv(paste0(load_from_bdev, "species_variables.csv"))%>%
+    select(SPECIES_GROUP, group_standard) %>%
+    arrange(group_standard) %>%
+    group_by(SPECIES_GROUP, group_standard) %>%
+    summarize(n = n())
+  #and probably plot the size effects and b_ s differently
+  
+  size_graphing <- posterior_samples %>%
+    select(b_size.1.:b_size.24.) %>%
+    rename_with(
+      ~paste0(
+        species_variables$SPECIES_GROUP[match(
+        as.numeric(gsub("b_size\\.(\\d+)\\.", "\\1", .x)),
+        species_variables$group_standard)], 
+        " (",
+        species_variables$n[match(
+          as.numeric(gsub("b_size\\.(\\d+)\\.", "\\1", .x)),
+          species_variables$group_standard)],
+        ")"),
+      matches("^b_size")
+    )
+    
+  mcmc_intervals(size_graphing) +
+    labs(title = "No Effect of Species Mass")
   
