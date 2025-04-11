@@ -24,9 +24,9 @@ study_boundaries <- terra::ext(-80.55, -77.74, 34.57, 37.24)
 #Files located on the lab Z: drive
 #Downloaded from AppEEARS, requested MODIS monthly data from 2022 May-July, with a polygon covering most of North Carolina
 ndvi <- terra::rast(c(
-  "Z:/Goulden/mbbs-analysis/MOD13A3.061_1_km_monthly_NDVI_2012MAY_MBBS.tif", 
-  "Z:/Goulden/mbbs-analysis/MOD13A3.061_1_km_monthly_NDVI_2012JUNE_MBBS.tif",
-  "Z:/Goulden/mbbs-analysis/MOD13A3.061_1_km_monthly_NDVI_2012JULY_MBBS.tif")) %>%
+  "Z:/Goulden/mbbs-analysis/MOD13A3.061_1_km_monthly_NDVI_2022MAY_MBBS.tif", 
+  "Z:/Goulden/mbbs-analysis/MOD13A3.061_1_km_monthly_NDVI_2022JUNE_MBBS.tif",
+  "Z:/Goulden/mbbs-analysis/MOD13A3.061_1_km_monthly_NDVI_2022JULY_MBBS.tif")) %>%
   project("epsg:4326")
 
 terra::plot(ndvi)
@@ -58,9 +58,9 @@ terra::plot(study_area) #some areas are white - that's okay, these are out of bo
 #want to trim to just the parts of the raster than intersect with each stop, then extract
   data_ndvi <- terra::extract(study_area, mbbs_buffers) %>%
     group_by(ID) %>%
-    summarize(may_ndvi = mean(MOD13A3.061_1_km_monthly_NDVI_2012MAY_MBBS, na.rm = TRUE),
-              june_ndvi = mean(MOD13A3.061_1_km_monthly_NDVI_2012JUNE_MBBS, na.rm = TRUE),
-              july_ndvi = mean(MOD13A3.061_1_km_monthly_NDVI_2012JULY_MBBS, na.rm = TRUE),
+    summarize(may_ndvi = mean(MOD13A3.061_1_km_monthly_NDVI_2022MAY_MBBS, na.rm = TRUE),
+              june_ndvi = mean(MOD13A3.061_1_km_monthly_NDVI_2022JUNE_MBBS, na.rm = TRUE),
+              july_ndvi = mean(MOD13A3.061_1_km_monthly_NDVI_2022JULY_MBBS, na.rm = TRUE),
               mean_ndvi = mean(c(may_ndvi, june_ndvi, july_ndvi), na.rm = TRUE)) %>%
     left_join(buffer_ID, by = "ID")
       
@@ -94,6 +94,6 @@ mbbs_sl <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>% #sl for stop level
   
   #calculate corrleation
   cor(dicecco_habitat_niche$ssi, dicecco_habitat_niche$habitat_selection)
-  #Cor of -0.072. Okay cool! Not very correlated. 
+  #Cor of 0.16. Okay cool! Not very correlated. 
   #Do keep in mind...we've only used a dummy variable for habitat niche in the data so far. It may be that Grace's habitat niche IS predictive.
   
