@@ -16,7 +16,7 @@ library(cowplot) #used to make multi-panel figures
 
 #where are we pulling data from?
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
-load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.07_traits_on_bdev_fixsize_bootstrap/"
+load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -107,37 +107,52 @@ seperate_betas_pivot <- function(posterior_samples, column_select_list, values_f
     abline(v = 0)
   
 ############################ effect of habitat/climate/size on b_dev
-  posterior_samples <- read.csv(paste0(load_from_bdev, "posterior_samples1-400.csv"))
+  tbdev_samples <- read.csv(paste0(load_from_bdev, "posterior_samples1-400.csv"))
   #so, this is still about double the number of samples from the first, but thankfully once we cut it to the first 400 bootstrap runs we can actually get some info!
   
-  mcmc_intervals(posterior_samples,
+  mcmc_intervals(tbdev_samples,
                  regex_pars = "^b_")
   #need to bring back info about what groups are each b_size[number]
   species_variables <- read.csv(paste0(load_from_bdev, "species_variables.csv"))%>%
     select(SPECIES_GROUP, group_standard) %>%
     arrange(group_standard) %>%
     group_by(SPECIES_GROUP, group_standard) %>%
-    summarize(n = n())
+    summarize(n = n()) %>%
+    ungroup()
   #and probably plot the size effects and b_ s differently
   
-  size_graphing <- posterior_samples %>%
-    select(b_size.1.:b_size.24.) %>%
+  size_graphing <- tbdev_samples %>%
+    select(`b_size_group[1]`:`b_size_group[24]`) %>%
     rename_with(
       ~paste0(
-        species_variables$SPECIES_GROUP[match(
-        as.numeric(gsub("b_size\\.(\\d+)\\.", "\\1", .x)),
-        species_variables$group_standard)], 
+        species_variables$SPECIES_GROUP[
+          match(
+            as.numeric(str_extract(.x, "\\d+")),  # Extract all digits
+            species_variables$group_standard
+          )], 
         " (",
-        species_variables$n[match(
-          as.numeric(gsub("b_size\\.(\\d+)\\.", "\\1", .x)),
-          species_variables$group_standard)],
-        ")"),
+        species_variables$n[
+          match(
+            as.numeric(str_extract(.x, "\\d+")),  # Same extraction here
+            species_variables$group_standard
+          )],
+        ")"
+      ),
       matches("^b_size")
     )
     
   mcmc_intervals(size_graphing) +
     labs(title = "No Effect of Species Mass")
   
-  mcmc_intervals(posterior_samples,
-                 regex_pars = c("b_climate", "b_habitat"))
+  #okay and now if we want to graph just the main effects. Let's also rename
+  main_effects_graphing <- tbdev_samples %>%
+    select(b_climate, b_habitat, b_log_size, b_bar_size) %>%
+    rename("Climate Position" = b_climate,
+           "Forest Selectivity" = b_habitat,
+           "Log Mass" = b_log_size,
+           "Within-Group Mass" = b_bar_size)
+  mcmc_intervals(main_effects_graphing) +
+    geom_vline(xintercept = 0,
+               col = "black",
+               lty = "dashed")
   

@@ -16,7 +16,7 @@
 library(dplyr)
 library(rstan)
 library(stringr)
-unloadNamespace("rethinking")
+unloadNamespace("rethinking") #just in case, can interfere
 
 #load in dataframes
 ###################################
@@ -30,7 +30,8 @@ species_list <- read.csv(paste0(load_from, "species_list.csv"))
   
   #size comes from AVONNET
   size <- read.csv("data/species-traits/avonet_filtered.csv") %>%
-    dplyr::select(Mass, common_name, SPECIES_GROUP)
+    dplyr::select(Mass, common_name, SPECIES_GROUP) %>%
+    mutate(log_mass = log(Mass))
   
   #climate position
   climate_position <- read.csv("data/species-traits/climate_position.csv") %>%
@@ -94,7 +95,7 @@ species_list <- read.csv(paste0(load_from, "species_list.csv"))
  #Set up for stan
   #we will be BAGGING the data, where we bootstrap the data, fit the model, and then average over our predictions at the end.
   #set where to save things
-  save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.07_traits_on_bdev_fixsize_bootstrap/"
+  save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
   #if the output folder doesn't exist, create it
   if (!dir.exists(save_to)) {dir.create(save_to)}
   #load the stan file
@@ -107,10 +108,10 @@ species_list <- read.csv(paste0(load_from, "species_list.csv"))
   #also save the base df for info about the groupings
   write.csv(df, paste0(save_to, "species_variables.csv"), row.names = FALSE)
   #create blank dfs for the data to go into
-  fit_summaries <- as.data.frame(NA)
-  posterior_results <-  as.data.frame(NA)
-for(i in 489:max(posterior_samples$row_id)) {
- # for(i in 1:10) {
+  fit_summaries <- as.data.frame(NULL)
+  posterior_results <-  as.data.frame(NULL)
+#for(i in 1:max(posterior_samples$row_id)) {
+  for(i in 52:400) {
     standf <- posterior_samples %>%
       filter(row_id == i)
     
@@ -118,9 +119,10 @@ for(i in 489:max(posterior_samples$row_id)) {
       N = nrow(standf),
       climate_position = standf$climate_position,
       habitat = standf$habitat_selection,
-      mass = standf$z_mass_spg,
+      mass_group = standf$z_mass_spg,
       Nspg = length(unique(standf$group_standard)),
       species_group = standf$group_standard,
+      log_mass = standf$log_mass,
       #UAI? - nope, measured too close to the same way.
       effect_of_development = standf$b_dev
     )
@@ -158,9 +160,9 @@ for(i in 489:max(posterior_samples$row_id)) {
     
   }
   #save at end bc it takes a bit, huge dataset
-  write.csv(posterior_results, paste0(save_to,"/posterior_samples1-900.csv"), row.names = FALSE)
+  write.csv(posterior_results, paste0(save_to,"/posterior_samples1-400.csv"), row.names = FALSE)
   beepr::beep()
-  write.csv(fit_summaries, paste0(save_to,"fit_summaries1-900.csv"), row.names = FALSE)
+  write.csv(fit_summaries, paste0(save_to,"fit_summaries1-400.csv"), row.names = FALSE)
   
   #i got to 2460 overnight - so this is a quite slow way to work with the data. 
   fit_summaries <- read.csv(paste0(save_to,"fit_summaries.csv"))
