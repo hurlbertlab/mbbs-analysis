@@ -12,6 +12,7 @@
 # from every stop w/in the mbbs that the species has been observed
 #     on in the last four years (2024/2023/2022/2021)
 # This mean represents their local habitat selection metric
+# UPDATE: download a later ndvi and use the average across more recent years, make sure the calculations are connected in space and time
 ########################
 
 #libraries

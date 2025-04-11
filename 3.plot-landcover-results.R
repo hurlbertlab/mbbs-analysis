@@ -138,3 +138,6 @@ seperate_betas_pivot <- function(posterior_samples, column_select_list, values_f
   mcmc_intervals(size_graphing) +
     labs(title = "No Effect of Species Mass")
   
+  mcmc_intervals(posterior_samples,
+                 regex_pars = c("b_climate", "b_habitat"))
+  
