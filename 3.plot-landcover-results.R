@@ -20,7 +20,7 @@ load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
-  bayesplot_theme_update(text = element_text(size = 12, family = "sans")) 
+  bayesplot_theme_update(text = element_text(size = 20, family = "sans")) 
   #families are "serif" for times new roman, "sans" for TT Arial, and "mono" for very typewriter
   bayesplot_theme_set(theme_minimal())
   color_scheme_set("purple")
@@ -65,10 +65,12 @@ seperate_betas_pivot <- function(posterior_samples, column_select_list, values_f
   
   
   dev_plot <- mcmc_intervals(sorted_dev,
+             prob = 0.01,
              prob_outer = 0.95) + 
     geom_vline(xintercept = 0, color = "grey30") 
   
   year_plot <- mcmc_intervals(sorted_year,
+             prob = 0.01, 
              prob_outer = 0.95) +
     geom_vline(xintercept = 0, color = "grey30") +
     theme(axis.text.y = element_blank(),
