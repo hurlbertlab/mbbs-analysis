@@ -1,6 +1,6 @@
 ########################
 # Traits: Calculate Local Habitat Selection with NDVI/DVI
-# Take an ndvi map from like 2012/2015
+# Take an ndvi map from 2022
 # Use monthly data, either June or average May-June-July
 # Load in the mbbs stop lat/lon
 # and buffer to 400m,
@@ -12,7 +12,6 @@
 # from every stop w/in the mbbs that the species has been observed
 #     on in the last four years (2024/2023/2022/2021)
 # This mean represents their local habitat selection metric
-# UPDATE: download a later ndvi and use the average across more recent years, make sure the calculations are connected in space and time
 ########################
 
 #libraries
@@ -23,7 +22,7 @@ library(sf)
 study_boundaries <- terra::ext(-80.55, -77.74, 34.57, 37.24)
 
 #Files located on the lab Z: drive
-#Downloaded from AppEEARS, requested MODIS monthly data from 2012 May-July, with a polygon covering most of North Carolina
+#Downloaded from AppEEARS, requested MODIS monthly data from 2022 May-July, with a polygon covering most of North Carolina
 ndvi <- terra::rast(c(
   "Z:/Goulden/mbbs-analysis/MOD13A3.061_1_km_monthly_NDVI_2012MAY_MBBS.tif", 
   "Z:/Goulden/mbbs-analysis/MOD13A3.061_1_km_monthly_NDVI_2012JUNE_MBBS.tif",
