@@ -70,15 +70,8 @@ species_list <- read.csv(paste0(load_from, "species_list.csv"))
            spg_sd_mass = sd(Mass),
            z_mass_spg = ((Mass - spg_mean_mass)/spg_sd_mass),
            z_mass_spg = ifelse(is.na(z_mass_spg), 0, z_mass_spg)) %>%
-    ungroup() 
-    
-
-  #separate out year effects
-  year_effect <- df %>%
-    filter(slope == "year")
-  
-  #so now we don't need year in there..
-  df <- df %>%
+    ungroup() %>%
+    #we don't need the year effects, only the dev effects
     filter(slope == "dev")
   
   posterior_samples <- read.csv(paste0(load_from, "posterior_samples.csv")) %>%

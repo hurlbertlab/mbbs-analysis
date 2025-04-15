@@ -17,6 +17,7 @@ library(cowplot) #used to make multi-panel figures
 #where are we pulling data from?
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
 load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
+load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bdev/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -157,4 +158,15 @@ seperate_betas_pivot <- function(posterior_samples, column_select_list, values_f
     geom_vline(xintercept = 0,
                col = "black",
                lty = "dashed")
+
+  
+################################uai
+  uai <- read.csv(paste0(load_from_uai, "posterior_samples.csv")) %>%
+    dplyr::rename("UAI" = b_uai)
+  
+  mcmc_intervals(uai,
+                 pars = "UAI") +
+    xlab("Effect of Development") + 
+    xlim(-0.5, 2) +
+    vline_0(lty = "dashed")
   
