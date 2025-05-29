@@ -50,10 +50,16 @@ parameters {
   real kappa_habitat_selection; //effect of t_habitat_selection on betas. real b/c we only want one.
   real<lower=0> sig_b; //deviation from explanatory power of the traits on predicting the trends. Represents residual variance / measure of scatter. ...In some ways, R2??
   
-  vector[Nobs] c; //effect of observer, fit one for each observer
-  real gamma_c; //fit one intercept across observers. Let's keep this simple, bc we don't need to super complicate the role observers play
-  real kappa_obs; //fit one effect of observer quality
-  real <lower=0> sig_c; //deviation btwn observed offset for count and score I gave each observer
+//  vector[Nobs] c; //effect of observer, fit one for each observer
+//  real gamma_c; //fit one intercept across observers. Let's keep this simple, bc we don't need to super complicate the role observers play
+//  real kappa_obs; //fit one effect of observer quality
+//  real <lower=0> sig_c; //deviation btwn observed offset for count and score I gave each observer
+  
+}
+
+transformed parameters {
+  
+  matrix[Nsp, Nrt] a = a_bar + a_z*sigma_a;
   
 }
 
@@ -61,11 +67,12 @@ model {
 
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
    for (n in 1:N) {
-     C[n] ~ poisson_log(a[sp[n], rt[n]] + b[sp[n]] * year[n] + c[obs[n]]);
+     C[n] ~ poisson_log(a[sp[n], rt[n]] + b[sp[n]] * year[n] + observer_quality[n]);
    }
 // eg... for every row/observation in the data.
 // The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
 
+##!!!! CHANGES HERE
   to_vector(a) ~ normal(a_bar[sp_sprt], sigma_a[sp_sprt]); //use sp_sprt to index a_bar and sigma_a because a is a vector of length sp*rt after we to_vector the matrix
   a_bar ~ normal(2, 2); //bc a_bar is a vector of sp_a, fits once for each species. Keeping narrow for now...with bad neffs the average ranges from -4 -> 4, so perhaps this prior should be expanded. Fitting it mean 2 with stdev of 2, so 0 is a reasonable value and as is 0. Gives it a little more space to explore.
   sigma_a ~ exponential(1);
@@ -86,9 +93,9 @@ model {
 //  kappa_habitat_selection ~ normal(0, .2);
 //.............^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^..................
 
-    c ~ normal(gamma_c + kappa_obs*observer_quality, sig_c); //observer quality may need some indexing? no, b/c dependent on both observer and route.
+//    c ~ normal(gamma_c + kappa_obs*observer_quality, sig_c); //observer quality may need some indexing? no, b/c dependent on both observer and route.
     //add priors for gamma_c and sig_c
-    gamma_c ~ normal(0,0.5);
-    sig_c ~ exponential(1);
+//    gamma_c ~ normal(0,0.5);
+//    sig_c ~ exponential(1);
 
 }

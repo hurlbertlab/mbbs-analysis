@@ -9,21 +9,15 @@ source("2.ste-datstan-lists.R")
 library(beepr) #beeps
 library(dplyr) #data manip
 library(tidyr) #data manip
-#library(lme4) #modeling
-#library(MASS) #modeling
-#library(geepack) #GEE modeling
-#library(mbbs) #data comes from here
-#library(broom) #extracts coefficient values out of models, works with geepack (not using geepack rn)
 library(rstan) #stan
 library(stringr)
 library(StanHeaders) #stan helper
-#library(rethinking) #alt. way to model with bayes, from Statistical Rethinking course. Can't use for final analysis bc the ulam helper function has some presets that don't fit my needs (eg. 87% standard deviation calculations)
 
 #prevent scientific notation to make a trend table easier to read
 options(scipen=999)
 
 #------------------------------------------------------------------------------
-# Bayes model, based initially on Link and Sauer 2001
+# Bayes model, based initially on Link and Sauer 2001 - it has changed a decent bit since then tbh
   # https://academic.oup.com/auk/article/128/1/87/5149447
 # Modeling help from review of DiCecco Pop Trends code
   # https://github.com/gdicecco/poptrends_envchange/tree/master
@@ -50,9 +44,9 @@ mbbs_traits <- add_all_traits(mbbs) %>%
 filtered_mbbs <- make_testing_df(mbbs_traits)
 
 #change to filtered_mbbs for testing, mbbs_traits for the real thing
-mbbs_dataset <- mbbs_traits
+mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.03.21_obs_quality_only_again/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.05.29_traits_obsq_zscoreabar/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -78,8 +72,8 @@ sp_sprt_base <- mbbs_dataset %>%
     write.csv(paste0(save_to, "beta_to_common_name.csv"), row.names = FALSE) #now alphas can also be translated.
 
 #make observer quality seperate
-obs_q_base <- mbbs_dataset %>%
-  distinct(observer_ID,observer_quality)
+#obs_q_base <- mbbs_dataset %>%
+#  distinct(observer_ID,observer_quality)
 
 #prepare the data list for Stan
 datstan <- list(
@@ -94,9 +88,9 @@ datstan <- list(
   #sprt = mbbs_dataset$sprt_standard, #species route indices
   sp_sprt = sp_sprt_base$common_name_standard, #species for each species route
   year = mbbs_dataset$year_standard, #year indices
-  observer_quality = obs_q_base$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
-  Nobs = length(unique(mbbs_dataset$observer_ID)), #n observers
-  obs = mbbs_dataset$observer_ID, #observer index
+  observer_quality = mbbs_dataset$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
+#  Nobs = length(unique(mbbs_dataset$observer_ID)), #n observers
+#  obs = mbbs_dataset$observer_ID, #observer index
   #trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
   #trait_climate = mbbs_dataset$climate_vol_2.1, #! NOT CENTERED YET
   #trait_habitat = mbbs_dataset$habitat_ssi, #! NOT CENTERED YET
