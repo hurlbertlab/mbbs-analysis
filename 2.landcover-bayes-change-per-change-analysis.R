@@ -89,8 +89,132 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   mutate(
     change_count = q_rt_count - lag(q_rt_count),
     change_dev = rmax_dev_quarter - lag(rmax_dev_quarter),
-    years_btwn = year - lag(year)
+    years_btwn = year - lag(year), 
+    #switching things up, we also want to create a ratio between years, then take the log of that ratio and divide it by the years_btwn
+    ratio_count = case_when(
+      q_rt_count == 0 & lag(q_rt_count) == 0 ~ 0,
+      TRUE ~ q_rt_count/lag(q_rt_count) #likely to actually NOT use bc Inf errors when previous year the count on the quarter route was 0 (p common occurance as we know), as if we removed those it takes out like almost every population increase. Nah
+    ),
+    log_rc_div_yb = log(ratio_count)/years_btwn, #likely to depreciate
   ) %>%
-  ungroup()
+  #add a flag if the species is experiencing exponential declines that are going to cause problems
+  ungroup() %>%
+  group_by(common_name) %>%
+  mutate(pvalue_changecount_by_year = summary(lm(change_count~year))$coefficients[2,4],
+         r_sq = summary(lm(change_count~year))$r.squared,
+         flag = ifelse(pvalue_changecount_by_year > .05, NA, "FLAG")) %>%
+  ungroup() %>%
+  #remove the NA years (first record of each quarter route) 
+  filter(is.na(change_count) == FALSE) %>%
+  #hmmmm and remake year_standard while we're here? now we've changed it. rn year standard is based on the mean year.
+  standardize_year(starting_year = 2012) %>% 
+  ####let's genuinely standardize year. like, the same way we z_score development.
+  mutate(z_score_year = (year-mean(year))/sd(year)) 
+  #yeah, and bc we've removed like a year's worth of data, that changes the z_score years. hm, maybe we should do year a different way. Check in abt this
+
+  #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
+  flagged_sp <- stopdata %>% 
+    filter(flag == "FLAG", #was it flagged for a significant change_count ~ year relationship?
+           r_sq > 0.01) #if it was flagged, did it actually explain ANY variation in the data?
   
+  #assert that no species are flagged.
+  assertthat::assert_that(nrow(flagged_sp) == 0)
+  #great, if it passes we can move on :)
+  stopdata <- stopdata %>% 
+    dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year)
+  
+#where to save stan code and fit
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_per_change_woyear"
+#if the output folder doesn't exist, create it
+if (!dir.exists(save_to)) {dir.create(save_to)}
+
+#stan model specified in landcover_qrt_trends.stan, let R know where to find it
+stan_model_file <- "2.landcover_change_per_change.stan"
+#compile the stan model
+stan_model <- stan_model(file = stan_model_file)
+beepr::beep()
+print("model compiled")
+
+#save the model text
+file.copy(stan_model_file, save_to, overwrite = TRUE)
+print("model saved")
+
+#loop through the species
+species_list <- stopdata %>% 
+  distinct(common_name)
+#testing
+#species_list <- species_list[1:5,]
+
+#blankdata set everything will be saved to
+fit_summaries <- as.data.frame(NA)
+posterior_samples <-  as.data.frame(NA)
+
+for (i in species_list$common_name) {
+  #filter to one species
+  one_species <- stopdata %>% 
+    filter(common_name == i)
+  #print species name
+  print(i)
+  
+  #set up the data to feed into the model
+  datstan <- list(
+    N = nrow(one_species), #number of observations
+    Nqrt = length(unique(one_species$q_rt_standard)), #number of unique quarter routes
+    qrt = one_species$q_rt_standard, #qrt index for each observation
+    change_dev = one_species$change_dev, #change in percent developed for each observation since the last year
+    dev = one_species$rmax_dev_quarter, #running max developed
+#    R = one_species$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
+#    year = one_species$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
+    change_C = one_species$change_count #count data for each observation, change since the last year
+  )
+  print("datstan set")
+  
+  
+  #fit the model to the data
+  fit <- sampling(stan_model,
+                  data = datstan,
+                  chains = 4,
+                  cores = 4, 
+                  iter = 2000,
+                  warmup = 1000)
+  beepr::beep()
+  print(paste0("model fit for: ",i))
+  
+  #save the output
+  fit_temp <- as.data.frame(summary(fit)$summary) %>%
+    mutate(rownames = rownames(.)) %>%
+    relocate(rownames, .before = mean) %>%
+    #filter out the z-score intercept calculations
+    filter(str_detect(rownames, "a_z") == FALSE) %>%
+    #exponentiate (not sure we need this!)
+    mutate(exp_mean = exp(mean),
+           exp_minconf = exp(`2.5%`),
+           exp_maxconf = exp(`97.5%`),
+           q_rt_standard = as.numeric(ifelse(
+             str_detect(rownames, "a\\[\\d+\\]"),
+             str_extract(rownames, "\\d+"),
+             NA)),
+           slope = ifelse(str_detect(rownames, "b"), 
+                          str_extract(rownames, "year|dev"),
+                          NA),
+           common_name = i)
+  #bind rows
+  fit_summaries <- bind_rows(fit_summaries, fit_temp)
+  #save
+  write.csv(fit_summaries, paste0(save_to,"/fit_summaries.csv"), row.names = FALSE)
+  
+  
+  #extract posterior samples and save those also
+  temp_posterior <- as.data.frame(fit) %>%
+    select(starts_with("b_")) %>%
+    mutate(row_id = row_number(),
+           common_name = i)
+  #bind rows
+  posterior_samples <- bind_rows(posterior_samples, temp_posterior) %>%
+    dplyr::select(b_dev_change, b_dev_base, row_id, common_name)
+  #save
+  write.csv(posterior_samples, paste0(save_to,"/posterior_samples.csv"), row.names = FALSE)
+  paste("datasets saved")
+  timestamp()
+}
 

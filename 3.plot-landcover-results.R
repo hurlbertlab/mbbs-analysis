@@ -18,6 +18,7 @@ library(cowplot) #used to make multi-panel figures
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
 load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
 load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bdev/"
+load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_per_change_woyear/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -28,8 +29,8 @@ load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bde
   color_scheme_set("blue")
 ######## 
 
-
 ####two-panel effect of b_yr and b_dev
+  #!!!!!!!!!!!!!!! bayesplot has a built in grid function!!!! bayesplot_grid() - explore that later
   
 #also going to filter to just species that we're keeping.
   species_list <- read.csv(paste0(load_from, "species_list.csv"))
@@ -169,4 +170,43 @@ seperate_betas_pivot <- function(posterior_samples, column_select_list, values_f
     xlab("Effect of Development") + 
     xlim(-0.5, 2) +
     vline_0(lty = "dashed")
+  
+  
+######################### landcover change per change
+  
+  
+  #####b_yr and b_change and b_dev
+  species_list <- read.csv(paste0(load_from_change,"species_list.csv"))
+  posterior_samples <- read.csv(paste0(load_from_change,"posterior_samples.csv")) %>%
+    filter(is.na(common_name) == FALSE,
+           common_name %in% species_list$common_name)
+  
+  dev_change <- posterior_samples %>%
+    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev_change"),
+                         values_from_column = "b_dev_change")
+  param_means <- colMeans(dev_change)
+  sorted_params <- names(sort(param_means))
+  sorted_dev_change <- dev_change[,sorted_params]
+  
+  dev_base <- posterior_samples %>%
+    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev_base"),
+                         values_from_column = "b_dev_base")
+  param_means <- colMeans(dev_base)
+  sorted_params <- names(sort(param_means))
+  sorted_dev_base <- dev_base[,sorted_params]
+    
+
+  color_if_zero_crossed <- function(x) {
+    ifelse(x[1] < 0 & x[2] > 0, "grey50", "black")  # Interval crosses 0 → grey
+  }
+  
+  dev_plot <- mcmc_intervals(sorted_dev_change,
+                             prob = 0.01,
+                             prob_outer = 0.95,
+                             ) +
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("Change in Development on Change in Count")
+  
+  dev_plot
+  
   
