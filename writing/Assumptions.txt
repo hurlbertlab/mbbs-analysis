@@ -1,0 +1,7 @@
+Assumptions:
+
+Ch2-
+Raw land cover data, development never goes down, we use the running max of development. Going to need to justify, may need some satellite images
+#run with raw and running max, stability analysis, doesn't change anything
+
+Forest can't be identified accurately enough, so we combine broadleaf and deciduous - checked with satellite imagery already 
