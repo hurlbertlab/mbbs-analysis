@@ -10,6 +10,7 @@
 library(ebirdst)
 library(dplyr)
 library(terra)
+library(stringr)
 
 species_list <- read.csv("data/species-traits/species_list.csv")
 #okay so ebirdst_habitat() has been deprecated, reached out for help and will return to this file when I've got that further information/download in hand
@@ -41,6 +42,90 @@ ebirdst_download_status(species = species_list$ebird_code[i],
 }
 #all downloaded successfully
 
+#okay, yay, now loop through the species and calculate the means for the available pis we're interested in during the breeding season
+  #make blank datasets to add to
+  all_pis <- data.frame(NULL)
+  all_pis_weekly <- data.frame(NULL)
+for(i in 48:nrow(species_list)) {
+  
+  species_pis <- list_available_pis(species = species_list$ebird_code[i], path = setpath) %>%
+    left_join(pis, by = "predictor") %>%
+    filter(!is.na(class)) %>%
+    mutate(total_mean = as.numeric(999)) %>%
+  #filter out problematic ones that aren't working.
+    filter(
+      !(species_code == "acafly" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
+      !(species_code == "barswa" & predictor == "mcd12q1_lccs1_c11_pland" & response == "count"),
+      !(species_code == "easmea" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
+      !(species_code == "eursta" & predictor == "mcd12q1_lccs1_c11_pland" & response == "count"),
+      !(species_code == "grcfly" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
+      !(species_code == "hoowar" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
+      !(species_code == "horlar" & predictor == "mcd12q1_lccs1_c11_pland" & response == "count"),
+      !(species_code == "houspa" & predictor == "mcd12q1_lccs1_c15_pland" & response == "count"),
+      !(species_code == "kenwar" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"))
+  
+  print(species_list$ebird_code[i]) 
+  
+  #so, both count and occurrence have dif ranks. I think what we should do here is for each of the predictors, calculate the one mean, and then add that back in to this dataset. THEN, in a separate dataset, store the week-by-week data. Can save both bc not sure which one we'll need
+  
+  for(a in 1:nrow(species_pis)) {
+    
+    print(paste0(species_pis$predictor[a],"+", species_pis$response[a]))
+    
+    one_pi <- load_pi(
+      species = species_pis$species_code[a],
+      predictor = species_pis$predictor[a],
+      response = species_pis$response[a],
+      path = setpath) 
+    if(length(names(one_pi)) > 1) {
+      #species is not year-round
+      one_pi <- one_pi %>%
+        #subset to breeding season May-July
+        terra::subset(subset = str_detect(names(.), "0[567]-"))
+    } 
+    #continue on
+    one_pi <- one_pi %>%
+      #get mean for each week
+      terra::global("mean", na.rm = TRUE) %>%
+      tibble::rownames_to_column() %>%
+      mutate(total_mean = as.numeric(mean(mean)),
+             species_code = species_pis$species_code[a],
+             predictor = species_pis$predictor[a],
+             response = species_pis$response[a])
+    
+    #save for outside loop
+    all_pis_weekly <- bind_rows(all_pis_weekly, one_pi)
+    
+    #summarize to just one breeding season mean
+    summarized_one_pi <- one_pi %>%
+      distinct(total_mean, .keep_all = TRUE) %>%
+      dplyr::select(-rowname, -mean)
+    #add back to species dataset
+    new_row <- species_pis %>% 
+      filter(species_code == species_pis$species_code[a],
+             predictor == species_pis$predictor[a],
+             response == species_pis$response[a]) %>%
+      mutate(total_mean = summarized_one_pi$total_mean)
+    species_pis <- species_pis %>%
+      rows_update(new_row, by = c("species_code", "predictor", "response"))
+    
+  }
+  
+  #after looping through all the pis, add to the overall dataset for saving outside the loop
+  all_pis <- bind_rows(all_pis, species_pis)
+}
+  
+  #save datasets
+  write.csv(all_pis, "data/species-traits/ebird-habitat-association/pis_summarized.csv")
+  write.csv(all_pis_weekly, "data/species-traits/ebird-habitat-association/pis_weekly.csv")
+  
+  
+  
+  
+  
+  
+  
+  
 c <- list_available_pis(species = "Common Grackle", path = setpath)
 #so, the predictor column is going to need some interpretation
 grac <- left_join(pis, c, by = "predictor")
@@ -50,8 +135,16 @@ ex <- load_pi(species = "Common Grackle",
         predictor = pis$predictor[13], #evergreen needleleaf cover
         response = "occurrence",
         path = setpath)
-terra::plot(ex$`01-26`)
-global(ex$`04-26`, "mean", na.rm = TRUE)
+
+subset_ex <- terra::subset(ex, subset = str_detect(names(ex),"0[567]-"))
+names(subset_ex)
+
+global(subset_ex, "mean", na.rm = TRUE) #awesome, prints the whole list
+means <- global(subset_ex, "mean", na.rm = TRUE) %>%
+  tibble::rownames_to_column()
+
+#okay, so now, we need to for each species get the list of pis that are included, whether each affects occurance or abundance, then for each of those pis get the means for the related breeding season
+
 #so here you can plot like, the weekly distribution and then, question mark, how important the predictor is that week?
 #so we want to use the breeding season only, let's set that as May-July, the weeks that the MBBS surveys are running. 
 #so, in this case we'd what...add up the predictor importance of the various forest predictors? average the forest predictors?
