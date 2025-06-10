@@ -28,6 +28,16 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_
   color_scheme_set("purple")
   color_scheme_set("blue")
 ######## 
+##FUNCTIONS  
+  #separate out into two dfs, pivot both back to assumed structure of columns with 4000 rows bayesplot wants
+  seperate_betas_pivot <- function(posterior_samples, column_select_list, values_from_column) {
+    x <- posterior_samples %>%
+      dplyr::select(all_of(column_select_list)) %>%
+      tidyr::pivot_wider(names_from = common_name, 
+                         values_from = {{values_from_column}}) %>%
+      dplyr::select(-row_id)
+  }  
+  
 
 ####two-panel effect of b_yr and b_dev
   #!!!!!!!!!!!!!!! bayesplot has a built in grid function!!!! bayesplot_grid() - explore that later
@@ -38,15 +48,6 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_
     #filter out NA row and for common_names only in the list of species we're interested in
     filter(is.na(common_name) == FALSE,
            common_name %in% species_list$common_name)
-  
-  #separate out into two dfs, pivot both back to assumed structure of columns with 4000 rows bayesplot wants
-seperate_betas_pivot <- function(posterior_samples, column_select_list, values_from_column) {
-  x <- posterior_samples %>%
-    dplyr::select(all_of(column_select_list)) %>%
-    tidyr::pivot_wider(names_from = common_name, 
-                       values_from = {{values_from_column}}) %>%
-    dplyr::select(-row_id)
-}  
   
   dev <- posterior_samples %>%
     seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev"),
@@ -181,12 +182,33 @@ seperate_betas_pivot <- function(posterior_samples, column_select_list, values_f
     filter(is.na(common_name) == FALSE,
            common_name %in% species_list$common_name)
   
+  significant_change <- posterior_samples %>%
+    group_by(common_name) %>%
+    mutate(minconf = as.numeric(quantile(b_dev_change, probs = .025)),
+           maxconf = as.numeric(quantile(b_dev_change, probs = .975))) %>%
+    ungroup() %>%
+    distinct(common_name, .keep_all = TRUE) %>%
+    mutate(sig = ifelse(minconf < 0 & maxconf > 0, FALSE, TRUE)) %>%
+    dplyr::select(-row_id)
+    
+  
   dev_change <- posterior_samples %>%
     seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev_change"),
                          values_from_column = "b_dev_change")
   param_means <- colMeans(dev_change)
   sorted_params <- names(sort(param_means))
   sorted_dev_change <- dev_change[,sorted_params]
+  #fix things for color plotting
+  order_dev_change <- as.data.frame(colnames(sorted_dev_change)) %>%
+    mutate(order = row_number())
+  significant_change <- significant_change %>%
+    left_join(order_dev_change, by = c("common_name" = "colnames(sorted_dev_change)"))
+  #wouldn't break this up but there's some error going on when they're together
+  significant_change <- significant_change %>%
+    arrange(order) %>%
+    dplyr::mutate(color = ifelse(sig == TRUE, "black", "grey80"))
+  #okay well. there's a color vector in the right order now. um. it kinda of seems like bayesplot isn't built for this kind of sig vs non-sig demonstration in this way. May require putting up an issue on the github or submitting a question. Otherwise like. idk. Going to need to plot twice, once with NA columns for the non-sig and the next with NA coloumns for the sig, both on the same plot, but dif colors associated with bayplot_theme(). hm
+    
   
   dev_base <- posterior_samples %>%
     seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev_base"),
@@ -194,16 +216,11 @@ seperate_betas_pivot <- function(posterior_samples, column_select_list, values_f
   param_means <- colMeans(dev_base)
   sorted_params <- names(sort(param_means))
   sorted_dev_base <- dev_base[,sorted_params]
-    
-
-  color_if_zero_crossed <- function(x) {
-    ifelse(x[1] < 0 & x[2] > 0, "grey50", "black")  # Interval crosses 0 → grey
-  }
   
   dev_plot <- mcmc_intervals(sorted_dev_change,
                              prob = 0.01,
-                             prob_outer = 0.95,
-                             ) +
+                             prob_outer = 0.95) +
+    scale_color_manual(values = significant_change$color) +
     geom_vline(xintercept = 0, color = "grey30") +
     ggtitle("Change in Development on Change in Count")
   
