@@ -46,7 +46,7 @@ ebirdst_download_status(species = species_list$ebird_code[i],
   #make blank datasets to add to
   all_pis <- data.frame(NULL)
   all_pis_weekly <- data.frame(NULL)
-for(i in 48:nrow(species_list)) {
+for(i in 1:nrow(species_list)) {
   
   species_pis <- list_available_pis(species = species_list$ebird_code[i], path = setpath) %>%
     left_join(pis, by = "predictor") %>%
@@ -62,7 +62,16 @@ for(i in 48:nrow(species_list)) {
       !(species_code == "hoowar" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
       !(species_code == "horlar" & predictor == "mcd12q1_lccs1_c11_pland" & response == "count"),
       !(species_code == "houspa" & predictor == "mcd12q1_lccs1_c15_pland" & response == "count"),
-      !(species_code == "kenwar" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"))
+      !(species_code == "kenwar" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
+      !(species_code == "logshr" & predictor == "mcd12q1_lccs1_c11_pland" & response == "count"),
+      !(species_code == "louwat" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
+      !(species_code == "norbob" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
+      !(species_code == "norcar" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
+      !(species_code == "normoc" & predictor == "mcd12q1_lccs1_c11_pland" & response == "count"),
+      !(species_code == "sumtan" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence"),
+      !(species_code == "yelwar" & predictor == "mcd12q1_lccs1_c15_pland" & response == "count"),
+      !(species_code == "yetvir" & predictor == "mcd12q1_lccs1_c11_pland" & response == "occurrence")
+      )
   
   print(species_list$ebird_code[i]) 
   
