@@ -159,7 +159,10 @@ assertthat::assert_that(!any(is.na(associations[,2:3]))) #awesome, asserts true,
   #write.csv(species_list, "data/species-traits/species_list.csv", row.names = FALSE)
   
   
-  
+#plot
+  plot(associations$ebirdst_association_forest, associations$ebirdst_association_grassland, xlim = c(0, .32)) + 
+    text(associations$ebirdst_association_forest+.01, associations$ebirdst_association_grassland-.002, labels = associations$species_code, cex = 1)
+
   
   
   
