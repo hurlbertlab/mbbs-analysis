@@ -160,8 +160,8 @@ assertthat::assert_that(!any(is.na(associations[,2:3]))) #awesome, asserts true,
   
   
 #plot
-  plot(associations$ebirdst_association_forest, associations$ebirdst_association_grassland, xlim = c(0, .32)) + 
-    text(associations$ebirdst_association_forest+.01, associations$ebirdst_association_grassland-.002, labels = associations$species_code, cex = 1)
+  plot(associations$ebirdst_association_forest, associations$ebirdst_association_grassland, xlim = c(0, .5)) + 
+    text(associations$ebirdst_association_forest+.01, associations$ebirdst_association_grassland-.002, labels = associations$species_code, cex = .75)
 
   
   
