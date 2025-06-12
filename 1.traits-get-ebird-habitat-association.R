@@ -133,7 +133,7 @@ for(i in 1:nrow(species_list)) {
   #great! Now what I want to do is finish creating the metrics.
 associations <- read.csv("data/species-traits/ebird-habitat-association/pis_summarized.csv") %>%
   #filter out count bc we only care about occurrence
-  filter(response == "count") %>%
+  filter(!response == "count") %>%
   #and we also only want labels that are about %cover, we ignore edge density in this analysis
   #yeah and it looks like already with table(all_pis$label) that's already true even w/o filtering
   filter(str_detect(.$label, "% cover") == TRUE) %>%
