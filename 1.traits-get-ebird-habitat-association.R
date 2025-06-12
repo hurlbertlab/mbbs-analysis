@@ -83,7 +83,8 @@ for(i in 1:nrow(species_list)) {
     
     one_pi <- load_pi(
       species = species_pis$species_code[a],
-      predictor = species_pis$predictor[a],
+      #predictor = species_pis$predictor[a],
+      predictor = ntl_mean,
       response = species_pis$response[a],
       path = setpath) 
     if(length(names(one_pi)) > 1) {
@@ -125,14 +126,45 @@ for(i in 1:nrow(species_list)) {
 }
   
   #save datasets
-  write.csv(all_pis, "data/species-traits/ebird-habitat-association/pis_summarized.csv")
-  write.csv(all_pis_weekly, "data/species-traits/ebird-habitat-association/pis_weekly.csv")
+  write.csv(all_pis, "data/species-traits/ebird-habitat-association/pis_summarized.csv", row.names = FALSE)
+  write.csv(all_pis_weekly, "data/species-traits/ebird-habitat-association/pis_weekly.csv", row.names = FALSE)
+
+
+  #great! Now what I want to do is finish creating the metrics.
+associations <- read.csv("data/species-traits/ebird-habitat-association/pis_summarized.csv") %>%
+  #filter out count bc we only care about occurrence
+  filter(response == "count") %>%
+  #and we also only want labels that are about %cover, we ignore edge density in this analysis
+  #yeah and it looks like already with table(all_pis$label) that's already true even w/o filtering
+  filter(str_detect(.$label, "% cover") == TRUE) %>%
+  #cut out open and sparse forest, we're not concerned about those
+  filter(!str_detect(.$label, "Open Forests|Sparse Forests")) %>%
+  mutate(landtype = case_when(
+    str_detect(.$label, "Forests") ~ "forest",
+    TRUE ~ "grassland")) %>%
+  #group by and summarize
+  group_by(species_code, landtype, response) %>%
+  summarize(lty_association = sum(total_mean),
+            n_variables = n()) %>%
+  ungroup() %>%
+  tidyr::pivot_wider(names_from = landtype, values_from = c("lty_association"), id_cols = c(species_code), names_prefix = "ebirdst_association_")
+#yeah so, that the response is "count" and that there are different number of variables that are important to each lty that were/were not included in the count for the species gets dropped here. For posterity, running just part of the code above does generate that. But ultimately, we don't need it for the analysis and I'm not too worried about figuring out how to keep it. These effects are additive - if three forest types are important vs if only one forest type makes the top 30 variables like, they'll come out differently and that's what matters.
+
+assertthat::assert_that(!any(is.na(associations[,2:3]))) #awesome, asserts true, there's no NA grassland or forest (eg. category did not make top 30 variable importance for species if NA)
+
+#let's write this to csv, then join it with our overall species list and save that again.
+  write.csv(associations, "data/species-traits/ebird-habitat-association/forest-grass-habitat-associations.csv", row.names = FALSE)
+  #species_list <- read.csv("data/species-traits/species_list.csv") %>%
+  #  left_join(associations, by = c("ebird_code" = "species_code"))
+  #write.csv(species_list, "data/species-traits/species_list.csv", row.names = FALSE)
   
   
   
   
   
   
+#########################  
+# space for figuring things out, how pis plot, etc.  
   
   
 c <- list_available_pis(species = "Common Grackle", path = setpath)
