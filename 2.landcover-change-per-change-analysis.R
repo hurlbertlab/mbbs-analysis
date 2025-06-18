@@ -127,6 +127,8 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
 save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_per_change_woyear"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
+#for use in descriptive plots, also save the df there
+  write.csv(stopdata, paste0(save_to, "/stopdata.csv"))
 
 #stan model specified in landcover_qrt_trends.stan, let R know where to find it
 stan_model_file <- "2.landcover_change_per_change.stan"
