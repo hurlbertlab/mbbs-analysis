@@ -100,46 +100,50 @@ for(i in 1:length(species_list)) {
   cthm <-  x %>% 
     filter(county == "cthm") %>%
     group_by(q_rt_standard) %>%
-    ggplot(aes(x=change_dev, y=change_count)) +
+    ggplot(aes(x=change_dev, y=change_count, color = q_rt_standard)) +
     ggtitle(label = paste0(x$common_name[1],", Chatham")) +
     labs(x = "Change in % Urbanization",
          y = "Change in Count") +
-    geom_point(color = "lightgreen") +
+    geom_point() +
     geom_segment(aes(
       xend=c(tail(change_count, n=-1), NA), 
       yend=c(tail(change_dev, n=-1), NA)
-    ),color = "lightgreen"
+    )
     #arrow=arrow(length=unit(0.3,"cm"))
-    ) 
+    )  +
+    theme(legend.position="none")
+  
   drhm <-  x %>% 
     filter(county == "drhm") %>%
     group_by(q_rt_standard) %>%
-    ggplot(aes(x=change_dev, y=change_count)) +
+    ggplot(aes(x=change_dev, y=change_count, color = q_rt_standard)) +
     ggtitle(label = paste0(x$common_name[1],", Durham")) +
     labs(x = "Change in % Urbanization",
          y = "Change in Count") +
-    geom_point(color = "darkblue") +
+    geom_point() +
     geom_segment(aes(
       xend=c(tail(change_count, n=-1), NA), 
       yend=c(tail(change_dev, n=-1), NA),
       
-    ), color = "darkblue"
+    )
     #arrow=arrow(length=unit(0.3,"cm"))
-    ) 
+    ) +
+    theme(legend.position="none")
   orng <-  x %>% 
     filter(county == "orng") %>%
     group_by(q_rt_standard) %>%
-    ggplot(aes(x=change_dev, y=change_count)) +
+    ggplot(aes(x=change_dev, y=change_count, color = q_rt_standard)) +
     ggtitle(label = paste0(x$common_name[1],", Orange")) +
     labs(x = "Change in % Urbanization",
          y = "Change in Count") +
-    geom_point(color = "orange") +
+    geom_point() +
     geom_segment(aes(
       xend=c(tail(change_count, n=-1), NA), 
       yend=c(tail(change_dev, n=-1), NA)
-    ), color = "orange"
+    )
     #arrow=arrow(length=unit(0.3,"cm"))
-    ) 
+    ) +
+    theme(legend.position="none")
   all <- x %>%
     group_by(q_rt_standard) %>%
     ggplot(aes(x=change_dev, y=change_count, color = county)) +
@@ -152,15 +156,16 @@ for(i in 1:length(species_list)) {
       yend=c(tail(change_dev, n=-1), NA)
     ), 
     #arrow=arrow(length=unit(0.3,"cm"))
-    ) 
+    )
   
-  ggarrange(orng, drhm, cthm, all,
-            ncol = 4, nrow = 1)
+  #to prevent problems with corrupting the pdf file wrap the ggarrange/ggplot with the print() function
+  print(ggarrange(orng, drhm, cthm, all,
+            ncol = 4, nrow = 1))
 
 
 }
 dev.off()
-#causes problems doing them all at once, not sure why..
+
 
 
 
