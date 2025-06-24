@@ -6,7 +6,7 @@
 # at the quarter-route level WHERE
 # we are looking at a lag effect eg.
 # % change in count predicted by
-# a % change in urbanization.
+# a % change in urbanization. and a % change in forest
 # this SHOULD incorporate our measure of observer_quality
 #
 ######################
@@ -16,20 +16,27 @@ library(rstan)
 library(stringr)
 unloadNamespace("rethinking")
 options(scipen=999)
+options(mc.cores = parallel::detectCores())
 
 source("2.species-trend-estimate-functions.R")
 
 #read in data we need
+barren <- read.csv("data/nlcd-landcover/nlcd_annual_barren.csv") 
 dev <- read.csv("data/nlcd-landcover/nlcd_annual_running_max_developed.csv") %>%
+  left_join(barren, by = c("route", "stop_num", "year")) %>%
   #get percent developed by route-quarter
   mutate(quarter_route = as.integer(case_when(stop_num > 15 ~ 4,
                                               stop_num > 10 ~ 3,
                                               stop_num > 5 ~ 2,
-                                              stop_num > 0 ~ 1))) %>%
+                                              stop_num > 0 ~ 1)),
+         perc_barren = ifelse(is.na(perc_barren), 0, perc_barren)) %>%
   group_by(route, quarter_route, year) %>%
   #summarize bc we only need to keep 1 entry per route quarter
-  summarize(rmax_dev_quarter = mean(running_max_perc_developed)) %>%
+  summarize(rmax_dev_quarter = mean(running_max_perc_developed),
+            perc_barren = mean(perc_barren)) %>%
   ungroup() %>%
+  #create a variable where dev has barren ground added on
+  mutate(rmax_dev_plus_barren = rmax_dev_quarter + perc_barren) %>%
   #now, we're going to take an extra step and center this data. What this is going to do is help keep everything interpretable in the model. So, rather than our intercepts being at 0% urbanization, our intercepts will be at mean_urbanization
   mutate(mean_dev = mean(rmax_dev_quarter),
          sd_dev = sd(rmax_dev_quarter),
@@ -88,7 +95,10 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   arrange(year, .by_group = TRUE) %>%
   mutate(
     change_count = q_rt_count - lag(q_rt_count),
-    change_dev = rmax_dev_quarter - lag(rmax_dev_quarter),
+    #change_dev = rmax_dev_quarter - lag(rmax_dev_quarter),
+    change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
+    #also take change forest
+    change_forest = perc_forest_quarter - lag(perc_forest_quarter),
     years_btwn = year - lag(year), 
     #switching things up, we also want to create a ratio between years, then take the log of that ratio and divide it by the years_btwn
     ratio_count = case_when(
@@ -109,7 +119,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   #hmmmm and remake year_standard while we're here? now we've changed it. rn year standard is based on the mean year.
   standardize_year(starting_year = 2012) %>% 
   ####let's genuinely standardize year. like, the same way we z_score development.
-  mutate(z_score_year = (year-mean(year))/sd(year)) 
+  mutate(z_score_year = (year-mean(year))/sd(year))
   #yeah, and bc we've removed like a year's worth of data, that changes the z_score years. hm, maybe we should do year a different way. Check in abt this
 
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
@@ -123,12 +133,16 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   stopdata <- stopdata %>% 
     dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year)
   
+  
+  #run first through the pcp with development code, then run the same (copy+paste) for the forest model
+  landcover <- c("dev+barren", "forest")
+  
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_per_change_woyear"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.20_cpc_forestndev"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
-  write.csv(stopdata, paste0(save_to, "/stopdata.csv"))
+#  write.csv(stopdata, paste0(save_to, "/stopdata.csv"))
 
 #stan model specified in landcover_qrt_trends.stan, let R know where to find it
 stan_model_file <- "2.landcover_change_per_change.stan"
@@ -141,82 +155,99 @@ print("model compiled")
 file.copy(stan_model_file, save_to, overwrite = TRUE)
 print("model saved")
 
-#loop through the species
-species_list <- stopdata %>% 
-  distinct(common_name)
-#testing
-#species_list <- species_list[1:5,]
+####LOOP through forest and developed landcover change models
+for(a in 1:length(landcover)) {
+  
+  #loop through the species
+  species_list <- stopdata %>% 
+    distinct(common_name)
+  #testing
+  #species_list <- species_list[1:5,]
+  
+  #blankdata set everything will be saved to
+  fit_summaries <- as.data.frame(NA)
+  posterior_samples <-  as.data.frame(NA)
+  
+  for (i in species_list$common_name) {
+    #filter to one species
+    one_species <- stopdata %>% 
+      filter(common_name == i)
+    #print species name
+    print(i)
+    
+    #pick the relevant landcover variables depending on the model running this time
+    if(landcover[a] == "forest") {
+      change_selected_land <- one_species$change_forest
+      base_selected_land <- one_species$perc_forest_quarter
+    } else if (landcover[a] == "dev+barren") {
+      change_selected_land <- one_species$change_dev
+      base_selected_land <- one_species$rmax_dev_plus_barren
+    }
+    
+    
+    #set up the data to feed into the model
+    datstan <- list(
+      N = nrow(one_species), #number of observations
+      Nqrt = length(unique(one_species$q_rt_standard)), #number of unique quarter routes
+      qrt = one_species$q_rt_standard, #qrt index for each observation
+      change_landcover = change_selected_land, #change in percent developed or forest for each observation since the last year
+      base_landcover = base_selected_land, #running max developed or perc forest
+  #    R = one_species$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
+  #    year = one_species$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
+      change_C = one_species$change_count #count data for each observation, change since the last year
+    )
+    print("datstan set")
+    
+    
+    #fit the model to the data
+    fit <- sampling(stan_model,
+                    data = datstan,
+                    chains = 4,
+                    cores = 4, 
+                    iter = 5000,
+                    warmup = 1000)
+    beepr::beep()
+    print(paste0("model fit for: ",i, " ", landcover[a]))
+    
+    #save the output
+    fit_temp <- as.data.frame(summary(fit)$summary) %>%
+      mutate(rownames = rownames(.)) %>%
+      relocate(rownames, .before = mean) %>%
+      #filter out the z-score intercept calculations
+      filter(str_detect(rownames, "a_z") == FALSE) %>%
+      #exponentiate (not sure we need this!)
+      mutate(exp_mean = exp(mean),
+             exp_minconf = exp(`2.5%`),
+             exp_maxconf = exp(`97.5%`),
+             q_rt_standard = as.numeric(ifelse(
+               str_detect(rownames, "a\\[\\d+\\]"),
+               str_extract(rownames, "\\d+"),
+               NA)),
+             slope = ifelse(str_detect(rownames, "b"), 
+                            str_extract(rownames, "year|dev|forest|landcover"),
+                            NA),
+             common_name = i)
+    #bind rows
+    fit_summaries <- bind_rows(fit_summaries, fit_temp)
+    #save
+    write.csv(fit_summaries, paste0(save_to,"/", landcover[a], "_fit_summaries.csv"), row.names = FALSE)
+    
+    
+    #extract posterior samples and save those also
+    temp_posterior <- as.data.frame(fit) %>%
+      select(starts_with("b_")) %>%
+      mutate(row_id = row_number(),
+             common_name = i,
+             landcover = landcover[a]) 
+    #bind rows
+    posterior_samples <- bind_rows(posterior_samples, temp_posterior) %>%
+      dplyr::select(b_landcover_change, b_landcover_base, row_id, common_name, landcover)
+    #save
+    write.csv(posterior_samples, paste0(save_to,"/", landcover[a], "_posterior_samples.csv"), row.names = FALSE)
+    paste("datasets saved")
+    timestamp()
+  } #end species loop
 
-#blankdata set everything will be saved to
-fit_summaries <- as.data.frame(NA)
-posterior_samples <-  as.data.frame(NA)
+} #end landcover loop
 
-for (i in species_list$common_name) {
-  #filter to one species
-  one_species <- stopdata %>% 
-    filter(common_name == i)
-  #print species name
-  print(i)
-  
-  #set up the data to feed into the model
-  datstan <- list(
-    N = nrow(one_species), #number of observations
-    Nqrt = length(unique(one_species$q_rt_standard)), #number of unique quarter routes
-    qrt = one_species$q_rt_standard, #qrt index for each observation
-    change_dev = one_species$change_dev, #change in percent developed for each observation since the last year
-    dev = one_species$rmax_dev_quarter, #running max developed
-#    R = one_species$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
-#    year = one_species$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
-    change_C = one_species$change_count #count data for each observation, change since the last year
-  )
-  print("datstan set")
-  
-  
-  #fit the model to the data
-  fit <- sampling(stan_model,
-                  data = datstan,
-                  chains = 4,
-                  cores = 4, 
-                  iter = 2000,
-                  warmup = 1000)
-  beepr::beep()
-  print(paste0("model fit for: ",i))
-  
-  #save the output
-  fit_temp <- as.data.frame(summary(fit)$summary) %>%
-    mutate(rownames = rownames(.)) %>%
-    relocate(rownames, .before = mean) %>%
-    #filter out the z-score intercept calculations
-    filter(str_detect(rownames, "a_z") == FALSE) %>%
-    #exponentiate (not sure we need this!)
-    mutate(exp_mean = exp(mean),
-           exp_minconf = exp(`2.5%`),
-           exp_maxconf = exp(`97.5%`),
-           q_rt_standard = as.numeric(ifelse(
-             str_detect(rownames, "a\\[\\d+\\]"),
-             str_extract(rownames, "\\d+"),
-             NA)),
-           slope = ifelse(str_detect(rownames, "b"), 
-                          str_extract(rownames, "year|dev"),
-                          NA),
-           common_name = i)
-  #bind rows
-  fit_summaries <- bind_rows(fit_summaries, fit_temp)
-  #save
-  write.csv(fit_summaries, paste0(save_to,"/fit_summaries.csv"), row.names = FALSE)
-  
-  
-  #extract posterior samples and save those also
-  temp_posterior <- as.data.frame(fit) %>%
-    select(starts_with("b_")) %>%
-    mutate(row_id = row_number(),
-           common_name = i)
-  #bind rows
-  posterior_samples <- bind_rows(posterior_samples, temp_posterior) %>%
-    dplyr::select(b_dev_change, b_dev_base, row_id, common_name)
-  #save
-  write.csv(posterior_samples, paste0(save_to,"/posterior_samples.csv"), row.names = FALSE)
-  paste("datasets saved")
-  timestamp()
-}
 

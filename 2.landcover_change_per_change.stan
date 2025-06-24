@@ -1,7 +1,6 @@
 //
-// This Stan program defines a simple model, with a
-// vector of values 'y' modeled as normally distributed
-// with mean 'mu' and standard deviation 'sigma'.
+// This stan program takes calulates how the change in count on a quarter-route changes in response to change in a landcover. 
+// Used with two models, calculating change_dev and change_forest.
 //
 // Learn more about model development with Stan at:
 //
@@ -15,8 +14,8 @@
   int<lower=0> N; //number of observations
   int<lower=1> Nqrt; //number of quarter routes
   array[N] int<lower=1, upper=Nqrt> qrt; //quarter route for each observation
-  vector[N] change_dev; //change in development since the last year
-  vector[N] dev; //percent developed for each observation, this is a standardized z-score
+  vector[N] change_landcover; //change in development or forest since the last year
+  vector[N] base_landcover; //percent developed or forested for each observation, this is a standardized z-score
 //  vector[N] year; //year for each observation
 // ^ year is pulled out because we're working with dif and the magnitude of changes is not so huge that I expect exponential change to really be having an effect over time. There's a check for species having issues with this assumption, and as of 2025.06.06 all the species pass
   vector[N] change_C; //change in count since the last survey for each row, vector bc it doesn't have bounds like an array does
@@ -28,9 +27,9 @@
     real a_bar; //'average q_route'
     real<lower=0> sig_a; //variance from average q_route
     
-    real b_dev_change; //effect of change in development, across routes.
+    real b_landcover_change; //effect of change in development or forest, across routes.
 //   real b_year; //effect of year, across routes.
-    real b_dev_base; //effect of development, across routes
+    real b_landcover_base; //effect of development or forest, across routes
     
     real<lower=0> sigma;
   
@@ -44,9 +43,9 @@
     for (n in 1:N) {
     change_C[n] ~ normal(
       a[qrt[n]] + 
-      b_dev_change*change_dev[n] + 
+      b_landcover_change*change_landcover[n] + 
 //      b_year*year[n] + 
-      b_dev_base*dev[n], 
+      b_landcover_base*base_landcover[n], 
       sigma);
     }
   
@@ -62,11 +61,11 @@
     
     
     //there is one effect of change in urbanization across routes
-    b_dev_change ~ normal(0,1);
+    b_landcover_change ~ normal(0,1);
     //there is one effect of year across routes
 //    b_year ~ normal(0,1);
     //there is one effect of baseline urbanization across routes
-    b_dev_base ~ normal(0,1);
+    b_landcover_base ~ normal(0,1);
     
     //just a normal distribution, so we'll model sigma with exponential
     sigma ~ exponential(1);

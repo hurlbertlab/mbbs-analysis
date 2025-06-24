@@ -79,3 +79,15 @@ datstan_traits_influence_dif_btwn_mbbs_regional <- function(mbbs_dataset, traits
   )
   
 }
+
+
+
+
+
+#' List for a model that predicts the influence of 
+#' change in development
+#'  with change_dev
+#'  and base_dev
+#' on the change in species counts at the quarter route
+#' @returns datstan
+#' 

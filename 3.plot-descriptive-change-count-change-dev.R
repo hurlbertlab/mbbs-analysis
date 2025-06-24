@@ -104,13 +104,13 @@ for(i in 1:length(species_list)) {
     ggtitle(label = paste0(x$common_name[1],", Chatham")) +
     labs(x = "Change in % Urbanization",
          y = "Change in Count") +
-    geom_point() +
-    geom_segment(aes(
-      xend=c(tail(change_count, n=-1), NA), 
-      yend=c(tail(change_dev, n=-1), NA)
-    )
+    geom_point(position = "jitter") +
+    #geom_segment(aes(
+    # xend=c(tail(change_count, n=-1), NA), 
+    #  yend=c(tail(change_dev, n=-1), NA)
+    #)
     #arrow=arrow(length=unit(0.3,"cm"))
-    )  +
+  # )  +
     theme(legend.position="none")
   
   drhm <-  x %>% 
@@ -120,14 +120,14 @@ for(i in 1:length(species_list)) {
     ggtitle(label = paste0(x$common_name[1],", Durham")) +
     labs(x = "Change in % Urbanization",
          y = "Change in Count") +
-    geom_point() +
-    geom_segment(aes(
-      xend=c(tail(change_count, n=-1), NA), 
-      yend=c(tail(change_dev, n=-1), NA),
-      
-    )
+    geom_point(position = "jitter") +
+    #geom_segment(aes(
+    #  xend=c(tail(change_count, n=-1), NA), 
+    #  yend=c(tail(change_dev, n=-1), NA),
+    #  
+    #)
     #arrow=arrow(length=unit(0.3,"cm"))
-    ) +
+    #) +
     theme(legend.position="none")
   orng <-  x %>% 
     filter(county == "orng") %>%
@@ -136,13 +136,13 @@ for(i in 1:length(species_list)) {
     ggtitle(label = paste0(x$common_name[1],", Orange")) +
     labs(x = "Change in % Urbanization",
          y = "Change in Count") +
-    geom_point() +
-    geom_segment(aes(
-      xend=c(tail(change_count, n=-1), NA), 
-      yend=c(tail(change_dev, n=-1), NA)
-    )
+    geom_point(position = "jitter") +
+    #geom_segment(aes(
+    #  xend=c(tail(change_count, n=-1), NA), 
+    #  yend=c(tail(change_dev, n=-1), NA)
+    #)
     #arrow=arrow(length=unit(0.3,"cm"))
-    ) +
+    #) +
     theme(legend.position="none")
   all <- x %>%
     group_by(q_rt_standard) %>%
@@ -150,18 +150,21 @@ for(i in 1:length(species_list)) {
     ggtitle(label = paste0(x$common_name[1])) +
     labs(x = "Change in % Urbanization",
          y = "Change in Count") +
-    geom_point() +
-    geom_segment(aes(
-      xend=c(tail(change_count, n=-1), NA), 
-      yend=c(tail(change_dev, n=-1), NA)
-    ), 
+    geom_point(position = "jitter") 
+    #geom_segment(aes(
+    #  xend=c(tail(change_count, n=-1), NA), 
+    #  yend=c(tail(change_dev, n=-1), NA)
+    #), 
     #arrow=arrow(length=unit(0.3,"cm"))
-    )
+    #)
   
   #to prevent problems with corrupting the pdf file wrap the ggarrange/ggplot with the print() function
   print(ggarrange(orng, drhm, cthm, all,
             ncol = 4, nrow = 1))
 
+  
+  #print just all, set plot into square, print multiple species per 
+  #page
 
 }
 dev.off()

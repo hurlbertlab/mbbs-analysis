@@ -18,7 +18,7 @@ library(cowplot) #used to make multi-panel figures
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
 load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
 load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bdev/"
-load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_per_change_woyear/"
+load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.20_cpc_forestndev/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -37,6 +37,14 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_
                          values_from = {{values_from_column}}) %>%
       dplyr::select(-row_id)
   }  
+  
+  #sort columns parameter means
+  return_sorted_params <- function(pivoted_samples) {
+    param_means <- colMeans(pivoted_samples)
+    sorted_params <- names(sort(param_means))
+    sorted_pivoted_samples <- pivoted_samples[,sorted_params]
+    
+  }
   
 
 ####two-panel effect of b_yr and b_dev
@@ -178,6 +186,84 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_
   
   #####b_yr and b_change and b_dev
   species_list <- read.csv(paste0(load_from_change,"species_list.csv"))
+  
+  #first, let's take a look at how the fits worked out. 
+  dev_fit_summary <- read.csv(paste0(load_from_change, "dev+barren_fit_summaries.csv")) 
+  max(dev_fit_summary$Rhat) #yay, just about 1
+  hist(dev_fit_summary$n_eff)
+  forest_fit_summary <- read.csv(paste0(load_from_change, "forest_fit_summaries.csv"))
+  max(forest_fit_summary$Rhat)
+  hist(forest_fit_summary$n_eff)
+  
+  dev_ps <- read.csv(paste0(load_from_change, "dev+barren_posterior_samples.csv"))  %>%
+    filter(is.na(common_name) == FALSE,
+           common_name %in% species_list$common_name)
+  forest_ps <- read.csv(paste0(load_from_change, "forest_posterior_samples.csv")) %>%
+    filter(is.na(common_name) == FALSE,
+           common_name %in% species_list$common_name)
+  
+  dev_change <- dev_ps %>%
+    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_landcover_change"),
+                         values_from_column = "b_landcover_change") %>%
+    return_sorted_params()
+  dev_base <- dev_ps %>%
+    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_landcover_base"),
+                         values_from_column = "b_landcover_base") %>%
+    return_sorted_params()
+  forest_change <- forest_ps %>%
+    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_landcover_change"),
+                         values_from_column = "b_landcover_change") %>%
+    return_sorted_params()
+  forest_base <- forest_ps %>%
+    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_landcover_base"),
+                         values_from_column = "b_landcover_base") %>%
+    return_sorted_params()
+  
+  dev_change_plot <- mcmc_intervals(dev_change,
+                                    prob = 0.01, #set this to get ride of inner bars
+                                    prob_outer = 0.95) +
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("Change in Development on Change in Count")
+  dev_base_plot <- mcmc_intervals(dev_base,
+                                  prob = 0.01, #set this to get ride of inner bars
+                                  prob_outer = 0.95) +
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("Total Development Level on Change in Count (all NS)")
+  forest_change_plot <- mcmc_intervals(forest_change,
+                                       prob = 0.01,
+                                       prob_outer = 0.95) +
+    geom_vline(xintercept = 0, color = "green4") +
+    ggtitle("Change in Forest on Change in Count")
+  forest_base_plot <-mcmc_intervals(forest_base,
+                                    prob = 0.01,
+                                    prob_outer = 0.95) +
+    geom_vline(xintercept = 0, color = "green4") +
+    ggtitle("Effect of Total Forest on Change in Count (all NS)")
+  
+  
+  
+  
+  
+  dev_base <- posterior_samples %>%
+    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev_base"),
+                         values_from_column = "b_dev_base")
+  param_means <- colMeans(dev_base)
+  sorted_params <- names(sort(param_means))
+  sorted_dev_base <- dev_base[,sorted_params]
+  
+  dev_plot <- mcmc_intervals(sorted_dev_change,
+                             prob = 0.01,
+                             prob_outer = 0.95) +
+    scale_color_manual(values = significant_change$color) +
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("Change in Development on Change in Count")
+  
+  dev_plot
+  
+  
+  
+  
+  
   posterior_samples <- read.csv(paste0(load_from_change,"posterior_samples.csv")) %>%
     filter(is.na(common_name) == FALSE,
            common_name %in% species_list$common_name)
@@ -210,20 +296,5 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.06_change_
   #okay well. there's a color vector in the right order now. um. it kinda of seems like bayesplot isn't built for this kind of sig vs non-sig demonstration in this way. May require putting up an issue on the github or submitting a question. Otherwise like. idk. Going to need to plot twice, once with NA columns for the non-sig and the next with NA coloumns for the sig, both on the same plot, but dif colors associated with bayplot_theme(). hm
     
   
-  dev_base <- posterior_samples %>%
-    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev_base"),
-                         values_from_column = "b_dev_base")
-  param_means <- colMeans(dev_base)
-  sorted_params <- names(sort(param_means))
-  sorted_dev_base <- dev_base[,sorted_params]
-  
-  dev_plot <- mcmc_intervals(sorted_dev_change,
-                             prob = 0.01,
-                             prob_outer = 0.95) +
-    scale_color_manual(values = significant_change$color) +
-    geom_vline(xintercept = 0, color = "grey30") +
-    ggtitle("Change in Development on Change in Count")
-  
-  dev_plot
   
   
