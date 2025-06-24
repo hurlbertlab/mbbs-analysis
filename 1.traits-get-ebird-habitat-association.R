@@ -161,10 +161,18 @@ assertthat::assert_that(!any(is.na(associations[,2:3]))) #awesome, asserts true,
   
 #plot
   plot(associations$ebirdst_association_forest, associations$ebirdst_association_grassland, xlim = c(0, .5)) + 
-    text(associations$ebirdst_association_forest+.01, associations$ebirdst_association_grassland-.002, labels = associations$species_code, cex = .75)
+    text(associations$ebirdst_association_forest+.01, associations$ebirdst_association_grassland-.002, labels = associations$species_code, cex = .75) +
+    abline(a=0,b=1)
+  
+#quick correlation check  
+uai <- read.csv("data/species-traits/UAI-NateCleg-etall.csv") %>%
+  filter(City == "Charlotte_US")
+traits <- read.csv("data/species-traits/species_list.csv")
 
-  
-  
+c <- traits %>%
+  left_join(uai, by = c("common_name" = "Species")) %>%
+  filter(!is.na(UAI))
+  cor(c$ebirdst_association_forest, c$UAI)
   
 #########################  
 # space for figuring things out, how pis plot, etc.  
