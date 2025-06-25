@@ -10,6 +10,7 @@ library(dplyr)
 library(stringr)
 library(ggplot2)
 library(ggpubr)
+library(gridExtra)
 source("2.species-trend-estimate-functions.R")
 
 
@@ -89,61 +90,63 @@ source("2.species-trend-estimate-functions.R")
 
 species_list <- unique(stopdata$common_name)
 
-pdf(file = "figures/descriptive-change-count-change-dev.pdf",
+pdf(file = "figures/descriptive-change-count-change-dev-8sp.pdf",
     width = 14,
     onefile = TRUE)
+par(mfrow = c(2,4))
+plot_lst <- vector("list", length = length(species_list))
 for(i in 1:length(species_list)) {
   
   x <- stopdata %>%
     filter(common_name == species_list[i])
   
-  cthm <-  x %>% 
-    filter(county == "cthm") %>%
-    group_by(q_rt_standard) %>%
-    ggplot(aes(x=change_dev, y=change_count, color = q_rt_standard)) +
-    ggtitle(label = paste0(x$common_name[1],", Chatham")) +
-    labs(x = "Change in % Urbanization",
-         y = "Change in Count") +
-    geom_point(position = "jitter") +
-    #geom_segment(aes(
-    # xend=c(tail(change_count, n=-1), NA), 
-    #  yend=c(tail(change_dev, n=-1), NA)
-    #)
-    #arrow=arrow(length=unit(0.3,"cm"))
-  # )  +
-    theme(legend.position="none")
-  
-  drhm <-  x %>% 
-    filter(county == "drhm") %>%
-    group_by(q_rt_standard) %>%
-    ggplot(aes(x=change_dev, y=change_count, color = q_rt_standard)) +
-    ggtitle(label = paste0(x$common_name[1],", Durham")) +
-    labs(x = "Change in % Urbanization",
-         y = "Change in Count") +
-    geom_point(position = "jitter") +
-    #geom_segment(aes(
-    #  xend=c(tail(change_count, n=-1), NA), 
-    #  yend=c(tail(change_dev, n=-1), NA),
-    #  
-    #)
-    #arrow=arrow(length=unit(0.3,"cm"))
-    #) +
-    theme(legend.position="none")
-  orng <-  x %>% 
-    filter(county == "orng") %>%
-    group_by(q_rt_standard) %>%
-    ggplot(aes(x=change_dev, y=change_count, color = q_rt_standard)) +
-    ggtitle(label = paste0(x$common_name[1],", Orange")) +
-    labs(x = "Change in % Urbanization",
-         y = "Change in Count") +
-    geom_point(position = "jitter") +
-    #geom_segment(aes(
-    #  xend=c(tail(change_count, n=-1), NA), 
-    #  yend=c(tail(change_dev, n=-1), NA)
-    #)
-    #arrow=arrow(length=unit(0.3,"cm"))
-    #) +
-    theme(legend.position="none")
+  # cthm <-  x %>% 
+  #   filter(county == "cthm") %>%
+  #   group_by(q_rt_standard) %>%
+  #   ggplot(aes(x=change_dev, y=change_count, color = q_rt_standard)) +
+  #   ggtitle(label = paste0(x$common_name[1],", Chatham")) +
+  #   labs(x = "Change in % Urbanization",
+  #        y = "Change in Count") +
+  #   geom_point(position = "jitter") +
+  #   #geom_segment(aes(
+  #   # xend=c(tail(change_count, n=-1), NA), 
+  #   #  yend=c(tail(change_dev, n=-1), NA)
+  #   #)
+  #   #arrow=arrow(length=unit(0.3,"cm"))
+  # # )  +
+  #   theme(legend.position="none")
+  # 
+  # drhm <-  x %>% 
+  #   filter(county == "drhm") %>%
+  #   group_by(q_rt_standard) %>%
+  #   ggplot(aes(x=change_dev, y=change_count, color = q_rt_standard)) +
+  #   ggtitle(label = paste0(x$common_name[1],", Durham")) +
+  #   labs(x = "Change in % Urbanization",
+  #        y = "Change in Count") +
+  #   geom_point(position = "jitter") +
+  #   #geom_segment(aes(
+  #   #  xend=c(tail(change_count, n=-1), NA), 
+  #   #  yend=c(tail(change_dev, n=-1), NA),
+  #   #  
+  #   #)
+  #   #arrow=arrow(length=unit(0.3,"cm"))
+  #   #) +
+  #   theme(legend.position="none")
+  # orng <-  x %>% 
+  #   filter(county == "orng") %>%
+  #   group_by(q_rt_standard) %>%
+  #   ggplot(aes(x=change_dev, y=change_count, color = q_rt_standard)) +
+  #   ggtitle(label = paste0(x$common_name[1],", Orange")) +
+  #   labs(x = "Change in % Urbanization",
+  #        y = "Change in Count") +
+  #   geom_point(position = "jitter") +
+  #   #geom_segment(aes(
+  #   #  xend=c(tail(change_count, n=-1), NA), 
+  #   #  yend=c(tail(change_dev, n=-1), NA)
+  #   #)
+  #   #arrow=arrow(length=unit(0.3,"cm"))
+  #   #) +
+  #   theme(legend.position="none")
   all <- x %>%
     group_by(q_rt_standard) %>%
     ggplot(aes(x=change_dev, y=change_count, color = county)) +
@@ -159,14 +162,18 @@ for(i in 1:length(species_list)) {
     #)
   
   #to prevent problems with corrupting the pdf file wrap the ggarrange/ggplot with the print() function
-  print(ggarrange(orng, drhm, cthm, all,
-            ncol = 4, nrow = 1))
-
+  #print(ggarrange(orng, drhm, cthm, all,
+  #          ncol = 4, nrow = 1))
+  plot_lst[[i]] <- all
+  #print(all)
   
   #print just all, set plot into square, print multiple species per 
   #page
 
 }
+
+allgraphs <- marrangeGrob(plot_lst, nrow = 2, ncol = 4)
+allgraphs
 dev.off()
 
 
