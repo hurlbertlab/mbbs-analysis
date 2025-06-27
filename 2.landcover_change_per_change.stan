@@ -15,9 +15,10 @@
   int<lower=1> Nqrt; //number of quarter routes
   array[N] int<lower=1, upper=Nqrt> qrt; //quarter route for each observation
   vector[N] change_landcover; //change in development or forest since the last year
-  vector[N] base_landcover; //percent developed or forested for each observation, this is a standardized z-score
+//  vector[N] base_landcover; //percent developed or forested for each observation, this is a standardized z-score
 //  vector[N] year; //year for each observation
 // ^ year is pulled out because we're working with dif and the magnitude of changes is not so huge that I expect exponential change to really be having an effect over time. There's a check for species having issues with this assumption, and as of 2025.06.06 all the species pass
+  vector[N] change_obs; //0 or 1 for if the observer changed between the two surveys
   vector[N] change_C; //change in count since the last survey for each row, vector bc it doesn't have bounds like an array does
   }
   
@@ -29,7 +30,9 @@
     
     real b_landcover_change; //effect of change in development or forest, across routes.
 //   real b_year; //effect of year, across routes.
-    real b_landcover_base; //effect of development or forest, across routes
+//    real b_landcover_base; //effect of development or forest, across routes
+    
+    real c_obs; //effect of if the observer changed
     
     real<lower=0> sigma;
   
@@ -45,7 +48,8 @@
       a[qrt[n]] + 
       b_landcover_change*change_landcover[n] + 
 //      b_year*year[n] + 
-      b_landcover_base*base_landcover[n], 
+//      b_landcover_base*base_landcover[n] +
+      c_obs*change_obs[n], 
       sigma);
     }
   
@@ -65,7 +69,10 @@
     //there is one effect of year across routes
 //    b_year ~ normal(0,1);
     //there is one effect of baseline urbanization across routes
-    b_landcover_base ~ normal(0,1);
+//    b_landcover_base ~ normal(0,1);
+    
+    //there's one effect of changing observers across routes, and I don't expect it to be a large effect so I constrain it a bit more than the other variables (0,0.5)
+    c_obs ~ normal(0, 0.5); 
     
     //just a normal distribution, so we'll model sigma with exponential
     sigma ~ exponential(1);

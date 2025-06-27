@@ -7,7 +7,9 @@
 # we are looking at a lag effect eg.
 # % change in count predicted by
 # a % change in urbanization. and a % change in forest
-# this SHOULD incorporate our measure of observer_quality
+# and splitting out the negative and positive forest effects
+# instead of observer quality, we will measure the observer
+# effect with a 0/1 variable of if the observer changed or not between years
 #
 ######################
 
@@ -56,6 +58,10 @@ forest <- read.csv("data/nlcd-landcover/nlcd_annual_sum_forest.csv") %>%
 
 max_nlcd_year <- max(dev$year)
 
+load("data/mbbs/mbbs_survey_events.rda")
+obs <- mbbs_survey_events %>%
+  dplyr::select(route, primary_observer, observer_ID, year, observer_quality)
+
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   #make unique quarter route notifier
   mutate(quarter = case_when(stop_num > 15 ~ 4,
@@ -72,6 +78,8 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   ungroup() %>%
   #keep only the data that's up to the year we have nlcd data for
   filter(year <= max_nlcd_year) %>%
+  #add observer information
+  left_join(obs, by = c("year", "route")) %>%
   #standardize year
   standardize_year(starting_year = 2012) %>% #current stopdata max year is 2023 (huh! pull the 2024 data, might as well use it! actually this might be happening b/c we don't have 2024 landcover data..... anyway! we'll standardize on year 2012 (abt halfway btwn 2000 and 2023))
   #maybe year should be GENUINELY standardized. that would make the intercept lean towards the years where we have the most data.
@@ -99,7 +107,12 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
     change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
     #also take change forest
     change_forest = perc_forest_quarter - lag(perc_forest_quarter),
-    years_btwn = year - lag(year), 
+    years_btwn = year - lag(year),
+    #calculate if observer changed as well
+    change_obs = case_when(observer_ID == lag(observer_ID) ~ 0,
+                           observer_ID != lag(observer_ID) ~ 1),
+    #calculate change in observer quality
+    change_obs_qual = observer_quality - lag(observer_quality),
     #switching things up, we also want to create a ratio between years, then take the log of that ratio and divide it by the years_btwn
     ratio_count = case_when(
       q_rt_count == 0 & lag(q_rt_count) == 0 ~ 0,
@@ -135,10 +148,10 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   
   
   #run first through the pcp with development code, then run the same (copy+paste) for the forest model
-  landcover <- c("dev+barren", "forest")
+  landcover <- c("forest_positive", "forest_negative", "dev+barren", "forest_all")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.20_cpc_forestndev"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_rmbaseline_obsqual"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
@@ -161,6 +174,7 @@ for(a in 1:length(landcover)) {
   #loop through the species
   species_list <- stopdata %>% 
     distinct(common_name)
+  write.csv(species_list, paste0(save_to,"/", "species_list.csv"), row.names = FALSE)
   #testing
   #species_list <- species_list[1:5,]
   
@@ -176,12 +190,28 @@ for(a in 1:length(landcover)) {
     print(i)
     
     #pick the relevant landcover variables depending on the model running this time
-    if(landcover[a] == "forest") {
+    if(landcover[a] == "forest_all") {
       change_selected_land <- one_species$change_forest
       base_selected_land <- one_species$perc_forest_quarter
     } else if (landcover[a] == "dev+barren") {
       change_selected_land <- one_species$change_dev
       base_selected_land <- one_species$rmax_dev_plus_barren
+    } else if (landcover[a] == "forest_positive") {
+      one_species <- one_species %>%
+        filter(change_forest >= 0) %>%
+        group_by(q_rt_standard) %>%
+        mutate(q_rt_standard = cur_group_id()) %>%
+        ungroup()
+      change_selected_land <- one_species$change_forest
+      base_selected_land <- one_species$perc_forest_quarter
+    } else if (landcover[a] == "forest_negative") {
+      one_species <- one_species %>%
+        filter(change_forest <= 0)  %>%
+        group_by(q_rt_standard) %>%
+        mutate(q_rt_standard = cur_group_id()) %>%
+        ungroup()
+      change_selected_land <- one_species$change_forest
+      base_selected_land <- one_species$perc_forest_quarter
     }
     
     
@@ -191,7 +221,8 @@ for(a in 1:length(landcover)) {
       Nqrt = length(unique(one_species$q_rt_standard)), #number of unique quarter routes
       qrt = one_species$q_rt_standard, #qrt index for each observation
       change_landcover = change_selected_land, #change in percent developed or forest for each observation since the last year
-      base_landcover = base_selected_land, #running max developed or perc forest
+      #base_landcover = base_selected_land, #running max developed or perc forest,
+      change_obs = one_species$change_obs, #if the observer changed between years
   #    R = one_species$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
   #    year = one_species$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
       change_C = one_species$change_count #count data for each observation, change since the last year
@@ -224,7 +255,7 @@ for(a in 1:length(landcover)) {
                str_extract(rownames, "\\d+"),
                NA)),
              slope = ifelse(str_detect(rownames, "b"), 
-                            str_extract(rownames, "year|dev|forest|landcover"),
+                            paste0(str_extract(rownames, "year|dev|forest|landcover"),", ", landcover[a]),
                             NA),
              common_name = i)
     #bind rows
@@ -241,7 +272,11 @@ for(a in 1:length(landcover)) {
              landcover = landcover[a]) 
     #bind rows
     posterior_samples <- bind_rows(posterior_samples, temp_posterior) %>%
-      dplyr::select(b_landcover_change, b_landcover_base, row_id, common_name, landcover)
+      dplyr::select(b_landcover_change, 
+                    #b_landcover_base,
+                    row_id, 
+                    common_name, 
+                    landcover)
     #save
     write.csv(posterior_samples, paste0(save_to,"/", landcover[a], "_posterior_samples.csv"), row.names = FALSE)
     paste("datasets saved")

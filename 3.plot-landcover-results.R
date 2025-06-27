@@ -18,7 +18,7 @@ library(cowplot) #used to make multi-panel figures
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
 load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
 load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bdev/"
-load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.20_cpc_forestndev/"
+load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_forestndev_pm_obs/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -295,6 +295,101 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.20_cpc_for
     dplyr::mutate(color = ifelse(sig == TRUE, "black", "grey80"))
   #okay well. there's a color vector in the right order now. um. it kinda of seems like bayesplot isn't built for this kind of sig vs non-sig demonstration in this way. May require putting up an issue on the github or submitting a question. Otherwise like. idk. Going to need to plot twice, once with NA columns for the non-sig and the next with NA coloumns for the sig, both on the same plot, but dif colors associated with bayplot_theme(). hm
     
+  #lets try to move off bayesplot. Especially when we are plotting intervals and not like the shape of the whole distribution, all I need are the 95% confidence intervals and the mean to plot. The trick will be figuring out how to have the y axis be the species names... could plot with y = speciesid or something like that, and then remake the axis bars to account for that. I think that would work nicely!
+  
+#################### change per change without bayesplot
+
+  species_list <- read.csv(paste0(load_from_change,"species_list.csv"))
+  dev <- read.csv(paste0(load_from_change, "dev+barren_fit_summaries.csv")) %>%
+    #filter out the individual quarter route a[] fits, just keep the variables we're most interested in.
+    filter(rownames %in% c("a_bar", "sig_a", "b_landcover_change", "b_landcover_base", "c_obs", "sigma")) %>%
+    #and really.. all we want is b_landcover_change here in plotting
+    filter(rownames %in% c("b_landcover_change")) %>%
+    group_by(mean, common_name) %>%
+    arrange(desc(mean)) %>% #
+    mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
+    ungroup() %>%
+    mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
+           color = ifelse(significant == FALSE, "grey60", "black"),
+           pch = ifelse(significant == FALSE, 1, 19))
+  
+  forest_all <- read.csv(paste0(load_from_change, "forest_all_fit_summaries.csv")) %>%
+    filter(rownames %in% c("b_landcover_change")) %>%
+    group_by(mean, common_name) %>%
+    arrange(desc(mean)) %>% #
+    mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
+    ungroup() %>%
+    mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
+           color = ifelse(significant == FALSE, "grey60", "black"),
+           pch = ifelse(significant == FALSE, 1, 19))
+  
+  species_list <- species_list %>%
+    left_join(forest_all[,17:18], by = "common_name") 
+  
+  forest_pos <- read.csv(paste0(load_from_change, "forest_positive_fit_summaries.csv")) %>%
+    filter(rownames %in% c("b_landcover_change")) %>%
+    left_join(species_list, by = "common_name") %>% #add the forest sorted sp id
+    ungroup() %>%
+    mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
+           color = ifelse(significant == FALSE, "lightblue", "blue"),
+           pch = ifelse(significant == FALSE, 1, 19))
+  
+  forest_neg <- read.csv(paste0(load_from_change, "forest_negative_fit_summaries.csv")) %>%
+    filter(rownames %in% c("b_landcover_change")) %>%
+    select(-NA.) %>%
+    left_join(species_list, by = "common_name") %>% #add the forest sorted sp id
+    ungroup() %>%
+    mutate(significant = ifelse(X2.5. < 0 & X97.5. > 0, FALSE, TRUE),
+           color = ifelse(significant == FALSE, "pink", "red"),
+           pch = ifelse(significant == FALSE, 1, 19))
   
   
+  plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos)
+
+  plot_intervals(dev, "dev")
   
+  
+par(mar = c(4, 12, 1, 1), cex.axis = .6)  
+plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA) {
+  plot(y = plot_df$sp_id,
+       x = plot_df$mean,
+       xlim = c(-0.6, 0.4),
+       col = plot_df$color,
+       yaxt = "n",
+       xlab = xlab,
+       ylab = "",
+       pch = 16,
+       ) +
+    segments(x0 = plot_df$X2.50.,
+             x1 = plot_df$X97.50.,
+             y0 = plot_df$sp_id,
+             col = plot_df$color) +
+    abline(v = 0, lty = "dashed") + 
+    axis(2, at = seq(round(min(plot_df$sp_id)),
+                     round(max(plot_df$sp_id)), by = 1),
+         labels = plot_df$common_name,
+         las = 1,
+         cex.axis = .6)
+  
+  if(any(is.na(first_overlay)) == FALSE) {
+    segments(x0 = first_overlay$X2.50.,
+             x1 = first_overlay$X97.50.,
+             y0 = first_overlay$sp_id,
+             col = first_overlay$color)
+    points(x = first_overlay$mean,
+           y = first_overlay$sp_id,
+           col = first_overlay$color)
+  }
+  
+  if(any(is.na(first_overlay)) == FALSE) {
+    segments(x0 = second_overlay$X2.5.,
+             x1 = second_overlay$X97.5.,
+             y0 = second_overlay$sp_id,
+             col = second_overlay$color)
+    points(x = second_overlay$mean,
+           y = second_overlay$sp_id,
+           col = second_overlay$color)
+  }
+}
+
+#do a scatterplot of the positive vs negative forest model results
