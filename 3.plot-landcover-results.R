@@ -332,7 +332,8 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_for
     ungroup() %>%
     mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
            color = ifelse(significant == FALSE, "lightblue", "blue"),
-           pch = ifelse(significant == FALSE, 1, 19))
+           pch = ifelse(significant == FALSE, 1, 19)) %>%
+    arrange(sp_id)
   
   forest_neg <- read.csv(paste0(load_from_change, "forest_negative_fit_summaries.csv")) %>%
     filter(rownames %in% c("b_landcover_change")) %>%
@@ -341,7 +342,8 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_for
     ungroup() %>%
     mutate(significant = ifelse(X2.5. < 0 & X97.5. > 0, FALSE, TRUE),
            color = ifelse(significant == FALSE, "pink", "red"),
-           pch = ifelse(significant == FALSE, 1, 19))
+           pch = ifelse(significant == FALSE, 1, 19)) %>%
+    arrange(sp_id)
   
   
   plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos)
@@ -393,3 +395,30 @@ plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = N
 }
 
 #do a scatterplot of the positive vs negative forest model results
+
+#scatterplot of forest vs dev model results
+dev <- dev %>%
+  left_join(species_list, by = "common_name") %>%
+  rename(f_sp_id = sp_id.y) %>%
+  arrange(f_sp_id) #have to arrange in same order as the forest ones, so they match when plotting
+
+plot(x = dev$mean,
+     y = forest_pos$mean,
+     xlab = "Effect of Change in Development on Change in Count", 
+     ylab = "Effect of Change in Forest on Change in Count",
+     pch = 16,
+     xlim = c(-0.6, 0.2),
+     ylim = c(-0.15, 0.2)) +
+  abline(h = 0,
+         lty = "dashed") +
+  abline(v = 0, 
+         lty = "dashed")
+  segments(x0 = dev$X2.50.,
+           x1 = dev$X97.50.,
+           y0 = forest_all$mean,
+           col = "grey10") + 
+  segments(y0 = forest_all$X2.50.,
+           y1 = forest_all$X97.50.,
+           x0 = dev$mean,
+           col = "seagreen") 
+
