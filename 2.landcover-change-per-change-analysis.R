@@ -8,8 +8,8 @@
 # % change in count predicted by
 # a % change in urbanization. and a % change in forest
 # and splitting out the negative and positive forest effects
-# instead of observer quality, we will measure the observer
-# effect with a 0/1 variable of if the observer changed or not between years
+# controlling for the effect of observer we will also add a variable of
+# change in observer quality.
 #
 ######################
 
@@ -44,6 +44,7 @@ dev <- read.csv("data/nlcd-landcover/nlcd_annual_running_max_developed.csv") %>%
          sd_dev = sd(rmax_dev_quarter),
          centered_rmax_dev = rmax_dev_quarter - mean_dev,
          z_score_rmax_dev = ((rmax_dev_quarter - mean_dev)/ sd_dev))
+#NOTE: currently using rmax_dev_plus_barren in the model, and have depreciated use of z_score_rmax_dev
 #so mean urbanization is about a quarter urbanized.
 #if we use the centered rmax dev, the interpretation of the intercept is the intercept at the mean urban % (a quarter urbanized)
 #if we use the z score rmax dev, which has been standardized, 
@@ -63,7 +64,7 @@ obs <- mbbs_survey_events %>%
   dplyr::select(route, primary_observer, observer_ID, year, observer_quality)
 
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
-  #make unique quarter route notifier
+  #make unique quarter route identifier
   mutate(quarter = case_when(stop_num > 15 ~ 4,
                              stop_num > 10 ~ 3,
                              stop_num > 5 ~ 2,
@@ -133,7 +134,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   standardize_year(starting_year = 2012) %>% 
   ####let's genuinely standardize year. like, the same way we z_score development.
   mutate(z_score_year = (year-mean(year))/sd(year))
-  #yeah, and bc we've removed like a year's worth of data, that changes the z_score years. hm, maybe we should do year a different way. Check in abt this
+  #yeah, and bc we've removed like a year's worth of data, that changes the z_score years. Note: ultiamtely, year is not a park of this change per change model, because we're using lag information
 
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
   flagged_sp <- stopdata %>% 
@@ -147,7 +148,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
     dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year)
   
   
-  #run first through the pcp with development code, then run the same (copy+paste) for the forest model
+  #we're going to run the same model for both our urban (dev + barren) and for our forest variables - breaking out the various effects of change in the amount of urbanization, positive increases in forest cover, and negative decreases in forest cover. Forest cover and urbanization change are not 1:1 correlated so these are indeed different from each other. 
   landcover <- c("forest_positive", "forest_negative", "dev+barren", "forest_all")
   
 #where to save stan code and fit
