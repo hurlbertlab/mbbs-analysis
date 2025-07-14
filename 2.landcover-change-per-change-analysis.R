@@ -180,8 +180,8 @@ for(a in 1:length(landcover)) {
   #species_list <- species_list[1:5,]
   
   #blankdata set everything will be saved to
-  fit_summaries <- as.data.frame(NA)
-  posterior_samples <-  as.data.frame(NA)
+  fit_summaries <- as.data.frame(NULL)
+  posterior_samples <-  as.data.frame(NULL)
   
   for (i in species_list$common_name) {
     #filter to one species
