@@ -213,7 +213,7 @@ for(a in 1:length(landcover)) {
       qrt = loopdata$q_rt_standard, #qrt index for each observation
       Nsp = length(unique(loopdata$sp_id)), 
       sp = loopdata$sp_id,
-      change_landcover = change_selected_land, #change in percent developed or forest for each observation since the last year
+   #   change_landcover = change_selected_land, #change in percent developed or forest for each observation since the last year
       #base_landcover = base_selected_land, #running max developed or perc forest,
       change_obs = loopdata$change_obs, #if the observer changed between years
   #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
@@ -281,8 +281,7 @@ for(a in 1:length(landcover)) {
     write.csv(posterior_samples, paste0(save_to, landcover[a], "_posterior_samples.csv"), row.names = FALSE)
     paste("datasets saved")
     timestamp()
-  } #end species loop
+  } #end landcover loop
 
-} #end landcover loop
 
 

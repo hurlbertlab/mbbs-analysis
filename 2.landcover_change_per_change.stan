@@ -62,7 +62,7 @@
     a_qrt ~ normal(0, sig_qrt); //centered on zero, use a hyperparam to set the distribution param. 
     a_sp ~ normal(0, sig_sp); //centered on zero, use a hyperparam to set the distribution param.
     //use the half cauchy (lower bound = 0 set above) bc thats what stat rethinking uses, pg 371. Gives more credence to extreme tails than a normal distribution does
-    sig_qrt ~ exponential(0,1); //ok reduce credence to extreme tails on sig_qrt, routes should b p similar to each other.
+    sig_qrt ~ exponential(1); //ok reduce credence to extreme tails on sig_qrt, routes should b p similar to each other.
     sig_sp ~ cauchy(0,1);
     // okay so, with interpretation...
     // take a (global mean) and add a_sp*sig_sp(variance in sp)
