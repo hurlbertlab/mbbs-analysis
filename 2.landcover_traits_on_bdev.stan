@@ -1,7 +1,5 @@
 //
-// This Stan program defines a simple model, with a
-// vector of values 'y' modeled as normally distributed
-// The input data is a vector 'y' of length 'N'.
+
 data {
   int<lower=0> N; //number of observations
   vector[N] climate_position; //x variable, eg. climate position

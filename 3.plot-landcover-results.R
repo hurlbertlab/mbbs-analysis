@@ -18,7 +18,8 @@ library(cowplot) #used to make multi-panel figures
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
 load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
 load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bdev/"
-load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_forestndev_pm_obs/"
+load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_rmbaseline_obsqual/"
+load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_traits_on_cpc/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -333,26 +334,27 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_for
     mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
            color = ifelse(significant == FALSE, "lightblue", "blue"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
-    arrange(sp_id)
+    arrange(sp_id) %>%
+    dplyr::select(-q_rt_standard)
   
   forest_neg <- read.csv(paste0(load_from_change, "forest_negative_fit_summaries.csv")) %>%
     filter(rownames %in% c("b_landcover_change")) %>%
-    select(-NA.) %>%
     left_join(species_list, by = "common_name") %>% #add the forest sorted sp id
     ungroup() %>%
-    mutate(significant = ifelse(X2.5. < 0 & X97.5. > 0, FALSE, TRUE),
+    mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
            color = ifelse(significant == FALSE, "pink", "red"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
-    arrange(sp_id)
+    arrange(sp_id) %>%
+    dplyr::select(-q_rt_standard)
   
   
-  plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos)
+  plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
 
   plot_intervals(dev, "dev")
   
   
 par(mar = c(4, 12, 1, 1), cex.axis = .6)  
-plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA) {
+plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, ...) {
   plot(y = plot_df$sp_id,
        x = plot_df$mean,
        xlim = c(-0.6, 0.4),
@@ -384,8 +386,8 @@ plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = N
   }
   
   if(any(is.na(first_overlay)) == FALSE) {
-    segments(x0 = second_overlay$X2.5.,
-             x1 = second_overlay$X97.5.,
+    segments(x0 = second_overlay$X2.50.,
+             x1 = second_overlay$X97.50.,
              y0 = second_overlay$sp_id,
              col = second_overlay$color)
     points(x = second_overlay$mean,
@@ -403,9 +405,9 @@ dev <- dev %>%
   arrange(f_sp_id) #have to arrange in same order as the forest ones, so they match when plotting
 
 plot(x = dev$mean,
-     y = forest_pos$mean,
+     y = forest_neg$mean,
      xlab = "Effect of Change in Development on Change in Count", 
-     ylab = "Effect of Change in Forest on Change in Count",
+     ylab = "Effect of Negative Change in Forest on Change in Count",
      pch = 16,
      xlim = c(-0.6, 0.2),
      ylim = c(-0.15, 0.2)) +
@@ -422,3 +424,41 @@ plot(x = dev$mean,
            x0 = dev$mean,
            col = "seagreen") 
 
+
+#######################################################################
+  # change per change species traits
+  # three panel with dev, forest pos, forest neg panels and intervals in same order
+######################################################################
+  
+  cpct_dev <- read.csv(paste0(load_from_cpc_traits, "dev+barrenposterior_samples1-400.csv")) %>%
+    dplyr::select(-row_id, -bootstrap_run)
+  #hm, maybe I need to do this with bayesplot, since that calculates the confidence intervals for me? lets see..
+  mcmc_intervals(cpct_dev,
+                 prob = 0.01,
+                 prob_outer = 0.95) + 
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("cpc dev traits")
+  #if I change to mcmc_areas, data is all very normally distributed
+
+  cpct_fpos <- read.csv(paste0(load_from_cpc_traits, "forest_positiveposterior_samples1-400.csv"))  %>%
+    dplyr::select(-row_id, -bootstrap_run)
+
+  mcmc_intervals(cpct_fpos,
+                 prob = 0.01,
+                 prob_outer = 0.95) + 
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("cpc forest gain traits")
+  
+  cpct_fneg <- read.csv(paste0(load_from_cpc_traits, "forest_negativeposterior_samples1-400.csv"))  %>%
+    dplyr::select(-row_id, -bootstrap_run)
+  
+  mcmc_intervals(cpct_fneg,
+                 prob = 0.01,
+                 prob_outer = 0.95) + 
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("cpc forest loss traits")
+
+  #ha.. traits not significant. rolls around  
+  #I guess here yeah I'm bagging all the data together. How many times between the bootstrap runs do these come out significant?
+  
+  
