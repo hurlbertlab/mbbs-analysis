@@ -229,7 +229,7 @@ for(a in 1:length(landcover)) {
                     chains = 4,
                     cores = 4, 
                     iter = 6000,
-                    warmup = 1000)
+                    warmup = 2000)
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
     timestamp()

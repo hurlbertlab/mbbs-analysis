@@ -58,7 +58,7 @@
   
 
 
-    a ~ normal(0,10); //universal intercept, trying not to constrain the prior too tightly so using 10 instead of 1
+    a ~ normal(0,2); //universal intercept, trying not to constrain the prior too tightly so using 10 instead of 1
     a_qrt ~ normal(0, sig_qrt); //centered on zero, use a hyperparam to set the distribution param. 
     a_sp ~ normal(0, sig_sp); //centered on zero, use a hyperparam to set the distribution param.
     //use the half cauchy (lower bound = 0 set above) bc thats what stat rethinking uses, pg 371. Gives more credence to extreme tails than a normal distribution does
