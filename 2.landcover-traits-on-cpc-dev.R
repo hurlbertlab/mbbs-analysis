@@ -23,7 +23,7 @@ unloadNamespace("rethinking") #just in case, can interfere
 #load in dataframes
 ###################################
 #Get the b_dev data from the last run of the first step of the landcover modeling
-load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_rmbaseline_obsqual/"
+load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.23_cpc_allsp_in_one/"
 species_list <- read.csv(paste0(load_from, "species_list.csv")) 
 
 #climate 
@@ -65,7 +65,7 @@ traits <- species_list %>%
                                      select_rownames = "b_landcover_change") {
       bdf |>
         dplyr::filter(rownames == select_rownames) |>
-        dplyr::select(rownames, mean, sd, X2.50., X97.50., slope, common_name) |>
+        dplyr::select(rownames, mean, sd, X2.5., X97.5., slope, common_name) |>
         left_join(traitsdf, by = "common_name")
     }
     
@@ -88,9 +88,20 @@ ps <- read.csv(paste0(load_from, "dev+barren_posterior_samples.csv")) %>%
   bind_rows(read.csv(paste0(load_from, "forest_positive_posterior_samples.csv"))) %>%
   bind_rows(read.csv(paste0(load_from, "forest_negative_posterior_samples.csv"))) %>%
   #we don't need to use all 16,000 samples for each species, so let's cut it to 5k
-  dplyr::filter(row_id <= 5000)
+  dplyr::filter(row_id <= 5000) %>%
   #then, when it's in use in the bootstrapping, just filter to the landcover I want
   #dev+barren, forest_negative, or forest_positive
+
+#now we do need to do something different when we made them all together...
+  select(b_landcover_change.1.:b_landcover_change.66., row_id, landcover) %>%
+  tidyr::pivot_longer(cols = b_landcover_change.1.:b_landcover_change.66.,
+                            names_to = "sp_id",
+                            names_prefix = "b_landcover_change.",
+                            values_to = "b_landcover_change") %>%
+  mutate(sp_id = as.integer(str_extract(.$sp_id, "[0-9]([0-9])?"))) %>%
+  left_join(species_list, by = "sp_id")
+
+
 
   #make a test dataset where the connection is like 1:1 to ensure our code is running as we expect. clear loss in response to increasing development and high uai (negative cor), clear loss in response to forest decreasing (positive cor), clear gain in response to forest increasing (positive cor)
 #mixing this up w prev model. Here the test is just making a really clear cor btwn bdev and scale_UAI. If I know there's an effect there does that come out in my model.
@@ -105,7 +116,7 @@ ps <- read.csv(paste0(load_from, "dev+barren_posterior_samples.csv")) %>%
   cor(traits$scale_z_tempwq, traits$scale_eaforest) #fine cor, -0.02
 
 #where to save
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_traits_on_cpc/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.24_traits_on_cpc/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #load the stan file, compile stan file, save stan file
@@ -126,6 +137,8 @@ standf <- ps %>%
   filter(landcover == landtypes[b]) %>%
   left_join(traits, by = "common_name")
 
+print(landtypes[b])
+
 #about 40 minutes to do 400
 for(i in 1:1000) {
   
@@ -145,7 +158,7 @@ fit <- sampling(stan_model,
                 data = datstan,
                 chains = 4,
                 cores = 4, 
-                iter = 4000,
+                iter = 10000,
                 warmup = 2000)
 
 fit_temp <- as.data.frame(summary(fit)$summary) %>%

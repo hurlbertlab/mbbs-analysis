@@ -68,7 +68,7 @@ obs <- mbbs_survey_events %>%
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   ##########
   # testing
-  filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
+  #filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
   ############
   #make unique quarter route identifier
   mutate(quarter = case_when(stop_num > 15 ~ 4,
@@ -150,7 +150,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   landcover <- c("dev+barren", "forest_positive", "forest_negative", "forest_all")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.18_cpc_allsp_in_one/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.23_cpc_allsp_in_one/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
@@ -168,10 +168,10 @@ file.copy(stan_model_file, save_to, overwrite = TRUE)
 print("model saved")
 #save a species list
 species_list <- stopdata %>% dplyr::distinct(common_name, sp_id)
-write.csv(species_list, paste0(save_to, "species_list.csv", row.names = FALSE))
+write.csv(species_list, paste0(save_to, "species_list.csv"), row.names = FALSE)
 
 ####LOOP through forest and developed landcover change models
-for(a in 1:length(landcover)) {
+for(a in 3:length(landcover)) {
   
   #blankdata set everything will be saved to
   fit_summaries <- as.data.frame(NULL)
@@ -228,7 +228,7 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 6000,
+                    iter = 10000,
                     warmup = 2000)
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
@@ -262,21 +262,20 @@ for(a in 1:length(landcover)) {
     fit_summaries <- bind_rows(fit_summaries, fit_temp)
     #save
     write.csv(fit_summaries, paste0(save_to, landcover[a], "_fit_summaries.csv"), row.names = FALSE)
+    paste("saved fit summary")
     
     
     #extract posterior samples and save those also
     temp_posterior <- as.data.frame(fit) %>%
       select(starts_with("b_")) %>%
       mutate(row_id = row_number(),
-             common_name = i,
              landcover = landcover[a]) 
     #bind rows
-    posterior_samples <- bind_rows(posterior_samples, temp_posterior) %>%
-      dplyr::select(b_landcover_change, 
-                    #b_landcover_base,
-                    row_id, 
-                    common_name, 
-                    landcover)
+    posterior_samples <- bind_rows(posterior_samples, temp_posterior) #%>%
+    #  dplyr::select(b_landcover_change, 
+    #                #b_landcover_base,
+    #                row_id, 
+    #                landcover)
     #save
     write.csv(posterior_samples, paste0(save_to, landcover[a], "_posterior_samples.csv"), row.names = FALSE)
     paste("datasets saved")
