@@ -21,6 +21,7 @@ load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bde
 load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_rmbaseline_obsqual/"
 load_from_change_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.23_cpc_allsp_in_one/"
 load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_traits_on_cpc/"
+load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.24_traits_on_cpc/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -301,17 +302,21 @@ load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_tra
   
 #################### change per change without bayesplot
 
-  species_list <- read.csv(paste0(load_from_change,"species_list.csv"))
-  dev <- read.csv(paste0(load_from_change, "dev+barren_fit_summaries.csv")) %>%
+  species_list <- read.csv(paste0(load_from_change_together,"species_list.csv"))
+  dev <- read.csv(paste0(load_from_change_together, "dev+barren_fit_summaries.csv")) %>%
     #filter out the individual quarter route a[] fits, just keep the variables we're most interested in.
-    filter(rownames %in% c("a_bar", "sig_a", "b_landcover_change", "b_landcover_base", "c_obs", "sigma")) %>%
+   # filter(rownames %in% c("a_bar", "sig_a", "b_landcover_change", "b_landcover_base", "c_obs", "sigma")) %>%
     #and really.. all we want is b_landcover_change here in plotting
-    filter(rownames %in% c("b_landcover_change")) %>%
+   # filter(rownames %in% c("b_landcover_change")) %>%
+    filter(!is.na(common_name),
+           !is.na(slope)) %>%
+    mutate(rm = ifelse(str_detect(.$rownames, "raw"), FALSE, TRUE)) %>%
+    filter(rm == TRUE) %>%
     group_by(mean, common_name) %>%
     arrange(desc(mean)) %>% #
     mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
     ungroup() %>%
-    mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
+    mutate(significant = ifelse(X2.5. < 0 & X97.5. > 0, FALSE, TRUE),
            color = ifelse(significant == FALSE, "grey60", "black"),
            pch = ifelse(significant == FALSE, 1, 19))
   
@@ -351,7 +356,7 @@ load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_tra
   
   plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
 
-  plot_intervals(dev, "dev")
+  plot_intervals(dev, "dev species run together")
   
   
 par(mar = c(4, 12, 1, 1), cex.axis = .6)  
@@ -360,13 +365,14 @@ plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = N
        x = plot_df$mean,
        xlim = c(-0.6, 0.4),
        col = plot_df$color,
+       #ylim = c(1,66),
        yaxt = "n",
        xlab = xlab,
        ylab = "",
        pch = 16,
        ) +
-    segments(x0 = plot_df$X2.50.,
-             x1 = plot_df$X97.50.,
+    segments(x0 = plot_df$X2.5.,
+             x1 = plot_df$X97.5.,
              y0 = plot_df$sp_id,
              col = plot_df$color) +
     abline(v = 0, lty = "dashed") + 
@@ -462,4 +468,41 @@ plot(x = dev$mean,
   #ha.. traits not significant. rolls around  
   #I guess here yeah I'm bagging all the data together. How many times between the bootstrap runs do these come out significant?
   
+###############################
+#
+# Change per change traits with all the species run together
+#
+#####################################
+  cpct_dev_tog <- read.csv(paste0(load_from_cpc_traits_together, "dev+barrenposterior_samples1k.csv")) %>%
+    dplyr::select(-row_id, -bootstrap_run)
+  #hm, maybe I need to do this with bayesplot, since that calculates the confidence intervals for me? lets see..
+  dtplot <- mcmc_intervals(cpct_dev_tog,
+                 prob = 0.01,
+                 prob_outer = 0.95) + 
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("cpc dev traits together")
+  #if I change to mcmc_areas, data is all very normally distributed
+  
+  cpct_fpos_tog <- read.csv(paste0(load_from_cpc_traits_together, "forest_positiveposterior_samples1k.csv"))  %>%
+    dplyr::select(-row_id, -bootstrap_run)
+  
+  fptplot <- mcmc_intervals(cpct_fpos_tog,
+                 prob = 0.01,
+                 prob_outer = 0.95) + 
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("cpc forest gain traits species run together")
+  
+  cpct_fneg_tog <- read.csv(paste0(load_from_cpc_traits_together, "forest_negativeposterior_samples1k.csv"))  %>%
+    dplyr::select(-row_id, -bootstrap_run)
+  
+  fpnplot <-  mcmc_intervals(cpct_fneg_tog,
+                 prob = 0.01,
+                 prob_outer = 0.95) + 
+    geom_vline(xintercept = 0, color = "grey30") +
+    ggtitle("cpc forest loss traits species run together")
+  
+  plot_grid(dtplot, fptplot, fpnplot, ncol = 3)
+  
+  #ha.. traits not significant. rolls around  
+  #I guess here yeah I'm bagging all the data together. How many times between the bootstrap runs do these come out significant?
   

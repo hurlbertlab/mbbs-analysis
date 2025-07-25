@@ -38,7 +38,7 @@
     
     real c_obs; //effect of if the observer changed
     
-    real<lower=0> sigma;
+    vector[Nsp] sigma;
   
   }
   
@@ -60,7 +60,7 @@
 //      b_year*year[n] + 
 //      b_landcover_base*base_landcover[n] +
       c_obs*change_obs[n], 
-      sigma);
+      sigma[sp[n]]);
     }
   
 
