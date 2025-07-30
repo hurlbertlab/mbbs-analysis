@@ -23,7 +23,7 @@ unloadNamespace("rethinking") #just in case, can interfere
 #load in dataframes
 ###################################
 #Get the b_dev data from the last run of the first step of the landcover modeling
-load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.23_cpc_allsp_in_one/"
+load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.25_cpc_allsp_in_one/"
 species_list <- read.csv(paste0(load_from, "species_list.csv")) 
 
 #climate 
@@ -116,7 +116,7 @@ ps <- read.csv(paste0(load_from, "dev+barren_posterior_samples.csv")) %>%
   cor(traits$scale_z_tempwq, traits$scale_eaforest) #fine cor, -0.02
 
 #where to save
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.24_traits_on_cpc/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.29_traits_on_cpc/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #load the stan file, compile stan file, save stan file

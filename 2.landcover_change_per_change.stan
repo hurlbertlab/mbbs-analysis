@@ -16,9 +16,6 @@
   int<lower=1> Nsp; //number of species
   array[N] int<lower=1, upper=Nsp> sp; //species for each observation
   vector[N] change_landcover; //change in development or forest since the last year
-//  vector[N] base_landcover; //percent developed or forested for each observation, this is a standardized z-score
-//  vector[N] year; //year for each observation
-// ^ year is pulled out because we're working with dif and the magnitude of changes is not so huge that I expect exponential change to really be having an effect over time. There's a check for species having issues with this assumption, and as of 2025.06.06 all the species pass
   vector[N] change_obs; //0 or 1 for if the observer changed between the two surveys
   vector[N] change_C; //change in count since the last survey for each row, vector bc it doesn't have bounds like an array does
   }
@@ -38,7 +35,7 @@
     
     real c_obs; //effect of if the observer changed
     
-    vector[Nsp] sigma;
+    vector<lower=0>[Nsp] sigma;
   
   }
   
@@ -57,8 +54,6 @@
       a_qrt[qrt[n]] +
       a_sp[sp[n]] +
       b_landcover_change[sp[n]]*change_landcover[n] + 
-//      b_year*year[n] + 
-//      b_landcover_base*base_landcover[n] +
       c_obs*change_obs[n], 
       sigma[sp[n]]);
     }
@@ -92,8 +87,8 @@
     
 }
 
-  generated quantities {
-  vector[Nsp] b_landcover_check = b_landcover_change_raw * sig_lcc;
-  // Compare with b_landcover_change; should match exactly
-}
+//  generated quantities {
+//  vector[Nsp] b_landcover_check = b_landcover_change_raw * sig_lcc;
+//  // Compare with b_landcover_change; should match exactly
+//}
 

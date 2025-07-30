@@ -150,7 +150,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   landcover <- c("dev+barren", "forest_positive", "forest_negative", "forest_all")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.23_cpc_allsp_in_one/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.25_cpc_allsp_in_one/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
@@ -171,7 +171,7 @@ species_list <- stopdata %>% dplyr::distinct(common_name, sp_id)
 write.csv(species_list, paste0(save_to, "species_list.csv"), row.names = FALSE)
 
 ####LOOP through forest and developed landcover change models
-for(a in 3:length(landcover)) {
+for(a in 1:length(landcover)) {
   
   #blankdata set everything will be saved to
   fit_summaries <- as.data.frame(NULL)
@@ -254,10 +254,13 @@ for(a in 3:length(landcover)) {
              slope = ifelse(str_detect(rownames, "b_"), 
                             paste0(str_extract(rownames, "year|dev|forest|landcover"),", ", landcover[a]),
                             NA),
+             raw = ifelse(str_detect(rownames, "raw"), TRUE, NA),
              flag_rhat = ifelse(round(.$Rhat, 2) == 1, FALSE, TRUE),
              flag_neff = ifelse(.$n_eff > 2000, FALSE, TRUE)
              ) %>%
-      left_join(species_list, by = "sp_id")
+      left_join(species_list, by = "sp_id") %>%
+      #remove the intermediate step data
+      filter(is.na(raw))
     #bind rows
     fit_summaries <- bind_rows(fit_summaries, fit_temp)
     #save
@@ -268,6 +271,7 @@ for(a in 3:length(landcover)) {
     #extract posterior samples and save those also
     temp_posterior <- as.data.frame(fit) %>%
       select(starts_with("b_")) %>%
+      select(!contains("raw")) %>%
       mutate(row_id = row_number(),
              landcover = landcover[a]) 
     #bind rows
