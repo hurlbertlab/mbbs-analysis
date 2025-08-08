@@ -19,9 +19,9 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
 load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
 load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bdev/"
 load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_rmbaseline_obsqual/"
-load_from_change_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.23_cpc_allsp_in_one/"
+load_from_change_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.25_cpc_allsp_in_one/"
 load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_traits_on_cpc/"
-load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.24_traits_on_cpc/"
+load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.29_traits_on_cpc/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -317,7 +317,7 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
     mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
     ungroup() %>%
     mutate(significant = ifelse(X2.5. < 0 & X97.5. > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "grey60", "black"),
+           color = ifelse(significant == FALSE, "lightblue", "blue"),
            pch = ifelse(significant == FALSE, 1, 19))
   
   forest_all <- read.csv(paste0(load_from_change, "forest_all_fit_summaries.csv")) %>%
@@ -357,19 +357,19 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
   plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
 
   plot_intervals(dev, "dev species run together")
+
   
-  
-par(mar = c(4, 12, 1, 1), cex.axis = .6)  
+par(mar = c(4, 15, 1, 1), cex.axis = 1)  
 plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, ...) {
   plot(y = plot_df$sp_id,
        x = plot_df$mean,
        xlim = c(-0.6, 0.4),
        col = plot_df$color,
-       #ylim = c(1,66),
+      # ylim = c(1,66),
        yaxt = "n",
        xlab = xlab,
        ylab = "",
-       pch = 16,
+       pch = 16
        ) +
     segments(x0 = plot_df$X2.5.,
              x1 = plot_df$X97.5.,
@@ -380,7 +380,7 @@ plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = N
                      round(max(plot_df$sp_id)), by = 1),
          labels = plot_df$common_name,
          las = 1,
-         cex.axis = .6)
+         cex.axis = 1)
   
   if(any(is.na(first_overlay)) == FALSE) {
     segments(x0 = first_overlay$X2.50.,
@@ -402,6 +402,34 @@ plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = N
            col = second_overlay$color)
   }
 }
+
+#okay, and for the presentation in Baltimore I also want to plot species trends overall, so I can do a brief dicussion of those as well. For that we want...
+sig_only_dev <- dev %>%
+  filter(significant == TRUE) %>%
+  mutate(sp_id = row_number(), 
+         color = ifelse(mean > 0, "forestgreen", "darkred"))
+
+plot_df <- sig_only_dev
+
+        plot(y = plot_df$sp_id,
+             x = plot_df$mean,
+             xlim = c(-0.4, 0.2),
+             col = plot_df$color,
+             yaxt = "n",
+             xlab = "sig only dev",
+             ylab = "",
+             pch = 16
+        ) +
+          segments(x0 = plot_df$X2.5.,
+                   x1 = plot_df$X97.5.,
+                   y0 = plot_df$sp_id,
+                   col = plot_df$color) +
+          abline(v = 0, lty = "dashed") + 
+          axis(2, at = seq(round(min(plot_df$sp_id)),
+                           round(max(plot_df$sp_id)), by = 1),
+               labels = plot_df$common_name,
+               las = 1,
+               cex.axis = 1)
 
 #do a scatterplot of the positive vs negative forest model results
 
@@ -477,10 +505,10 @@ plot(x = dev$mean,
     dplyr::select(-row_id, -bootstrap_run)
   #hm, maybe I need to do this with bayesplot, since that calculates the confidence intervals for me? lets see..
   dtplot <- mcmc_intervals(cpct_dev_tog,
-                 prob = 0.01,
                  prob_outer = 0.95) + 
-    geom_vline(xintercept = 0, color = "grey30") +
-    ggtitle("cpc dev traits together")
+    geom_vline(xintercept = 0, color = "grey30", lty = "dashed") #+
+    #ggtitle("Species Traits Predicting Effect of Development")
+  dtplot
   #if I change to mcmc_areas, data is all very normally distributed
   
   cpct_fpos_tog <- read.csv(paste0(load_from_cpc_traits_together, "forest_positiveposterior_samples1k.csv"))  %>%
