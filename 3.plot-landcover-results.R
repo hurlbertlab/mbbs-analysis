@@ -28,8 +28,8 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
   bayesplot_theme_update(text = element_text(size = 20, family = "sans")) 
   #families are "serif" for times new roman, "sans" for TT Arial, and "mono" for very typewriter
   bayesplot_theme_set(theme_minimal())
-  color_scheme_set("purple")
-  color_scheme_set("blue")
+  color_scheme_set(scheme = "purple")
+ # color_scheme_set("blue")
 ######## 
 ##FUNCTIONS  
   #separate out into two dfs, pivot both back to assumed structure of columns with 4000 rows bayesplot wants
@@ -68,9 +68,9 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
     seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_year"),
                          values_from_column = "b_year")
   
-  #sort the columns so they plot in a nice stack according to the effect of development
+  #sort the columns so they plot in a nice stack according to the effect of year(prev.development)
   #Calculate the mean of each parameter
-  param_means <- colMeans(dev)
+  param_means <- colMeans(year)
   #sort the parameters by their means
   sorted_params <- names(sort(param_means))
   #now, apply that sort
@@ -340,7 +340,7 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
     mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
            color = ifelse(significant == FALSE, "lightblue", "blue"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
-    arrange(sp_id) %>%
+    arrange(mean) %>%
     dplyr::select(-q_rt_standard)
   
   forest_neg <- read.csv(paste0(load_from_change, "forest_negative_fit_summaries.csv")) %>%
@@ -350,13 +350,15 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
     mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
            color = ifelse(significant == FALSE, "pink", "red"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
-    arrange(sp_id) %>%
+    arrange(mean) %>%
     dplyr::select(-q_rt_standard)
   
   
   plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
 
   plot_intervals(dev, "dev species run together")
+  #now plots with enough width and such, just still needs to be color changed. Altho being thick enough the light blue might be fine
+  #just need to save from my other computer screne
 
   
 par(mar = c(4, 15, 1, 1), cex.axis = 1)  
@@ -369,12 +371,14 @@ plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = N
        yaxt = "n",
        xlab = xlab,
        ylab = "",
-       pch = 16
+       pch = 16, 
+      cex = 1.5
        ) +
     segments(x0 = plot_df$X2.5.,
              x1 = plot_df$X97.5.,
              y0 = plot_df$sp_id,
-             col = plot_df$color) +
+             col = plot_df$color,
+             lwd = 4) +
     abline(v = 0, lty = "dashed") + 
     axis(2, at = seq(round(min(plot_df$sp_id)),
                      round(max(plot_df$sp_id)), by = 1),
@@ -404,33 +408,60 @@ plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = N
 }
 
 #okay, and for the presentation in Baltimore I also want to plot species trends overall, so I can do a brief dicussion of those as well. For that we want...
+traits <- read.csv("data/species-traits/2.landcover_cpc_analysis_full_traits.csv")
 sig_only_dev <- dev %>%
+  left_join(traits, by = "common_name") %>%
   filter(significant == TRUE) %>%
   mutate(sp_id = row_number(), 
-         color = ifelse(mean > 0, "forestgreen", "darkred"))
+         color = ifelse(mean > 0, "forestgreen", "darkred"),
+         X2.50. = X2.5.,
+         X97.50. = X97.5.)
+sig_only_dev$scalecolor <- viridisLite::viridis(option = "viridis", n = length(plot_df$scale_UAI))[as.numeric(cut(plot_df$scale_UAI, breaks = length(plot_df$scale_UAI)))]
 
 plot_df <- sig_only_dev
 
+plot_only_sig(sig_only_dev) 
+
+plot_only_sig <- function(plot_df, xlim_sig = c(-0.4, 0.2)){
         plot(y = plot_df$sp_id,
              x = plot_df$mean,
-             xlim = c(-0.4, 0.2),
+             xlim = xlim_sig,
              col = plot_df$color,
              yaxt = "n",
              xlab = "sig only dev",
              ylab = "",
-             pch = 16
+             pch = 16,
+             cex = 2
         ) +
-          segments(x0 = plot_df$X2.5.,
-                   x1 = plot_df$X97.5.,
+          segments(x0 = plot_df$X2.50.,
+                   x1 = plot_df$X97.50.,
                    y0 = plot_df$sp_id,
-                   col = plot_df$color) +
+                   col = plot_df$color,
+                   lwd = 6) +
           abline(v = 0, lty = "dashed") + 
           axis(2, at = seq(round(min(plot_df$sp_id)),
                            round(max(plot_df$sp_id)), by = 1),
                labels = plot_df$common_name,
                las = 1,
                cex.axis = 1)
-
+}
+        
+  sig_only_fpos <- forest_pos %>%
+    filter(significant == TRUE) %>%
+    arrange(mean) %>%
+    mutate(sp_id = row_number(), 
+           color = ifelse(mean > 0, "forestgreen", "darkred"))
+  sig_only_fneg <- forest_neg %>%
+    filter(significant == TRUE) %>%
+    arrange(mean) %>%
+    mutate(sp_id = row_number(), 
+           color = ifelse(mean > 0, "darkred", "forestgreen"))
+  
+  plot_only_sig(sig_only_fpos, xlim_sig = c(-.4, .25)) + 
+    title("Forest Gain")
+  plot_only_sig(sig_only_fneg, xlim_sig = c(-.15, .3)) + 
+    title("Forest Loss")
+        
 #do a scatterplot of the positive vs negative forest model results
 
 #scatterplot of forest vs dev model results
