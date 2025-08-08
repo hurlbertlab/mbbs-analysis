@@ -58,6 +58,8 @@ traits <- species_list %>%
     scale_eaforest = ((ebirdst_association_forest - mean(ebirdst_association_forest))/sd(ebirdst_association_forest)),
     scale_eagrassland = ((ebirdst_association_grassland - mean(ebirdst_association_grassland))/sd(ebirdst_association_grassland))
   ) 
+#save copy
+write.csv(traits, "data/species-traits/2.landcover_cpc_analysis_full_traits.csv", row.names = FALSE)
 
     #function for handling the bdevs
     format_fit_summaries <- function(bdf, 
@@ -77,7 +79,9 @@ traits <- species_list %>%
 
 #load in the slopes from our change per change model
 bdev <- read.csv(paste0(load_from, "dev+barren_fit_summaries.csv")) %>%
-  format_fit_summaries()
+  dplyr::filter(str_detect(.$rownames, "b_landcover_change") == TRUE) %>%
+  left_join(traits, by = "common_name")
+  #format_fit_summaries()
 bforest_pos <- read.csv(paste0(load_from, "forest_positive_fit_summaries.csv")) %>%
   format_fit_summaries()
 bforest_neg <- read.csv(paste0(load_from, "forest_negative_fit_summaries.csv")) %>%
