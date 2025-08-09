@@ -60,6 +60,20 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
     filter(is.na(common_name) == FALSE,
            common_name %in% species_list$common_name)
   
+  year_results <- read.csv(paste0(load_from, "fit_summaries.csv")) %>%
+    filter(slope == "year") %>%
+    left_join(read.csv(paste0(load_from_change_together,"species_list.csv")), by = "common_name") %>%
+    filter(!is.na(sp_id)) %>%
+    arrange(desc(mean)) %>%
+    mutate(sp_id = row_number(),
+           significant = ifelse(X2.5. < 0 & X97.5. > 0, FALSE, TRUE),
+           color = case_when(mean > 0 & significant == TRUE ~ "forestgreen",
+                             mean > 0 & significant == FALSE ~ "palegreen",
+                             mean < 0 & significant == TRUE ~ "darkred",
+                             mean < 0 & significant == FALSE ~ "salmon",
+                             TRUE ~ "black"))
+  plot_intervals(year_results, "Population Change Over Time", xlim_select = c(-.15, .13))
+  
   dev <- posterior_samples %>%
     seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev"),
                          values_from_column = "b_dev")
@@ -82,6 +96,8 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
              prob = 0.01,
              prob_outer = 0.95) + 
     geom_vline(xintercept = 0, color = "grey30") 
+  
+  
   
   year_plot <- mcmc_intervals(sorted_year,
              prob = 0.01, 
@@ -361,30 +377,30 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
   #just need to save from my other computer screne
 
   
-par(mar = c(4, 15, 1, 1), cex.axis = 1)  
-plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, ...) {
+par(mar = c(4, 17, 1, 1), cex.axis = 1)  
+plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, xlim_select = c(-0.4, 0.2), ...) {
   plot(y = plot_df$sp_id,
        x = plot_df$mean,
-       xlim = c(-0.6, 0.4),
+       xlim = xlim_select,
        col = plot_df$color,
       # ylim = c(1,66),
        yaxt = "n",
        xlab = xlab,
        ylab = "",
        pch = 16, 
-      cex = 1.5
+      cex = 2
        ) +
     segments(x0 = plot_df$X2.5.,
              x1 = plot_df$X97.5.,
              y0 = plot_df$sp_id,
              col = plot_df$color,
-             lwd = 4) +
+             lwd = 5) +
     abline(v = 0, lty = "dashed") + 
     axis(2, at = seq(round(min(plot_df$sp_id)),
                      round(max(plot_df$sp_id)), by = 1),
          labels = plot_df$common_name,
          las = 1,
-         cex.axis = 1)
+         cex.axis = 1.25)
   
   if(any(is.na(first_overlay)) == FALSE) {
     segments(x0 = first_overlay$X2.50.,
