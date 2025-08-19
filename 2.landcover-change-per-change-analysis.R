@@ -260,7 +260,9 @@ for(a in 1:length(landcover)) {
              ) %>%
       left_join(species_list, by = "sp_id") %>%
       #remove the intermediate step data
-      filter(is.na(raw))
+      filter(is.na(raw))  %>%
+      #rename numeric columns
+      rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]"))
     #bind rows
     fit_summaries <- bind_rows(fit_summaries, fit_temp)
     #save

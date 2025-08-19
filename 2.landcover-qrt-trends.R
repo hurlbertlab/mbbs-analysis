@@ -151,7 +151,8 @@ for (i in species_list) {
           slope = ifelse(str_detect(rownames, "b"), 
                          str_extract(rownames, "year|dev"),
                          NA),
-          common_name = i)
+          common_name = i) %>%
+    rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]"))
     #bind rows
     fit_summaries <- bind_rows(fit_summaries, fit_temp)
     #save

@@ -167,7 +167,9 @@ fit <- sampling(stan_model,
 
 fit_temp <- as.data.frame(summary(fit)$summary) %>%
   mutate(rownames = rownames(.)) %>%
-  relocate(rownames, .before = mean)
+  relocate(rownames, .before = mean) %>%
+  #rename rows
+  rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]"))
 #bind rows
 fit_summaries <- bind_rows(fit_summaries, fit_temp)
 

@@ -162,12 +162,14 @@ beepr::beep()
 saveRDS(fit, paste0(save_to, "stanfit.rds"))
 
 #get the summary, save as well
-fit_summary <- summary(fit)
+fit_summary <- summary(fit) 
 rownames <- row.names(fit_summary$summary)
 fit_final <- as.data.frame(fit_summary$summary)
 fit_final$rownames <- rownames  
 fit_final <- fit_final %>%
-  relocate(rownames, .before = mean)
+  relocate(rownames, .before = mean) %>%
+  #rename numeric columns
+  rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]"))
 #Save the summary
 write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 
