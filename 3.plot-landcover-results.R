@@ -14,6 +14,9 @@ library(ggplot2)
 library(bayesplot)
 library(cowplot) #used to make multi-panel figures
 
+#load functions
+source("3.plot-functions.R")
+
 #where are we pulling data from?
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
 load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
@@ -31,23 +34,7 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
   color_scheme_set(scheme = "purple")
  # color_scheme_set("blue")
 ######## 
-##FUNCTIONS  
-  #separate out into two dfs, pivot both back to assumed structure of columns with 4000 rows bayesplot wants
-  seperate_betas_pivot <- function(posterior_samples, column_select_list, values_from_column) {
-    x <- posterior_samples %>%
-      dplyr::select(all_of(column_select_list)) %>%
-      tidyr::pivot_wider(names_from = common_name, 
-                         values_from = {{values_from_column}}) %>%
-      dplyr::select(-row_id)
-  }  
-  
-  #sort columns parameter means
-  return_sorted_params <- function(pivoted_samples) {
-    param_means <- colMeans(pivoted_samples)
-    sorted_params <- names(sort(param_means))
-    sorted_pivoted_samples <- pivoted_samples[,sorted_params]
-    
-  }
+
   
 
 ####two-panel effect of b_yr and b_dev
@@ -437,30 +424,6 @@ sig_only_dev$scalecolor <- viridisLite::viridis(option = "viridis", n = length(p
 plot_df <- sig_only_dev
 
 plot_only_sig(sig_only_dev) 
-
-plot_only_sig <- function(plot_df, xlim_sig = c(-0.4, 0.2)){
-        plot(y = plot_df$sp_id,
-             x = plot_df$mean,
-             xlim = xlim_sig,
-             col = plot_df$color,
-             yaxt = "n",
-             xlab = "sig only dev",
-             ylab = "",
-             pch = 16,
-             cex = 2
-        ) +
-          segments(x0 = plot_df$X2.50.,
-                   x1 = plot_df$X97.50.,
-                   y0 = plot_df$sp_id,
-                   col = plot_df$color,
-                   lwd = 6) +
-          abline(v = 0, lty = "dashed") + 
-          axis(2, at = seq(round(min(plot_df$sp_id)),
-                           round(max(plot_df$sp_id)), by = 1),
-               labels = plot_df$common_name,
-               las = 1,
-               cex.axis = 1)
-}
         
   sig_only_fpos <- forest_pos %>%
     filter(significant == TRUE) %>%
