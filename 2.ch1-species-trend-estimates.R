@@ -143,7 +143,9 @@ fit_final$rownames <- rownames
 fit_final <- fit_final %>%
   relocate(rownames, .before = mean) %>%
   #rename numeric columns
-  rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]"))
+  rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]")) %>%
+  #remove %s in column names
+  rename_with(~ str_remove(., "%"), .cols = everything())
 #Save the summary
 write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 

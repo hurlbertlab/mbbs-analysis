@@ -262,7 +262,10 @@ for(a in 1:length(landcover)) {
       #remove the intermediate step data
       filter(is.na(raw))  %>%
       #rename numeric columns
-      rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]"))
+      rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]")) %>%
+      #remove %s in column names
+      rename_with(~ str_remove(., "%"), .cols = everything())
+    
     #bind rows
     fit_summaries <- bind_rows(fit_summaries, fit_temp)
     #save

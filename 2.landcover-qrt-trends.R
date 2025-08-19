@@ -152,7 +152,10 @@ for (i in species_list) {
                          str_extract(rownames, "year|dev"),
                          NA),
           common_name = i) %>%
-    rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]"))
+    rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]")) %>%
+    #remove %s in column names
+    rename_with(~ str_remove(., "%"), .cols = everything())
+  
     #bind rows
     fit_summaries <- bind_rows(fit_summaries, fit_temp)
     #save
