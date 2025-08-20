@@ -1,4 +1,12 @@
-#file to have all the trend estimate modeling on one file, ideally just adding everything to one nice datasheet as I go
+########################################
+#
+# Modeling for chapter one species trends
+# models all the species together and predicts 
+# b*year slope using species traits
+# to ask about their influence on winners/losers
+# at the local level here in the Triangle
+#
+########################################
 
 #get the functions we need for this script that are stored elsewhere
 #some variables of importance as well eg. excluded species
