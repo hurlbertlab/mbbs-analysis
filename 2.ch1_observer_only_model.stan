@@ -15,8 +15,8 @@ data {
   array[N] int<lower=1, upper=Nyr> year; //year for each observation
   vector[N] observer_quality; //there is an observer_quality for each observation
   array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is a bounded integer that is at least 0.
-  vector[N] regional_trend_mean;
-  vector[N] regional_trend_sd;
+  vector[Nsp] regional_trend_mean;
+  vector[Nsp] regional_trend_sd;
 }
 
 parameters {
@@ -32,6 +32,7 @@ parameters {
 //    real gamma_b; //intercept for species trends. calculated across species, and we only want one value, so this is not a vector.
 
   vector[Nsp] regional_trend; //one regional trend for every species.
+  real kappa_regional; //one effect of regional trend on slopes across species
   
   real c_obs; //effect of observer
   
@@ -64,11 +65,14 @@ model {
   sig_rt ~ normal(0, .5); //half normal
   sig_sp ~ normal(0, .5); //half normal
   
-  b_year ~ normal(gamma_b, sig_year); //without traits
+  b_year ~ normal(gamma_b + kappa_regional*regional_trend, sig_year); //without traits
   gamma_b ~ normal(0, 0.2);
   sig_year ~ exponential(1);
   
   c_obs ~ normal(0, 0.5); //half normal, there's one effect of changing observers across routes and species and I don't expect it to be a large effect so I constrain it to half normal
+  
+  //regional trend we already know the mean and standard deviation
+  regional_trend ~ normal(regional_trend_mean, regional_trend_sd);
   
 //PREV VERSION OF B:
   //b ~ normal(gamma_b, sig_b); //without traits

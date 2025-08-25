@@ -3,7 +3,7 @@
 #filter out species that haven't been seen more than the min number of times on the min number of routes.
 #
 #
-filter_to_min_sightings <- function(mbbs, min_sightings_per_route, min_num_routes) {
+filter_to_min_sightings <- function(mbbs, min_sightings_per_route = 9, min_num_routes = 5) {
   
   #filter mbbs so we only have records where count is not 0
   mbbs <- mbbs %>%
@@ -218,10 +218,6 @@ make_testing_df <- function(mbbs) {
     #Recreate IDs for primary observer
     group_by(primary_observer) %>%
     mutate(observer_ID = cur_group_id()) %>%
-    ungroup() %>% 
-    #Recreate IDs for species route
-    group_by(sprt) %>%
-    mutate(sprt_standard = cur_group_id()) %>%
     ungroup()
 
 }

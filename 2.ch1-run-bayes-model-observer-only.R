@@ -45,7 +45,7 @@ filtered_mbbs <- make_testing_df(mbbs)
 #change to filtered_mbbs for testing, mbbs for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.08.20_obsonly_withregional_testing/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.08.21_obsonly_withregional_testing/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -54,6 +54,11 @@ mbbs_dataset %>%
   dplyr::select(common_name_standard, common_name) %>%
   distinct() %>%
   write.csv(paste0(save_to, "beta_to_common_name.csv"), row.names = FALSE)
+
+#get distinct regional trends
+regional_trend <- mbbs_dataset %>%
+  dplyr::select(common_name_standard, usgs_trend_estimate, usgs_sd) %>%
+  distinct()
 
 #We no longer have to make sp_sprt because we can add new intercepts for each species and route instead.
         #make sp_sprt, we make it separate because it's shorter and requires some manuvering
@@ -75,8 +80,8 @@ datstan <- list(
   sp = mbbs_dataset$common_name_standard, #species indices
   rt = mbbs_dataset$route_standard, #route indicies
   year = mbbs_dataset$year_standard, #year indices
-  regional_trend_mean = mbbs_dataset$usgs_trend_estimate,
-  regional_trend_sd = mbbs_dataset$usgs_sd,
+  regional_trend_mean = regional_trend$usgs_trend_estimate,
+  regional_trend_sd = regional_trend$usgs_sd,
   observer_quality = mbbs_dataset$observer_quality, 
 #  observer_quality = obs_q_base$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
   #but on the other hand, is this a variable that is going to be interpreted? no. And centering takes this from relating to the number of species, to relating observers to each other. Also numerically it may make stan's job easier. 

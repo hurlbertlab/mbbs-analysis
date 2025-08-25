@@ -5,54 +5,92 @@
 # b*year slope using species traits
 # to ask about their influence on winners/losers
 # at the local level here in the Triangle
+# traits are:
+# diet category
+# temperature niche position
+# habitat selectivity
+# regional species trend
 #
 ########################################
 
 #get the functions we need for this script that are stored elsewhere
 #some variables of importance as well eg. excluded species
 source("2.species-trend-estimate-functions.R")
-source("2.ste-datstan-lists.R")
 
 #libraries
 library(beepr) #beeps
 library(dplyr) #data manip
 library(tidyr) #data manip
 library(rstan) #stan
-library(stringr)
+library(stringr) #data manip
 library(StanHeaders) #stan helper
 
 #prevent scientific notation to make a trend table easier to read
 options(scipen=999)
 
-#------------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 # Bayes model, based initially on Link and Sauer 2001 - it has changed a decent bit since then tbh
   # https://academic.oup.com/auk/article/128/1/87/5149447
 # Modeling help from review of DiCecco Pop Trends code
   # https://github.com/gdicecco/poptrends_envchange/tree/master
 #------------------------------------------------------------------------------
-#--------------------------------------------------------------------------
-# Stan
-#-------------------------------------------------------------------------
 
-#read in analysis file 
+#read in analysis file, this has already been filtered to remove species without the minimum number of sightings or that are excluded species
 mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 
 
   #routes with errors
   temp_rm <- mbbs %>% filter(route == "drhm-04", year == 2010)
-  mbbs <- anti_join(mbbs, temp_rm)
-
-#add traits
-mbbs_traits <- add_all_traits(mbbs) %>%
-  mutate(sprt = paste0(route,common_name)) %>%
-  group_by(sprt) %>%
-  mutate(sprt_standard = cur_group_id()) %>%
-  ungroup()
+  
+  #do everything we need to do! 
+  mbbs <- mbbs %>%
+    #remove route with error for missing surveyor data
+    anti_join(temp_rm) %>%
+    #remove eastern whip-por-will because it lacks ssi habitat selectivity data
+    filter(!common_name == "Eastern Whip-poor-will") %>%
+    group_by(common_name) %>%
+    mutate(common_name_standard = dplyr::cur_group_id()) %>%
+    ungroup() %>%
+    arrange(year, route_standard, common_name_standard) %>%
+    #add traits
+    #habitat niche
+    left_join(y = (read.csv("data/species-traits/gdicecco-avian-range-shifts/habitat_niche_ssi_true_zeroes.csv") %>%
+                     dplyr::select(english_common_name, ssi)),
+              by = c("common_name" = "english_common_name")) %>%
+    dplyr::rename(habitat_ssi = ssi) %>%
+    #temperature niche position
+    left_join(y = 
+                (read.csv("data/species-traits/climate_position.csv") %>%
+                   dplyr::select(common_name, z_tempwq)),
+              by = "common_name") %>%
+    #diet category
+    left_join(y = 
+                read.csv("data/species-traits/avonet_filtered.csv") %>%
+                dplyr::select(common_name, Trophic.Niche) %>%
+                dplyr::rename(avonet_diet = Trophic.Niche), 
+              by = "common_name") %>%
+    #regional trend
+    left_join(read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv"), by = "common_name") %>%
+    dplyr::mutate(usgs_sd = (.$usgs_97.5CI - .$usgs_2.5CI)/(2 * qnorm(0.95))) %>%
+    #remove extra columns
+    dplyr::select(-usgs_note) %>%
+    #center variables as possible :)
+    mutate(scale_habitat_ssi = (habitat_ssi - mean(habitat_ssi)/sd(habitat_ssi)),
+           scale_ztempwq = (z_tempwq - mean(z_tempwq))/sd(z_tempwq),
+           scale_obs_quality = (observer_quality - mean(observer_quality))/sd(observer_quality))
+  
+# 
+# #add traits
+# mbbs_traits <- add_all_traits(mbbs) %>%
+#   mutate(sprt = paste0(route,common_name)) %>%
+#   group_by(sprt) %>%
+#   mutate(sprt_standard = cur_group_id()) %>%
+#   ungroup()
 
 #filtered mbbs, 5 species for testing purposes.
-filtered_mbbs <- make_testing_df(mbbs_traits)
+filtered_mbbs <- make_testing_df(mbbs)
 
-#change to filtered_mbbs for testing, mbbs_traits for the real thing
-mbbs_dataset <- filtered_mbbs
+#change to filtered_mbbs for testing, mbbs for the real thing
+mbbs_dataset <- mbbs
 #where to save stan code and fit
 save_to <- "Z:/Goulden/mbbs-analysis/model/2025.05.29_traits_obsq_zscoreabar/"
 #if the output folder doesn't exist, create it
@@ -67,52 +105,32 @@ beta_to_common_name <- mbbs_dataset %>%
 #get traits so it's one trait per species, so we can put this in datlist
 #this is in the same order as the mbbs_dataset. Still, check intuition works?
 traits <- mbbs_dataset %>%
-  dplyr::select(common_name_standard, shannonE_diet:sprt_standard) %>%
-  distinct(common_name_standard, .keep_all = TRUE)
-
-#make sp_sprt, we make it separate because it's shorter and requires some manuvering
-sp_sprt_base <- mbbs_dataset %>% 
-  select(common_name_standard, sprt_standard, route) %>%
-  distinct()
-  #while we're here, this ought to be part of beta_to_common_name.
-  beta_to_common_name %>% 
-    left_join(sp_sprt_base) %>%
-    write.csv(paste0(save_to, "beta_to_common_name.csv"), row.names = FALSE) #now alphas can also be translated.
-
-#make observer quality seperate
-#obs_q_base <- mbbs_dataset %>%
-#  distinct(observer_ID,observer_quality)
+  dplyr::select(common_name_standard, habitat_ssi:scale_ztempwq) %>%
+  distinct(common_name_standard, .keep_all = TRUE) 
+  write.csv(traits, paste0(save_to, "species_traits.csv"), row.names = FALSE)
 
 #prepare the data list for Stan
 datstan <- list(
   N = nrow(mbbs_dataset), #number of observations
   Nsp = length(unique(mbbs_dataset$common_name_standard)), #n species
   Nrt = length(unique(mbbs_dataset$route_standard)), #n routes
-  Nsprt = length(unique(mbbs_dataset$sprt_standard)), #n species route combos
   Nyr = length(unique(mbbs_dataset$year_standard)), #n years
   sp = mbbs_dataset$common_name_standard, #species indices for each observation
   rt = mbbs_dataset$route_standard, #route indices for each observation
-#  sp_a = unique(mbbs_dataset$common_name_standard), #the unique species ids
-  #sprt = mbbs_dataset$sprt_standard, #species route indices
-  sp_sprt = sp_sprt_base$common_name_standard, #species for each species route
   year = mbbs_dataset$year_standard, #year indices
-  observer_quality = mbbs_dataset$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
-#  Nobs = length(unique(mbbs_dataset$observer_ID)), #n observers
-#  obs = mbbs_dataset$observer_ID, #observer index
-  #trait_diet = mbbs_dataset$shannonE_diet, #! NOT CENTERED YET
-  #trait_climate = mbbs_dataset$climate_vol_2.1, #! NOT CENTERED YET
-  #trait_habitat = mbbs_dataset$habitat_ssi, #! NOT CENTERED YET
-  t_climate_pos = traits$climate_position, #! NOT CENTERED YET
-  t_habitat_selection = traits$habitat_selection, #! NOT CENTERED YET
-  t_regional = traits$usgs_trend_estimate,
-  sp_t = traits$common_name_standard, #species for each trait
+  observer_quality = mbbs_dataset$scale_obs_quality, #measure of observer quality, 
+  #NOW CENTERNED
+  #used to not be CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
+  t_temp_pos = traits$scale_ztempwq,
+  t_habitat_selection = traits$scale_habitat_ssi,
+  t_diet_cat = traits$avonet_diet,
+  regional_trend_mean = traits$usgs_trend_estimate,
+  regional_trend_sd = traits$usgs_sd,
   C = mbbs_dataset$count #count data
-  
 )
 
 #specify the stan model code
 stan_model_file <- "2.active_development_model.stan"
-stan_model_file <- "2.trends_predict_regional_local_difference_model.stan"
 
 #compile the stan model
 stan_model <- stan_model(file = stan_model_file)
@@ -158,7 +176,14 @@ fit_final <- fit_final %>%
 write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 
 
-View(fit_final) ##DO NOT HAVE THIS ON LONGLEAF
+
+
+
+
+
+
+
+
 
 
 ### NEXT STEP: Predict difference between regional and local trends!
@@ -275,7 +300,3 @@ load_from <- "Z:/Goulden/mbbs-analysis/model/2025.02.11_allspecies_traits_index_
 
   summary(m) #so, yeah - at the Least regional should come out as significant. From a linear model I've run just on trends + regional_trends, ought to explain about 60% of the variation.
   
-
-
-#extract posterior samples
-#post <- extract(fit)

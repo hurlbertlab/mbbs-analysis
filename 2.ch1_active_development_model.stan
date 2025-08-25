@@ -14,26 +14,21 @@ data {
   int<lower=0> N; // number of observations or rows
   int<lower=1> Nsp; // number of species
   int<lower=1> Nrt; //number of routes
-  int<lower=1> Nsprt; // number of species+route combinations
   int<lower=1> Nyr; //number of years
   array[N] int<lower=1, upper=Nsp> sp; //species id for each observation
   array[N] int<lower=1, upper=Nrt> rt; //route id for each observation
-  //array[N] int<lower=1, upper = Nsprt> sprt; //species+route combo for each observation
-  array[Nsprt] int<lower=1, upper=Nsp> sp_sprt; //species id for each species+route combo
-  //note: the 'for each x' that 'x' is what the array length is.
   array[N] int<lower=1, upper=Nyr> year; //year for each observation
 //.............observer section....................................
-//  int<lower=1> Nobs; //number of observers
-//  array[N] int<lower=1, upper=Nobs> obs; //there is an observer for every observation
   vector[N] observer_quality; //there is an observer_quality for every observation [vector of Nobs otherwise]
 //..............count................................................
-  array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is an unbounded integer that is at least 0.
+  array[N] int<lower=0> C; // there is a count (my y variable!) for every row, and it is a bounded integer that is at least 0.
 //...............predictor variables.....................
-  array[Nsp] int<lower=1, upper = Nsp> sp_t; //species ID to associate with each species trait
-//  vector[Nsp] t_regional; //regional trait value for every species 
-  vector[Nsp] t_climate_pos; //climate position value for every species 
+  vector[Nsp] t_temp_pos; //temp position value for every species 
   vector[Nsp] t_habitat_selection; //ndvi habitat selection for every species
+  vector[Nsp] t_diet_cat; //diet category for every species
   //here, you give it the LENGTH of the vector (Nsp), eg. same as the number of species. Later, in the model section, you give it the SPECIES (sp)
+  vector[Nsp] regional_trend_mean; //mean for each sp regional trend
+  vector[Nsp] regional_trend_sd; //sd for each sp regional trend
   
 }
 
@@ -46,14 +41,16 @@ parameters {
   vector[Nsp] b; //species trend, fit one for each species
   real gamma_b; //intercept for species trends. calculated across species, and we only want one value, so this is not a vector.
 //  real kappa_regional; //effect of t_regional on betas. real b/c we only want one.
-  real kappa_climate_pos; //effect of t_climate_pos on betas. real b/c we only want one.
+  real kappa_temp_pos; //effect of t_temp_pos on betas. real b/c we only want one.
   real kappa_habitat_selection; //effect of t_habitat_selection on betas. real b/c we only want one.
   real<lower=0> sig_b; //deviation from explanatory power of the traits on predicting the trends. Represents residual variance / measure of scatter. ...In some ways, R2??
   
-//  vector[Nobs] c; //effect of observer, fit one for each observer
-//  real gamma_c; //fit one intercept across observers. Let's keep this simple, bc we don't need to super complicate the role observers play
-//  real kappa_obs; //fit one effect of observer quality
-//  real <lower=0> sig_c; //deviation btwn observed offset for count and score I gave each observer
+  vector[Nsp] regional_trend; //one regional trend for every species.
+  real kappa_regional; //one effect of regional trend on the b slopes across species
+  
+  real c_obs; //effect of observer, cross observers
+  
+  real<lower=0> overdispersion_param; //negative binomial overdispersion parameter
   
 }
 
@@ -67,7 +64,7 @@ model {
 
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
    for (n in 1:N) {
-     C[n] ~ poisson_log(a[sp[n], rt[n]] + b[sp[n]] * year[n] + observer_quality[n]);
+     C[n] ~ neg_binomial(a[sp[n], rt[n]] + b[sp[n]] * year[n] + observer_quality[n], overdispersion_param);
    }
 // eg... for every row/observation in the data.
 // The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
@@ -82,14 +79,17 @@ model {
   
   b ~ normal(gamma_b + 
            //  kappa_regional*t_regional[sp_t] +
-             kappa_climate_pos*t_climate_pos[sp_t] +
+             kappa_temp_pos*t_temp_pos[sp_t] +
              kappa_habitat_selection*t_habitat_selection[sp_t],
              sig_b);
   gamma_b ~ normal(0, 0.2);
   sig_b ~ exponential(1);
+  
+  //regional trend we already know the mean and standard deviation
+  regional_trend ~ normal(regional_trend_mean, regional_trend_sd);
 //.............BY COMMENTING OUT KAPPAS, DEFAULT UNIFORM PRIORS ARE USED.................
 //  kappa_regional ~ normal(0, .02); 
-//  kappa_climate_pos ~ normal(0, .2); 
+//  kappa_temp_pos ~ normal(0, .2); 
 //  kappa_habitat_selection ~ normal(0, .2);
 //.............^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^..................
 
@@ -97,5 +97,8 @@ model {
     //add priors for gamma_c and sig_c
 //    gamma_c ~ normal(0,0.5);
 //    sig_c ~ exponential(1);
+
+    //chatgpt says typical prior for the overdispersion param is a gamma prior. I've seen a beta used as well, some questions remain here.
+    overdispersion_param ~ gamma(2,1);
 
 }
