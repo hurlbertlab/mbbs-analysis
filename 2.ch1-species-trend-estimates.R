@@ -68,6 +68,9 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
                 dplyr::select(common_name, Trophic.Niche) %>%
                 dplyr::rename(avonet_diet = Trophic.Niche), 
               by = "common_name") %>%
+    group_by(avonet_diet) %>%
+    mutate(diet_category_standard = cur_group_id()) %>%
+    ungroup() %>%
     #regional trend
     left_join(read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv"), by = "common_name") %>%
     dplyr::mutate(usgs_sd = (.$usgs_97.5CI - .$usgs_2.5CI)/(2 * qnorm(0.95))) %>%
@@ -90,9 +93,9 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
 filtered_mbbs <- make_testing_df(mbbs)
 
 #change to filtered_mbbs for testing, mbbs for the real thing
-mbbs_dataset <- mbbs
+mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.05.29_traits_obsq_zscoreabar/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.08.27_newch1model1/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -115,6 +118,7 @@ datstan <- list(
   Nsp = length(unique(mbbs_dataset$common_name_standard)), #n species
   Nrt = length(unique(mbbs_dataset$route_standard)), #n routes
   Nyr = length(unique(mbbs_dataset$year_standard)), #n years
+  Ndc = length(unique(mbbs_dataset$diet_category_standard)), #n diets
   sp = mbbs_dataset$common_name_standard, #species indices for each observation
   rt = mbbs_dataset$route_standard, #route indices for each observation
   year = mbbs_dataset$year_standard, #year indices
@@ -123,14 +127,14 @@ datstan <- list(
   #used to not be CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
   t_temp_pos = traits$scale_ztempwq,
   t_habitat_selection = traits$scale_habitat_ssi,
-  t_diet_cat = traits$avonet_diet,
+  t_diet_cat = traits$diet_category_standard,
   regional_trend_mean = traits$usgs_trend_estimate,
   regional_trend_sd = traits$usgs_sd,
   C = mbbs_dataset$count #count data
 )
 
 #specify the stan model code
-stan_model_file <- "2.active_development_model.stan"
+stan_model_file <- "2.ch1_active_development_model.stan"
 
 #compile the stan model
 stan_model <- stan_model(file = stan_model_file)
