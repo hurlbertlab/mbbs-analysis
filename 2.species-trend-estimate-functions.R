@@ -208,7 +208,7 @@ add_all_traits <- function(mbbs) {
 #' make_testing_df
 #' Function to trim down the mbbs to just a few test species
 #' @returns a trimmed down version of the mbbs, filtered to just a few species
-make_testing_df <- function(mbbs) {
+make_testing_df <- function(mbbs, obs_only = FALSE) {
   
   filtered_mbbs <- mbbs %>% filter(common_name %in% c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse")) %>%
     #Recreate IDs for common name
@@ -218,6 +218,16 @@ make_testing_df <- function(mbbs) {
     #Recreate IDs for primary observer
     group_by(primary_observer) %>%
     mutate(observer_ID = cur_group_id()) %>%
-    ungroup()
+    ungroup() 
+  
+  if (obs_only == FALSE) {
+    filtered_mbbs <- filtered_mbbs %>%
+      #recreate IDs for diet
+      group_by(avonet_diet) %>%
+      mutate(diet_category_standard = cur_group_id()) %>%
+      ungroup() 
+  }
+
+  filtered_mbbs
 
 }

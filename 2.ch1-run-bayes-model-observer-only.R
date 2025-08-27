@@ -40,12 +40,12 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
 
 
 #create testing dataset also
-filtered_mbbs <- make_testing_df(mbbs)
+filtered_mbbs <- make_testing_df(mbbs, obs_only = TRUE)
 
 #change to filtered_mbbs for testing, mbbs for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.08.21_obsonly_withregional_testing/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.08.27_obsonly_withregional_testing_mu/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 

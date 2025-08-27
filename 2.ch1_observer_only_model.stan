@@ -35,7 +35,7 @@ parameters {
   real kappa_regional; //one effect of regional trend on slopes across species
   
   real c_obs; //effect of observer
-  
+  real<lower = 0> overdispersion_param; //phi
 }
 
 transformed parameters {
@@ -44,6 +44,20 @@ transformed parameters {
   vector[Nsp] a_sp = a_sp_raw * sig_sp;
   vector[Nrt] a_rt = a_rt_raw * sig_rt;
   
+//make lambda and mu
+//  vector[N] log_mu;
+//  vector<lower=0>[N] mu;
+  
+  //MAIN MODEL
+//for(n in 1:N) {
+//  log_mu[n] =  a + 
+//       a_rt[rt[n]] +
+//       a_sp[sp[n]] +
+//       b_year[sp[n]] * year[n] + 
+//       c_obs * observer_quality[n];
+// }
+//  mu = exp(log_mu);
+  
   //pretty sure this method is making the model take..longer to fit than before? Since the testing model with just a couple species is still taking a good while. But, I like that this model makes explit that we should be fitting a different intercept for each species and each route, and doesn't fit .... a combo ... for each species-route combo.... hm. Maybe it should be fitting an intercept for each species and then an additional intercept for each species-route? m.
 }
 
@@ -51,28 +65,33 @@ model {
 
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
    for (n in 1:N) {
-     C[n] ~ poisson_log(
+     C[n] ~ neg_binomial_2_log(
        a + 
        a_rt[rt[n]] +
        a_sp[sp[n]] +
        b_year[sp[n]] * year[n] + 
-       c_obs * observer_quality[n]);
+       c_obs * observer_quality[n],
+       overdispersion_param);
    }
 
   a ~ normal(0, 2); //universal intercept, trying not to constrain the prior too lightly so using 2 instead of 1
   a_sp_raw ~ std_normal(); //centered on zero, use a hyperparam to set the distribution param.
   a_rt_raw ~ std_normal(); //^^ same as above
-  sig_rt ~ normal(0, .5); //half normal
-  sig_sp ~ normal(0, .5); //half normal
+  //sig_rt ~ normal(0, .5); //half normal
+  //sig_sp ~ normal(0, .5); //half normal
+  sig_rt ~ exponential(1);
+  sig_sp ~ exponential(1);
   
   b_year ~ normal(gamma_b + kappa_regional*regional_trend, sig_year); //without traits
-  gamma_b ~ normal(0, 0.2);
+  gamma_b ~ normal(0, 1); //was 0, 0.2
   sig_year ~ exponential(1);
   
   c_obs ~ normal(0, 0.5); //half normal, there's one effect of changing observers across routes and species and I don't expect it to be a large effect so I constrain it to half normal
   
   //regional trend we already know the mean and standard deviation
   regional_trend ~ normal(regional_trend_mean, regional_trend_sd);
+  
+  overdispersion_param ~ gamma(2,1);
   
 //PREV VERSION OF B:
   //b ~ normal(gamma_b, sig_b); //without traits
