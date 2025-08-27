@@ -19,8 +19,8 @@ source("3.plot-functions.R")
 
 #where are we pulling data from?
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopment/"
-load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
-load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bdev/"
+#load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
+#load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bdev/"
 load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_rmbaseline_obsqual/"
 load_from_change_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.25_cpc_allsp_in_one/"
 load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_traits_on_cpc/"
@@ -175,134 +175,7 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
                col = "black",
                lty = "dashed")
 
-  
-################################uai
-  uai <- read.csv(paste0(load_from_uai, "posterior_samples.csv")) %>%
-    dplyr::rename("UAI" = b_uai)
-  
-  mcmc_intervals(uai,
-                 pars = "UAI") +
-    xlab("Effect of Development") + 
-    xlim(-0.5, 2) +
-    vline_0(lty = "dashed")
-  
-  
-######################### landcover change per change
-  
-  
-  #####b_yr and b_change and b_dev
-  species_list <- read.csv(paste0(load_from_change,"species_list.csv"))
-  
-  #first, let's take a look at how the fits worked out. 
-  dev_fit_summary <- read.csv(paste0(load_from_change, "dev+barren_fit_summaries.csv")) 
-  max(dev_fit_summary$Rhat) #yay, just about 1
-  hist(dev_fit_summary$n_eff)
-  forest_fit_summary <- read.csv(paste0(load_from_change, "forest_fit_summaries.csv"))
-  max(forest_fit_summary$Rhat)
-  hist(forest_fit_summary$n_eff)
-  
-  dev_ps <- read.csv(paste0(load_from_change, "dev+barren_posterior_samples.csv"))  %>%
-    filter(is.na(common_name) == FALSE,
-           common_name %in% species_list$common_name)
-  forest_ps <- read.csv(paste0(load_from_change, "forest_posterior_samples.csv")) %>%
-    filter(is.na(common_name) == FALSE,
-           common_name %in% species_list$common_name)
-  
-  dev_change <- dev_ps %>%
-    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_landcover_change"),
-                         values_from_column = "b_landcover_change") %>%
-    return_sorted_params()
-  dev_base <- dev_ps %>%
-    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_landcover_base"),
-                         values_from_column = "b_landcover_base") %>%
-    return_sorted_params()
-  forest_change <- forest_ps %>%
-    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_landcover_change"),
-                         values_from_column = "b_landcover_change") %>%
-    return_sorted_params()
-  forest_base <- forest_ps %>%
-    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_landcover_base"),
-                         values_from_column = "b_landcover_base") %>%
-    return_sorted_params()
-  
-  dev_change_plot <- mcmc_intervals(dev_change,
-                                    prob = 0.01, #set this to get ride of inner bars
-                                    prob_outer = 0.95) +
-    geom_vline(xintercept = 0, color = "grey30") +
-    ggtitle("Change in Development on Change in Count")
-  dev_base_plot <- mcmc_intervals(dev_base,
-                                  prob = 0.01, #set this to get ride of inner bars
-                                  prob_outer = 0.95) +
-    geom_vline(xintercept = 0, color = "grey30") +
-    ggtitle("Total Development Level on Change in Count (all NS)")
-  forest_change_plot <- mcmc_intervals(forest_change,
-                                       prob = 0.01,
-                                       prob_outer = 0.95) +
-    geom_vline(xintercept = 0, color = "green4") +
-    ggtitle("Change in Forest on Change in Count")
-  forest_base_plot <-mcmc_intervals(forest_base,
-                                    prob = 0.01,
-                                    prob_outer = 0.95) +
-    geom_vline(xintercept = 0, color = "green4") +
-    ggtitle("Effect of Total Forest on Change in Count (all NS)")
-  
-  
-  
-  
-  
-  dev_base <- posterior_samples %>%
-    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev_base"),
-                         values_from_column = "b_dev_base")
-  param_means <- colMeans(dev_base)
-  sorted_params <- names(sort(param_means))
-  sorted_dev_base <- dev_base[,sorted_params]
-  
-  dev_plot <- mcmc_intervals(sorted_dev_change,
-                             prob = 0.01,
-                             prob_outer = 0.95) +
-    scale_color_manual(values = significant_change$color) +
-    geom_vline(xintercept = 0, color = "grey30") +
-    ggtitle("Change in Development on Change in Count")
-  
-  dev_plot
-  
-  
-  
-  
-  
-  posterior_samples <- read.csv(paste0(load_from_change,"posterior_samples.csv")) %>%
-    filter(is.na(common_name) == FALSE,
-           common_name %in% species_list$common_name)
-  
-  significant_change <- posterior_samples %>%
-    group_by(common_name) %>%
-    mutate(minconf = as.numeric(quantile(b_dev_change, probs = .025)),
-           maxconf = as.numeric(quantile(b_dev_change, probs = .975))) %>%
-    ungroup() %>%
-    distinct(common_name, .keep_all = TRUE) %>%
-    mutate(sig = ifelse(minconf < 0 & maxconf > 0, FALSE, TRUE)) %>%
-    dplyr::select(-row_id)
-    
-  
-  dev_change <- posterior_samples %>%
-    seperate_betas_pivot(column_select_list = c("common_name", "row_id", "b_dev_change"),
-                         values_from_column = "b_dev_change")
-  param_means <- colMeans(dev_change)
-  sorted_params <- names(sort(param_means))
-  sorted_dev_change <- dev_change[,sorted_params]
-  #fix things for color plotting
-  order_dev_change <- as.data.frame(colnames(sorted_dev_change)) %>%
-    mutate(order = row_number())
-  significant_change <- significant_change %>%
-    left_join(order_dev_change, by = c("common_name" = "colnames(sorted_dev_change)"))
-  #wouldn't break this up but there's some error going on when they're together
-  significant_change <- significant_change %>%
-    arrange(order) %>%
-    dplyr::mutate(color = ifelse(sig == TRUE, "black", "grey80"))
-  #okay well. there's a color vector in the right order now. um. it kinda of seems like bayesplot isn't built for this kind of sig vs non-sig demonstration in this way. May require putting up an issue on the github or submitting a question. Otherwise like. idk. Going to need to plot twice, once with NA columns for the non-sig and the next with NA coloumns for the sig, both on the same plot, but dif colors associated with bayplot_theme(). hm
-    
-  #lets try to move off bayesplot. Especially when we are plotting intervals and not like the shape of the whole distribution, all I need are the 95% confidence intervals and the mean to plot. The trick will be figuring out how to have the y axis be the species names... could plot with y = speciesid or something like that, and then remake the axis bars to account for that. I think that would work nicely!
-  
+
 #################### change per change without bayesplot
 
   species_list <- read.csv(paste0(load_from_change_together,"species_list.csv"))
@@ -319,7 +192,7 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
     arrange(desc(mean)) %>% #
     mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
     ungroup() %>%
-    mutate(significant = ifelse(X2.5. < 0 & X97.5. > 0, FALSE, TRUE),
+    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
            color = ifelse(significant == FALSE, "lightblue", "blue"),
            pch = ifelse(significant == FALSE, 1, 19))
   
@@ -329,7 +202,7 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
     arrange(desc(mean)) %>% #
     mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
     ungroup() %>%
-    mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
+    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
            color = ifelse(significant == FALSE, "grey60", "black"),
            pch = ifelse(significant == FALSE, 1, 19))
   
@@ -361,7 +234,8 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
 
   plot_intervals(dev, "dev species run together")
   #now plots with enough width and such, just still needs to be color changed. Altho being thick enough the light blue might be fine
-  #just need to save from my other computer screne
+  #just need to save from my other computer screen
+  #well, really need to update this file to save results nicely to pdfs
 
   
 par(mar = c(4, 17, 1, 1), cex.axis = 1)  
@@ -543,4 +417,22 @@ plot(x = dev$mean,
   
   #ha.. traits not significant. rolls around  
   #I guess here yeah I'm bagging all the data together. How many times between the bootstrap runs do these come out significant?
+  
+  
+  
+  
+  
+
+  
+############DEPRECATED ANALYSES###################################
+  #DEPRECATED############################### uai on bdev
+  uai <- read.csv(paste0(load_from_uai, "posterior_samples.csv")) %>%
+    dplyr::rename("UAI" = b_uai)
+  
+  mcmc_intervals(uai,
+                 pars = "UAI") +
+    xlab("Effect of Development") + 
+    xlim(-0.5, 2) +
+    vline_0(lty = "dashed")
+  
   
