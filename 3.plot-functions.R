@@ -26,20 +26,21 @@
 ##############
   
 # plot all intervals
-  plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, xlim_select = c(-0.4, 0.2), ...) {
+  plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, xlim_select = c(-0.4, 0.2), ylim_select = c(1, 66)) {
     plot(y = plot_df$sp_id,
          x = plot_df$mean,
          xlim = xlim_select,
          col = plot_df$color,
-         # ylim = c(1,66),
+         ylim = ylim_select,
          yaxt = "n",
          xlab = xlab,
          ylab = "",
          pch = 16, 
-         cex = 2
+         cex = 2,
+         xaxs = "i"
     ) +
-      segments(x0 = plot_df$X2.5.,
-               x1 = plot_df$X97.5.,
+      segments(x0 = plot_df$conf_2.5,
+               x1 = plot_df$conf_97.5,
                y0 = plot_df$sp_id,
                col = plot_df$color,
                lwd = 5) +
@@ -51,8 +52,8 @@
            cex.axis = 1.25)
     
     if(any(is.na(first_overlay)) == FALSE) {
-      segments(x0 = first_overlay$X2.50.,
-               x1 = first_overlay$X97.50.,
+      segments(x0 = first_overlay$conf_2.5,
+               x1 = first_overlay$conf_97.5,
                y0 = first_overlay$sp_id,
                col = first_overlay$color)
       points(x = first_overlay$mean,
@@ -61,8 +62,8 @@
     }
     
     if(any(is.na(first_overlay)) == FALSE) {
-      segments(x0 = second_overlay$X2.50.,
-               x1 = second_overlay$X97.50.,
+      segments(x0 = second_overlay$conf_2.5,
+               x1 = second_overlay$conf_97.5,
                y0 = second_overlay$sp_id,
                col = second_overlay$color)
       points(x = second_overlay$mean,

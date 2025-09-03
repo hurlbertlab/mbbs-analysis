@@ -26,6 +26,9 @@ load_from_change_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.2
 load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_traits_on_cpc/"
 load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.29_traits_on_cpc/"
 
+lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.08.29_ch1m1_longleaf_model_test_1/"
+lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_test_4/"
+
 ######### section for fitting bayesplot themes
   #let's make text larger :)
   bayesplot_theme_update(text = element_text(size = 20, family = "sans")) 
@@ -232,57 +235,21 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
   
   plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
 
-  plot_intervals(dev, "dev species run together")
+  png(filename = "figures/test.png", 
+      width = 480,
+      height = 1200,
+      units = "px", 
+      type = "windows")
+  par(mar = c(4, 17, 1, 1), cex.axis = 1)
+  plot_intervals(plot_df = dev, 
+                 xlab = "dev species run together", 
+                 ylim_select = c(.5,66.5))
   #now plots with enough width and such, just still needs to be color changed. Altho being thick enough the light blue might be fine
   #just need to save from my other computer screen
   #well, really need to update this file to save results nicely to pdfs
-
+  dev.off()
   
 par(mar = c(4, 17, 1, 1), cex.axis = 1)  
-plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, xlim_select = c(-0.4, 0.2), ...) {
-  plot(y = plot_df$sp_id,
-       x = plot_df$mean,
-       xlim = xlim_select,
-       col = plot_df$color,
-      # ylim = c(1,66),
-       yaxt = "n",
-       xlab = xlab,
-       ylab = "",
-       pch = 16, 
-      cex = 2
-       ) +
-    segments(x0 = plot_df$X2.5.,
-             x1 = plot_df$X97.5.,
-             y0 = plot_df$sp_id,
-             col = plot_df$color,
-             lwd = 5) +
-    abline(v = 0, lty = "dashed") + 
-    axis(2, at = seq(round(min(plot_df$sp_id)),
-                     round(max(plot_df$sp_id)), by = 1),
-         labels = plot_df$common_name,
-         las = 1,
-         cex.axis = 1.25)
-  
-  if(any(is.na(first_overlay)) == FALSE) {
-    segments(x0 = first_overlay$X2.50.,
-             x1 = first_overlay$X97.50.,
-             y0 = first_overlay$sp_id,
-             col = first_overlay$color)
-    points(x = first_overlay$mean,
-           y = first_overlay$sp_id,
-           col = first_overlay$color)
-  }
-  
-  if(any(is.na(first_overlay)) == FALSE) {
-    segments(x0 = second_overlay$X2.50.,
-             x1 = second_overlay$X97.50.,
-             y0 = second_overlay$sp_id,
-             col = second_overlay$color)
-    points(x = second_overlay$mean,
-           y = second_overlay$sp_id,
-           col = second_overlay$color)
-  }
-}
 
 #okay, and for the presentation in Baltimore I also want to plot species trends overall, so I can do a brief dicussion of those as well. For that we want...
 traits <- read.csv("data/species-traits/2.landcover_cpc_analysis_full_traits.csv")
@@ -419,9 +386,38 @@ plot(x = dev$mean,
   #I guess here yeah I'm bagging all the data together. How many times between the bootstrap runs do these come out significant?
   
   
+#####################################
+  #ch1
+#####################################
+  c1m1 <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
+    filter(str_detect(.$rownames, "kappa")) %>%
+    mutate(model = "m1", 
+           color = "salmon")
+  c2m2 <- read.csv(paste0(lf_ch1m2, "fit_summary_m2_5k.csv")) %>%
+    filter(!str_detect(.$rownames, "eta")) %>%
+    filter(str_detect(.$rownames, "kappa")) %>%
+    mutate(model = "m2", 
+           color = "turquoise") %>%
+    bind_rows(c1m1) %>%
+    mutate(id = row_number())
   
-  
-  
+  par(mar = c(4, 12, 1, 1), cex.axis = 1)  
+  plot(x = c2m2$mean, 
+       y = c2m2$id,
+       xlim = c(-.4, .4),
+       ylab = "",
+       yaxt = "n", 
+       col = c2m2$color,
+       pch = 16) +
+    abline(v = 0, lty = "dashed")
+    segments(x0 = c2m2$conf_2.5,
+             x1 = c2m2$conf_97.5,
+             y0 = c2m2$id,
+             col = c2m2$color) +
+      axis(2, at = seq(round(min(c2m2$id)),
+                       round(max(c2m2$id)), by = 1),
+           labels = paste(c2m2$rownames, c2m2$model),
+           las = 1)
 
   
 ############DEPRECATED ANALYSES###################################
