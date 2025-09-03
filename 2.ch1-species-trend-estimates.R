@@ -47,6 +47,8 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
     anti_join(temp_rm) %>%
     #remove eastern whip-por-will because it lacks ssi habitat selectivity data
     filter(!common_name == "Eastern Whip-poor-will") %>%
+    #remove hummingbird because it's the only one of it's diet group
+    filter(!common_name == "Ruby-throated Hummingbird") %>% 
     group_by(common_name) %>%
     mutate(common_name_standard = dplyr::cur_group_id()) %>%
     ungroup() %>%
@@ -95,7 +97,7 @@ filtered_mbbs <- make_testing_df(mbbs)
 #change to filtered_mbbs for testing, mbbs for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.08.27_newch1model1/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2025.08.29_newch1model1_log_trytovectorize/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -142,11 +144,6 @@ beepr::beep()
 #save the model text
 file.copy(stan_model_file, save_to, overwrite = TRUE)
 
-
-
-#save stan model text if it compiled without errors
-#cmdstanr::write_stan_file(code = stan_model, dir = save_to)
-
 #fit the model to the data
 #options(mc.cores = parallel::detectCores())
 fit <- sampling(stan_model, 
@@ -179,8 +176,13 @@ fit_final <- fit_final %>%
 #Save the summary
 write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 
-
-
+#last model run, 3051 seconds, 22 second warm up time
+#adding
+#vector[N] eta = a + a_sp[sp] + a_rt[rt] + b[sp] .* year + c_obs * observer_quality;
+#C ~ neg_binomial_2_log(eta, overdispersion_param);
+#new model run:
+# 591.515 seconds
+# 22 second warmup time, like the exact same. No difference
 
 
 
