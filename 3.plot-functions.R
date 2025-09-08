@@ -37,7 +37,7 @@
          ylab = "",
          pch = 16, 
          cex = 2,
-         xaxs = "i"
+         yaxs = "i"
     ) +
       segments(x0 = plot_df$conf_2.5,
                x1 = plot_df$conf_97.5,

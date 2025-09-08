@@ -181,7 +181,10 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
 
 #################### change per change without bayesplot
 
-  species_list <- read.csv(paste0(load_from_change_together,"species_list.csv"))
+  species_list <- read.csv(paste0(load_from_change_together,"species_list.csv")) %>%
+    left_join(read.csv("data/species-traits/2.landcover_cpc_analysis_full_traits.csv")) %>%
+    select(-sp_id)
+  
   dev <- read.csv(paste0(load_from_change_together, "dev+barren_fit_summaries.csv")) %>%
     #filter out the individual quarter route a[] fits, just keep the variables we're most interested in.
    # filter(rownames %in% c("a_bar", "sig_a", "b_landcover_change", "b_landcover_base", "c_obs", "sigma")) %>%
@@ -196,54 +199,107 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
     mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
     ungroup() %>%
     mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "lightblue", "blue"),
-           pch = ifelse(significant == FALSE, 1, 19))
+           sigcolor = ifelse(significant == FALSE, "lightblue", "blue"),
+           pch = ifelse(significant == FALSE, 1, 19)) %>%
+    left_join(species_list, by = "common_name")
+#    #let's do color by uai.
+#    mutate(color = grDevices::gray.colors(66, start = min(UAI), end= max(UAI)))
+    
+    dev$color <- viridisLite::viridis(option = "rocket", n = length(dev$scale_UAI))[as.numeric(cut(dev$scale_UAI, breaks = length(dev$scale_UAI)))]
+    
+    grayscale = grDevices::gray.colors(nrow(dev), start = .1, end = .9)
   
-  forest_all <- read.csv(paste0(load_from_change, "forest_all_fit_summaries.csv")) %>%
-    filter(rownames %in% c("b_landcover_change")) %>%
-    group_by(mean, common_name) %>%
-    arrange(desc(mean)) %>% #
-    mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
-    ungroup() %>%
-    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "grey60", "black"),
-           pch = ifelse(significant == FALSE, 1, 19))
+#  forest_all <- read.csv(paste0(load_from_change, "forest_all_fit_summaries#.csv")) %>%
+#    filter(rownames %in% c("b_landcover_change")) %>%
+#    group_by(mean, common_name) %>%
+#    arrange(desc(mean)) %>% #
+#    mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
+#    ungroup() %>%
+#    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+#           color = ifelse(significant == FALSE, "grey60", "black"),
+#           pch = ifelse(significant == FALSE, 1, 19))
+#  
+#  species_list <- species_list %>%
+#    left_join(forest_all[,17:18], by = "common_name") 
   
-  species_list <- species_list %>%
-    left_join(forest_all[,17:18], by = "common_name") 
-  
-  forest_pos <- read.csv(paste0(load_from_change, "forest_positive_fit_summaries.csv")) %>%
-    filter(rownames %in% c("b_landcover_change")) %>%
+  forest_pos <- read.csv(paste0(load_from_change_together, "forest_positive_fit_summaries.csv")) %>%
+    filter(!is.na(slope)) %>%
     left_join(species_list, by = "common_name") %>% #add the forest sorted sp id
     ungroup() %>%
-    mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "lightblue", "blue"),
-           pch = ifelse(significant == FALSE, 1, 19)) %>%
-    arrange(mean) %>%
+    #mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
+    #       color = ifelse(significant == FALSE, "lightblue", "blue"),
+    #       pch = ifelse(significant == FALSE, 1, 19)) %>%
+    arrange(desc(mean)) %>%
+    mutate(sp_id = cur_group_rows()) %>%
     dplyr::select(-q_rt_standard)
+  forest_pos$color <- viridisLite::viridis(option = "viridis", n = length(forest_pos$scale_eaforest))[as.numeric(cut(forest_pos$scale_eaforest, breaks = length(forest_pos$scale_eaforest)))]
   
-  forest_neg <- read.csv(paste0(load_from_change, "forest_negative_fit_summaries.csv")) %>%
-    filter(rownames %in% c("b_landcover_change")) %>%
+  forest_neg <- read.csv(paste0(load_from_change_together, "forest_negative_fit_summaries.csv")) %>%
+    filter(!is.na(slope)) %>%
     left_join(species_list, by = "common_name") %>% #add the forest sorted sp id
     ungroup() %>%
-    mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "pink", "red"),
-           pch = ifelse(significant == FALSE, 1, 19)) %>%
-    arrange(mean) %>%
-    dplyr::select(-q_rt_standard)
+    #mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
+    #       color = ifelse(significant == FALSE, "pink", "red"),
+    #       pch = ifelse(significant == FALSE, 1, 19)) %>%
+    arrange(desc(mean)) %>%
+    mutate(sp_id = cur_group_rows()) 
+  forest_neg$color <- viridisLite::viridis(option = "mako", n = length(forest_neg$scale_eagrassland))[as.numeric(cut(forest_neg$scale_eagrassland, breaks = length(forest_neg$scale_eagrassland)))]
   
   
-  plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
+  #plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
 
-  png(filename = "figures/test.png", 
-      width = 480,
-      height = 1200,
+  png(filename = "figures/ch2_dev.png", 
+      width = 1200,
+      height = 600,
       units = "px", 
       type = "windows")
-  par(mar = c(4, 17, 1, 1), cex.axis = 1)
-  plot_intervals(plot_df = dev, 
-                 xlab = "dev species run together", 
-                 ylim_select = c(.5,66.5))
+  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  plot_intervals(plot_df = dev[34:66,],
+                 xlab = "Change in species count with change in % urban", 
+                 ylim_select = c(33.5,66.5))
+  plot_intervals(plot_df = dev[1:33,], 
+                 xlab = "", 
+                 ylim_select = c(.5,33.5))
+  #now plots with enough width and such, just still needs to be color changed. Altho being thick enough the light blue might be fine
+  #just need to save from my other computer screen
+  #well, really need to update this file to save results nicely to pdfs
+  dev.off()
+  
+  
+  png(filename = "figures/ch2_fpos.png", 
+      width = 1200,
+      height = 600,
+      units = "px", 
+      type = "windows")
+  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  plot_intervals(plot_df = forest_pos[34:66,],
+                 xlab = "Change in species count with change in forest gain", 
+                 ylim_select = c(33.5,66.5),
+                 xlim_select = c(-.3, .15))
+  plot_intervals(plot_df = forest_pos[1:33,], 
+                 xlab = "", 
+                 ylim_select = c(.5,33.5),
+                 xlim_select = c(-.3, .15))
+  #now plots with enough width and such, just still needs to be color changed. Altho being thick enough the light blue might be fine
+  #just need to save from my other computer screen
+  #well, really need to update this file to save results nicely to pdfs
+  dev.off()
+  
+  
+  png(filename = "figures/ch2_fneg.png", 
+      width = 1200,
+      height = 600,
+      units = "px", 
+      type = "windows")
+  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  plot_intervals(plot_df = forest_neg[34:66,],
+                 xlab = "Change in species count with change in forest loss", 
+                 ylim_select = c(33.5,66.5),
+                 xlim_select = c(-.1, .1))
+  plot_intervals(plot_df = forest_neg[1:33,], 
+                 xlab = "", 
+                 ylim_select = c(.5,33.5),
+                 xlim_select = c(-.1, .1))
   #now plots with enough width and such, just still needs to be color changed. Altho being thick enough the light blue might be fine
   #just need to save from my other computer screen
   #well, really need to update this file to save results nicely to pdfs
