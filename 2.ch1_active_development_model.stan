@@ -74,21 +74,28 @@ transformed parameters {
   vector[Nsp] a_sp = a_sp_raw * sig_sp;
   vector[Nrt] a_rt = a_rt_raw * sig_rt;
   
+   // VECTORIZED linear predictor
+  vector[N] eta = a + a_sp[sp] + a_rt[rt] + b[sp] .* to_vector(year) + c_obs * observer_quality;
+  //now um. DOES generate an eta for every row of the dataset which is kinda obnoxious in printing.
 }
 
 model {
 
+  //trying to vectorize
+  C ~ neg_binomial_2_log(eta, overdispersion_param);
+
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
-   for (n in 1:N) {
-     C[n] ~ neg_binomial_2_log(
-       a + //universal intercept
-       a_sp[sp[n]] + //species specific intercept modifier
-       a_rt[rt[n]] + //route specific intercept modifier
-       b[sp[n]] * year[n] + //slope for effect of time
-       c_obs * observer_quality[n], //slope effect for observer quality
-       overdispersion_param //controls for overdispersion in a neg_binom
-       );
-   }
+//   for (n in 1:N) {
+//     C[n] ~ neg_binomial_2_log(
+//       a + //universal intercept
+//       a_sp[sp[n]] + //species specific intercept modifier
+//       a_rt[rt[n]] + //route specific intercept modifier
+//       b[sp[n]] * year[n] + //slope for effect of time
+//       c_obs * observer_quality[n], //slope effect for observer quality
+//       overdispersion_param //controls for overdispersion in a neg_binom
+//       );
+//   }
+
 // eg... for every row/observation in the data.
 // The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
 
@@ -117,11 +124,10 @@ model {
 //.............BY COMMENTING OUT KAPPAS, DEFAULT UNIFORM PRIORS ARE USED.................
 //default uniform priors are not like ultimately reccomended, and since variables are scaled it's not unreasonable to set a normal(0,1) prior, but default uniform Is Workable...
 //see: https://github.com/stan-dev/stan/wiki/prior-choice-recommendations
-//  kappa_regional ~ normal(0, .02); 
-//  kappa_temp_pos ~ normal(0, .2); 
-//  kappa_habitat_selection ~ normal(0, .2);
-//  kappa_diet_cat ~ normal(0,.2);
-//.............^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^..................
+kappa_regional ~ normal(0, 0.2);
+kappa_temp_pos ~ normal(0, 0.2);
+kappa_habitat_selection ~ normal(0, 0.2);
+kappa_diet_cat ~ normal(0, 0.2);
 
 //setting priors for intercepts last just for ease of them being listed last in the output
   a ~ normal(0, 2); //universal intercept, trying not to constrain the prior too lightly so using 2 instead of 1. 

@@ -61,6 +61,7 @@ forest <- read.csv("data/nlcd-landcover/nlcd_annual_sum_forest.csv") %>%
 
 max_nlcd_year <- max(dev$year)
 
+#observer information:
 load("data/mbbs/mbbs_survey_events.rda")
 obs <- mbbs_survey_events %>%
   dplyr::select(route, primary_observer, observer_ID, year, observer_quality)
@@ -107,6 +108,8 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   arrange(year, .by_group = TRUE) %>%
   mutate(
     change_count = q_rt_count - lag(q_rt_count),
+    #when the count is 0 two years in a row, we assume species is not present on the quarter route and need to remove that data point from consideration, as theres no chance for the population to change. If species returns, eg, time series is 0,0,1 - that 0,1 datapoint is still fine. species 'came back' to the quarter route.
+    flag_0_to_0 = pmax(q_rt_count, lag(q_rt_count)),
     #change_dev = rmax_dev_quarter - lag(rmax_dev_quarter),
     change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
     #also take change forest
@@ -117,22 +120,26 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
                            observer_ID != lag(observer_ID) ~ 1),
     #calculate change in observer quality
     change_obs_qual = observer_quality - lag(observer_quality),
+    # commented out section here depricated b/c most of these go to eg. negative infinity. Can't divide things by 0s
     #switching things up, we also want to create a ratio between years, then take the log of that ratio and divide it by the years_btwn
-    ratio_count = case_when(
-      q_rt_count == 0 & lag(q_rt_count) == 0 ~ 0,
-      TRUE ~ q_rt_count/lag(q_rt_count) #likely to actually NOT use bc Inf errors when previous year the count on the quarter route was 0 (p common occurance as we know), as if we removed those it takes out like almost every population increase. Nah
-    ),
-    log_rc_div_yb = log(ratio_count)/years_btwn, #likely to depreciate
+    #ratio_count = case_when(
+    #  q_rt_count == 0 & lag(q_rt_count) == 0 ~ 0,
+    #  TRUE ~ q_rt_count/lag(q_rt_count) #likely to actually NOT use bc Inf errors when previous year the count on the quarter route was 0 (p common occurance as we know), as if we removed those it takes out like almost every population increase. Nah
+    #),
+    #log_rc_div_yb = log(ratio_count)/years_btwn, #likely to depreciate
   ) %>%
   #add a flag if the species is experiencing exponential declines that are going to cause problems
   ungroup() %>%
+  #when the count is 0 two years in a row, we assume species is not present on the quarter route and need to remove that data point from consideration, as theres no chance for the population to change. If species returns, eg, time series is 0,0,1 - that 0,1 datapoint is still fine. species 'came back' to the quarter route.
   group_by(common_name) %>%
   mutate(pvalue_changecount_by_year = summary(lm(change_count~year))$coefficients[2,4],
          r_sq = summary(lm(change_count~year))$r.squared,
          flag = ifelse(pvalue_changecount_by_year > .05, NA, "FLAG")) %>%
   ungroup() %>%
   #remove the NA years (first record of each quarter route) 
-  filter(is.na(change_count) == FALSE) 
+  filter(is.na(change_count) == FALSE) %>%
+  #remove the years where the population had no chance to change in response to any underlying landcover change (population was 0 both years, so these 0 population changes are different from when species is present eg. count = 2 and count = 2 and population doesn't change between years). 
+  filter(flag_0_to_0 != 0) #67584 before, 29280 after.
 
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
   flagged_sp <- stopdata %>% 
@@ -143,14 +150,14 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   assertthat::assert_that(nrow(flagged_sp) == 0)
   #great, if it passes we can move on :)
   stopdata <- stopdata %>% 
-    dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year)
+    dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year, -flag_0_to_0)
   
   
   #we're going to run the same model for both our urban (dev + barren) and for our forest variables - breaking out the various effects of change in the amount of urbanization, positive increases in forest cover, and negative decreases in forest cover. Forest cover and urbanization change are not 1:1 correlated so these are indeed different from each other. 
-  landcover <- c("dev+barren", "forest_positive", "forest_negative", "forest_all")
+  landcover <- c("dev+barren", "forest_positive", "forest_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.25_cpc_allsp_in_one/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.08_cpc_allspin1_rm0to0/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
@@ -228,8 +235,8 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 10000,
-                    warmup = 2000)
+                    iter = 10000, #should be 10k in a full model
+                    warmup = 2000) #2k in a full model
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
     timestamp()
