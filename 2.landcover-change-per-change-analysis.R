@@ -152,16 +152,24 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   stopdata <- stopdata %>% 
     dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year, -flag_0_to_0)
   
+  #want to have something that tells us how many samples we have from each species as well, since they're no longer equal
+  sample_size <- stopdata %>% 
+    group_by(common_name, sp_id) %>%
+    summarize(sample_size = n()) %>%
+    mutate(pch_scale = log(sample_size)+.5)
+  
   
   #we're going to run the same model for both our urban (dev + barren) and for our forest variables - breaking out the various effects of change in the amount of urbanization, positive increases in forest cover, and negative decreases in forest cover. Forest cover and urbanization change are not 1:1 correlated so these are indeed different from each other. 
   landcover <- c("dev+barren", "forest_positive", "forest_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.08_cpc_allspin1_rm0to0/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
 #  write.csv(stopdata, paste0(save_to, "/stopdata.csv"))
+#save the sample size
+write.csv(sample_size, paste0(save_to, "sample_size.csv"), row.names = FALSE)
 
 #stan model specified in landcover_qrt_trends.stan, let R know where to find it
 stan_model_file <- "2.landcover_change_per_change.stan"

@@ -22,7 +22,7 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
 #load_from_bdev <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.11_traits_on_bdev_add_logsize/"
 #load_from_uai <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.04.15_uai_on_bdev/"
 load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_rmbaseline_obsqual/"
-load_from_change_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.25_cpc_allsp_in_one/"
+load_from_change_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/"
 load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_traits_on_cpc/"
 load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.29_traits_on_cpc/"
 
@@ -199,56 +199,41 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
     mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
     ungroup() %>%
     mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           sigcolor = ifelse(significant == FALSE, "lightblue", "blue"),
+           color = ifelse(significant == FALSE, "lightblue", "blue"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
     left_join(species_list, by = "common_name")
 #    #let's do color by uai.
 #    mutate(color = grDevices::gray.colors(66, start = min(UAI), end= max(UAI)))
     
-    dev$color <- viridisLite::viridis(option = "rocket", n = length(dev$scale_UAI))[as.numeric(cut(dev$scale_UAI, breaks = length(dev$scale_UAI)))]
-    
-    grayscale = grDevices::gray.colors(nrow(dev), start = .1, end = .9)
-  
-#  forest_all <- read.csv(paste0(load_from_change, "forest_all_fit_summaries#.csv")) %>%
-#    filter(rownames %in% c("b_landcover_change")) %>%
-#    group_by(mean, common_name) %>%
-#    arrange(desc(mean)) %>% #
-#    mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
-#    ungroup() %>%
-#    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-#           color = ifelse(significant == FALSE, "grey60", "black"),
-#           pch = ifelse(significant == FALSE, 1, 19))
-#  
-#  species_list <- species_list %>%
-#    left_join(forest_all[,17:18], by = "common_name") 
+   # dev$color <- viridisLite::viridis(option = "rocket", n = length(dev$scale_UAI))[as.numeric(cut(dev$scale_UAI, breaks = length(dev$scale_UAI)))]
   
   forest_pos <- read.csv(paste0(load_from_change_together, "forest_positive_fit_summaries.csv")) %>%
     filter(!is.na(slope)) %>%
     left_join(species_list, by = "common_name") %>% #add the forest sorted sp id
     ungroup() %>%
-    #mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
-    #       color = ifelse(significant == FALSE, "lightblue", "blue"),
-    #       pch = ifelse(significant == FALSE, 1, 19)) %>%
+    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           color = ifelse(significant == FALSE, "lightblue", "blue"),
+           pch = ifelse(significant == FALSE, 1, 19)) %>%
     arrange(desc(mean)) %>%
     mutate(sp_id = cur_group_rows()) %>%
     dplyr::select(-q_rt_standard)
-  forest_pos$color <- viridisLite::viridis(option = "viridis", n = length(forest_pos$scale_eaforest))[as.numeric(cut(forest_pos$scale_eaforest, breaks = length(forest_pos$scale_eaforest)))]
+  #forest_pos$color <- viridisLite::viridis(option = "viridis", n = length(forest_pos$scale_eaforest))[as.numeric(cut(forest_pos$scale_eaforest, breaks = length(forest_pos$scale_eaforest)))]
   
   forest_neg <- read.csv(paste0(load_from_change_together, "forest_negative_fit_summaries.csv")) %>%
     filter(!is.na(slope)) %>%
     left_join(species_list, by = "common_name") %>% #add the forest sorted sp id
     ungroup() %>%
-    #mutate(significant = ifelse(X2.50. < 0 & X97.50. > 0, FALSE, TRUE),
-    #       color = ifelse(significant == FALSE, "pink", "red"),
-    #       pch = ifelse(significant == FALSE, 1, 19)) %>%
+    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           color = ifelse(significant == FALSE, "pink", "red"),
+           pch = ifelse(significant == FALSE, 1, 19)) %>%
     arrange(desc(mean)) %>%
     mutate(sp_id = cur_group_rows()) 
-  forest_neg$color <- viridisLite::viridis(option = "mako", n = length(forest_neg$scale_eagrassland))[as.numeric(cut(forest_neg$scale_eagrassland, breaks = length(forest_neg$scale_eagrassland)))]
+  #forest_neg$color <- viridisLite::viridis(option = "mako", n = length(forest_neg$scale_eagrassland))[as.numeric(cut(forest_neg$scale_eagrassland, breaks = length(forest_neg$scale_eagrassland)))]
   
   
   #plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
 
-  png(filename = "figures/ch2_dev.png", 
+  png(filename = "figures/ch2_dev_rm0to0_halfnormal.png", 
       width = 1200,
       height = 600,
       units = "px", 
@@ -266,7 +251,7 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
   dev.off()
   
   
-  png(filename = "figures/ch2_fpos.png", 
+  png(filename = "figures/ch2_fpos_rm0to0_halfnormal.png", 
       width = 1200,
       height = 600,
       units = "px", 
@@ -286,7 +271,7 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
   dev.off()
   
   
-  png(filename = "figures/ch2_fneg.png", 
+  png(filename = "figures/ch2_fneg_rm0to0_halfnormal.png", 
       width = 1200,
       height = 600,
       units = "px", 
