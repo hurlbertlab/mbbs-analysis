@@ -7,6 +7,12 @@
 
 library(dplyr)
 library(stringr)
+library(ggplot2)
+library(bayesplot)
+  bayesplot_theme_update(text = element_text(size = 20, family = "sans")) 
+  #families are "serif" for times new roman, "sans" for TT Arial, and "mono" for very typewriter
+  bayesplot_theme_set(theme_minimal())
+  color_scheme_set(scheme = "purple")
 
 #load functions
 source("3.plot-functions.R")
@@ -70,3 +76,35 @@ for(i in 1:length(landcover)) {
   abline(a = 0, b = 1)
   
 }
+
+
+#plot changes in intervals
+post_samples_all0s <- read.csv(paste0(lf_all0s, "dev+barren_", "posterior_samples.csv")) %>%
+  select(-row_id, -landcover) %>%
+  select(b_landcover_change.37.) %>%
+  dplyr::rename(Northern_Bobwhite_all0s = b_landcover_change.37.)
+post_samples_rm0to0 <- read.csv(paste0(lf_0to0, "dev+barren_posterior_samples.csv")) %>%
+  select(-row_id, -landcover) %>%
+  select(b_landcover_change.37.) %>%
+  dplyr::rename(Northern_Bobwhite_rm0to0 = b_landcover_change.37.)
+
+postsamples <- bind_cols(post_samples_all0s, post_samples_rm0to0)
+
+#full range of posterior samples is indeed different between these two. I want to test this with, removing routes where a species never shows up, but keeping all the rest. Seems a reasonable test. 
+
+mcmc_intervals(postsamples,
+               prob = .95,
+               prob_outer = 1)
+
+mcmc_areas(postsamples,
+               prob = .95,
+               prob_outer = 1)
+
+
+# mcmc_intervals(post_samples_all0s,
+#                prob = 0.01,
+#                prob_outer = 1)
+# mcmc_intervals(post_samples_rm0to0, 
+#                prob = 0.01,
+#                prob_outer = .95)
+#northern bobwhite is #37
