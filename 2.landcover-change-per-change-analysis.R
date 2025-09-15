@@ -57,7 +57,12 @@ forest <- read.csv("data/nlcd-landcover/nlcd_annual_sum_forest.csv") %>%
   #summarize bc we only need 1 entry per route quarter
   group_by(route, quarter_route, year, perc_forest_quarter) %>%
   summarize() %>%
-  ungroup
+  ungroup()
+
+grassland <- read.csv("data/nlcd-landcover/nlcd_annual_sum_grassland.csv") %>%
+  group_by(route, quarter_route, year, perc_grassland_quarter) %>%
+  summarize() %>%
+  ungroup()
 
 max_nlcd_year <- max(dev$year)
 
@@ -102,6 +107,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   #let's left_join in the landcover data
   left_join(dev, by = c("route", "quarter" = "quarter_route", "year")) %>%
   left_join(forest, by = c("route", "quarter" = "quarter_route", "year")) %>%
+  left_join(grassland, by = c("route", "quarter" = "quarter_route", "year")) %>%
   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   #time for the new stuff. For a change for change analysis, rather than each data point being the count and the urbanization%, each datapoint needs to be a lag count and lab urbanization percent. let's also have a years_btwn variable thats how long the latest lag is. let's sort the data first.
   group_by(common_name, quarter_route) %>%
@@ -114,6 +120,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
     change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
     #also take change forest
     change_forest = perc_forest_quarter - lag(perc_forest_quarter),
+    change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter),
     years_btwn = year - lag(year),
     #calculate if observer changed as well
     change_obs = case_when(observer_ID == lag(observer_ID) ~ 0,
@@ -137,9 +144,9 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
          flag = ifelse(pvalue_changecount_by_year > .05, NA, "FLAG")) %>%
   ungroup() %>%
   #remove the NA years (first record of each quarter route) 
-  filter(is.na(change_count) == FALSE) %>%
+  filter(is.na(change_count) == FALSE) #%>%
   #remove the years where the population had no chance to change in response to any underlying landcover change (population was 0 both years, so these 0 population changes are different from when species is present eg. count = 2 and count = 2 and population doesn't change between years). 
-  filter(flag_0_to_0 != 0) #67584 before, 29280 after.
+  #filter(flag_0_to_0 != 0) #67584 before, 29280 after.
 
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
   flagged_sp <- stopdata %>% 
@@ -152,6 +159,13 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   stopdata <- stopdata %>% 
     dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year, -flag_0_to_0)
   
+  #if we wanted to remove routes where a species is never seen, but keep the other routes..
+  stopdata_0sprts_removed <- stopdata %>%
+    group_by(common_name, q_rt_standard) %>%
+    filter(sum(q_rt_count) > 0) #44733 observations
+  #!!!!!!!!!!!!for this run
+  stopdata <- stopdata_0sprts_removed
+  
   #want to have something that tells us how many samples we have from each species as well, since they're no longer equal
   sample_size <- stopdata %>% 
     group_by(common_name, sp_id) %>%
@@ -160,10 +174,10 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   
   
   #we're going to run the same model for both our urban (dev + barren) and for our forest variables - breaking out the various effects of change in the amount of urbanization, positive increases in forest cover, and negative decreases in forest cover. Forest cover and urbanization change are not 1:1 correlated so these are indeed different from each other. 
-  landcover <- c("dev+barren", "forest_positive", "forest_negative")
+  landcover <- c("dev+barren", "forest_positive", "forest_negative", "grassland_positive", "grassland_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_allspin1_rm0sprtsONLY/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
@@ -218,6 +232,22 @@ for(a in 1:length(landcover)) {
         ungroup()
       change_selected_land <- loopdata$change_forest
       base_selected_land <- loopdata$perc_forest_quarter
+    } else if (landcover[a] == "grassland_positive") {
+      loopdata <- loopdata %>%
+        filter(change_grassland >= 0) %>%
+        group_by(q_rt_standard) %>%
+        mutate(q_rt_standard = cur_group_id()) %>%
+        ungroup()
+      change_selected_land <- loopdata$change_grassland
+      base_selected_land <- loopdata$perc_grassland_quarter
+    } else if (landcover[a] == "grassland_negative") {
+      loopdata <- loopdata %>%
+        filter(change_grassland <= 0) %>%
+        group_by(q_rt_standard) %>%
+        mutate(q_rt_standard = cur_group_id()) %>%
+        ungroup()
+      change_selected_land <- loopdata$change_grassland
+      base_selected_land <- loopdata$perc_grassland_quarter
     }
     
     
@@ -243,8 +273,8 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 10000, #should be 10k in a full model
-                    warmup = 2000) #2k in a full model
+                    iter = 5000, #should be 10k in a full model
+                    warmup = 1000) #2k in a full model
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
     timestamp()
