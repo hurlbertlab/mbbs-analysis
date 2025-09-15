@@ -19,6 +19,7 @@ source("3.plot-functions.R")
 
 lf_0to0 <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/"
 lf_all0s <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.25_cpc_allsp_in_one/"
+lf_sprt0s <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_allspin1_rm0sprtsONLY/"
 
 list.files(lf_0to0)
 list.files(lf_all0s)
@@ -87,8 +88,12 @@ post_samples_rm0to0 <- read.csv(paste0(lf_0to0, "dev+barren_posterior_samples.cs
   select(-row_id, -landcover) %>%
   select(b_landcover_change.37.) %>%
   dplyr::rename(Northern_Bobwhite_rm0to0 = b_landcover_change.37.)
+post_samples_sprt0s <- read.csv(paste0(lf_sprt0s, "dev+barren_posterior_samples.csv")) %>%
+  select(-row_id, -landcover) %>%
+  select(b_landcover_change.37.) %>%
+  dplyr::rename(Northern_Bobwhite_sprt0s = b_landcover_change.37.) 
 
-postsamples <- bind_cols(post_samples_all0s, post_samples_rm0to0)
+postsamples <- bind_cols(post_samples_all0s[1:16000,], post_samples_rm0to0[1:16000,], post_samples_sprt0s)
 
 #full range of posterior samples is indeed different between these two. I want to test this with, removing routes where a species never shows up, but keeping all the rest. Seems a reasonable test. 
 
