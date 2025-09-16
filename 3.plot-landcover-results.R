@@ -25,6 +25,7 @@ load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_rmb
 load_from_change_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/"
 load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_traits_on_cpc/"
 load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.29_traits_on_cpc/"
+load_from_cpc_grassland <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_rm0to0_grassland/"
 
 lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.08.29_ch1m1_longleaf_model_test_1/"
 lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_test_4/"
@@ -230,6 +231,26 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
     mutate(sp_id = cur_group_rows()) 
   #forest_neg$color <- viridisLite::viridis(option = "mako", n = length(forest_neg$scale_eagrassland))[as.numeric(cut(forest_neg$scale_eagrassland, breaks = length(forest_neg$scale_eagrassland)))]
   
+  grassland_neg <- read.csv(paste0(load_from_cpc_grassland, "grassland_negative_fit_summaries.csv")) %>%
+    filter(!is.na(slope)) %>%
+    left_join(species_list, by = "common_name") %>%
+    ungroup() %>%
+    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           color = ifelse(significant == FALSE, "orange", "yellow1"),
+           pch = ifelse(significant == FALSE, 1, 19)) %>%
+    arrange(desc(mean)) %>%
+    mutate(sp_id = cur_group_rows())
+  
+  grassland_pos <- read.csv(paste0(load_from_cpc_grassland, "grassland_positive_fit_summaries.csv")) %>%
+    filter(!is.na(slope)) %>%
+    left_join(species_list, by = "common_name") %>%
+    ungroup() %>%
+    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           color = ifelse(significant == FALSE, "lightslateblue", "blueviolet"),
+           pch = ifelse(significant == FALSE, 1, 19)) %>%
+    arrange(desc(mean)) %>%
+    mutate(sp_id = cur_group_rows())
+  
   
   #plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
 
@@ -289,6 +310,44 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
   #just need to save from my other computer screen
   #well, really need to update this file to save results nicely to pdfs
   dev.off()
+  
+  png(filename = "figures/ch2_grassland_neg_rm0to0.png", 
+      width = 1200,
+      height = 600,
+      units = "px", 
+      type = "windows")
+  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  plot_intervals(plot_df = grassland_neg[34:66,],
+                 xlab = "Change in species count per grassland loss", 
+                 ylim_select = c(33.5,66.5),
+                 xlim_select = c(-0.25, 0.25))
+  plot_intervals(plot_df = grassland_neg[1:33,], 
+                 xlab = "", 
+                 ylim_select = c(.5,33.5),
+                 xlim_select = c(-0.25, 0.25))
+  dev.off()
+  #rm0to0 has 16870 negative changes and 2054 0 changes
+  
+  
+  png(filename = "figures/ch2_grassland_pos_rm0to0.png", 
+      width = 1200,
+      height = 600,
+      units = "px", 
+      type = "windows")
+  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  plot_intervals(plot_df = grassland_pos[34:66,],
+                 xlab = "Change in species count per grassland gain", 
+                 ylim_select = c(33.5,66.5),
+                 xlim_select = c(-0.25, 0.25))
+  plot_intervals(plot_df = grassland_pos[1:33,], 
+                 xlab = "", 
+                 ylim_select = c(.5,33.5),
+                 xlim_select = c(-0.25, 0.25))
+  dev.off()
+  #so, for the grassland gain, how many observations do we have exactly going into that model?
+  #it's 9634 observations with change > 0
+  # and 2054 with change at 0
+  #yeah okay, birds just aren't really responding to positive grassland gain IG - I mean most of the changes are REALLLYY clustered around 0, there is like a couple 13% changes but they are not the majority. shrug! 
   
 par(mar = c(4, 17, 1, 1), cex.axis = 1)  
 
