@@ -316,7 +316,7 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
       height = 600,
       units = "px", 
       type = "windows")
-  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  par(mar = c(4, 17, 1, 1), cex.axis = 1.25, mfrow = c(1,2))
   plot_intervals(plot_df = grassland_neg[34:66,],
                  xlab = "Change in species count per grassland loss", 
                  ylim_select = c(33.5,66.5),
@@ -334,7 +334,7 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
       height = 600,
       units = "px", 
       type = "windows")
-  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  par(mar = c(4, 17, 1, 1), cex.axis = 1.25, mfrow = c(1,2))
   plot_intervals(plot_df = grassland_pos[34:66,],
                  xlab = "Change in species count per grassland gain", 
                  ylim_select = c(33.5,66.5),

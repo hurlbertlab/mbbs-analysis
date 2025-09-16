@@ -116,6 +116,120 @@ mcmc_areas(postsamples,
 #but this is still the same sample size as removing all the 0to0s! not removing the sprt0s.
 #so most of the expansion and the change in means really is from less confidence in the strength of the effect - mostly that without zeros, the effect of landcover change COULD be much stronger than we've been calculating it.
 
+#plot comparisons of confidence intervals width and mean differences for all the species for all the comparisons
+
+      #load in the datasets, these are for the change with developed land cover type.
+            all0s <- 
+              read.csv(paste0(lf_all0s, "dev+barren", "_fit_summaries.csv")) %>%
+              filter(!is.na(slope)) %>%
+              mutate(rm = ifelse(str_detect(.$rownames, "raw"), FALSE, TRUE)) %>%
+              filter(rm == TRUE) %>%
+              mutate(conf_width = conf_97.5 - conf_2.5) %>%
+              arrange(sp_id)
+            
+            rm0to0 <- 
+              read.csv(paste0(lf_0to0, "dev+barren", "_fit_summaries.csv")) %>%
+              filter(!is.na(slope)) %>%
+              mutate(rm = ifelse(str_detect(.$rownames, "raw"), FALSE, TRUE)) %>%
+              filter(rm == TRUE) %>%
+              left_join(sample_size) %>%
+              mutate(conf_width = conf_97.5 - conf_2.5) %>%
+              arrange(sp_id)
+            
+            rm0sprt <- 
+              read.csv(paste0(lf_sprt0s, "dev+barren", "_fit_summaries.csv")) %>%
+              filter(!is.na(slope)) %>%
+              mutate(rm = ifelse(str_detect(.$rownames, "raw"), FALSE, TRUE)) %>%
+              filter(rm == TRUE) %>%
+              #hum. um. something got messed up in this file and the data is replicated 81 times? hm. anyway it's just this one file with this error
+              distinct(rownames, mean, conf_2.5, conf_97.5, sp_id, common_name) %>%
+              mutate(conf_width = conf_97.5 - conf_2.5) %>%
+              arrange(sp_id) %>%
+              left_join(read.csv(paste0(lf_sprt0s, "sample_size.csv")))
+            
+            all0s_subsample <- 
+              read.csv(paste0(lf_randomsubsample, "dev+barren", "_fit_summaries.csv")) %>%
+              filter(!is.na(slope)) %>%
+              mutate(rm = ifelse(str_detect(.$rownames, "raw"), FALSE, TRUE)) %>%
+              filter(rm == TRUE) %>%
+              left_join(sample_size) %>%
+              mutate(conf_width = conf_97.5 - conf_2.5) %>%
+              arrange(sp_id)
+              
+            
+            
+            
+            
+            
+
+
+
+combos_title <- c("Zero-filled Species-Routes", "Remove 0 to 0 Counts", "Remove Empty Species-Routes", "ZF Random Subsample (ss = 0to0)")
+#list the dataframes
+combos_data <- list(all0s, rm0to0, rm0sprt, all0s_subsample)
+
+
+#png(filename = "figures/bayesq_CI_width_change.png", 
+#    width = 600,
+#    height = 600,
+#    units = "px", 
+#    type = "windows")
+par(mar = c(4, 4, 1, 1), mfrow = c(3,2), cex.axis = 1.25)
+for(i in 1:length(combos_data)) {
+  for(a in i:4) {
+    if(a == 4) {
+      #do nothing
+    } else {
+      #plot changes in the confidence interval width
+      plot(
+        x = combos_data[[i]]$conf_width,
+        y = combos_data[[a+1]]$conf_width, 
+        #pch = 16,
+        cex = 3,
+        #cex = rm0to0$pch_scale - 3,
+        xlim = c(0, .65),
+        ylim = c(0, .65),
+        xlab = combos_title[i],
+        ylab = combos_title[a+1],
+        main = paste("Confidence Interval Width Change")
+      ) 
+      abline(a = 0, b = 1)
+    }
+  }
+}
+#dev.off()
+
+
+#png(filename = "figures/bayesq_means_change.png", 
+#    width = 600,
+#    height = 600,
+#    units = "px", 
+#    type = "windows")
+par(mar = c(4, 4, 1, 1), mfrow = c(3,2), cex.axis = 1.25)
+#CONFIDENCE INTERVAL WIDTH
+for(i in 1:length(combos_data)) {
+  for(a in i:4) {
+    if(a == 4) {
+      #do nothing
+    } else {
+      #plot changes in the confidence interval width
+      plot(
+        x = combos_data[[i]]$mean,
+        y = combos_data[[a+1]]$mean, 
+        #pch = 16,
+        cex = 3,
+        #cex = rm0to0$pch_scale - 3,
+        xlim = c(-.35, .35),
+        ylim = c(-.35, .35),
+        xlab = combos_title[i],
+        ylab = combos_title[a+1],
+        main = paste("Change in Mean")
+      ) 
+      abline(a = 0, b = 1)
+    }
+  }
+}
+#dev.off()
 
 # mcmc_intervals(post_samples_all0s,
 #                prob = 0.01,
