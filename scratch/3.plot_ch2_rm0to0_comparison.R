@@ -121,14 +121,14 @@ mcmc_areas(bw_postsamples,
 
 plot1 <- mcmc_intervals(post_samples_rm0to0,
                            prob = 0.01,
-                           prob_outer = 0.95) + 
+                           prob_outer = 1) + 
   geom_vline(xintercept = 0, color = "grey30") 
 
 
 
 plot2 <- mcmc_intervals(post_samples_random,
                             prob = 0.01, 
-                            prob_outer = 0.95) +
+                            prob_outer = 1) +
   geom_vline(xintercept = 0, color = "grey30") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
