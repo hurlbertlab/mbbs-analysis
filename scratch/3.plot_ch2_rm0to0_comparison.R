@@ -20,12 +20,14 @@ source("3.plot-functions.R")
 lf_0to0 <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/"
 lf_all0s <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.25_cpc_allsp_in_one/"
 lf_sprt0s <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_allspin1_rm0sprtsONLY/"
+lf_randomsubsample <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_allspin1_rmrandomsubsample/"
 
 list.files(lf_0to0)
 list.files(lf_all0s)
+list.files(lf_randomsubsample)
 
 landcover <- c("dev+barren", "forest_negative", "forest_positive")
-#landcover <- "dev+barren"
+landcover <- "dev+barren"
 
 for(i in 1:length(landcover)) {
   
@@ -83,17 +85,22 @@ for(i in 1:length(landcover)) {
 post_samples_all0s <- read.csv(paste0(lf_all0s, "dev+barren_", "posterior_samples.csv")) %>%
   select(-row_id, -landcover) %>%
   select(b_landcover_change.37.) %>%
-  dplyr::rename(Northern_Bobwhite_all0s = b_landcover_change.37.)
+  dplyr::rename(Bobwhite_all0s = b_landcover_change.37.)
 post_samples_rm0to0 <- read.csv(paste0(lf_0to0, "dev+barren_posterior_samples.csv")) %>%
   select(-row_id, -landcover) %>%
   select(b_landcover_change.37.) %>%
-  dplyr::rename(Northern_Bobwhite_rm0to0 = b_landcover_change.37.)
+  dplyr::rename(Bobwhite_rm0to0 = b_landcover_change.37.)
 post_samples_sprt0s <- read.csv(paste0(lf_sprt0s, "dev+barren_posterior_samples.csv")) %>%
   select(-row_id, -landcover) %>%
   select(b_landcover_change.37.) %>%
-  dplyr::rename(Northern_Bobwhite_sprt0s = b_landcover_change.37.) 
+  dplyr::rename(Bobwhite_sprt0s = b_landcover_change.37.) 
+post_samples_sprt0s <- rbind(post_samples_sprt0s, post_samples_sprt0s)
+post_samples_random <- read.csv(paste0(lf_randomsubsample, "dev+barren_posterior_samples.csv")) %>%
+  select(-row_id, -landcover) %>%
+  select(b_landcover_change.37.) %>%
+  dplyr::rename(Bobwhite_random_subsample = b_landcover_change.37.) 
 
-postsamples <- bind_cols(post_samples_all0s[1:16000,], post_samples_rm0to0[1:16000,], post_samples_sprt0s)
+postsamples <- bind_cols(post_samples_all0s, post_samples_rm0to0, post_samples_sprt0s, post_samples_random)
 
 #full range of posterior samples is indeed different between these two. I want to test this with, removing routes where a species never shows up, but keeping all the rest. Seems a reasonable test. 
 
@@ -104,6 +111,10 @@ mcmc_intervals(postsamples,
 mcmc_areas(postsamples,
                prob = .95,
                prob_outer = 1)
+
+#so, some of the expansion of the CI is indeed from lower sample size
+#but this is still the same sample size as removing all the 0to0s! not removing the sprt0s.
+#so most of the expansion and the change in means really is from less confidence in the strength of the effect - mostly that without zeros, the effect of landcover change COULD be much stronger than we've been calculating it.
 
 
 # mcmc_intervals(post_samples_all0s,
