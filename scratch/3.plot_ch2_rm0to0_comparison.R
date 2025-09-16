@@ -83,34 +83,60 @@ for(i in 1:length(landcover)) {
 
 #plot changes in intervals
 post_samples_all0s <- read.csv(paste0(lf_all0s, "dev+barren_", "posterior_samples.csv")) %>%
-  select(-row_id, -landcover) %>%
-  select(b_landcover_change.37.) %>%
-  dplyr::rename(Bobwhite_all0s = b_landcover_change.37.)
+  select(-row_id, -landcover) 
+    bw_all0s <- post_samples_all0s %>%
+    select(b_landcover_change.37.) %>%
+    dplyr::rename(Bobwhite_all0s = b_landcover_change.37.)
 post_samples_rm0to0 <- read.csv(paste0(lf_0to0, "dev+barren_posterior_samples.csv")) %>%
-  select(-row_id, -landcover) %>%
-  select(b_landcover_change.37.) %>%
-  dplyr::rename(Bobwhite_rm0to0 = b_landcover_change.37.)
+  select(-row_id, -landcover)
+    bw_rm0to0 <- post_samples_rm0to0 %>%
+    select(b_landcover_change.37.) %>%
+    dplyr::rename(Bobwhite_rm0to0 = b_landcover_change.37.)
 post_samples_sprt0s <- read.csv(paste0(lf_sprt0s, "dev+barren_posterior_samples.csv")) %>%
-  select(-row_id, -landcover) %>%
-  select(b_landcover_change.37.) %>%
-  dplyr::rename(Bobwhite_sprt0s = b_landcover_change.37.) 
+  select(-row_id, -landcover)
+    bw_sprt0s <- post_samples_sprt0s %>%
+    select(b_landcover_change.37.) %>%
+    dplyr::rename(Bobwhite_sprt0s = b_landcover_change.37.) 
+    bw_sprt0s <- rbind(bw_sprt0s, bw_sprt0s)
 post_samples_sprt0s <- rbind(post_samples_sprt0s, post_samples_sprt0s)
 post_samples_random <- read.csv(paste0(lf_randomsubsample, "dev+barren_posterior_samples.csv")) %>%
-  select(-row_id, -landcover) %>%
-  select(b_landcover_change.37.) %>%
-  dplyr::rename(Bobwhite_random_subsample = b_landcover_change.37.) 
+  select(-row_id, -landcover) 
+    bw_samples_random <- post_samples_random %>%
+    select(b_landcover_change.37.) %>%
+    dplyr::rename(Bobwhite_random_subsample = b_landcover_change.37.) 
 
-postsamples <- bind_cols(post_samples_all0s, post_samples_rm0to0, post_samples_sprt0s, post_samples_random)
+bw_postsamples <- bind_cols(bw_all0s, bw_rm0to0, bw_sprt0s, bw_samples_random)
 
 #full range of posterior samples is indeed different between these two. I want to test this with, removing routes where a species never shows up, but keeping all the rest. Seems a reasonable test. 
 
-mcmc_intervals(postsamples,
+mcmc_intervals(bw_postsamples,
                prob = .95,
                prob_outer = 1)
 
-mcmc_areas(postsamples,
+mcmc_areas(bw_postsamples,
                prob = .95,
                prob_outer = 1)
+
+#to plot to side by side.......
+
+plot1 <- mcmc_intervals(post_samples_rm0to0,
+                           prob = 0.01,
+                           prob_outer = 0.95) + 
+  geom_vline(xintercept = 0, color = "grey30") 
+
+
+
+plot2 <- mcmc_intervals(post_samples_random,
+                            prob = 0.01, 
+                            prob_outer = 0.95) +
+  geom_vline(xintercept = 0, color = "grey30") +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank())
+
+cowplot::plot_grid(plot1, plot2,
+                   rel_widths = c(2,1))
+
 
 #so, some of the expansion of the CI is indeed from lower sample size
 #but this is still the same sample size as removing all the 0to0s! not removing the sprt0s.
