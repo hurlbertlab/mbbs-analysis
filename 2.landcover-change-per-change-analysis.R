@@ -115,7 +115,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   mutate(
     change_count = q_rt_count - lag(q_rt_count),
     #when the count is 0 two years in a row, we assume species is not present on the quarter route and need to remove that data point from consideration, as theres no chance for the population to change. If species returns, eg, time series is 0,0,1 - that 0,1 datapoint is still fine. species 'came back' to the quarter route.
-    flag_0_to_0 = pmax(q_rt_count, lag(q_rt_count)),
+    #flag_0_to_0 = pmax(q_rt_count, lag(q_rt_count)), #DEPRECIATED
     #change_dev = rmax_dev_quarter - lag(rmax_dev_quarter),
     change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
     #also take change forest
@@ -137,16 +137,15 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   ) %>%
   #add a flag if the species is experiencing exponential declines that are going to cause problems
   ungroup() %>%
-  #when the count is 0 two years in a row, we assume species is not present on the quarter route and need to remove that data point from consideration, as theres no chance for the population to change. If species returns, eg, time series is 0,0,1 - that 0,1 datapoint is still fine. species 'came back' to the quarter route.
   group_by(common_name) %>%
   mutate(pvalue_changecount_by_year = summary(lm(change_count~year))$coefficients[2,4],
          r_sq = summary(lm(change_count~year))$r.squared,
          flag = ifelse(pvalue_changecount_by_year > .05, NA, "FLAG")) %>%
   ungroup() %>%
   #remove the NA years (first record of each quarter route) 
-  filter(is.na(change_count) == FALSE) %>%
-  #remove the years where the population had no chance to change in response to any underlying landcover change (population was 0 both years, so these 0 population changes are different from when species is present eg. count = 2 and count = 2 and population doesn't change between years). 
-  filter(flag_0_to_0 != 0) #67584 before, 29280 after.
+  filter(is.na(change_count) == FALSE) #%>%
+  #DEPRECIATED: remove the years where the population had no chance to change in response to any underlying landcover change (population was 0 both years, so these 0 population changes are different from when species is present eg. count = 2 and count = 2 and population doesn't change between years). 
+  #filter(flag_0_to_0 != 0) #67584 before, 29280 after.
 
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
   flagged_sp <- stopdata %>% 
@@ -157,14 +156,14 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   assertthat::assert_that(nrow(flagged_sp) == 0)
   #great, if it passes we can move on :)
   stopdata <- stopdata %>% 
-    dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year, -flag_0_to_0)
+    dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year)
   
   #if we wanted to remove routes where a species is never seen, but keep the other routes..
   stopdata_0sprts_removed <- stopdata %>%
     group_by(common_name, q_rt_standard) %>%
     filter(sum(q_rt_count) > 0) #44733 observations
   #!!!!!!!!!!!!for this run
-  #stopdata <- stopdata_0sprts_removed
+  stopdata <- stopdata_0sprts_removed
   
   #want to have something that tells us how many samples we have from each species as well, since they're no longer equal
   sample_size <- stopdata %>% 
@@ -173,33 +172,33 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
     mutate(pch_scale = log(sample_size)+.5)
   
   #if we want to randomly subsample a given number of observations from each species based on the number of samples we take in the rm0to0 group...
-  sample_size <- read.csv("Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/sample_size.csv")
-  subsampled_stopdata <- NULL
-  for(n in 1:nrow(sample_size)) {
-    sp <- sample_size$common_name[n]
-    temp <- stopdata %>%
-      #filter to one species
-      filter(common_name == sample_size$common_name[n]) %>%
-      #randomly subsample
-      slice_sample(n = sample_size$sample_size[n])
-    
-    #add back to df
-    subsampled_stopdata <- bind_rows(subsampled_stopdata, temp)
-  }
-  #assert that the sizes of the subsample match for a test species.
-  assertthat::assert_that(nrow(subsampled_stopdata %>% filter(common_name == "Northern Bobwhite")) == sample_size$sample_size[sample_size$common_name == "Northern Bobwhite"])
-  #!!!!!!!!!!!!for this run
+  #sample_size <- read.csv("Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/sample_size.csv")
+  #subsampled_stopdata <- NULL
+  #for(n in 1:nrow(sample_size)) {
+  #  sp <- sample_size$common_name[n]
+  #  temp <- stopdata %>%
+  #    #filter to one species
+  #    filter(common_name == sample_size$common_name[n]) %>%
+  #    #randomly subsample
+  #    slice_sample(n = sample_size$sample_size[n])
+  #  
+  #  #add back to df
+  #  subsampled_stopdata <- bind_rows(subsampled_stopdata, temp)
+  #}
+  ##assert that the sizes of the subsample match for a test species.
+  #assertthat::assert_that(nrow(subsampled_stopdata %>% filter(common_name == "Northern Bobwhite")) == sample_size$sample_size[sample_size$common_name == "Northern Bobwhite"])
+  ##!!!!!!!!!!!!for this run
   #stopdata <- subsampled_stopdata
   
   #we're going to run the same model for both our urban (dev + barren) and for our forest variables - breaking out the various effects of change in the amount of urbanization, positive increases in forest cover, and negative decreases in forest cover. Forest cover and urbanization change are not 1:1 correlated so these are indeed different from each other. 
   landcover <- c("dev+barren", "forest_positive", "forest_negative", "grassland_positive", "grassland_negative")
   #for testing
-  landcover <- c("dev+barren")
-  #for running the grassland model
-  landcover <- c("grassland_positive", "grassland_negative")
+  #landcover <- c("dev+barren")
+  #for running the grassland model only
+  #landcover <- c("grassland_positive", "grassland_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_rm0to0_grassland/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.17_cpc_rm0sprt_alllandcovers/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
