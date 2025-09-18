@@ -161,7 +161,8 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   #if we wanted to remove routes where a species is never seen, but keep the other routes..
   stopdata_0sprts_removed <- stopdata %>%
     group_by(common_name, q_rt_standard) %>%
-    filter(sum(q_rt_count) > 0) #44733 observations
+    filter(sum(q_rt_count) > 0) %>%
+    ungroup() #44733 observations
   #!!!!!!!!!!!!for this run
   stopdata <- stopdata_0sprts_removed
   
@@ -169,7 +170,8 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   sample_size <- stopdata %>% 
     group_by(common_name, sp_id) %>%
     summarize(sample_size = n()) %>%
-    mutate(pch_scale = log(sample_size)+.5)
+    mutate(pch_scale = log(sample_size)+.5) %>%
+    ungroup()
   
   #if we want to randomly subsample a given number of observations from each species based on the number of samples we take in the rm0to0 group...
   #sample_size <- read.csv("Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/sample_size.csv")
