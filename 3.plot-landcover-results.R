@@ -13,6 +13,8 @@ library(stringr)
 library(ggplot2)
 library(bayesplot)
 library(cowplot) #used to make multi-panel figures
+library(reshape2) #for the correlation matrix heatmap
+library(vioplot) #for violin plots
 
 #load functions
 source("3.plot-functions.R")
@@ -489,6 +491,9 @@ plot(x = dev$mean,
 #####################################
   #ch1
 #####################################
+  
+  #the update here is that we should make these graphs seperately - only going to report on the results from the first model in the paper, and then the second model with the interaction term will be supplemental.
+  
   c1m1 <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
     filter(str_detect(.$rownames, "kappa")) %>%
     mutate(model = "m1", 
@@ -519,16 +524,90 @@ plot(x = dev$mean,
            labels = paste(c2m2$rownames, c2m2$model),
            las = 1)
 
+    ch1sp <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
+      filter(str_detect(.$rownames, "b")) %>%
+      filter(!str_detect(.$rownames, "kappa|sig|gamma|c_")) %>%
+      mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
+      left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
+      group_by(avonet_diet) %>%
+      arrange(desc(mean)) %>%
+      mutate(diet_group_order = cur_group_rows())
+    #ok this isn't working right here..
+
+############################################
+# ch2 landscape change correlation matrix
+############################################
+    barren <- read.csv("data/nlcd-landcover/nlcd_annual_barren.csv") 
+    forest <- read.csv("data/nlcd-landcover/nlcd_annual_sum_forest.csv") %>%
+      #summarize bc we only need 1 entry per route quarter
+      group_by(route, quarter_route, year, perc_forest_quarter) %>%
+      summarize() %>%
+      ungroup()
+    grassland <- read.csv("data/nlcd-landcover/nlcd_annual_sum_grassland.csv") %>%
+      group_by(route, quarter_route, year, perc_grassland_quarter) %>%
+      summarize() %>%
+      ungroup()
+    developed_cover <- read.csv("data/nlcd-landcover/nlcd_annual_running_max_developed.csv") %>%
+      left_join(barren, by = c("route", "stop_num", "year")) %>%
+      #get percent developed by route-quarter
+      mutate(quarter_route = as.integer(case_when(stop_num > 15 ~ 4,
+                                                  stop_num > 10 ~ 3,
+                                                  stop_num > 5 ~ 2,
+                                                  stop_num > 0 ~ 1)),
+             perc_barren = ifelse(is.na(perc_barren), 0, perc_barren)) %>%
+      group_by(route, quarter_route, year) %>%
+      #summarize bc we only need to keep 1 entry per route quarter
+      summarize(rmax_dev_quarter = mean(running_max_perc_developed),
+                perc_barren = mean(perc_barren)) %>%
+      ungroup() %>%
+      #create a variable where dev has barren ground added on
+      mutate(rmax_dev_plus_barren = rmax_dev_quarter + perc_barren) %>%
+      #left join forest and grassland change
+      left_join(forest, by = c("route", "quarter_route", "year")) %>%
+      left_join(grassland, by = c("route", "quarter_route", "year")) %>%
+      #replace NA with 0, there's three routes in durham with qrts affected by this in the grassland. This tracks
+      replace(is.na(.), 0) %>%
+      #create change variables
+      group_by(route, quarter_route) %>%
+      arrange(year, .by_group = TRUE) %>%
+      mutate(
+        change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
+        change_forest = perc_forest_quarter - lag(perc_forest_quarter),
+        change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter)) %>%
+      ungroup() %>%
+      #remove rows that have no lag (first yr)
+      filter(!is.na(change_dev))
+      
+    
+    all_landtypes <- developed_cover %>%
+      select(change_dev, change_forest, change_grassland)
+    rm(developed_cover, barren, forest, grassland) 
+    
+    cor_df <- round(cor(all_landtypes), 2)
+    melted_cor <- melt(cor_df)
   
-############DEPRECATED ANALYSES###################################
-  #DEPRECATED############################### uai on bdev
-  uai <- read.csv(paste0(load_from_uai, "posterior_samples.csv")) %>%
-    dplyr::rename("UAI" = b_uai)
-  
-  mcmc_intervals(uai,
-                 pars = "UAI") +
-    xlab("Effect of Development") + 
-    xlim(-0.5, 2) +
-    vline_0(lty = "dashed")
-  
-  
+    ggplot(data = melted_cor,
+           aes(x=Var1, y=Var2, fill=value)) +
+      geom_tile() +
+      geom_text(aes(Var2, Var1, label = value), size = 5) +
+      scale_fill_gradient2(low = "blue", high = "red", limit = c(-1,1), name = "Correlation") +
+      theme(axis.title.x = element_blank(), 
+            axis.title.y = element_blank(),
+            panel.background = element_blank())
+    
+    #one other thing to maybe check is if these correlations are stronger for eg: forest positive + dev vs forest negative + dev
+    
+    #labelvar1 = c("Change % Impervious", "Change % Forest", "Change % Grassland", "Change % Impervious", "Change % Forest", "Change % Grassland", "Change % Impervious", "Change % Forest", "Change % Grassland")
+    #labelvar2 =  c("Change % Impervious", "Change % Impervious", "Change % Impervious", "Change % Forest", "Change % Forest", "Change % Forest", "Change % Grassland", "Change % Grassland", "Change % Grassland")
+    
+    #labelboth = c("Change % Impervious", "Change % Forest", "Change % Grassland")
+    
+    #also want a violin plot of the distribution in changes for each landcover
+    vioplot(all_landtypes,
+            names = c("Change % Impervious", "Change % Forest", "Change % Grassland"),
+            col = c("grey40", "lightgreen", "lightslateblue")) #+
+    #  abline(x = c(.5, 1.5), y = c(0,0)) #eh, only if I can specify a boundary. also ? this has some negative impervious? ah! yes, from the loss of barren ground from one year to the next. That's fine
+    #add percent label to y axis side
+    #rename x axis labels
+    #add horizontal line at 0?
+    
