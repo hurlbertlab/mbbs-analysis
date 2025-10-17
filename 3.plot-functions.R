@@ -26,7 +26,7 @@
 ##############
   
 # plot all intervals
-  plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, xlim_select = c(-0.4, 0.2), ylim_select = c(1, 66)) {
+  plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, xlim_select = c(-0.4, 0.2), ylim_select = c(1, 66), title = NA, xaxt = "s") {
     plot(y = plot_df$sp_id,
          x = plot_df$mean,
          xlim = xlim_select,
@@ -37,7 +37,9 @@
          ylab = "",
          pch = 16, 
          cex = 2,
-         yaxs = "i"
+         yaxs = "i",
+         main = title,
+         xaxt = xaxt
     ) +
       segments(x0 = plot_df$conf_2.5,
                x1 = plot_df$conf_97.5,
