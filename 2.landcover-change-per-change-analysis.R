@@ -147,6 +147,14 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   #DEPRECIATED: remove the years where the population had no chance to change in response to any underlying landcover change (population was 0 both years, so these 0 population changes are different from when species is present eg. count = 2 and count = 2 and population doesn't change between years). 
   #filter(flag_0_to_0 != 0) #67584 before, 29280 after.
 
+  #quick calculation of how often the mean count of a sp. at a quarter route is each number
+  n_q_rt_count = stopdata %>%
+    group_by(q_rt_count) %>%
+    summarize(n = n()) %>%
+    filter(!q_rt_count == 0) %>% #remove the 0 counts
+    mutate(percent = n/sum(n),
+           cum_percent = cumsum(percent))
+
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
   flagged_sp <- stopdata %>% 
     filter(flag == "FLAG", #was it flagged for a significant change_count ~ year relationship?
@@ -200,7 +208,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   #landcover <- c("grassland_positive", "grassland_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.17_cpc_rm0sprt_alllandcovers/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.18_cpc_rm0sprt_alllandcovers/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there

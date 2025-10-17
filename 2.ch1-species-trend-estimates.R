@@ -184,6 +184,27 @@ write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 # 591.515 seconds
 # 22 second warmup time, like the exact same. No difference
 
+#####################
+
+#effort numbers for chapter 1
+route_years <- mbbs %>% distinct(year, route)
+nrow(route_years)
+
+abundant_sp <- mbbs %>% 
+  group_by(common_name) %>%
+  summarize(total_count = sum(count)) %>%
+  arrange(desc(total_count))
+abundant_sp[1:5,]
+abundant_sp[55:59,]
+nrow(abundant_sp)
+sum(abundant_sp$total_count)
+
+####################
+
+
+
+
+
 
 
 
@@ -259,8 +280,6 @@ write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
     sp_t = traits$common_name_standard #species for each trait
   )
   
-
-#####################
 
 #linear model to check inutition
   
