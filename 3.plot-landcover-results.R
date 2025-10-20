@@ -26,11 +26,11 @@ load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.03.27_loopdevelopmen
 load_from_change <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.06.26_cpc_rmbaseline_obsqual/"
 load_from_change_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/"
 load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_traits_on_cpc/"
-load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.29_traits_on_cpc/"
+load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.10.16_traits_on_cpc/"
 load_from_cpc_grassland <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_rm0to0_grassland/"
 
-lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.08.29_ch1m1_longleaf_model_test_1/"
-lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_test_4/"
+lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m1_kpriors1_FINAL/"
+lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m2_kpriors1_FINAL/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -188,6 +188,8 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
     left_join(read.csv("data/species-traits/2.landcover_cpc_analysis_full_traits.csv")) %>%
     select(-sp_id)
   
+  z <- qnorm((1+0.87)/2) #confidence interval 87%
+  
   dev <- read.csv(paste0(load_from_change_together, "dev+barren_fit_summaries.csv")) %>%
     #filter out the individual quarter route a[] fits, just keep the variables we're most interested in.
    # filter(rownames %in% c("a_bar", "sig_a", "b_landcover_change", "b_landcover_base", "c_obs", "sigma")) %>%
@@ -201,8 +203,13 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
     arrange(desc(mean)) %>% #
     mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
     ungroup() %>%
-    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "lightblue", "blue"),
+    mutate(conf_6.5 = (mean - (sd * z)),
+           conf_93.5 = (mean + (sd * z)),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
+           color = case_when(significant == FALSE & sig_87 == FALSE ~ "grey60",
+                             significant == FALSE & sig_87 == TRUE ~ "grey30",
+                             significant == TRUE ~ "black"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
     left_join(species_list, by = "common_name")
 #    #let's do color by uai.
@@ -214,8 +221,13 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
     filter(!is.na(slope)) %>%
     left_join(species_list, by = "common_name") %>% #add the forest sorted sp id
     ungroup() %>%
-    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "lightblue", "blue"),
+    mutate(conf_6.5 = (mean - (sd * z)),
+           conf_93.5 = (mean + (sd * z)),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
+           color = case_when(significant == FALSE & sig_87 == FALSE ~ "lightgreen",
+                             significant == FALSE & sig_87 == TRUE ~ "springgreen",
+                             significant == TRUE ~ "forestgreen"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
     arrange(desc(mean)) %>%
     mutate(sp_id = cur_group_rows()) %>%
@@ -226,8 +238,13 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
     filter(!is.na(slope)) %>%
     left_join(species_list, by = "common_name") %>% #add the forest sorted sp id
     ungroup() %>%
-    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "pink", "red"),
+    mutate(conf_6.5 = (mean - (sd * z)),
+           conf_93.5 = (mean + (sd * z)),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
+           color = case_when(significant == FALSE & sig_87 == FALSE ~ "lightblue",
+                             significant == FALSE & sig_87 == TRUE ~ "steelblue1",
+                             significant == TRUE ~ "blue"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
     arrange(desc(mean)) %>%
     mutate(sp_id = cur_group_rows()) 
@@ -237,8 +254,13 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
     filter(!is.na(slope)) %>%
     left_join(species_list, by = "common_name") %>%
     ungroup() %>%
-    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "orange", "yellow1"),
+    mutate(conf_6.5 = (mean - (sd * z)),
+           conf_93.5 = (mean + (sd * z)),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
+           color = case_when(significant == FALSE & sig_87 == FALSE ~ "yellow2",
+                             significant == FALSE & sig_87 == TRUE ~ "goldenrod1",
+                             significant == TRUE ~ "orange"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
     arrange(desc(mean)) %>%
     mutate(sp_id = cur_group_rows())
@@ -247,8 +269,13 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
     filter(!is.na(slope)) %>%
     left_join(species_list, by = "common_name") %>%
     ungroup() %>%
-    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           color = ifelse(significant == FALSE, "lightslateblue", "blueviolet"),
+    mutate(conf_6.5 = (mean - (sd * z)),
+           conf_93.5 = (mean + (sd * z)),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
+           color = case_when(significant == FALSE & sig_87 == FALSE ~ "lightslateblue",
+                             significant == FALSE & sig_87 == TRUE ~ "mediumpurple1",
+                             significant == TRUE ~ "blueviolet"),
            pch = ifelse(significant == FALSE, 1, 19)) %>%
     arrange(desc(mean)) %>%
     mutate(sp_id = cur_group_rows())
@@ -256,87 +283,89 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
   
   #plot_intervals(forest_all, "Effect of Change in Forest on Change in Count", first_overlay = forest_pos, second_overlay = forest_neg)
 
-  png(filename = "figures/ch2_dev_rm0to0_halfnormal.png", 
+  png(filename = "figures/ch2_dev_0rts_halfnormal.png", 
       width = 1200,
       height = 600,
       units = "px", 
       type = "windows")
-  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  par(mar = c(4, 16, 1, 1), cex.axis = 1, mfrow = c(1,2))
   plot_intervals(plot_df = dev[34:66,],
                  xlab = "Change in species count with change in % urban", 
-                 ylim_select = c(33.5,66.5))
+                 ylim_select = c(33.5,66.5),
+                 xlim_select = c(-0.5, 0.4))
   plot_intervals(plot_df = dev[1:33,], 
                  xlab = "", 
-                 ylim_select = c(.5,33.5))
+                 ylim_select = c(.5,33.5),
+                 xlim_select = c(-0.5, 0.4))
   #now plots with enough width and such, just still needs to be color changed. Altho being thick enough the light blue might be fine
   #just need to save from my other computer screen
   #well, really need to update this file to save results nicely to pdfs
   dev.off()
   
   
-  png(filename = "figures/ch2_fpos_rm0to0_halfnormal.png", 
+  png(filename = "figures/ch2_fpos_0rts_halfnormal.png", 
       width = 1200,
       height = 600,
       units = "px", 
       type = "windows")
-  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  par(mar = c(4, 16, 1, 1), cex.axis = 1, mfrow = c(1,2))
   plot_intervals(plot_df = forest_pos[34:66,],
                  xlab = "Change in species count with change in forest gain", 
                  ylim_select = c(33.5,66.5),
-                 xlim_select = c(-.3, .15))
+                 xlim_select = c(-.35, .25))
   plot_intervals(plot_df = forest_pos[1:33,], 
                  xlab = "", 
                  ylim_select = c(.5,33.5),
-                 xlim_select = c(-.3, .15))
+                 xlim_select = c(-.35, .25))
   #now plots with enough width and such, just still needs to be color changed. Altho being thick enough the light blue might be fine
   #just need to save from my other computer screen
   #well, really need to update this file to save results nicely to pdfs
   dev.off()
   
   
-  png(filename = "figures/ch2_fneg_rm0to0_halfnormal.png", 
+  png(filename = "figures/ch2_fneg_0rts_halfnormal.png", 
       width = 1200,
       height = 600,
       units = "px", 
       type = "windows")
-  par(mar = c(4, 17, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  par(mar = c(4, 16, 1, 1), cex.axis = 1, mfrow = c(1,2))
   plot_intervals(plot_df = forest_neg[34:66,],
                  xlab = "Change in species count with change in forest loss", 
                  ylim_select = c(33.5,66.5),
-                 xlim_select = c(-.1, .1))
+                 xlim_select = c(-.2, .2))
   plot_intervals(plot_df = forest_neg[1:33,], 
                  xlab = "", 
                  ylim_select = c(.5,33.5),
-                 xlim_select = c(-.1, .1))
+                 xlim_select = c(-.2, .2))
   #now plots with enough width and such, just still needs to be color changed. Altho being thick enough the light blue might be fine
   #just need to save from my other computer screen
   #well, really need to update this file to save results nicely to pdfs
   dev.off()
   
-  png(filename = "figures/ch2_grassland_neg_rm0to0.png", 
+  png(filename = "figures/ch2_grassland_neg_0rts.png", 
       width = 1200,
       height = 600,
       units = "px", 
       type = "windows")
-  par(mar = c(4, 17, 1, 1), cex.axis = 1.25, mfrow = c(1,2))
+  par(mar = c(4, 16, 1, 1), cex.axis = 1.25, mfrow = c(1,2))
   plot_intervals(plot_df = grassland_neg[34:66,],
                  xlab = "Change in species count per grassland loss", 
                  ylim_select = c(33.5,66.5),
-                 xlim_select = c(-0.25, 0.25))
+                 xlim_select = c(-0.2, 0.25))
   plot_intervals(plot_df = grassland_neg[1:33,], 
                  xlab = "", 
                  ylim_select = c(.5,33.5),
-                 xlim_select = c(-0.25, 0.25))
+                 xlim_select = c(-0.2, 0.25))
   dev.off()
   #rm0to0 has 16870 negative changes and 2054 0 changes
   
   
-  png(filename = "figures/ch2_grassland_pos_rm0to0.png", 
+  png(filename = "figures/ch2_grassland_pos_0rts.png", 
       width = 1200,
       height = 600,
       units = "px", 
       type = "windows")
-  par(mar = c(4, 17, 1, 1), cex.axis = 1.25, mfrow = c(1,2))
+  par(mar = c(4, 16, 1, 1), cex.axis = 1.25, mfrow = c(1,2))
   plot_intervals(plot_df = grassland_pos[34:66,],
                  xlab = "Change in species count per grassland gain", 
                  ylim_select = c(33.5,66.5),
@@ -345,6 +374,10 @@ lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.02_ch1m2_longleaf_model2_tes
                  xlab = "", 
                  ylim_select = c(.5,33.5),
                  xlim_select = c(-0.25, 0.25))
+  legend("topright",
+         legend = c("95% CI", "87% CI", "NS"),
+         col = c("blueviolet", "mediumpurple1", "lightslateblue"),
+         pch = 16)
   dev.off()
   #so, for the grassland gain, how many observations do we have exactly going into that model?
   #it's 9634 observations with change > 0
@@ -458,7 +491,8 @@ plot(x = dev$mean,
     dplyr::select(-row_id, -bootstrap_run)
   #hm, maybe I need to do this with bayesplot, since that calculates the confidence intervals for me? lets see..
   dtplot <- mcmc_intervals(cpct_dev_tog,
-                 prob_outer = 0.95) + 
+                 prob_outer = 0.95,
+                 prob = 0.87) + 
     geom_vline(xintercept = 0, color = "grey30", lty = "dashed") #+
     #ggtitle("Species Traits Predicting Effect of Development")
   dtplot
@@ -468,21 +502,44 @@ plot(x = dev$mean,
     dplyr::select(-row_id, -bootstrap_run)
   
   fptplot <- mcmc_intervals(cpct_fpos_tog,
-                 prob = 0.01,
+                 prob = 0.87,
                  prob_outer = 0.95) + 
-    geom_vline(xintercept = 0, color = "grey30") +
-    ggtitle("cpc forest gain traits species run together")
+    geom_vline(xintercept = 0, color = "grey30") #+
+    #ggtitle("cpc forest gain traits species run together")
   
   cpct_fneg_tog <- read.csv(paste0(load_from_cpc_traits_together, "forest_negativeposterior_samples1k.csv"))  %>%
     dplyr::select(-row_id, -bootstrap_run)
   
   fpnplot <-  mcmc_intervals(cpct_fneg_tog,
-                 prob = 0.01,
+                 prob = 0.87,
                  prob_outer = 0.95) + 
-    geom_vline(xintercept = 0, color = "grey30") +
-    ggtitle("cpc forest loss traits species run together")
+    geom_vline(xintercept = 0, color = "grey30")# +
+    #ggtitle("cpc forest loss traits species run together")
   
-  plot_grid(dtplot, fptplot, fpnplot, ncol = 3)
+  gn <- read.csv(paste0(load_from_cpc_traits_together, "grassland_negativeposterior_samples1k.csv"))  %>%
+    dplyr::select(-row_id, -bootstrap_run)
+  
+  gnplot <-  mcmc_intervals(gn,
+                             prob = 0.87,
+                             prob_outer = 0.95) + 
+    geom_vline(xintercept = 0, color = "grey30")
+  
+  gp <- read.csv(paste0(load_from_cpc_traits_together, "grassland_positiveposterior_samples1k.csv"))  %>%
+    dplyr::select(-row_id, -bootstrap_run)
+  
+  gpplot <-  mcmc_intervals(gp,
+                             prob = 0.87,
+                             prob_outer = 0.95) + 
+    geom_vline(xintercept = 0, color = "grey30")
+  
+  png(filename = "figures/ch2_traits.png", 
+      width = 1200,
+      height = 600,
+      units = "px", 
+      type = "windows")
+  par(mar = c(4, 16, 1, 1), cex.axis = 1.25)
+  plot_grid(dtplot, fptplot, fpnplot, gnplot, gpplot, ncol = 5)
+  dev.off()
   
   #ha.. traits not significant. rolls around  
   #I guess here yeah I'm bagging all the data together. How many times between the bootstrap runs do these come out significant?
@@ -497,8 +554,11 @@ plot(x = dev$mean,
   c1m1 <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
     filter(str_detect(.$rownames, "kappa")) %>%
     mutate(model = "m1", 
-           color = "salmon")
-  c2m2 <- read.csv(paste0(lf_ch1m2, "fit_summary_m2_5k.csv")) %>%
+           color = "black",
+           id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1))
+  c2m2 <- read.csv(paste0(lf_ch1m2, "fit_summary.csv")) %>%
     filter(!str_detect(.$rownames, "eta")) %>%
     filter(str_detect(.$rownames, "kappa")) %>%
     mutate(model = "m2", 
@@ -506,33 +566,155 @@ plot(x = dev$mean,
     bind_rows(c1m1) %>%
     mutate(id = row_number())
   
-  par(mar = c(4, 12, 1, 1), cex.axis = 1)  
-  plot(x = c2m2$mean, 
-       y = c2m2$id,
+  par(mar = c(4, 14, 1, 1), cex.axis = 1)  
+  plot(x = c1m1$mean, 
+       y = c1m1$id,
        xlim = c(-.4, .4),
        ylab = "",
+       xlab = "Predictor Effect Size",
        yaxt = "n", 
-       col = c2m2$color,
-       pch = 16) +
+       col = c1m1$color,
+       pch = c1m1$pch,
+       lwd = 3,
+       cex = 2) +
     abline(v = 0, lty = "dashed")
-    segments(x0 = c2m2$conf_2.5,
-             x1 = c2m2$conf_97.5,
-             y0 = c2m2$id,
-             col = c2m2$color) +
-      axis(2, at = seq(round(min(c2m2$id)),
-                       round(max(c2m2$id)), by = 1),
-           labels = paste(c2m2$rownames, c2m2$model),
+    segments(x0 = c1m1$conf_2.5,
+             x1 = c1m1$conf_97.5,
+             y0 = c1m1$id,
+             col = c1m1$color,
+             lwd = 5) +
+      axis(2, at = seq(round(min(c1m1$id)),
+                       round(max(c1m1$id)), by = 1),
+           labels = c("Regional [Piedmont BCR] Trend",
+                      "Habitat Selectivity",
+                      "Temperature Niche Position",
+                      "Diet:Omnivore",
+                      "Diet:Invertivore",
+                      "Diet:Granivore"),
            las = 1)
+    #add smaller tick marks from 0 - 0.2 for every .01
+    axis(side = 1, at = seq(-0.2, 0.2, by = 0.01), 
+         labels = FALSE, tck = -0.015)
+    axis(side = 1, at = seq(-0.4, 0.4, by = 0.1), 
+         labels = FALSE)
 
+    z <- qnorm((1+0.87)/2) #confidence interval 87%
+    
     ch1sp <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
       filter(str_detect(.$rownames, "b")) %>%
       filter(!str_detect(.$rownames, "kappa|sig|gamma|c_")) %>%
       mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
       left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
-      group_by(avonet_diet) %>%
+      left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv"))) %>%
+      mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+             conf_6.5 = (mean - (sd * z)),
+             conf_93.5 = (mean + (sd * z)),
+             sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
+             mean_gt01 = ifelse(mean < -0.01 | mean > 0.01, TRUE, FALSE),
+             significant = case_when(significant == TRUE ~ significant,
+                                     sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
+                                     TRUE ~ FALSE))
+
+    #plot mean against temperature niche
+    maxColorValue <- 100
+    palette <- colorRampPalette(c("blue","red"))(maxColorValue)
+    plot(x, y, col = palette[cut(x, maxColorValue)])
+    #saved at 400 x 400 pixels
+    plot(x = ch1sp$scale_ztempwq, 
+         y = ch1sp$mean,
+         ylim = c(-.14, .07),
+         col = palette[cut(ch1sp$scale_ztempwq, maxColorValue)],
+         pch = 16,
+         xlab = "Scaled Temperature Niche",
+         ylab = "Population Trend") +
+      abline(h = 0, lty = "dashed") +
+      segments(x0 = ch1sp$scale_ztempwq,
+               y0 = ch1sp$conf_2.5,
+               y1 = ch1sp$conf_97.5,
+               lwd = 3,
+               col = palette[cut(ch1sp$scale_ztempwq, maxColorValue)]) #+
+      #legend("bottomleft",
+      #       )
+
+    
+    #n significantly increasing/decreasing species:
+    table(ch1sp$significant, ch1sp$conf_2.5 > 0)
+    #FALSE FALSE = not significant, 18 species
+    #FALSE TRUE 0 = not possible, case where not significant but 2.5 was over 0
+    #TRUE FALSE = 29 species significantly decreasing.
+    #TRUE TRUE = 12 species significantly increasing
+    #n significantly decreasing species:
+
+    #and these are percent change per year, so maybe it makes sense to multiply the means by 100 and add to xaxis
+    
+    omniv <- ch1sp %>%
+      filter(avonet_diet == "Omnivore") %>%
       arrange(desc(mean)) %>%
-      mutate(diet_group_order = cur_group_rows())
-    #ok this isn't working right here..
+      mutate(diet_group_order = cur_group_rows(),
+             sp_id = diet_group_order,
+             color = "brown") %>%
+      ungroup()
+    
+    graniv <- ch1sp %>%
+      filter(avonet_diet == "Granivore") %>%
+      arrange(desc(mean)) %>%
+      mutate(diet_group_order = cur_group_rows(),
+             sp_id = diet_group_order,
+             color = "brown1") 
+    
+    invertiv <- ch1sp %>%
+      filter(avonet_diet == "Invertivore") %>%
+      arrange(desc(mean)) %>%
+      mutate(diet_group_order = cur_group_rows(),
+             sp_id = diet_group_order,
+             color = "brown3")
+
+      
+    #now we can plot side by side the three panels, first invertivore, then omnivore, then granivore to follow size of groups
+    #color code by temperature niche position (tho not predictive)
+    png(filename = "figures/ch1_pop_change_by_diet.png", 
+        width = 1000,
+        height = 500,
+        units = "px", 
+        type = "windows")
+    par(mar = c(4, 13.5, 1, 1), 
+        cex = 1.3,
+        cex.axis = 1.3,
+        cex.lab = 1.6,
+        cex.main = 1.6,
+        cex.sub = 1.4,
+        mfrow = c(1,3))
+    plot_intervals(plot_df = invertiv,
+                   xlab = "", 
+                   ylim_select = c(0, 39),
+                   xlim_select = c(-.08, .08),
+                   title = "Invertivores",
+                   xaxt = "n") 
+      axis(side = 1, at = seq(-.08, .08, by = 0.02), 
+           labels = TRUE)
+    #split invertivores at purple martin?
+    plot_intervals(plot_df = omniv,
+                   xlab = "Population Change Per Year", 
+                   ylim_select = c(.5, 14.5),
+                   xlim_select = c(-.14, .08),
+                   title = "Omnivores",
+                   xaxt = "n") 
+      axis(side = 1, at = seq(-.14, .08, by = 0.02), 
+           labels = TRUE)
+    par(mar = c(4, 12, 1, 1))
+    plot_intervals(plot_df = graniv,
+                   xlab = "", 
+                   ylim_select = c(.5, 7.5),
+                   xlim_select = c(-.1, .02),
+                   title = "Granivores",
+                   xaxt = "n") 
+      axis(side = 1, at = seq(-.1, .02, by = 0.02), 
+           labels = TRUE)
+    dev.off()
+    #notes:
+    #- make sure there are more tickmarks, more helpful
+    #- add label for which group
+    
 
 ############################################
 # ch2 landscape change correlation matrix
@@ -573,17 +755,26 @@ plot(x = dev$mean,
       mutate(
         change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
         change_forest = perc_forest_quarter - lag(perc_forest_quarter),
-        change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter)) %>%
+        change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter),
+        forest_gain = ifelse(change_forest >= 0, change_forest, NA),
+        forest_loss = ifelse(change_forest <= 0, change_forest, NA),
+        grassland_gain = ifelse(change_grassland >= 0, change_grassland, NA),
+        grassland_loss = ifelse(change_grassland <= 0, change_grassland, NA)) %>%
       ungroup() %>%
       #remove rows that have no lag (first yr)
       filter(!is.na(change_dev))
       
     
     all_landtypes <- developed_cover %>%
-      select(change_dev, change_forest, change_grassland)
-    rm(developed_cover, barren, forest, grassland) 
+      select(change_dev, forest_gain, forest_loss, grassland_gain, grassland_loss)
+    #cor(x = all_landtypes$change_dev, y = all_landtypes$change_forest_gain, use = "complete.obs")
+    #cor(x = all_landtpyes$change_dev, y = all_landtypes$change_forest_loss, use = "complete.obs")
+    #cor(x = all_landtypes$change_dev, y = all_landtypes$change_grassland_gain, use = "complete.obs")
+    #cor(x = all_landtypes$change_dev, y = all_landtypes$change_grassland_loss, use = "complete.obs")
     
-    cor_df <- round(cor(all_landtypes), 2)
+
+    
+    cor_df <- round(cor(all_landtypes, use = "pairwise.complete.obs"), 2)
     melted_cor <- melt(cor_df)
   
     ggplot(data = melted_cor,
