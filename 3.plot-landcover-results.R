@@ -487,13 +487,29 @@ plot(x = dev$mean,
 # Change per change traits with all the species run together
 #
 #####################################
+  
+  bayesplot_theme_set(theme_minimal())
+  bayesplot_theme_update(text = element_text(size = 20, family = "sans"),
+                         axis.text.x  = element_text(angle = 45)) 
+  
   cpct_dev_tog <- read.csv(paste0(load_from_cpc_traits_together, "dev+barrenposterior_samples1k.csv")) %>%
     dplyr::select(-row_id, -bootstrap_run)
   #hm, maybe I need to do this with bayesplot, since that calculates the confidence intervals for me? lets see..
+  color_scheme_set("darkgray")
   dtplot <- mcmc_intervals(cpct_dev_tog,
                  prob_outer = 0.95,
                  prob = 0.87) + 
-    geom_vline(xintercept = 0, color = "grey30", lty = "dashed") #+
+    geom_vline(xintercept = 0, color = "black", lty = "dashed") +
+    scale_y_discrete(
+      labels = c("b_uai" = "Urban Association",
+                 "b_grassland" = "Grassland Specialization",
+                 "b_forest" = "Forest Specialization",
+                 "b_tempwq" = "Temp Niche Position")
+    ) +
+    scale_x_continuous(breaks = c(-0.04, -0.02, 0, 0.02, 0.04),
+                       labels = c(-0.04, -0.02, 0, 0.02, 0.04)) +
+    labs(title = "Urban")
+    #+
     #ggtitle("Species Traits Predicting Effect of Development")
   dtplot
   #if I change to mcmc_areas, data is all very normally distributed
@@ -501,44 +517,86 @@ plot(x = dev$mean,
   cpct_fpos_tog <- read.csv(paste0(load_from_cpc_traits_together, "forest_positiveposterior_samples1k.csv"))  %>%
     dplyr::select(-row_id, -bootstrap_run)
   
+  color_scheme_set("green")
   fptplot <- mcmc_intervals(cpct_fpos_tog,
                  prob = 0.87,
                  prob_outer = 0.95) + 
-    geom_vline(xintercept = 0, color = "grey30") #+
-    #ggtitle("cpc forest gain traits species run together")
+    geom_vline(xintercept = 0, color = "black", lty = "dashed") +
+    #ggtitle("cpc forest gain traits species run together") +
+  scale_y_discrete(
+    labels = c("b_tempwq" = "TNP",
+               "b_forest" = "F",
+               "b_grassland" = "G",
+               "b_uai" = "UAI")
+  )+
+    scale_x_continuous(breaks = c(-0.04, -0.02, 0, 0.02, 0.04),
+                       labels = c(-0.04, -0.02, 0, 0.02, 0.04))+
+    labs(title = "Forest +")
   
   cpct_fneg_tog <- read.csv(paste0(load_from_cpc_traits_together, "forest_negativeposterior_samples1k.csv"))  %>%
     dplyr::select(-row_id, -bootstrap_run)
   
+  color_scheme_set("blue")
   fpnplot <-  mcmc_intervals(cpct_fneg_tog,
                  prob = 0.87,
                  prob_outer = 0.95) + 
-    geom_vline(xintercept = 0, color = "grey30")# +
+    geom_vline(xintercept = 0, color = "black", lty = "dashed")+
+    scale_y_discrete(
+      labels = c("b_tempwq" = "TNP",
+                 "b_forest" = "F",
+                 "b_grassland" = "G",
+                 "b_uai" = "UAI")
+    )+
+    scale_x_continuous(breaks = c(-0.02, -0.01, 0, 0.01, 0.02),
+                       labels = c(-0.02, -0.01, 0, 0.01, 0.02)) +
+    labs(title = "Forest -")
     #ggtitle("cpc forest loss traits species run together")
   
   gn <- read.csv(paste0(load_from_cpc_traits_together, "grassland_negativeposterior_samples1k.csv"))  %>%
     dplyr::select(-row_id, -bootstrap_run)
   
+  color_scheme_set("orange")
   gnplot <-  mcmc_intervals(gn,
                              prob = 0.87,
                              prob_outer = 0.95) + 
-    geom_vline(xintercept = 0, color = "grey30")
+    geom_vline(xintercept = 0, color = "black", lty = "dashed")+
+    scale_y_discrete(
+      labels = c("b_tempwq" = "TNP",
+                 "b_forest" = "F",
+                 "b_grassland" = "G",
+                 "b_uai" = "UAI")
+    ) +
+    scale_x_continuous(breaks = c(-0.02, -0.01, 0, 0.01, 0.02),
+                       labels = c(-0.02, -0.01, 0, 0.01, 0.02)) +
+    labs(title = "Grassland +")
+    
   
   gp <- read.csv(paste0(load_from_cpc_traits_together, "grassland_positiveposterior_samples1k.csv"))  %>%
     dplyr::select(-row_id, -bootstrap_run)
   
+  color_scheme_set("purple")
   gpplot <-  mcmc_intervals(gp,
                              prob = 0.87,
                              prob_outer = 0.95) + 
-    geom_vline(xintercept = 0, color = "grey30")
+    geom_vline(xintercept = 0, color = "black", lty = "dashed")+
+    scale_y_discrete(
+      labels = c("b_tempwq" = "TNP",
+                 "b_forest" = "F",
+                 "b_grassland" = "G",
+                 "b_uai" = "UAI")
+    ) +
+    scale_x_continuous(breaks = c(-0.01, 0, 0.01),
+                       labels = c(-0.01, 0, 0.01),
+                       limits = c(-0.01, 0.01)) +
+    labs(title = "Grassland -")
   
   png(filename = "figures/ch2_traits.png", 
       width = 1200,
-      height = 600,
+      height = 400,
       units = "px", 
       type = "windows")
   par(mar = c(4, 16, 1, 1), cex.axis = 1.25)
-  plot_grid(dtplot, fptplot, fpnplot, gnplot, gpplot, ncol = 5)
+  plot_grid(dtplot, fptplot, fpnplot, gnplot, gpplot, ncol = 5, rel_widths = c(2, 1, 1, 1, 1))
   dev.off()
   
   #ha.. traits not significant. rolls around  
