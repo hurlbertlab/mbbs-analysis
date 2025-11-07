@@ -24,6 +24,7 @@
 "cthm-01",2022,"Patsy Bailey",NA,NA,39,239,"2022-05-22",FALSE
 "cthm-01",2023,"Patsy Bailey",NA,NA,33,146,"2023-05-28",FALSE
 "cthm-01",2024,"Patsy Bailey",NA,NA,42,192,"2024-06-16",FALSE
+"cthm-01",2025,"Patsy Bailey",NA,NA,41,223,"2025-05-25",FALSE
 "cthm-02",2000,"Norman Budnitz","Michael Schultz",NA,45,297,NA,FALSE
 "cthm-02",2001,"Norman Budnitz","Michael Schultz",NA,51,347,NA,FALSE
 "cthm-02",2002,"Norman Budnitz","Michael Schultz",NA,52,334,NA,FALSE
@@ -49,6 +50,7 @@
 "cthm-02",2022,"Norman Budnitz","Michael Schultz",NA,43,214,"2022-05-29",FALSE
 "cthm-02",2023,"Norman Budnitz","Michael Schultz",NA,40,157,"2023-05-27",FALSE
 "cthm-02",2024,"Michael Schultz","Norman Budnitz",NA,46,201,"2024-05-25",FALSE
+"cthm-02",2025,"Michael Schultz","Norm Budnitz",NA,42,167,"2025-06-07",FALSE
 "cthm-03",2000,"Haven Wiley",NA,NA,49,265,NA,FALSE
 "cthm-03",2001,"Haven Wiley",NA,NA,49,234,NA,FALSE
 "cthm-03",2002,"Haven Wiley",NA,NA,50,261,NA,FALSE
@@ -74,6 +76,7 @@
 "cthm-03",2022,"Haven Wiley",NA,NA,38,178,"2022-06-05",FALSE
 "cthm-03",2023,"Haven Wiley",NA,NA,38,153,"2023-06-25",FALSE
 "cthm-03",2024,"Haven Wiley",NA,NA,39,163,"2024-06-09",FALSE
+"cthm-03",2025,"Haven Wiley","Minna Wiley",NA,26,98,"2025-06-16",FALSE
 "cthm-04",2000,"Michael Schultz","Lois Schultz",NA,47,293,NA,FALSE
 "cthm-04",2001,"Michael Schultz","Lois Schultz",NA,45,261,NA,FALSE
 "cthm-04",2002,"Michael Schultz","Lois Schultz",NA,44,302,NA,FALSE
@@ -99,6 +102,7 @@
 "cthm-04",2022,"Michael Schultz","Norman Budnitz",NA,45,231,"2022-05-23",FALSE
 "cthm-04",2023,"Michael Schultz","Norman Budnitz",NA,48,207,"2023-05-26",FALSE
 "cthm-04",2024,"Michael Schultz","Norman Budnitz",NA,48,216,"2024-05-24",FALSE
+"cthm-04",2025,"Michael Schultz","Norm Budnitz",NA,47,210,"2025-06-06",FALSE
 "cthm-05",2000,"Jeff Pippen","Julie Rice",NA,42,265,NA,FALSE
 "cthm-05",2001,"Jeff Pippen","Julie Rice",NA,47,280,NA,FALSE
 "cthm-05",2002,"Haven Wiley",NA,NA,43,317,NA,FALSE
@@ -124,6 +128,7 @@
 "cthm-05",2022,"Tom Driscoll",NA,NA,49,256,"2022-06-04",FALSE
 "cthm-05",2023,"Tom Driscoll",NA,NA,49,296,"2023-06-03",FALSE
 "cthm-05",2024,"Tom Driscoll",NA,NA,45,267,"2024-06-15",FALSE
+"cthm-05",2025,"Tom Driscoll",NA,NA,45,281,"2025-06-14",FALSE
 "cthm-06",2000,"Cynthia Fox","Marsha Stephens",NA,37,333,NA,FALSE
 "cthm-06",2001,"Cynthia Fox","Marsha Stephens",NA,44,366,NA,FALSE
 "cthm-06",2002,"Cynthia Fox","Marsha Stephens",NA,47,288,NA,FALSE
@@ -142,6 +147,7 @@
 "cthm-06",2022,"Roger Shaw",NA,NA,53,278,"2022-06-06",FALSE
 "cthm-06",2023,"Roger Shaw",NA,NA,44,281,"2023-06-03",FALSE
 "cthm-06",2024,"Roger Shaw",NA,NA,44,267,"2024-05-19",FALSE
+"cthm-06",2025,"Roger Shaw",NA,NA,51,313,"2025-05-18",FALSE
 "cthm-07",2000,"Will Cook",NA,NA,47,333,"2000-06-18",FALSE
 "cthm-07",2001,"Will Cook",NA,NA,54,318,"2001-06-16",FALSE
 "cthm-07",2002,"Will Cook",NA,NA,49,325,"2002-06-08",FALSE
@@ -167,6 +173,7 @@
 "cthm-07",2022,"Will Cook",NA,NA,52,300,"2022-06-26",FALSE
 "cthm-07",2023,"Will Cook",NA,NA,49,281,"2023-06-18",FALSE
 "cthm-07",2024,"Will Cook",NA,NA,50,328,"2024-06-16",FALSE
+"cthm-07",2025,"Will Cook",NA,NA,49,358,"2025-06-22",FALSE
 "cthm-08",2000,"Judy Murray","Martha Girolami",NA,43,322,NA,FALSE
 "cthm-08",2001,"Judy Murray","Martha Girolami",NA,45,399,NA,FALSE
 "cthm-08",2002,"Judy Murray","Martha Girolami",NA,45,333,NA,FALSE
@@ -191,6 +198,7 @@
 "cthm-08",2022,"Nan Dewire","Fleeta Chauvigne",NA,55,360,"2022-05-29",FALSE
 "cthm-08",2023,"Nan Dewire","Fleeta Chauvigne",NA,51,260,"2023-05-21",FALSE
 "cthm-08",2024,"Nan Dewire","Fleeta Chauvigne",NA,52,338,"2024-06-02",FALSE
+"cthm-08",2025,"Nan Dewire","Fleeta Chauvigne",NA,52,345,"2025-05-18",FALSE
 "cthm-09",2000,"Shelley Theye","Lee Van Malssen",NA,48,263,NA,FALSE
 "cthm-09",2001,"Shelley Theye","Lee Van Malssen",NA,53,502,NA,FALSE
 "cthm-09",2002,"Shelley Theye","Lee Van Malssen",NA,52,339,NA,FALSE
@@ -215,6 +223,7 @@
 "cthm-09",2022,"Shelley Theye","Lee Van Malssen",NA,47,280,"2022-06-19",FALSE
 "cthm-09",2023,"Shelley Theye",NA,NA,43,267,"2023-06-11",FALSE
 "cthm-09",2024,"Shelley Theye",NA,NA,44,254,"2024-06-25",FALSE
+"cthm-09",2025,"Shelley Theye","Deborah Fowler",NA,42,272,"2025-06-16",FALSE
 "cthm-10",2000,"Sue Brady",NA,NA,43,304,NA,FALSE
 "cthm-10",2001,"Will Cook",NA,NA,51,275,"2001-06-23",FALSE
 "cthm-10",2002,"Brian Strong",NA,NA,49,246,NA,FALSE
@@ -239,6 +248,7 @@
 "cthm-10",2022,"Brian Strong",NA,NA,46,188,"2022-06-24",FALSE
 "cthm-10",2023,"Fleeta Chauvigne","Mark Montazer",NA,48,251,"2023-06-04",FALSE
 "cthm-10",2024,"Fleeta Wilkinson","Mark Montazer","Nan Dewire",51,317,"2024-06-09",FALSE
+"cthm-10",2025,"Fleeta Wilkinson Chauvign<U+00E9>","Mark Montazer","Nan Dewire",58,298,"2025-05-25",FALSE
 "cthm-11",2000,"M. Graves","Bob Chase",NA,36,195,NA,FALSE
 "cthm-11",2001,"M. Graves","Bob Chase",NA,35,211,NA,FALSE
 "cthm-11",2002,"Bob Chase",NA,NA,37,233,NA,FALSE
@@ -257,6 +267,7 @@
 "cthm-11",2022,"Allen Hurlbert",NA,NA,44,231,"2022-05-29",FALSE
 "cthm-11",2023,"Allen Hurlbert",NA,NA,47,210,"2023-06-04",FALSE
 "cthm-11",2024,"Allen Hurlbert","Ivara Goulden",NA,48,266,"2024-06-09",FALSE
+"cthm-11",2025,"Allen Hurlbert","Ivara Goulden",NA,46,232,"2025-06-08",FALSE
 "cthm-12",2000,"Kate Finlayson","Chris Canfield",NA,38,295,NA,FALSE
 "cthm-12",2001,"Kate Finlayson","Chris Canfield",NA,42,241,NA,FALSE
 "cthm-12",2002,"Kate Finlayson","Chris Canfield",NA,48,292,NA,FALSE
@@ -274,6 +285,7 @@
 "cthm-12",2022,"Tom Driscoll",NA,NA,45,250,"2022-06-12",FALSE
 "cthm-12",2023,"Tom Driscoll",NA,NA,46,204,"2023-05-27",FALSE
 "cthm-12",2024,"Tom Driscoll",NA,NA,50,260,"2024-06-05",FALSE
+"cthm-12",2025,"Tom Driscoll",NA,NA,47,239,"2025-06-18",FALSE
 "cthm-13",2000,"Marsha Stephens","Patsy Bailey",NA,40,321,NA,FALSE
 "cthm-13",2001,"Marsha Stephens",NA,NA,30,286,NA,FALSE
 "cthm-13",2002,"Marsha Stephens",NA,NA,25,327,NA,FALSE
@@ -299,6 +311,7 @@
 "cthm-13",2022,"Tom Driscoll",NA,NA,53,313,"2022-06-11",FALSE
 "cthm-13",2023,"Tom Driscoll",NA,NA,45,293,"2023-06-04",FALSE
 "cthm-13",2024,"Tom Driscoll",NA,NA,45,242,"2024-06-02",FALSE
+"cthm-13",2025,"Will Mackin",NA,NA,42,251,"2025-06-22",FALSE
 "cthm-14",2000,"Kent Fiala",NA,NA,46,242,NA,FALSE
 "cthm-14",2001,"Kent Fiala",NA,NA,47,307,NA,FALSE
 "cthm-14",2002,"Kent Fiala",NA,NA,51,288,NA,FALSE
@@ -317,6 +330,7 @@
 "cthm-14",2022,"Will Bennett","Jonathan Bennett",NA,47,273,"2022-06-30",FALSE
 "cthm-14",2023,"Allen Hurlbert",NA,NA,41,242,"2023-06-11",FALSE
 "cthm-14",2024,"Allen Hurlbert",NA,NA,43,201,"2024-06-23",FALSE
+"cthm-14",2025,"Will Begley",NA,NA,47,328,"2025-06-21",FALSE
 "drhm-01",2002,"Judy Murray",NA,NA,40,239,NA,FALSE
 "drhm-01",2003,"Judy Murray",NA,NA,38,214,NA,FALSE
 "drhm-01",2004,"Judy Murray",NA,NA,42,264,NA,FALSE
@@ -340,6 +354,7 @@
 "drhm-01",2022,"Robin Moran","Jennifer Maher","Noah Rokoske",61,429,"2022-05-22",FALSE
 "drhm-01",2023,"Noah Rokoske","Robin Moran","Jennifer Maher",55,339,"2023-05-21",FALSE
 "drhm-01",2024,"Robin Moran","Jennifer Maher","Noah Rokoske",55,309,"2024-06-02",FALSE
+"drhm-01",2025,"Jennifer Maher","Noah Rokoske",NA,58,387,"2025-05-25",TRUE
 "drhm-02",2002,"Bruce Young",NA,NA,40,359,NA,FALSE
 "drhm-02",2003,"Bruce Young",NA,NA,31,233,NA,FALSE
 "drhm-02",2004,"Bruce Young",NA,NA,44,226,NA,FALSE
@@ -361,6 +376,7 @@
 "drhm-02",2022,"Jeff Pippen",NA,NA,52,374,"2022-06-19",FALSE
 "drhm-02",2023,"Jeff Pippen",NA,NA,49,356,"2023-06-11",FALSE
 "drhm-02",2024,"Jeff Pippen",NA,NA,49,374,"2024-06-16",FALSE
+"drhm-02",2025,"Jeff Pippen",NA,NA,46,304,"2025-06-15",FALSE
 "drhm-03",2002,"Carol Williamson","Norman Budnitz",NA,41,315,NA,FALSE
 "drhm-03",2003,"Carol Williamson","Norman Budnitz",NA,39,317,NA,FALSE
 "drhm-03",2004,"Carol Williamson","Norman Budnitz",NA,40,294,NA,FALSE
@@ -384,6 +400,7 @@
 "drhm-03",2022,"Norman Budnitz",NA,NA,31,173,"2022-06-04",FALSE
 "drhm-03",2023,"Norman Budnitz",NA,NA,33,189,"2023-06-01",FALSE
 "drhm-03",2024,"Norman Budnitz",NA,NA,36,187,"2024-06-01",FALSE
+"drhm-03",2025,"Noah Rokoske","Norm Budnitz",NA,38,312,"2025-06-15",FALSE
 "drhm-04",2002,"Jeff Pippen","Julie Rice",NA,49,215,NA,FALSE
 "drhm-04",2003,"Jeff Pippen","Julie Rice",NA,43,179,NA,FALSE
 "drhm-04",2004,"Jeff Pippen","Julie Rice",NA,43,207,NA,FALSE
@@ -392,6 +409,7 @@
 "drhm-04",2007,"Jeff Pippen",NA,NA,41,222,NA,FALSE
 "drhm-04",2008,"Jeff Pippen",NA,NA,51,274,NA,FALSE
 "drhm-04",2009,"Jeff Pippen",NA,NA,52,251,NA,FALSE
+"drhm-04",2010,"Jeff Pippen",NA,NA,43,253,NA,FALSE
 "drhm-04",2011,"Jeff Pippen",NA,NA,46,251,"2011-05-22",FALSE
 "drhm-04",2012,"Jeff Pippen",NA,NA,47,278,"2012-06-10",FALSE
 "drhm-04",2013,"Jeff Pippen",NA,NA,44,271,"2013-06-09",FALSE
@@ -403,6 +421,7 @@
 "drhm-04",2022,"Roger Shaw","Stephen Brooks","Carey Jefferson",46,243,"2022-06-05",FALSE
 "drhm-04",2023,"Stephen Brooks","Carey Jefferson",NA,40,230,"2023-06-03",FALSE
 "drhm-04",2024,"Stephen Brooks","Carey Jefferson",NA,40,191,"2024-06-30",FALSE
+"drhm-04",2025,"Allen Hurlbert",NA,NA,45,199,"2025-06-22",FALSE
 "drhm-05",2002,"Alan Johnston","Shantanu Phukan",NA,43,373,NA,FALSE
 "drhm-05",2003,"Alan Johnston","Shantanu Phukan",NA,42,256,NA,FALSE
 "drhm-05",2004,"Alan Johnston","Sally Johnston",NA,39,285,NA,FALSE
@@ -421,11 +440,12 @@
 "drhm-05",2017,"David Smith","Judy Smith",NA,31,194,"2017-06-04",FALSE
 "drhm-05",2018,"David Smith","Judy Smith",NA,28,172,"2018-06-03",FALSE
 "drhm-05",2019,"David Smith","Judy Smith",NA,32,229,"2019-05-26",FALSE
-"drhm-05",2020,"David Smith","Judy Smith",NA,29,198,"2020-05-24",TRUE
+"drhm-05",2020,"David Smith","Judy Smith",NA,29,205,"2020-05-24",FALSE
 "drhm-05",2021,"David Smith","Judy Smith",NA,30,165,"2021-05-30",FALSE
 "drhm-05",2022,"David Smith","Judy Smith",NA,36,221,"2022-05-29",FALSE
 "drhm-05",2023,"David Smith","Judy Smith",NA,32,175,"2023-06-04",FALSE
 "drhm-05",2024,"David Smith","Judy Smith",NA,37,182,"2024-06-02",FALSE
+"drhm-05",2025,"David Smith","Judy Smith",NA,36,179,"2025-06-22",FALSE
 "drhm-06",2002,"Rick Payne",NA,NA,29,151,NA,FALSE
 "drhm-06",2003,"Rick Payne",NA,NA,26,117,NA,FALSE
 "drhm-06",2004,"Rick Payne",NA,NA,36,159,NA,FALSE
@@ -444,11 +464,12 @@
 "drhm-06",2017,"David Smith","Judy Smith",NA,33,171,"2017-05-29",FALSE
 "drhm-06",2018,"David Smith","Judy Smith",NA,37,186,"2018-05-27",FALSE
 "drhm-06",2019,"David Smith","Judy Smith",NA,34,207,"2019-05-19",FALSE
-"drhm-06",2020,"David Smith","Judy Smith",NA,35,199,"2020-05-17",TRUE
+"drhm-06",2020,"David Smith","Judy Smith",NA,35,206,"2020-05-17",FALSE
 "drhm-06",2021,"David Smith","Judy Smith",NA,33,190,"2021-05-23",FALSE
 "drhm-06",2022,"David Smith","Judy Smith",NA,34,186,"2022-05-22",FALSE
 "drhm-06",2023,"David Smith","Judy Smith",NA,31,221,"2023-06-03",FALSE
 "drhm-06",2024,"David Smith","Judy Smith",NA,29,188,"2024-05-27",FALSE
+"drhm-06",2025,"David Smith","Judy Smith",NA,34,190,"2025-05-18",FALSE
 "drhm-07",2002,"Brian Strong",NA,NA,44,193,NA,FALSE
 "drhm-07",2003,"Brian Strong",NA,NA,41,153,NA,FALSE
 "drhm-07",2004,"Brian Strong",NA,NA,40,162,NA,FALSE
@@ -471,6 +492,7 @@
 "drhm-07",2022,"Brian Strong",NA,NA,48,195,"2022-06-26",FALSE
 "drhm-07",2023,"Noah Rokoske",NA,NA,44,234,"2023-06-28",FALSE
 "drhm-07",2024,"William Mackin",NA,NA,35,188,"2024-06-26",FALSE
+"drhm-07",2025,"Noah Rokoske",NA,NA,52,328,"2025-06-01",FALSE
 "drhm-08",2002,"Brian Strong",NA,NA,43,223,NA,FALSE
 "drhm-08",2003,"Brian Bockhahn",NA,NA,40,230,NA,FALSE
 "drhm-08",2004,"Brian Bockhahn",NA,NA,32,194,NA,FALSE
@@ -492,6 +514,7 @@
 "drhm-08",2022,"Brian Bockhahn",NA,NA,41,283,"2022-06-19",FALSE
 "drhm-08",2023,"Brian Bockhahn",NA,NA,43,260,"2023-06-11",FALSE
 "drhm-08",2024,"Brian Bockhahn",NA,NA,43,256,"2024-06-09",FALSE
+"drhm-08",2025,"Noah Rokoske",NA,NA,44,321,"2025-06-08",FALSE
 "orng-01",1999,"Ginger Travis","Barb Brooks",NA,45,255,NA,FALSE
 "orng-01",2000,"Ginger Travis","Cathy Packer",NA,39,220,NA,FALSE
 "orng-01",2001,"Ginger Travis","Cathy Packer",NA,41,243,NA,FALSE
@@ -518,6 +541,7 @@
 "orng-01",2022,"Norman Budnitz","Michael Schultz",NA,51,325,"2022-05-30",FALSE
 "orng-01",2023,"Norman Budnitz","Michael Schultz",NA,44,262,"2023-06-03",FALSE
 "orng-01",2024,"Michael Schultz","Norman Budnitz",NA,43,264,"2024-05-26",FALSE
+"orng-01",2025,"Michael Schultz","Norm Budnitz",NA,46,210,"2025-06-13",FALSE
 "orng-02",1999,"Barb Brooks",NA,NA,35,167,NA,FALSE
 "orng-02",2000,"Barb Brooks",NA,NA,32,170,NA,FALSE
 "orng-02",2001,"Barb Brooks",NA,NA,31,199,NA,FALSE
@@ -544,6 +568,7 @@
 "orng-02",2022,"Barb Brooks",NA,NA,24,82,"2022-06-18",TRUE
 "orng-02",2023,"Barb Brooks",NA,NA,25,93,"2023-06-03",FALSE
 "orng-02",2024,"Barb Brooks","William Mackin",NA,39,217,"2024-05-26",FALSE
+"orng-02",2025,"Barb Brooks","Will Mackin",NA,39,212,"2025-05-26",FALSE
 "orng-03",1999,"Kate Finlayson","Karen Piplani",NA,40,347,NA,FALSE
 "orng-03",2000,"Kate Finlayson","Karen Piplani",NA,40,281,NA,FALSE
 "orng-03",2001,"Kate Finlayson","Karen Piplani",NA,43,271,NA,FALSE
@@ -567,6 +592,7 @@
 "orng-03",2022,"Bradley Saul",NA,NA,31,211,"2022-06-12",FALSE
 "orng-03",2023,"Bradley Saul",NA,NA,39,212,"2023-06-11",FALSE
 "orng-03",2024,"Bradley Saul",NA,NA,44,225,"2024-06-16",FALSE
+"orng-03",2025,"Bradley Saul","Evan Sopko",NA,41,225,"2025-06-22",FALSE
 "orng-04",1999,"Kent Fiala",NA,NA,37,194,NA,FALSE
 "orng-04",2000,"Kent Fiala",NA,NA,39,197,NA,FALSE
 "orng-04",2001,"Kent Fiala",NA,NA,45,231,NA,FALSE
@@ -592,6 +618,7 @@
 "orng-04",2022,"Allen Hurlbert","Ashley Moore","Ellen Weaver",47,233,"2022-06-05",FALSE
 "orng-04",2023,"Allen Hurlbert",NA,NA,39,208,"2023-06-03",FALSE
 "orng-04",2024,"Allen Hurlbert",NA,NA,43,243,"2024-06-02",FALSE
+"orng-04",2025,"Allen Hurlbert","Ivara Goulden","Benjamin Acosta",41,248,"2025-06-01",FALSE
 "orng-05",1999,"Will Cook",NA,NA,54,420,"1999-06-12",FALSE
 "orng-05",2000,"Will Cook",NA,NA,49,395,"2000-05-29",FALSE
 "orng-05",2001,"Will Cook",NA,NA,59,463,"2001-06-09",FALSE
@@ -618,6 +645,7 @@
 "orng-05",2022,"Will Cook",NA,NA,58,385,"2022-06-25",FALSE
 "orng-05",2023,"Will Cook",NA,NA,61,365,"2023-06-11",FALSE
 "orng-05",2024,"Will Cook",NA,NA,58,382,"2024-06-09",FALSE
+"orng-05",2025,"Will Cook",NA,NA,57,409,"2025-06-21",FALSE
 "orng-06",1999,"Judy Murray","Robin Moran",NA,34,250,NA,FALSE
 "orng-06",2000,"Judy Murray","Robin Moran",NA,38,245,NA,FALSE
 "orng-06",2001,"Judy Murray","Robin Moran",NA,38,289,NA,FALSE
@@ -643,6 +671,7 @@
 "orng-06",2022,"Karen Hogan",NA,NA,38,201,"2022-06-05",FALSE
 "orng-06",2023,"Karen Hogan",NA,NA,35,182,"2023-06-09",FALSE
 "orng-06",2024,"Karen Hogan",NA,NA,39,221,"2024-06-02",FALSE
+"orng-06",2025,"Karen Hogan",NA,NA,33,190,"2025-06-07",FALSE
 "orng-07",1999,"Betty King",NA,NA,40,293,NA,FALSE
 "orng-07",2000,"Betty King",NA,NA,41,284,NA,FALSE
 "orng-07",2001,"Betty King",NA,NA,44,272,NA,FALSE
@@ -668,6 +697,7 @@
 "orng-07",2022,"Brian Bockhahn",NA,NA,43,284,"2022-06-09",FALSE
 "orng-07",2023,"Brian Bockhahn",NA,NA,53,279,"2023-06-06",FALSE
 "orng-07",2024,"Brian Bockhahn",NA,NA,50,294,"2024-06-06",FALSE
+"orng-07",2025,"Marc Howlett","Laurie Howlett","Ezra Howlett",53,271,"2025-06-22",FALSE
 "orng-08",1999,"Barb Brooks",NA,NA,39,245,NA,FALSE
 "orng-08",2000,"Barb Brooks",NA,NA,30,151,NA,FALSE
 "orng-08",2001,"Barb Brooks",NA,NA,37,178,NA,FALSE
@@ -694,6 +724,7 @@
 "orng-08",2022,"Barb Brooks",NA,NA,34,130,"2022-06-04",FALSE
 "orng-08",2023,"Barb Brooks",NA,NA,25,77,"2023-05-20",FALSE
 "orng-08",2024,"Barb Brooks","William Mackin",NA,37,150,"2024-05-19",FALSE
+"orng-08",2025,"Barb Brooks","Will Mackin",NA,42,239,"2025-05-18",FALSE
 "orng-09",1999,"Shantanu Phukan","T. Williams",NA,44,264,NA,FALSE
 "orng-09",2000,"Sandy Cash",NA,NA,37,158,NA,FALSE
 "orng-09",2001,"Shantanu Phukan",NA,NA,51,274,NA,FALSE
@@ -717,6 +748,7 @@
 "orng-09",2022,"Karen Hogan",NA,NA,42,209,"2022-06-04",FALSE
 "orng-09",2023,"Karen Hogan",NA,NA,33,171,"2023-06-07",FALSE
 "orng-09",2024,"Karen Hogan",NA,NA,41,212,"2024-06-05",FALSE
+"orng-09",2025,"Karen Hogan",NA,NA,38,156,"2025-06-06",FALSE
 "orng-10",1999,"Will Cook",NA,NA,54,392,"1999-06-13",FALSE
 "orng-10",2000,"Will Cook",NA,NA,48,319,"2000-06-11",FALSE
 "orng-10",2001,"Will Cook",NA,NA,50,400,"2001-06-10",FALSE
@@ -738,6 +770,7 @@
 "orng-10",2021,"Vern Bothwell",NA,NA,30,185,"2021-06-01",FALSE
 "orng-10",2023,"Allen Hurlbert",NA,NA,42,254,"2023-06-25",FALSE
 "orng-10",2024,"Paul Taillie",NA,NA,51,282,"2024-06-02",FALSE
+"orng-10",2025,"Paul Taillie",NA,NA,47,251,"2025-05-31",FALSE
 "orng-11",1999,"Marsha Stephens",NA,NA,42,397,NA,FALSE
 "orng-11",2000,"Marsha Stephens",NA,NA,37,291,NA,FALSE
 "orng-11",2001,"Marsha Stephens",NA,NA,38,264,NA,FALSE
@@ -753,11 +786,12 @@
 "orng-11",2017,"Loren Hintz",NA,NA,36,152,"2017-06-18",FALSE
 "orng-11",2018,"Loren Hintz",NA,NA,40,137,"2018-06-02",FALSE
 "orng-11",2019,"Loren Hintz",NA,NA,38,169,"2019-06-16",FALSE
-"orng-11",2020,"Loren Hintz",NA,NA,39,210,"2020-06-14",FALSE
+"orng-11",2020,"Loren Hintz",NA,NA,39,211,"2020-06-14",FALSE
 "orng-11",2021,"Loren Hintz",NA,NA,38,181,"2021-06-05",FALSE
 "orng-11",2022,"Loren Hintz","Margaret Vimmerstedt",NA,40,191,"2022-06-04",FALSE
 "orng-11",2023,"Suzanne Roberts","Vicki Nebes",NA,48,298,"2023-06-03",FALSE
 "orng-11",2024,"Suzanne Roberts","Vicki Nebes",NA,46,289,"2024-06-16",FALSE
+"orng-11",2025,"Suzanne Roberts",NA,NA,45,231,"2025-06-15",FALSE
 "orng-12",1999,"Haven Wiley",NA,NA,45,330,NA,FALSE
 "orng-12",2000,NA,"Haven Wiley",NA,37,297,NA,FALSE
 "orng-12",2001,NA,"Haven Wiley",NA,42,314,NA,FALSE
@@ -782,5 +816,6 @@
 "orng-12",2020,"Haven Wiley",NA,NA,40,215,"2020-05-24",FALSE
 "orng-12",2021,"Haven Wiley",NA,NA,37,183,"2021-06-27",FALSE
 "orng-12",2022,"Haven Wiley",NA,NA,29,199,"2022-05-22",FALSE
-"orng-12",2023,"Haven Wiley",NA,NA,31,158,"2023-05-21",FALSE
-"orng-12",2024,"Haven Wiley",NA,NA,32,154,"2024-06-02",FALSE
+"orng-12",2023,"Haven Wiley",NA,NA,29,155,"2023-05-21",FALSE
+"orng-12",2024,"Haven Wiley",NA,NA,29,147,"2024-06-02",FALSE
+"orng-12",2025,"Haven Wiley","Minna Wiley",NA,26,109,"2025-05-25",FALSE
