@@ -141,7 +141,7 @@ kappa_diet_cat ~ normal(0, 0.2);
 //    gamma_c ~ normal(0,0.5);
 //    sig_c ~ exponential(1);
 
-    //chatgpt says typical prior for the overdispersion param is a gamma prior. I've seen a beta used as well, some questions remain here.
+    //typical prior for the overdispersion param is a gamma prior. I've seen a beta used as well, but we'll go with gamma
     overdispersion_param ~ gamma(2,1);
 
 }
