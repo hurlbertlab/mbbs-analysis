@@ -29,7 +29,7 @@ load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_tra
 load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.10.16_traits_on_cpc/"
 load_from_cpc_grassland <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_rm0to0_grassland/"
 
-lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m1_kpriors1_FINAL/"
+lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.11"
 lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m2_kpriors1_FINAL/"
 
 ######### section for fitting bayesplot themes
@@ -627,7 +627,7 @@ plot(x = dev$mean,
   par(mar = c(4, 14, 1, 1), cex.axis = 1)  
   plot(x = c1m1$mean, 
        y = c1m1$id,
-       xlim = c(-.4, .4),
+       xlim = c(-2, 2),
        ylab = "",
        xlab = "Predictor Effect Size",
        yaxt = "n", 
