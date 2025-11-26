@@ -76,13 +76,17 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
     #regional trend
     left_join(read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv"), by = "common_name") %>%
     dplyr::mutate(usgs_sd = (.$usgs_97.5CI - .$usgs_2.5CI)/(2 * qnorm(0.95))) %>%
+    #regional trend is on a different scale from our result, so we'll re-scale by dividing by 100 (current 2.01 = 2% change, want .02 = 2% change in pop per year)
+    dplyr::mutate(usgs_trend_estimate = usgs_trend_estimate/100,
+                  usgs_sd = usgs_sd/100) %>%
     #remove extra columns
     dplyr::select(-usgs_note) %>%
     #center variables as possible :)
-    mutate(scale_habitat_ssi = (habitat_ssi - mean(habitat_ssi)/sd(habitat_ssi)),
+    mutate(scale_habitat_ssi = (habitat_ssi - mean(habitat_ssi))/sd(habitat_ssi),
            scale_ztempwq = (z_tempwq - mean(z_tempwq))/sd(z_tempwq),
-           scale_obs_quality = (observer_quality - mean(observer_quality))/sd(observer_quality))
-  
+           scale_obs_quality = (observer_quality - mean(observer_quality))/sd(observer_quality)
+    )
+
 # 
 # #add traits
 # mbbs_traits <- add_all_traits(mbbs) %>%
