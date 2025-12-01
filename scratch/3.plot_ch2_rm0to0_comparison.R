@@ -29,6 +29,9 @@ list.files(lf_randomsubsample)
 landcover <- c("dev+barren", "forest_negative", "forest_positive")
 landcover <- "dev+barren"
 
+sample_size <- 
+  read.csv(paste0(lf_0to0, "sample_size.csv"))
+
 for(i in 1:length(landcover)) {
   
   sample_size <- 
@@ -61,7 +64,7 @@ for(i in 1:length(landcover)) {
     ylim = c(0, 0.6),
     ylab = "0 to 0s removed Confidence Interval Width",
     xlab = "All 0s retained Confidence Interval Width",
-    main = paste(landcover[i], "Confidence Interval Width Change")
+    main = paste(landcover[i], "Credible Interval Width Change")
   ) 
   abline(a = 0, b = 1)
   
@@ -126,7 +129,7 @@ plot1 <- mcmc_intervals(post_samples_rm0to0,
 
 
 
-plot2 <- mcmc_intervals(post_samples_random,
+plot2 <- mcmc_intervals(post_samples_sprt0s,
                             prob = 0.01, 
                             prob_outer = 1) +
   geom_vline(xintercept = 0, color = "grey30") +
@@ -217,7 +220,7 @@ for(i in 1:length(combos_data)) {
         ylim = c(0, .65),
         xlab = combos_title[i],
         ylab = combos_title[a+1],
-        main = paste("Confidence Interval Width Change")
+        main = paste("Credible Interval Width Change")
       ) 
       abline(a = 0, b = 1)
     }

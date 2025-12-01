@@ -651,7 +651,7 @@ plot(x = dev$mean,
        y =  ch1tempo$id, 
        pch =  ch1tempo$pch,
        cex = 2,
-       xlim = c(-1,1)) +
+       xlim = c(-.1,.1)) +
     abline(v = 0, lty = "dashed") +
     segments(x0 =  ch1tempo$conf_2.5,
              x1 =  ch1tempo$conf_97.5,
