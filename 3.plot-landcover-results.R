@@ -29,7 +29,9 @@ load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_tra
 load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.10.16_traits_on_cpc/"
 load_from_cpc_grassland <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_rm0to0_grassland/"
 
-lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.11"
+lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_bayesmeeting/"
+lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_dietonly/"
+lf_tempo <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_temponly/"
 lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m2_kpriors1_FINAL/"
 
 ######### section for fitting bayesplot themes
@@ -623,6 +625,39 @@ plot(x = dev$mean,
            color = "turquoise") %>%
     bind_rows(c1m1) %>%
     mutate(id = row_number())
+  
+  ch1dieto <- read.csv(paste0(lf_dieto, "fit_summary.csv")) %>%
+    filter(str_detect(.$rownames, "kappa")) %>%
+    mutate(id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1))
+  plot(x = ch1dieto$mean,
+       y = ch1dieto$id, 
+       pch = ch1dieto$pch,
+       cex = 2,
+       xlim = c(-1,1)) +
+    abline(v = 0, lty = "dashed") +
+    segments(x0 = ch1dieto$conf_2.5,
+             x1 = ch1dieto$conf_97.5,
+             y0 = ch1dieto$id,
+             lwd = 5)
+  
+  ch1tempo <- read.csv(paste0(lf_tempo, "fit_summary.csv"))%>%
+    filter(str_detect(.$rownames, "kappa")) %>%
+    mutate(id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1))
+  plot(x =  ch1tempo$mean,
+       y =  ch1tempo$id, 
+       pch =  ch1tempo$pch,
+       cex = 2,
+       xlim = c(-1,1)) +
+    abline(v = 0, lty = "dashed") +
+    segments(x0 =  ch1tempo$conf_2.5,
+             x1 =  ch1tempo$conf_97.5,
+             y0 =  ch1tempo$id,
+             y1 = ch1tempo$id,
+             lwd = 5)
   
   par(mar = c(4, 14, 1, 1), cex.axis = 1)  
   plot(x = c1m1$mean, 
