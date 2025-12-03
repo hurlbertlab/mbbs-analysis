@@ -79,9 +79,7 @@ write.csv(traits, "data/species-traits/2.landcover_cpc_analysis_full_traits.csv"
 
 #load in the slopes from our change per change model
 bdev <- read.csv(paste0(load_from, "dev+barren_fit_summaries.csv")) %>%
-  dplyr::filter(str_detect(.$rownames, "b_landcover_change") == TRUE) %>%
-  left_join(traits, by = "common_name")
-  #format_fit_summaries()
+  format_fit_summaries()
 bforest_pos <- read.csv(paste0(load_from, "forest_positive_fit_summaries.csv")) %>%
   format_fit_summaries()
 bforest_neg <- read.csv(paste0(load_from, "forest_negative_fit_summaries.csv")) %>%
@@ -91,26 +89,12 @@ bgrassland_pos <- read.csv(paste0(load_from, "grassland_positive_fit_summaries.c
 bgrassland_neg <- read.csv(paste0(load_from, "grassland_negative_fit_summaries.csv")) %>%
   format_fit_summaries()
 
-#postior samples from prev. model
-ps <- read.csv(paste0(load_from, "dev+barren_posterior_samples.csv")) %>%
-  bind_rows(read.csv(paste0(load_from, "forest_positive_posterior_samples.csv"))) %>%
-  bind_rows(read.csv(paste0(load_from, "forest_negative_posterior_samples.csv"))) %>%
-  bind_rows(read.csv(paste0(load_from, "grassland_positive_posterior_samples.csv"))) %>%
-  bind_rows(read.csv(paste0(load_from, "grassland_negative_posterior_samples.csv"))) %>%
-  #we don't need to use all 16,000 samples for each species, so let's cut it to 5k
-  dplyr::filter(row_id <= 5000) %>%
-  #then, when it's in use in the bootstrapping, just filter to the landcover I want
-  #dev+barren, forest_negative, or forest_positive / grassland equivalents
+#okay, rather than posterior samples and pulling from there, instead we pass just the mean and standard variation. much neater.
 
-#now we do need to do something different when we made them all together...
-  select(b_landcover_change.1.:b_landcover_change.66., row_id, landcover) %>%
-  tidyr::pivot_longer(cols = b_landcover_change.1.:b_landcover_change.66.,
-                            names_to = "sp_id",
-                            names_prefix = "b_landcover_change.",
-                            values_to = "b_landcover_change") %>%
-  mutate(sp_id = as.integer(str_extract(.$sp_id, "[0-9]([0-9])?"))) %>%
-  left_join(species_list, by = "sp_id")
+fit_sums <- bind_rows(bdev, bforest_pos, bforest_neg, bgrassland_pos, bgrassland_neg) %>%
+  mutate(landcover = str_extract(slope, "(?<=landcover, ).*"))
 
+rm(bdev, bforest_pos, bforest_neg, bgrassland_neg, bgrassland_pos)
 
 
 #   #make a test dataset where the connection is like 1:1 to ensure our code is running as we expect. clear loss in response to increasing development and high uai (negative cor), clear loss in response to forest decreasing (positive cor), clear gain in response to forest increasing (positive cor)
@@ -126,7 +110,7 @@ ps <- read.csv(paste0(load_from, "dev+barren_posterior_samples.csv")) %>%
   cor(traits$scale_z_tempwq, traits$scale_eaforest) #fine cor, -0.02
 
 #where to save
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.10.16_traits_on_cpc/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.12.03_tcpc_newmethod2/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #load the stan file, compile stan file, save stan file
@@ -135,7 +119,9 @@ stan_model <- stan_model(file = stan_model_file)
 beepr::beep()
 file.copy(stan_model_file, save_to, overwrite = TRUE)
 
-landtypes <- unique(ps$landcover)
+landtypes <- unique(fit_sums$landcover)
+############for testing!
+landtypes <- landtypes[1]
 
 for(b in 1:length(landtypes)) {
 
@@ -143,25 +129,19 @@ for(b in 1:length(landtypes)) {
 fit_summaries <- as.data.frame(NULL)
 posterior_results <-  as.data.frame(NULL)
 #set our dataframe
-standf <- ps %>%
-  filter(landcover == landtypes[b]) %>%
-  left_join(traits, by = "common_name")
-
+standf <- fit_sums %>%
+  filter(landcover == landtypes[b])
+#print the landtype we're currently working with
 print(landtypes[b])
-
-#about 40 minutes to do 400
-for(i in 1:1000) {
-  
-  temp <- standf %>%
-    filter(row_id == i) 
   
 datstan <- list(
-  N = nrow(temp),
-  z_score_tempwq = temp$scale_z_tempwq,
-  forest_association = temp$scale_eaforest,
-  grassland_association = temp$scale_eagrassland,
-  uai = temp$scale_UAI,
-  cpc_slope = temp$b_landcover_change
+  N = nrow(standf),
+  z_score_tempwq = standf$scale_z_tempwq,
+  forest_association = standf$scale_eaforest,
+  grassland_association = standf$scale_eagrassland,
+  uai = standf$scale_UAI,
+  cpc_mean = standf$mean,
+  cpc_sd = standf$sd
 )
 
 fit <- sampling(stan_model,
@@ -183,18 +163,15 @@ fit_summaries <- bind_rows(fit_summaries, fit_temp)
 
 temp_posterior <- as.data.frame(fit) %>%
   select(starts_with("b_")) %>%
-  mutate(row_id = row_number(),
-         bootstrap_run = i) %>%
-  #but we don't need to save 4000 from each sample, we're also bootstrapping.
-  #save the first 1000
-  filter(row_id <= 1000)
+  mutate(row_id = row_number()) 
 #bind rows
 posterior_results <- bind_rows(posterior_results, temp_posterior)
 
 timestamp()
-print(paste0("bootstrap ", i," completed"))
-}
+print(paste0("landcover ", b," completed"))
+
 #write only at end bc really long
-write.csv(posterior_results, paste0(save_to, landtypes[b], "posterior_samples1k.csv"), row.names = FALSE)
-write.csv(fit_summaries, paste0(save_to, landtypes[b], "fit_summaries1k.csv"), row.names = FALSE)
+write.csv(posterior_results, paste0(save_to, landtypes[b], "posterior_samples.csv"), row.names = FALSE)
+write.csv(fit_summaries, paste0(save_to, landtypes[b], "fit_summaries.csv"), row.names = FALSE)
+print(paste0("landcover ", b," results saved"))
 }
