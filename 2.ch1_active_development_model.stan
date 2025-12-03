@@ -55,6 +55,8 @@ parameters {
   
   //traits variables predicting betas
   vector[Nsp] regional_trend; //each species has one regional trend, sampled from the mean,sd distribution provided in the data block
+  vector[Nsp] mu_regional_trend;
+  vector<lower=0>[Nsp] sigma_regional_trend;
   real kappa_regional; //one effect of regional trend on slopes across species
   real kappa_habitat_selection; //one effect of habitat selectivity on slopes across species
   real kappa_temp_pos; //one effect of temperature niche position on slopes across species
@@ -74,15 +76,63 @@ transformed parameters {
   vector[Nsp] a_sp = a_sp_raw * sig_sp;
   vector[Nrt] a_rt = a_rt_raw * sig_rt;
   
-   // VECTORIZED linear predictor
+  //vectorize eta
   vector[N] eta = a + a_sp[sp] + a_rt[rt] + b[sp] .* to_vector(year) + c_obs * observer_quality;
-  //now um. DOES generate an eta for every row of the dataset which is kinda obnoxious in printing.
+  
 }
 
 model {
 
-  //trying to vectorize
-  C ~ neg_binomial_2_log(eta, overdispersion_param);
+//priors first
+//intercepts
+  a ~ normal(0, 2); //universal intercept, trying not to constrain the prior too lightly so using 2 instead of 1. 
+  a_sp_raw ~ std_normal(); //centered on zero, use a hyperparam to set the distribution param.
+  a_rt_raw ~ std_normal(); //^^ same as above
+  sig_rt ~ normal(0, .5); //half normal
+  sig_sp ~ normal(0, .5); //half normal
+
+//observer prior
+  c_obs ~ normal(0, 0.5); //half normal, there's one effect of changing observers across routes and species and I don't expect it to be a large effect so I constrain it.
+ 
+//modeling regional trend
+//regional trend we already know the mean and standard deviation
+//  regional_trend ~ normal(regional_trend_mean, regional_trend_sd); //prev version, updating with Casey's notes:
+  mu_regional_trend ~ normal(0, .15); 
+  //expect regional trend to vary between like -6.38 and 3.78. ALRIGHT OKAY, so, here's a possible reason the effect size is so small? The USGS data is on a different scale!
+  //If I rescale the USGS data and divide by 100, so it's on the same scale as the regional trend at the end, would that help? I think it ought to!
+  //I'll leave this here as is and rescale on the .R script side. Once that's fixed this 0,.15 should be fine, if a little wide for the actual mean/max seen in the data, but I think that's okay.
+  sigma_regional_trend ~ normal(0, .5); //half normal
+  regional_trend ~ normal(mu_regional_trend, sigma_regional_trend);
+  regional_trend_mean ~ normal(regional_trend, regional_trend_sd);
+
+ 
+//kappa priors
+//.............BY COMMENTING OUT KAPPAS, DEFAULT UNIFORM PRIORS ARE USED.................
+//default uniform priors are not like ultimately reccomended, and since variables are scaled it's not unreasonable to set a normal(0,1) prior, but default uniform Is Workable...
+//see: https://github.com/stan-dev/stan/wiki/prior-choice-recommendations
+    kappa_regional ~ normal(0, 1);
+    kappa_temp_pos ~ normal(0, 1);
+    kappa_habitat_selection ~ normal(0, 1);
+    kappa_diet_cat ~ normal(0, 1);
+
+//overdispersion param prior
+//chatgpt says typical prior for the overdispersion param is a gamma prior. I've seen a beta used as well, some questions remain here.
+    overdispersion_param ~ gamma(2,1);
+    
+//modeling beta
+  gamma_b ~ normal(0, 0.2);
+  sig_b ~ normal(0, .5); //half normal
+  b ~ normal(gamma_b + 
+             kappa_regional * regional_trend + 
+             kappa_temp_pos * t_temp_pos + 
+             kappa_habitat_selection * t_habitat_selection + 
+             kappa_diet_cat[t_diet_cat], //categorical so no *
+             sig_b);
+
+// Vectorized
+C ~ neg_binomial_2_log(eta, overdispersion_param);
+
+//notes from previous versions below here.
 
 // Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
 //   for (n in 1:N) {
@@ -95,7 +145,6 @@ model {
 //       overdispersion_param //controls for overdispersion in a neg_binom
 //       );
 //   }
-
 // eg... for every row/observation in the data.
 // The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
 
@@ -107,41 +156,9 @@ model {
 ////  a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
 ////  sigma_a ~ exponential(1);
   
-  b ~ normal(gamma_b + 
-             kappa_regional * regional_trend + 
-             kappa_temp_pos * t_temp_pos + 
-             kappa_habitat_selection * t_habitat_selection + 
-             kappa_diet_cat[t_diet_cat], //categorical so no *
-             sig_b);
-  gamma_b ~ normal(0, 0.2);
-  sig_b ~ exponential(1);
-  
-  //regional trend we already know the mean and standard deviation
-  regional_trend ~ normal(regional_trend_mean, regional_trend_sd);
-  
-  c_obs ~ normal(0, 0.5); //half normal, there's one effect of changing observers across routes and species and I don't expect it to be a large effect so I constrain it.
-  
-//.............BY COMMENTING OUT KAPPAS, DEFAULT UNIFORM PRIORS ARE USED.................
-//default uniform priors are not like ultimately reccomended, and since variables are scaled it's not unreasonable to set a normal(0,1) prior, but default uniform Is Workable...
-//see: https://github.com/stan-dev/stan/wiki/prior-choice-recommendations
-kappa_regional ~ normal(0, 0.2);
-kappa_temp_pos ~ normal(0, 0.2);
-kappa_habitat_selection ~ normal(0, 0.2);
-kappa_diet_cat ~ normal(0, 0.2);
-
-//setting priors for intercepts last just for ease of them being listed last in the output
-  a ~ normal(0, 2); //universal intercept, trying not to constrain the prior too lightly so using 2 instead of 1. 
-  a_sp_raw ~ std_normal(); //centered on zero, use a hyperparam to set the distribution param.
-  a_rt_raw ~ std_normal(); //^^ same as above
-  sig_rt ~ normal(0, .5); //half normal
-  sig_sp ~ normal(0, .5); //half normal
-
 //    c ~ normal(gamma_c + kappa_obs*observer_quality, sig_c); //observer quality may need some indexing? no, b/c dependent on both observer and route.
     //add priors for gamma_c and sig_c
 //    gamma_c ~ normal(0,0.5);
 //    sig_c ~ exponential(1);
-
-    //typical prior for the overdispersion param is a gamma prior. I've seen a beta used as well, but we'll go with gamma
-    overdispersion_param ~ gamma(2,1);
 
 }
