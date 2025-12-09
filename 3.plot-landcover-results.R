@@ -30,7 +30,7 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
 load_from_cpc_grassland <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_rm0to0_grassland/"
 
 lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_bayesmeeting/"
-lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_dietonly/"
+lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.12.1_ch1_m1_diettest/"
 lf_tempo <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_temponly/"
 lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m2_kpriors1_FINAL/"
 
@@ -635,7 +635,7 @@ plot(x = dev$mean,
        y = ch1dieto$id, 
        pch = ch1dieto$pch,
        cex = 2,
-       xlim = c(-1,1)) +
+       xlim = c(-.5,.5)) +
     abline(v = 0, lty = "dashed") +
     segments(x0 = ch1dieto$conf_2.5,
              x1 = ch1dieto$conf_97.5,
@@ -895,3 +895,76 @@ plot(x = dev$mean,
     #rename x axis labels
     #add horizontal line at 0?
     
+    
+    
+##################################
+# Plot  differences between known cpc and estimated cpc
+# to ensure the cpc traits model isn't totally off
+#
+######################################
+
+lf_cpc_check <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.12.03_tcpc_newmethod2/"
+
+cpct_model <- read.csv(paste0(lf_cpc_check, "dev+barrenfit_summaries.csv")) %>%
+  #mu cpc is what we use to predict traits
+  #cpc is what we're trying to recreate from the mean and sd that we give
+  mutate(sp_id = str_extract(rownames, "[0-9]([0-9])?"),
+         cpc_row = str_extract(rownames, "cpc"),
+         mu = ifelse(!is.na(cpc_row), str_extract(rownames, "mu"), NA))
+
+cpc_readin <- read.csv("Z:/Goulden/mbbs-analysis/model_landcover/2025.09.18_cpc_rm0sprt_alllandcovers/dev+barren_fit_summaries.csv") %>%
+  filter(str_detect(rownames,"b_landcover_c")) %>%
+  dplyr::select(rownames, mean, sd, sp_id, common_name) 
+
+#look at difference in means
+plot(x = cpc_readin$mean, 
+     y = cpct_model$mean[cpct_model$cpc_row == "cpc" & is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)],
+     main = "Difference between true mean and estimates mean",
+     xlab = "True mean from first model",
+     ylab = "Estimated mean in second model")
+mean_cpc_line <- lm(cpct_model$mean[cpct_model$cpc_row == "cpc" & is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)] ~ cpc_readin$mean)
+summary(mean_cpc_line)  #R2 is .955 - awesome. that's an OK margin of error for me :)
+    abline(mean_cpc_line)
+    text(x = 0, y = -.2, labels = paste("R2 =",signif(summary(mean_cpc_line)$r.squared, 3)))
+
+#look at difference in standard deviations
+plot(x = cpc_readin$sd, 
+     y = cpct_model$sd[cpct_model$cpc_row == "cpc" & is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)],
+     main = "Difference between true and estimated sd",
+     xlab = "True sd from first model",
+     ylab = "Estimatee of cpc sd in second model")
+sd_cpc_line <- lm(cpct_model$sd[cpct_model$cpc_row == "cpc" & is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)] ~ cpc_readin$sd)
+summary(sd_cpc_line) #R2 is .91, not quiteeeee as good but. I think it's OK.
+  abline(sd_cpc_line)
+  text(x = .1, y = .025, labels = paste("R2 =",signif(summary(sd_cpc_line)$r.squared, 3)))
+
+#difference between cpc (which is correctly reflecting the right numbers) and mu_cpc which is what we then use to esimate the effect of traits.
+plot(x = cpct_model$mean[cpct_model$cpc_row == "cpc" & is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)],
+     y = cpct_model$mean[cpct_model$cpc_row == "cpc" & !is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)],
+     main = "Difference between true effect of landcover change &
+     mu_cpc (used to calculate trait effect)",
+     xlab = "True cpc",
+     ylab = "mu_cpc (used to calculate trait effect)")
+mu_line <- lm(cpct_model$mean[cpct_model$cpc_row == "cpc" & !is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)] ~ cpct_model$mean[cpct_model$cpc_row == "cpc" & is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)])
+summary(mu_line) #HM. Yeah that's not a great estimate line....
+abline(mu_line)
+text(x = 0,
+     y = -.07, 
+     labels = paste("R2 =", signif(summary(mu_line)$r.squared, 3)),
+     col = "red")
+#Perhaps a question for Casey of how much it matters that they add up to the same thing?
+#Yeah - I could just email and ask to make sure that they're matching right.
+#And match what he said I should use. 
+#nah, okay this is fine. sig_cpc is 0.05 and if I do
+     x = cpct_model$mean[cpct_model$cpc_row == "cpc" & is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)]
+     y = cpct_model$mean[cpct_model$cpc_row == "cpc" & !is.na(cpct_model$mu) & !is.na(cpct_model$sp_id)]
+    hist(x-y, 
+         main = "Histogram cpc - mu_cpc
+         sigma_cpc = 0.05")
+    #indeed the histogram difference is between -0.05 and 0.05. Like, I've got a predictable amount of sd here.
+    #sig_cpc is large compared to mu_cpc because traits aren't explaining much,
+    #much of the variation is residual 
+    #and so mu_cpc has to be really variable so that with all the traits added together it can still come out to predict cpc correctly (again, 95% r2 with the true value.)
+    #I think I don't need to email Casey, and instead just walk Allen through this to make sure it makes sence
+#Also need to go fix the sig_ on my chapter 1 model
+
