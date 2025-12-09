@@ -172,6 +172,6 @@ print(paste0("landcover ", b," completed"))
 
 #write only at end bc really long
 write.csv(posterior_results, paste0(save_to, landtypes[b], "posterior_samples.csv"), row.names = FALSE)
-write.csv(fit_summaries, paste0(save_to, landtypes[b], "fit_summaries.csv"), row.names = FALSE)
+write.csv(fit_summaries, paste0(save_to, landtypes[b], "_fit_summaries.csv"), row.names = FALSE)
 print(paste0("landcover ", b," results saved"))
 }
