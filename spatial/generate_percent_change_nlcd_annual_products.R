@@ -48,4 +48,3 @@ landtype_bystop <- landcover %>%
   #save .csv
 write.csv(landtype_bystop, "data/nlcd-landcover/nlcd_annual_landtype_bystop.csv", row.names = FALSE)
 
-
