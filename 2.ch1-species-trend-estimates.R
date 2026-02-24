@@ -38,13 +38,9 @@ options(scipen=999)
 #read in analysis file, this has already been filtered to remove species without the minimum number of sightings or that are excluded species
 mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 
 
-  #routes with errors
-  temp_rm <- mbbs %>% filter(route == "drhm-04", year == 2010)
   
   #do everything we need to do! 
   mbbs <- mbbs %>%
-    #remove route with error for missing surveyor data
-    anti_join(temp_rm) %>%
     #remove eastern whip-por-will because it lacks ssi habitat selectivity data
     filter(!common_name == "Eastern Whip-poor-will") %>%
     #remove hummingbird because it's the only one of it's diet group
