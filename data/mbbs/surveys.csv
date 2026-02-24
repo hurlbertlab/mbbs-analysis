@@ -1,821 +1,819 @@
-"route","year","obs1","obs2","obs3","total_species","total_abundance","date","protocol_violation"
-"cthm-01",2000,"Patsy Bailey","Marsha Stephens",NA,34,220,NA,FALSE
-"cthm-01",2001,"Patsy Bailey","Marsha Stephens",NA,47,334,NA,FALSE
-"cthm-01",2002,"Marsha Stephens","Patsy Bailey",NA,48,374,NA,FALSE
-"cthm-01",2003,"Patsy Bailey","Marsha Stephens",NA,36,244,NA,FALSE
-"cthm-01",2004,"Patsy Bailey","Marsha Stephens",NA,37,210,NA,FALSE
-"cthm-01",2005,"Patsy Bailey","Marsha Stephens",NA,41,250,NA,FALSE
-"cthm-01",2006,"Patsy Bailey","Marsha Stephens",NA,41,300,NA,FALSE
-"cthm-01",2007,"Patsy Bailey",NA,NA,44,283,NA,FALSE
-"cthm-01",2008,"Patsy Bailey",NA,NA,47,284,NA,FALSE
-"cthm-01",2009,"Patsy Bailey",NA,NA,36,181,NA,FALSE
-"cthm-01",2010,"Patsy Bailey",NA,NA,40,251,"2010-06-05",FALSE
-"cthm-01",2011,"Patsy Bailey","Norman Budnitz",NA,50,246,"2011-06-05",FALSE
-"cthm-01",2012,"Patsy Bailey",NA,NA,45,392,"2012-06-03",FALSE
-"cthm-01",2013,"Patsy Bailey",NA,NA,44,294,"2013-05-26",FALSE
-"cthm-01",2014,"Patsy Bailey",NA,NA,43,288,"2014-05-26",FALSE
-"cthm-01",2015,"Patsy Bailey",NA,NA,47,272,"2015-05-17",FALSE
-"cthm-01",2016,"Patsy Bailey",NA,NA,34,204,"2016-05-22",FALSE
-"cthm-01",2017,"Patsy Bailey",NA,NA,47,266,"2017-06-04",FALSE
-"cthm-01",2018,"Patsy Bailey",NA,NA,40,214,"2018-05-28",FALSE
-"cthm-01",2019,"Patsy Bailey",NA,NA,41,235,"2019-05-27",FALSE
-"cthm-01",2020,"Patsy Bailey",NA,NA,39,213,"2020-05-25",FALSE
-"cthm-01",2021,"Patsy Bailey",NA,NA,44,248,"2021-06-06",FALSE
-"cthm-01",2022,"Patsy Bailey",NA,NA,39,239,"2022-05-22",FALSE
-"cthm-01",2023,"Patsy Bailey",NA,NA,33,146,"2023-05-28",FALSE
-"cthm-01",2024,"Patsy Bailey",NA,NA,42,192,"2024-06-16",FALSE
-"cthm-01",2025,"Patsy Bailey",NA,NA,41,223,"2025-05-25",FALSE
-"cthm-02",2000,"Norman Budnitz","Michael Schultz",NA,45,297,NA,FALSE
-"cthm-02",2001,"Norman Budnitz","Michael Schultz",NA,51,347,NA,FALSE
-"cthm-02",2002,"Norman Budnitz","Michael Schultz",NA,52,334,NA,FALSE
-"cthm-02",2003,"Norman Budnitz","Michael Schultz",NA,41,308,NA,FALSE
-"cthm-02",2004,"Norman Budnitz","Michael Schultz",NA,51,269,NA,FALSE
-"cthm-02",2005,"Norman Budnitz","Michael Schultz",NA,54,299,NA,FALSE
-"cthm-02",2006,"Norman Budnitz","Michael Schultz",NA,48,245,NA,FALSE
-"cthm-02",2007,"Norman Budnitz","Michael Schultz",NA,43,302,NA,FALSE
-"cthm-02",2008,"Norman Budnitz","Michael Schultz",NA,51,305,NA,FALSE
-"cthm-02",2009,"Norman Budnitz","Michael Schultz",NA,47,299,NA,FALSE
-"cthm-02",2010,"Norman Budnitz","Michael Schultz",NA,45,264,"2010-06-20",FALSE
-"cthm-02",2011,"Norman Budnitz","Michael Schultz",NA,52,273,"2011-05-15",FALSE
-"cthm-02",2012,"Norman Budnitz","Michael Schultz",NA,53,337,"2012-05-20",FALSE
-"cthm-02",2013,"Norman Budnitz","Michael Schultz",NA,47,263,"2013-06-19",FALSE
-"cthm-02",2014,"Norman Budnitz","Michael Schultz",NA,43,291,"2014-06-15",FALSE
-"cthm-02",2015,"Norman Budnitz","Michael Schultz",NA,45,261,"2015-05-17",FALSE
-"cthm-02",2016,"Norman Budnitz","Michael Schultz",NA,56,286,"2016-05-15",FALSE
-"cthm-02",2017,"Norman Budnitz","Michael Schultz",NA,48,284,"2017-05-29",FALSE
-"cthm-02",2018,"Norman Budnitz","Michael Schultz",NA,53,300,"2018-05-27",FALSE
-"cthm-02",2019,"Norman Budnitz","Michael Schultz","Karen Hogan",48,296,"2019-05-19",FALSE
-"cthm-02",2020,"Norman Budnitz",NA,NA,45,231,"2020-05-17",FALSE
-"cthm-02",2021,"Norman Budnitz","Michael Schultz",NA,43,230,"2021-05-16",FALSE
-"cthm-02",2022,"Norman Budnitz","Michael Schultz",NA,43,214,"2022-05-29",FALSE
-"cthm-02",2023,"Norman Budnitz","Michael Schultz",NA,40,157,"2023-05-27",FALSE
-"cthm-02",2024,"Michael Schultz","Norman Budnitz",NA,46,201,"2024-05-25",FALSE
-"cthm-02",2025,"Michael Schultz","Norm Budnitz",NA,42,167,"2025-06-07",FALSE
-"cthm-03",2000,"Haven Wiley",NA,NA,49,265,NA,FALSE
-"cthm-03",2001,"Haven Wiley",NA,NA,49,234,NA,FALSE
-"cthm-03",2002,"Haven Wiley",NA,NA,50,261,NA,FALSE
-"cthm-03",2003,"Haven Wiley",NA,NA,42,251,NA,FALSE
-"cthm-03",2004,"Haven Wiley",NA,NA,44,248,NA,FALSE
-"cthm-03",2005,"Haven Wiley",NA,NA,49,325,NA,FALSE
-"cthm-03",2006,"Haven Wiley",NA,NA,40,237,NA,FALSE
-"cthm-03",2007,"Haven Wiley",NA,NA,44,230,NA,FALSE
-"cthm-03",2008,"Haven Wiley",NA,NA,41,235,NA,FALSE
-"cthm-03",2009,"Haven Wiley",NA,NA,44,381,NA,FALSE
-"cthm-03",2010,"Haven Wiley",NA,NA,47,248,"2010-05-30",FALSE
-"cthm-03",2011,"Haven Wiley",NA,NA,46,251,"2011-06-18",FALSE
-"cthm-03",2012,"Haven Wiley",NA,NA,49,257,"2012-06-03",FALSE
-"cthm-03",2013,"Haven Wiley",NA,NA,41,207,"2013-06-09",FALSE
-"cthm-03",2014,"Haven Wiley",NA,NA,41,230,"2014-06-15",FALSE
-"cthm-03",2015,"Haven Wiley",NA,NA,39,205,"2015-05-17",FALSE
-"cthm-03",2016,"Haven Wiley",NA,NA,41,224,"2016-06-05",FALSE
-"cthm-03",2017,"Haven Wiley",NA,NA,35,183,"2017-06-04",FALSE
-"cthm-03",2018,"Haven Wiley",NA,NA,38,186,"2018-06-03",FALSE
-"cthm-03",2019,"Haven Wiley",NA,NA,41,216,"2019-06-09",FALSE
-"cthm-03",2020,"Haven Wiley",NA,NA,46,277,"2020-05-25",FALSE
-"cthm-03",2021,"Haven Wiley",NA,NA,40,187,"2021-06-13",FALSE
-"cthm-03",2022,"Haven Wiley",NA,NA,38,178,"2022-06-05",FALSE
-"cthm-03",2023,"Haven Wiley",NA,NA,38,153,"2023-06-25",FALSE
-"cthm-03",2024,"Haven Wiley",NA,NA,39,163,"2024-06-09",FALSE
-"cthm-03",2025,"Haven Wiley","Minna Wiley",NA,26,98,"2025-06-16",FALSE
-"cthm-04",2000,"Michael Schultz","Lois Schultz",NA,47,293,NA,FALSE
-"cthm-04",2001,"Michael Schultz","Lois Schultz",NA,45,261,NA,FALSE
-"cthm-04",2002,"Michael Schultz","Lois Schultz",NA,44,302,NA,FALSE
-"cthm-04",2003,"Michael Schultz","Lois Schultz",NA,41,239,NA,FALSE
-"cthm-04",2004,"Michael Schultz","Lois Schultz",NA,44,252,NA,FALSE
-"cthm-04",2005,"Michael Schultz","Lois Schultz",NA,52,279,NA,FALSE
-"cthm-04",2006,"Michael Schultz","Lois Schultz",NA,46,293,NA,FALSE
-"cthm-04",2007,"Michael Schultz","Lois Schultz",NA,50,299,NA,FALSE
-"cthm-04",2008,"Michael Schultz","Lois Schultz",NA,51,278,NA,FALSE
-"cthm-04",2009,"Michael Schultz","Lois Schultz",NA,52,288,NA,FALSE
-"cthm-04",2010,"Michael Schultz","Lois Schultz",NA,45,250,"2010-06-01",FALSE
-"cthm-04",2011,"Michael Schultz",NA,NA,45,255,"2011-05-28",FALSE
-"cthm-04",2012,"Michael Schultz","Lois Schultz",NA,46,301,"2012-05-28",FALSE
-"cthm-04",2013,"Michael Schultz","Lois Schultz",NA,44,286,"2013-05-26",FALSE
-"cthm-04",2014,"Michael Schultz","Lois Schultz",NA,45,286,"2014-05-25",FALSE
-"cthm-04",2015,"Michael Schultz",NA,NA,45,266,"2015-05-25",FALSE
-"cthm-04",2016,"Michael Schultz","Lois Schultz",NA,41,214,"2016-06-14",FALSE
-"cthm-04",2017,"Michael Schultz","Lois Schultz",NA,38,208,"2017-06-04",FALSE
-"cthm-04",2018,"Michael Schultz","Lois Schultz",NA,41,219,"2018-05-31",FALSE
-"cthm-04",2019,"Michael Schultz","Karen Hogan",NA,45,223,"2019-06-02",FALSE
-"cthm-04",2020,"Michael Schultz",NA,NA,48,209,"2020-05-25",FALSE
-"cthm-04",2021,"Michael Schultz","Norman Budnitz",NA,39,222,"2021-06-01",FALSE
-"cthm-04",2022,"Michael Schultz","Norman Budnitz",NA,45,231,"2022-05-23",FALSE
-"cthm-04",2023,"Michael Schultz","Norman Budnitz",NA,48,207,"2023-05-26",FALSE
-"cthm-04",2024,"Michael Schultz","Norman Budnitz",NA,48,216,"2024-05-24",FALSE
-"cthm-04",2025,"Michael Schultz","Norm Budnitz",NA,47,210,"2025-06-06",FALSE
-"cthm-05",2000,"Jeff Pippen","Julie Rice",NA,42,265,NA,FALSE
-"cthm-05",2001,"Jeff Pippen","Julie Rice",NA,47,280,NA,FALSE
-"cthm-05",2002,"Haven Wiley",NA,NA,43,317,NA,FALSE
-"cthm-05",2003,"Haven Wiley",NA,NA,43,299,NA,FALSE
-"cthm-05",2004,"Haven Wiley",NA,NA,41,278,NA,FALSE
-"cthm-05",2005,"Haven Wiley",NA,NA,39,288,NA,FALSE
-"cthm-05",2006,"Tom Driscoll","Colyer Durovich","Marsha Stephens",51,483,NA,FALSE
-"cthm-05",2007,"Tom Driscoll",NA,NA,44,471,NA,FALSE
-"cthm-05",2008,"Tom Driscoll",NA,NA,44,359,NA,FALSE
-"cthm-05",2009,"Tom Driscoll","Marsha Stephens",NA,54,555,NA,FALSE
-"cthm-05",2010,"Marsha Tuttle","Tom Driscoll","Colyer Durovich",56,714,"2010-06-05",FALSE
-"cthm-05",2011,"Tom Driscoll",NA,NA,50,532,"2011-06-04",FALSE
-"cthm-05",2012,"Tom Driscoll",NA,NA,48,484,"2012-05-27",FALSE
-"cthm-05",2013,"Tom Driscoll",NA,NA,53,530,"2013-05-26",FALSE
-"cthm-05",2014,"Tom Driscoll",NA,NA,41,485,"2014-06-21",FALSE
-"cthm-05",2015,"Tom Driscoll","Vern Bothwell",NA,45,500,"2015-06-16",FALSE
-"cthm-05",2016,"Tom Driscoll",NA,NA,47,368,"2016-06-03",FALSE
-"cthm-05",2017,"Tom Driscoll","Edison Buenano",NA,38,350,"2017-05-21",FALSE
-"cthm-05",2018,"Tom Driscoll",NA,NA,42,446,"2018-06-02",FALSE
-"cthm-05",2019,"Tom Driscoll",NA,NA,42,325,"2019-05-27",FALSE
-"cthm-05",2020,"Tom Driscoll","Elizabeth Keating",NA,45,284,"2020-05-27",FALSE
-"cthm-05",2021,"Tom Driscoll",NA,NA,43,285,"2021-05-31",FALSE
-"cthm-05",2022,"Tom Driscoll",NA,NA,49,256,"2022-06-04",FALSE
-"cthm-05",2023,"Tom Driscoll",NA,NA,49,296,"2023-06-03",FALSE
-"cthm-05",2024,"Tom Driscoll",NA,NA,45,267,"2024-06-15",FALSE
-"cthm-05",2025,"Tom Driscoll",NA,NA,45,281,"2025-06-14",FALSE
-"cthm-06",2000,"Cynthia Fox","Marsha Stephens",NA,37,333,NA,FALSE
-"cthm-06",2001,"Cynthia Fox","Marsha Stephens",NA,44,366,NA,FALSE
-"cthm-06",2002,"Cynthia Fox","Marsha Stephens",NA,47,288,NA,FALSE
-"cthm-06",2003,"Cynthia Fox","Marsha Stephens",NA,30,237,NA,FALSE
-"cthm-06",2004,"Cynthia Fox","Marsha Stephens",NA,23,201,NA,FALSE
-"cthm-06",2005,"Cynthia Fox","Marsha Stephens",NA,47,382,NA,FALSE
-"cthm-06",2006,"Cynthia Fox","Marsha Stephens",NA,44,308,NA,FALSE
-"cthm-06",2007,"Cynthia Fox","Marsha Stephens",NA,34,272,NA,FALSE
-"cthm-06",2008,"Cynthia Fox","Marsha Stephens",NA,44,309,NA,FALSE
-"cthm-06",2009,"Cynthia Fox","Marsha Stephens",NA,48,356,NA,FALSE
-"cthm-06",2010,"Marsha Tuttle","Tom Driscoll","Laurie Kucharik",56,663,"2010-06-20",FALSE
-"cthm-06",2018,"Roger Shaw",NA,NA,51,330,"2018-06-10",FALSE
-"cthm-06",2019,"Roger Shaw",NA,NA,41,264,"2019-06-29",FALSE
-"cthm-06",2020,"Roger Shaw",NA,NA,42,293,"2020-06-07",FALSE
-"cthm-06",2021,"Roger Shaw",NA,NA,43,289,"2021-06-15",FALSE
-"cthm-06",2022,"Roger Shaw",NA,NA,53,278,"2022-06-06",FALSE
-"cthm-06",2023,"Roger Shaw",NA,NA,44,281,"2023-06-03",FALSE
-"cthm-06",2024,"Roger Shaw",NA,NA,44,267,"2024-05-19",FALSE
-"cthm-06",2025,"Roger Shaw",NA,NA,51,313,"2025-05-18",FALSE
-"cthm-07",2000,"Will Cook",NA,NA,47,333,"2000-06-18",FALSE
-"cthm-07",2001,"Will Cook",NA,NA,54,318,"2001-06-16",FALSE
-"cthm-07",2002,"Will Cook",NA,NA,49,325,"2002-06-08",FALSE
-"cthm-07",2003,"Will Cook",NA,NA,45,319,"2003-06-28",FALSE
-"cthm-07",2004,"Will Cook",NA,NA,47,332,"2004-06-19",FALSE
-"cthm-07",2005,"Will Cook",NA,NA,51,316,"2005-07-09",TRUE
-"cthm-07",2006,"Will Cook",NA,NA,44,245,NA,FALSE
-"cthm-07",2007,"Will Cook",NA,NA,42,293,"2007-06-23",FALSE
-"cthm-07",2008,"Will Cook",NA,NA,52,302,"2008-06-08",FALSE
-"cthm-07",2009,"Will Cook",NA,NA,52,321,"2009-06-28",FALSE
-"cthm-07",2010,"Will Cook","Catherine Carter",NA,51,264,"2010-06-13",FALSE
-"cthm-07",2011,"Will Cook","Lesley Starke",NA,43,297,"2011-06-19",FALSE
-"cthm-07",2012,"Will Cook","Lesley Starke",NA,54,347,"2012-06-09",FALSE
-"cthm-07",2013,"Will Cook","Lesley Starke",NA,54,330,"2013-06-09",FALSE
-"cthm-07",2014,"Will Cook",NA,NA,48,303,"2014-07-13",TRUE
-"cthm-07",2015,"Will Cook",NA,NA,50,295,"2015-06-27",FALSE
-"cthm-07",2016,"Will Cook",NA,NA,50,341,"2016-06-19",FALSE
-"cthm-07",2017,"Will Cook",NA,NA,48,328,"2017-07-02",TRUE
-"cthm-07",2018,"Will Cook",NA,NA,52,298,"2018-06-16",FALSE
-"cthm-07",2019,"Will Cook",NA,NA,55,337,"2019-06-15",FALSE
-"cthm-07",2020,"Will Cook",NA,NA,52,320,"2020-06-28",FALSE
-"cthm-07",2021,"Will Cook",NA,NA,44,237,"2021-06-27",FALSE
-"cthm-07",2022,"Will Cook",NA,NA,52,300,"2022-06-26",FALSE
-"cthm-07",2023,"Will Cook",NA,NA,49,281,"2023-06-18",FALSE
-"cthm-07",2024,"Will Cook",NA,NA,50,328,"2024-06-16",FALSE
-"cthm-07",2025,"Will Cook",NA,NA,49,358,"2025-06-22",FALSE
-"cthm-08",2000,"Judy Murray","Martha Girolami",NA,43,322,NA,FALSE
-"cthm-08",2001,"Judy Murray","Martha Girolami",NA,45,399,NA,FALSE
-"cthm-08",2002,"Judy Murray","Martha Girolami",NA,45,333,NA,FALSE
-"cthm-08",2003,"Judy Murray","Martha Girolami",NA,42,342,NA,FALSE
-"cthm-08",2004,"Martha Girolami","Judy Murray",NA,37,262,NA,FALSE
-"cthm-08",2005,"Martha Girolami","Judy Murray",NA,44,230,NA,FALSE
-"cthm-08",2006,"Martha Girolami","Pat Reid","Judy Murray",42,272,NA,FALSE
-"cthm-08",2007,"Martha Girolami","Judy Murray",NA,42,240,NA,FALSE
-"cthm-08",2008,"Martha Girolami","Judy Murray",NA,44,296,NA,FALSE
-"cthm-08",2009,"Martha Girolami","Judy Murray",NA,47,268,NA,FALSE
-"cthm-08",2010,"Martha Girolami","Pat Reid","Judy Murray",43,266,"2010-06-06",FALSE
-"cthm-08",2011,"Martha Girolami","Judy Murray",NA,48,238,"2011-05-29",FALSE
-"cthm-08",2012,"Martha Girolami","Judy Murray",NA,46,302,"2012-06-17",FALSE
-"cthm-08",2013,"Martha Girolami","Judy Murray",NA,41,217,"2013-06-30",FALSE
-"cthm-08",2014,"Martha Girolami","Judy Murray",NA,49,250,"2014-05-25",FALSE
-"cthm-08",2015,"Martha Girolami","Judy Murray",NA,41,241,"2015-05-24",FALSE
-"cthm-08",2016,"Martha Girolami","Judy Murray",NA,41,201,"2016-06-05",FALSE
-"cthm-08",2017,"Martha Girolami","Pat Reid","Judy Murray",40,219,"2017-06-11",FALSE
-"cthm-08",2019,"Nan Dewire","Fleeta Chauvigne",NA,52,361,"2019-06-23",FALSE
-"cthm-08",2020,"Nan Dewire","Fleeta Chauvigne",NA,45,243,"2020-06-14",FALSE
-"cthm-08",2021,"Nan Dewire","Fleeta Chauvigne",NA,48,313,"2021-05-31",FALSE
-"cthm-08",2022,"Nan Dewire","Fleeta Chauvigne",NA,55,360,"2022-05-29",FALSE
-"cthm-08",2023,"Nan Dewire","Fleeta Chauvigne",NA,51,260,"2023-05-21",FALSE
-"cthm-08",2024,"Nan Dewire","Fleeta Chauvigne",NA,52,338,"2024-06-02",FALSE
-"cthm-08",2025,"Nan Dewire","Fleeta Chauvigne",NA,52,345,"2025-05-18",FALSE
-"cthm-09",2000,"Shelley Theye","Lee Van Malssen",NA,48,263,NA,FALSE
-"cthm-09",2001,"Shelley Theye","Lee Van Malssen",NA,53,502,NA,FALSE
-"cthm-09",2002,"Shelley Theye","Lee Van Malssen",NA,52,339,NA,FALSE
-"cthm-09",2003,"Shelley Theye","Lee Van Malssen",NA,54,427,NA,FALSE
-"cthm-09",2005,"Shelley Theye",NA,NA,53,339,NA,FALSE
-"cthm-09",2006,"Shelley Theye","Marsha Stephens",NA,49,341,NA,FALSE
-"cthm-09",2007,"Shelley Theye",NA,NA,47,357,NA,FALSE
-"cthm-09",2008,"Shelley Theye",NA,NA,51,421,NA,FALSE
-"cthm-09",2009,"Shelley Theye",NA,NA,45,455,NA,FALSE
-"cthm-09",2010,"Shelley Theye",NA,NA,49,378,"2010-06-20",FALSE
-"cthm-09",2011,"Shelley Theye",NA,NA,49,345,"2011-07-02",TRUE
-"cthm-09",2012,"Shelley Theye",NA,NA,44,210,"2012-06-17",FALSE
-"cthm-09",2013,"Shelley Theye",NA,NA,48,230,"2013-06-16",FALSE
-"cthm-09",2014,"Shelley Theye",NA,NA,47,361,"2014-06-22",FALSE
-"cthm-09",2015,"Shelley Theye",NA,NA,43,322,"2015-06-30",FALSE
-"cthm-09",2016,"Shelley Theye",NA,NA,46,316,"2016-06-19",FALSE
-"cthm-09",2017,"Shelley Theye","Lee Van Malssen",NA,46,302,"2017-06-25",FALSE
-"cthm-09",2018,"Shelley Theye",NA,NA,45,362,"2018-06-17",FALSE
-"cthm-09",2019,"Shelley Theye",NA,NA,49,287,"2019-06-23",FALSE
-"cthm-09",2020,"Shelley Theye",NA,NA,44,302,"2020-06-20",FALSE
-"cthm-09",2021,"Shelley Theye","Lee Van Malssen",NA,36,223,"2021-06-20",FALSE
-"cthm-09",2022,"Shelley Theye","Lee Van Malssen",NA,47,280,"2022-06-19",FALSE
-"cthm-09",2023,"Shelley Theye",NA,NA,43,267,"2023-06-11",FALSE
-"cthm-09",2024,"Shelley Theye",NA,NA,44,254,"2024-06-25",FALSE
-"cthm-09",2025,"Shelley Theye","Deborah Fowler",NA,42,272,"2025-06-16",FALSE
-"cthm-10",2000,"Sue Brady",NA,NA,43,304,NA,FALSE
-"cthm-10",2001,"Will Cook",NA,NA,51,275,"2001-06-23",FALSE
-"cthm-10",2002,"Brian Strong",NA,NA,49,246,NA,FALSE
-"cthm-10",2003,"Brian Strong",NA,NA,41,169,NA,FALSE
-"cthm-10",2004,"Brian Strong",NA,NA,42,200,NA,FALSE
-"cthm-10",2005,"Brian Strong",NA,NA,40,166,NA,FALSE
-"cthm-10",2006,"Brian Strong",NA,NA,33,137,NA,FALSE
-"cthm-10",2007,"Brian Strong",NA,NA,38,164,NA,FALSE
-"cthm-10",2008,"Brian Strong",NA,NA,46,156,NA,FALSE
-"cthm-10",2009,"Brian Strong",NA,NA,37,143,NA,FALSE
-"cthm-10",2010,"Brian Strong",NA,NA,35,156,"2010-06-20",FALSE
-"cthm-10",2011,"Brian Strong",NA,NA,47,186,"2011-06-19",FALSE
-"cthm-10",2012,"Brian Strong",NA,NA,41,209,"2012-06-17",FALSE
-"cthm-10",2013,"Brian Strong",NA,NA,40,168,"2013-06-23",FALSE
-"cthm-10",2015,"Brian Strong",NA,NA,31,135,"2015-06-27",FALSE
-"cthm-10",2016,"Brian Strong",NA,NA,40,169,"2016-06-26",FALSE
-"cthm-10",2017,"Brian Strong",NA,NA,45,222,"2017-06-18",FALSE
-"cthm-10",2018,"Brian Strong",NA,NA,44,178,"2018-06-24",FALSE
-"cthm-10",2019,"Brian Strong",NA,NA,37,155,"2019-06-25",FALSE
-"cthm-10",2020,"Brian Strong",NA,NA,39,161,"2020-06-29",FALSE
-"cthm-10",2021,"Brian Strong",NA,NA,42,148,"2021-06-20",FALSE
-"cthm-10",2022,"Brian Strong",NA,NA,46,188,"2022-06-24",FALSE
-"cthm-10",2023,"Fleeta Chauvigne","Mark Montazer",NA,48,251,"2023-06-04",FALSE
-"cthm-10",2024,"Fleeta Wilkinson","Mark Montazer","Nan Dewire",51,317,"2024-06-09",FALSE
-"cthm-10",2025,"Fleeta Wilkinson Chauvign<U+00E9>","Mark Montazer","Nan Dewire",58,298,"2025-05-25",FALSE
-"cthm-11",2000,"M. Graves","Bob Chase",NA,36,195,NA,FALSE
-"cthm-11",2001,"M. Graves","Bob Chase",NA,35,211,NA,FALSE
-"cthm-11",2002,"Bob Chase",NA,NA,37,233,NA,FALSE
-"cthm-11",2003,"Bob Chase",NA,NA,37,233,NA,FALSE
-"cthm-11",2005,"Bob Chase",NA,NA,43,222,NA,FALSE
-"cthm-11",2006,"Bob Chase",NA,NA,48,258,NA,FALSE
-"cthm-11",2007,"Bob Chase",NA,NA,49,292,NA,FALSE
-"cthm-11",2008,"Bob Chase",NA,NA,47,256,NA,FALSE
-"cthm-11",2009,"Bob Chase",NA,NA,40,214,NA,FALSE
-"cthm-11",2010,"Bob Chase",NA,NA,38,212,"2010-06-11",FALSE
-"cthm-11",2011,"Bob Chase",NA,NA,37,210,"2011-06-12",FALSE
-"cthm-11",2012,"Bob Chase",NA,NA,32,175,"2012-06-16",FALSE
-"cthm-11",2013,"Bob Chase",NA,NA,34,135,"2013-06-19",FALSE
-"cthm-11",2016,"Bob Chase",NA,NA,27,108,"2016-05-29",FALSE
-"cthm-11",2020,"Nathan Howell",NA,NA,43,162,"2020-06-25",FALSE
-"cthm-11",2022,"Allen Hurlbert",NA,NA,44,231,"2022-05-29",FALSE
-"cthm-11",2023,"Allen Hurlbert",NA,NA,47,210,"2023-06-04",FALSE
-"cthm-11",2024,"Allen Hurlbert","Ivara Goulden",NA,48,266,"2024-06-09",FALSE
-"cthm-11",2025,"Allen Hurlbert","Ivara Goulden",NA,46,232,"2025-06-08",FALSE
-"cthm-12",2000,"Kate Finlayson","Chris Canfield",NA,38,295,NA,FALSE
-"cthm-12",2001,"Kate Finlayson","Chris Canfield",NA,42,241,NA,FALSE
-"cthm-12",2002,"Kate Finlayson","Chris Canfield",NA,48,292,NA,FALSE
-"cthm-12",2003,"Kate Finlayson","Chris Canfield",NA,47,248,NA,FALSE
-"cthm-12",2004,"Chris Canfield","Kate Finlayson",NA,42,265,NA,FALSE
-"cthm-12",2005,"Chris Canfield","Kate Finlayson",NA,46,306,NA,FALSE
-"cthm-12",2006,"Chris Canfield","Kate Finlayson",NA,47,290,NA,FALSE
-"cthm-12",2007,"Kate Finlayson","Chris Canfield",NA,50,269,NA,FALSE
-"cthm-12",2008,"Kate Finlayson","Chris Canfield",NA,47,257,NA,FALSE
-"cthm-12",2009,"Kate Finlayson","Chris Canfield",NA,46,215,NA,FALSE
-"cthm-12",2017,"Tom Driscoll","Elizabeth Keating",NA,48,340,"2017-06-25",FALSE
-"cthm-12",2019,"Tom Driscoll","Fleeta Chauvigne",NA,50,310,"2019-06-20",FALSE
-"cthm-12",2020,"Tom Driscoll","Elizabeth Keating",NA,47,354,"2020-06-07",FALSE
-"cthm-12",2021,"Tom Driscoll",NA,NA,42,307,"2021-06-02",FALSE
-"cthm-12",2022,"Tom Driscoll",NA,NA,45,250,"2022-06-12",FALSE
-"cthm-12",2023,"Tom Driscoll",NA,NA,46,204,"2023-05-27",FALSE
-"cthm-12",2024,"Tom Driscoll",NA,NA,50,260,"2024-06-05",FALSE
-"cthm-12",2025,"Tom Driscoll",NA,NA,47,239,"2025-06-18",FALSE
-"cthm-13",2000,"Marsha Stephens","Patsy Bailey",NA,40,321,NA,FALSE
-"cthm-13",2001,"Marsha Stephens",NA,NA,30,286,NA,FALSE
-"cthm-13",2002,"Marsha Stephens",NA,NA,25,327,NA,FALSE
-"cthm-13",2003,"Marsha Stephens",NA,NA,21,230,NA,FALSE
-"cthm-13",2004,"Marsha Stephens",NA,NA,23,273,NA,FALSE
-"cthm-13",2005,"Marsha Stephens",NA,NA,19,134,NA,FALSE
-"cthm-13",2006,"JA","HS",NA,23,140,NA,FALSE
-"cthm-13",2007,"Haven Wiley",NA,NA,44,289,NA,FALSE
-"cthm-13",2008,"?",NA,NA,43,322,NA,FALSE
-"cthm-13",2009,"?",NA,NA,33,329,NA,FALSE
-"cthm-13",2010,"Marsha Tuttle","Tom Driscoll","Laurie Kucharik",55,546,"2010-06-06",FALSE
-"cthm-13",2011,"Tom Driscoll",NA,NA,46,577,"2011-06-12",FALSE
-"cthm-13",2012,"Tom Driscoll",NA,NA,46,456,"2012-06-24",FALSE
-"cthm-13",2013,"Tom Driscoll",NA,NA,47,509,"2013-06-02",FALSE
-"cthm-13",2014,"Tom Driscoll",NA,NA,43,435,"2014-06-08",FALSE
-"cthm-13",2015,"Tom Driscoll",NA,NA,43,486,"2015-06-14",FALSE
-"cthm-13",2016,"Tom Driscoll",NA,NA,47,446,"2016-06-26",FALSE
-"cthm-13",2017,"Tom Driscoll","Bradley Saul",NA,50,384,"2017-06-04",FALSE
-"cthm-13",2018,"Tom Driscoll",NA,NA,45,362,"2018-06-09",FALSE
-"cthm-13",2019,"Tom Driscoll","Nan Dewire",NA,52,343,"2019-06-14",FALSE
-"cthm-13",2020,"Tom Driscoll","Elizabeth Keating",NA,47,283,"2020-06-01",FALSE
-"cthm-13",2021,"Tom Driscoll",NA,NA,46,322,"2021-06-06",FALSE
-"cthm-13",2022,"Tom Driscoll",NA,NA,53,313,"2022-06-11",FALSE
-"cthm-13",2023,"Tom Driscoll",NA,NA,45,293,"2023-06-04",FALSE
-"cthm-13",2024,"Tom Driscoll",NA,NA,45,242,"2024-06-02",FALSE
-"cthm-13",2025,"Will Mackin",NA,NA,42,251,"2025-06-22",FALSE
-"cthm-14",2000,"Kent Fiala",NA,NA,46,242,NA,FALSE
-"cthm-14",2001,"Kent Fiala",NA,NA,47,307,NA,FALSE
-"cthm-14",2002,"Kent Fiala",NA,NA,51,288,NA,FALSE
-"cthm-14",2003,"Kent Fiala",NA,NA,42,209,NA,FALSE
-"cthm-14",2004,"Kent Fiala",NA,NA,43,228,NA,FALSE
-"cthm-14",2005,"Kent Fiala",NA,NA,43,237,NA,FALSE
-"cthm-14",2006,"Kent Fiala",NA,NA,46,251,NA,FALSE
-"cthm-14",2007,"Kent Fiala",NA,NA,45,238,NA,FALSE
-"cthm-14",2008,"Kent Fiala",NA,NA,41,207,NA,FALSE
-"cthm-14",2009,"Kent Fiala",NA,NA,38,200,NA,FALSE
-"cthm-14",2014,"Josh Sims",NA,NA,45,321,"2014-06-01",FALSE
-"cthm-14",2015,"Josh Sims",NA,NA,46,235,"2015-06-14",FALSE
-"cthm-14",2019,"Richard Snow",NA,NA,14,87,"2019-06-30",FALSE
-"cthm-14",2020,"Will Bennett","Jonathan Bennett",NA,50,298,"2020-05-24",FALSE
-"cthm-14",2021,"Will Bennett","Jonathan Bennett",NA,61,413,"2021-05-16",FALSE
-"cthm-14",2022,"Will Bennett","Jonathan Bennett",NA,47,273,"2022-06-30",FALSE
-"cthm-14",2023,"Allen Hurlbert",NA,NA,41,242,"2023-06-11",FALSE
-"cthm-14",2024,"Allen Hurlbert",NA,NA,43,201,"2024-06-23",FALSE
-"cthm-14",2025,"Will Begley",NA,NA,47,328,"2025-06-21",FALSE
-"drhm-01",2002,"Judy Murray",NA,NA,40,239,NA,FALSE
-"drhm-01",2003,"Judy Murray",NA,NA,38,214,NA,FALSE
-"drhm-01",2004,"Judy Murray",NA,NA,42,264,NA,FALSE
-"drhm-01",2005,"Judy Murray",NA,NA,43,249,NA,FALSE
-"drhm-01",2006,"Judy Murray","Tom Krakauer",NA,40,300,NA,FALSE
-"drhm-01",2007,"Judy Murray",NA,NA,47,245,NA,FALSE
-"drhm-01",2008,"Judy Murray",NA,NA,45,281,NA,FALSE
-"drhm-01",2009,"Judy Murray",NA,NA,32,135,NA,FALSE
-"drhm-01",2010,"Judy Murray",NA,NA,44,234,"2010-05-09",TRUE
-"drhm-01",2011,"Judy Murray",NA,NA,40,225,"2011-05-28",FALSE
-"drhm-01",2012,"Judy Murray",NA,NA,41,209,"2012-05-27",FALSE
-"drhm-01",2013,"Judy Murray",NA,NA,38,238,"2013-06-16",FALSE
-"drhm-01",2014,"Judy Murray","Robin Moran",NA,43,206,"2014-06-01",FALSE
-"drhm-01",2015,"Robin Moran","Judy Murray",NA,43,192,"2015-05-24",FALSE
-"drhm-01",2016,"Judy Murray",NA,NA,34,182,"2016-06-26",FALSE
-"drhm-01",2017,"Judy Murray","Robin Moran",NA,40,222,"2017-06-04",FALSE
-"drhm-01",2018,"Robin Moran","Jennifer Maher",NA,47,219,"2018-06-03",FALSE
-"drhm-01",2019,"Robin Moran","Jennifer Maher",NA,49,212,"2019-05-26",FALSE
-"drhm-01",2020,"Robin Moran","Jennifer Maher",NA,48,227,"2020-05-24",FALSE
-"drhm-01",2021,"Robin Moran","Jennifer Maher","Noah Rokoske",60,329,"2021-05-31",FALSE
-"drhm-01",2022,"Robin Moran","Jennifer Maher","Noah Rokoske",61,429,"2022-05-22",FALSE
-"drhm-01",2023,"Noah Rokoske","Robin Moran","Jennifer Maher",55,339,"2023-05-21",FALSE
-"drhm-01",2024,"Robin Moran","Jennifer Maher","Noah Rokoske",55,309,"2024-06-02",FALSE
-"drhm-01",2025,"Jennifer Maher","Noah Rokoske",NA,58,387,"2025-05-25",TRUE
-"drhm-02",2002,"Bruce Young",NA,NA,40,359,NA,FALSE
-"drhm-02",2003,"Bruce Young",NA,NA,31,233,NA,FALSE
-"drhm-02",2004,"Bruce Young",NA,NA,44,226,NA,FALSE
-"drhm-02",2005,"Bruce Young",NA,NA,34,230,NA,FALSE
-"drhm-02",2006,"Bruce Young",NA,NA,31,199,NA,FALSE
-"drhm-02",2007,"?",NA,NA,34,252,NA,FALSE
-"drhm-02",2008,"?",NA,NA,36,281,NA,FALSE
-"drhm-02",2009,"?",NA,NA,35,223,NA,FALSE
-"drhm-02",2010,"?",NA,NA,39,167,"2010-06-13",FALSE
-"drhm-02",2011,"?",NA,NA,36,201,"2011-06-05",FALSE
-"drhm-02",2012,"?",NA,NA,41,164,"2012-06-23",FALSE
-"drhm-02",2013,"Edith Tatum",NA,NA,39,116,"2013-06-14",FALSE
-"drhm-02",2014,"Edith Tatum",NA,NA,36,140,"2014-06-07",FALSE
-"drhm-02",2015,"Edith Tatum","Clea",NA,32,121,"2015-06-01",FALSE
-"drhm-02",2017,"Jeff Pippen",NA,NA,46,244,"2017-06-10",FALSE
-"drhm-02",2018,"Jeff Pippen",NA,NA,39,263,"2018-06-10",FALSE
-"drhm-02",2019,"Jeff Pippen",NA,NA,40,251,"2019-06-30",FALSE
-"drhm-02",2020,"Jeff Pippen",NA,NA,50,312,"2020-06-07",FALSE
-"drhm-02",2022,"Jeff Pippen",NA,NA,52,374,"2022-06-19",FALSE
-"drhm-02",2023,"Jeff Pippen",NA,NA,49,356,"2023-06-11",FALSE
-"drhm-02",2024,"Jeff Pippen",NA,NA,49,374,"2024-06-16",FALSE
-"drhm-02",2025,"Jeff Pippen",NA,NA,46,304,"2025-06-15",FALSE
-"drhm-03",2002,"Carol Williamson","Norman Budnitz",NA,41,315,NA,FALSE
-"drhm-03",2003,"Carol Williamson","Norman Budnitz",NA,39,317,NA,FALSE
-"drhm-03",2004,"Carol Williamson","Norman Budnitz",NA,40,294,NA,FALSE
-"drhm-03",2005,"Carol Williamson","Norman Budnitz",NA,35,227,NA,FALSE
-"drhm-03",2006,"Carol Williamson","Norman Budnitz",NA,36,304,NA,FALSE
-"drhm-03",2007,"Carol Williamson","Norman Budnitz",NA,44,319,NA,FALSE
-"drhm-03",2008,"Carol Williamson","Norman Budnitz",NA,35,308,NA,FALSE
-"drhm-03",2009,"Carol Williamson","Norman Budnitz",NA,37,320,NA,FALSE
-"drhm-03",2010,"Norman Budnitz","Carol Williamson",NA,40,324,"2010-06-13",FALSE
-"drhm-03",2011,"Patsy Bailey","Norman Budnitz",NA,40,324,"2011-06-09",FALSE
-"drhm-03",2012,"Norman Budnitz",NA,NA,40,334,"2012-06-17",FALSE
-"drhm-03",2013,"Norman Budnitz",NA,NA,35,250,"2013-06-16",FALSE
-"drhm-03",2014,"Norman Budnitz",NA,NA,32,180,"2014-06-12",FALSE
-"drhm-03",2015,"Norman Budnitz",NA,NA,37,243,"2015-06-13",FALSE
-"drhm-03",2016,"Norman Budnitz",NA,NA,38,211,"2016-06-11",FALSE
-"drhm-03",2017,"Norman Budnitz",NA,NA,33,192,"2017-06-10",FALSE
-"drhm-03",2018,"Norman Budnitz",NA,NA,34,233,"2018-06-02",FALSE
-"drhm-03",2019,"Norman Budnitz",NA,NA,33,175,"2019-06-15",FALSE
-"drhm-03",2020,"Norman Budnitz",NA,NA,33,218,"2020-06-13",FALSE
-"drhm-03",2021,"Norman Budnitz",NA,NA,29,169,"2021-06-12",FALSE
-"drhm-03",2022,"Norman Budnitz",NA,NA,31,173,"2022-06-04",FALSE
-"drhm-03",2023,"Norman Budnitz",NA,NA,33,189,"2023-06-01",FALSE
-"drhm-03",2024,"Norman Budnitz",NA,NA,36,187,"2024-06-01",FALSE
-"drhm-03",2025,"Noah Rokoske","Norm Budnitz",NA,38,312,"2025-06-15",FALSE
-"drhm-04",2002,"Jeff Pippen","Julie Rice",NA,49,215,NA,FALSE
-"drhm-04",2003,"Jeff Pippen","Julie Rice",NA,43,179,NA,FALSE
-"drhm-04",2004,"Jeff Pippen","Julie Rice",NA,43,207,NA,FALSE
-"drhm-04",2005,"Jeff Pippen","Julie Rice",NA,46,239,NA,FALSE
-"drhm-04",2006,"Jeff Pippen","Julie Rice",NA,46,267,NA,FALSE
-"drhm-04",2007,"Jeff Pippen",NA,NA,41,222,NA,FALSE
-"drhm-04",2008,"Jeff Pippen",NA,NA,51,274,NA,FALSE
-"drhm-04",2009,"Jeff Pippen",NA,NA,52,251,NA,FALSE
-"drhm-04",2010,"Jeff Pippen",NA,NA,43,253,NA,FALSE
-"drhm-04",2011,"Jeff Pippen",NA,NA,46,251,"2011-05-22",FALSE
-"drhm-04",2012,"Jeff Pippen",NA,NA,47,278,"2012-06-10",FALSE
-"drhm-04",2013,"Jeff Pippen",NA,NA,44,271,"2013-06-09",FALSE
-"drhm-04",2014,"Jeff Pippen",NA,NA,40,196,"2014-05-15",FALSE
-"drhm-04",2018,"Patsy Bailey",NA,NA,38,196,"2018-06-10",FALSE
-"drhm-04",2019,"Roger Shaw",NA,NA,47,225,"2019-05-25",FALSE
-"drhm-04",2020,"Roger Shaw",NA,NA,51,272,"2020-05-24",FALSE
-"drhm-04",2021,"Roger Shaw",NA,NA,45,182,"2021-06-16",FALSE
-"drhm-04",2022,"Roger Shaw","Stephen Brooks","Carey Jefferson",46,243,"2022-06-05",FALSE
-"drhm-04",2023,"Stephen Brooks","Carey Jefferson",NA,40,230,"2023-06-03",FALSE
-"drhm-04",2024,"Stephen Brooks","Carey Jefferson",NA,40,191,"2024-06-30",FALSE
-"drhm-04",2025,"Allen Hurlbert",NA,NA,45,199,"2025-06-22",FALSE
-"drhm-05",2002,"Alan Johnston","Shantanu Phukan",NA,43,373,NA,FALSE
-"drhm-05",2003,"Alan Johnston","Shantanu Phukan",NA,42,256,NA,FALSE
-"drhm-05",2004,"Alan Johnston","Sally Johnston",NA,39,285,NA,FALSE
-"drhm-05",2005,"Alan Johnston","Denny Dobbin",NA,45,292,NA,FALSE
-"drhm-05",2006,"Alan Johnston","Dan Williams",NA,43,337,NA,FALSE
-"drhm-05",2007,"Alan Johnston","David Welch",NA,36,263,NA,FALSE
-"drhm-05",2008,"Alan Johnston","Bobbie Johnston","Pamela Clark",42,359,NA,FALSE
-"drhm-05",2009,"Alan Johnston","Denny Dobbin",NA,39,334,NA,FALSE
-"drhm-05",2010,"Alan Johnston","Denny Dobbin",NA,40,266,"2010-06-13",FALSE
-"drhm-05",2011,"Alan Johnston","Denny Dobbin",NA,43,293,"2011-05-15",FALSE
-"drhm-05",2012,"David Smith","Judy Smith",NA,30,196,"2012-05-27",FALSE
-"drhm-05",2013,"David Smith","Judy Smith",NA,35,193,"2013-06-09",FALSE
-"drhm-05",2014,"David Smith","Judy Smith",NA,33,225,"2014-06-08",FALSE
-"drhm-05",2015,"David Smith","Judy Smith",NA,32,224,"2015-05-24",FALSE
-"drhm-05",2016,"David Smith","Judy Smith",NA,28,188,"2016-05-22",FALSE
-"drhm-05",2017,"David Smith","Judy Smith",NA,31,194,"2017-06-04",FALSE
-"drhm-05",2018,"David Smith","Judy Smith",NA,28,172,"2018-06-03",FALSE
-"drhm-05",2019,"David Smith","Judy Smith",NA,32,229,"2019-05-26",FALSE
-"drhm-05",2020,"David Smith","Judy Smith",NA,29,205,"2020-05-24",FALSE
-"drhm-05",2021,"David Smith","Judy Smith",NA,30,165,"2021-05-30",FALSE
-"drhm-05",2022,"David Smith","Judy Smith",NA,36,221,"2022-05-29",FALSE
-"drhm-05",2023,"David Smith","Judy Smith",NA,32,175,"2023-06-04",FALSE
-"drhm-05",2024,"David Smith","Judy Smith",NA,37,182,"2024-06-02",FALSE
-"drhm-05",2025,"David Smith","Judy Smith",NA,36,179,"2025-06-22",FALSE
-"drhm-06",2002,"Rick Payne",NA,NA,29,151,NA,FALSE
-"drhm-06",2003,"Rick Payne",NA,NA,26,117,NA,FALSE
-"drhm-06",2004,"Rick Payne",NA,NA,36,159,NA,FALSE
-"drhm-06",2005,"Rick Payne",NA,NA,35,174,NA,FALSE
-"drhm-06",2006,"Rick Payne",NA,NA,33,210,NA,FALSE
-"drhm-06",2007,"Rick Payne",NA,NA,30,179,NA,FALSE
-"drhm-06",2008,"Rick Payne",NA,NA,37,204,NA,FALSE
-"drhm-06",2009,"Rick Payne",NA,NA,32,166,NA,FALSE
-"drhm-06",2010,"Rick Payne",NA,NA,30,172,"2010-06-13",FALSE
-"drhm-06",2011,"David Smith",NA,NA,34,260,"2011-05-29",FALSE
-"drhm-06",2012,"David Smith","Judy Smith",NA,30,238,"2012-05-20",FALSE
-"drhm-06",2013,"David Smith","Judy Smith",NA,33,194,"2013-06-02",FALSE
-"drhm-06",2014,"David Smith","Judy Smith",NA,28,178,"2014-06-01",FALSE
-"drhm-06",2015,"David Smith","Judy Smith",NA,32,203,"2015-05-17",FALSE
-"drhm-06",2016,"David Smith","Judy Smith",NA,29,183,"2016-05-15",FALSE
-"drhm-06",2017,"David Smith","Judy Smith",NA,33,171,"2017-05-29",FALSE
-"drhm-06",2018,"David Smith","Judy Smith",NA,37,186,"2018-05-27",FALSE
-"drhm-06",2019,"David Smith","Judy Smith",NA,34,207,"2019-05-19",FALSE
-"drhm-06",2020,"David Smith","Judy Smith",NA,35,206,"2020-05-17",FALSE
-"drhm-06",2021,"David Smith","Judy Smith",NA,33,190,"2021-05-23",FALSE
-"drhm-06",2022,"David Smith","Judy Smith",NA,34,186,"2022-05-22",FALSE
-"drhm-06",2023,"David Smith","Judy Smith",NA,31,221,"2023-06-03",FALSE
-"drhm-06",2024,"David Smith","Judy Smith",NA,29,188,"2024-05-27",FALSE
-"drhm-06",2025,"David Smith","Judy Smith",NA,34,190,"2025-05-18",FALSE
-"drhm-07",2002,"Brian Strong",NA,NA,44,193,NA,FALSE
-"drhm-07",2003,"Brian Strong",NA,NA,41,153,NA,FALSE
-"drhm-07",2004,"Brian Strong",NA,NA,40,162,NA,FALSE
-"drhm-07",2005,"Brian Strong",NA,NA,45,193,NA,FALSE
-"drhm-07",2006,"Brian Strong",NA,NA,38,176,NA,FALSE
-"drhm-07",2007,"Brian Strong",NA,NA,45,181,NA,FALSE
-"drhm-07",2008,"Brian Strong",NA,NA,33,167,NA,FALSE
-"drhm-07",2009,"Brian Strong",NA,NA,33,154,NA,FALSE
-"drhm-07",2010,"Brian Strong",NA,NA,39,161,"2010-06-15",FALSE
-"drhm-07",2011,"Brian Strong",NA,NA,36,153,"2011-06-16",FALSE
-"drhm-07",2012,"Brian Strong",NA,NA,34,147,"2012-06-12",FALSE
-"drhm-07",2013,"Brian Strong",NA,NA,39,143,"2013-06-20",FALSE
-"drhm-07",2015,"Brian Strong",NA,NA,34,162,"2015-06-24",FALSE
-"drhm-07",2016,"Brian Strong",NA,NA,36,136,"2016-06-25",FALSE
-"drhm-07",2017,"Brian Strong",NA,NA,38,175,"2017-06-17",FALSE
-"drhm-07",2018,"Brian Strong",NA,NA,37,160,"2018-06-17",FALSE
-"drhm-07",2019,"Brian Strong",NA,NA,38,164,"2019-06-23",FALSE
-"drhm-07",2020,"Brian Strong",NA,NA,37,155,"2020-06-14",FALSE
-"drhm-07",2021,"Brian Strong",NA,NA,37,179,"2021-06-18",FALSE
-"drhm-07",2022,"Brian Strong",NA,NA,48,195,"2022-06-26",FALSE
-"drhm-07",2023,"Noah Rokoske",NA,NA,44,234,"2023-06-28",FALSE
-"drhm-07",2024,"William Mackin",NA,NA,35,188,"2024-06-26",FALSE
-"drhm-07",2025,"Noah Rokoske",NA,NA,52,328,"2025-06-01",FALSE
-"drhm-08",2002,"Brian Strong",NA,NA,43,223,NA,FALSE
-"drhm-08",2003,"Brian Bockhahn",NA,NA,40,230,NA,FALSE
-"drhm-08",2004,"Brian Bockhahn",NA,NA,32,194,NA,FALSE
-"drhm-08",2005,"Brian Bockhahn",NA,NA,43,227,NA,FALSE
-"drhm-08",2006,"Brian Bockhahn",NA,NA,42,228,NA,FALSE
-"drhm-08",2007,"Brian Bockhahn",NA,NA,28,155,NA,FALSE
-"drhm-08",2008,"Brian Bockhahn",NA,NA,34,212,NA,FALSE
-"drhm-08",2011,"Brian Bockhahn",NA,NA,37,244,"2011-06-19",FALSE
-"drhm-08",2012,"Brian Bockhahn",NA,NA,41,301,"2012-06-10",FALSE
-"drhm-08",2013,"Brian Bockhahn",NA,NA,38,311,"2013-06-16",FALSE
-"drhm-08",2014,"Brian Bockhahn",NA,NA,42,312,"2014-06-01",FALSE
-"drhm-08",2015,"Brian Bockhahn",NA,NA,41,275,"2015-06-14",FALSE
-"drhm-08",2016,"Brian Bockhahn",NA,NA,42,468,"2016-06-19",FALSE
-"drhm-08",2017,"Brian Bockhahn",NA,NA,42,324,"2017-06-18",FALSE
-"drhm-08",2018,"Brian Bockhahn",NA,NA,44,280,"2018-06-03",FALSE
-"drhm-08",2019,"Brian Bockhahn",NA,NA,43,273,"2019-06-16",FALSE
-"drhm-08",2020,"Brian Bockhahn",NA,NA,38,233,"2020-05-31",FALSE
-"drhm-08",2021,"Brian Bockhahn",NA,NA,47,245,"2021-06-06",FALSE
-"drhm-08",2022,"Brian Bockhahn",NA,NA,41,283,"2022-06-19",FALSE
-"drhm-08",2023,"Brian Bockhahn",NA,NA,43,260,"2023-06-11",FALSE
-"drhm-08",2024,"Brian Bockhahn",NA,NA,43,256,"2024-06-09",FALSE
-"drhm-08",2025,"Noah Rokoske",NA,NA,44,321,"2025-06-08",FALSE
-"orng-01",1999,"Ginger Travis","Barb Brooks",NA,45,255,NA,FALSE
-"orng-01",2000,"Ginger Travis","Cathy Packer",NA,39,220,NA,FALSE
-"orng-01",2001,"Ginger Travis","Cathy Packer",NA,41,243,NA,FALSE
-"orng-01",2002,"Ginger Travis","Cathy Packer",NA,41,231,NA,FALSE
-"orng-01",2003,"Ginger Travis","Doug Shadwick",NA,54,376,NA,FALSE
-"orng-01",2004,"Ginger Travis","Doug Shadwick",NA,58,405,"2004-06-06",FALSE
-"orng-01",2005,"Ginger Travis","Cathy Packer",NA,54,419,"2005-05-23",FALSE
-"orng-01",2006,"Ginger Travis","Cathy Packer",NA,42,216,"2006-06-10",FALSE
-"orng-01",2007,"Ginger Travis","Doug Shadwick",NA,42,211,"2007-05-26",FALSE
-"orng-01",2008,"Ginger Travis","Cathy Packer",NA,43,190,"2008-06-15",FALSE
-"orng-01",2009,"Ginger Travis","Cathy Packer",NA,34,206,"2009-06-07",FALSE
-"orng-01",2010,"Norman Budnitz","Michael Schultz",NA,54,289,"2010-06-17",FALSE
-"orng-01",2011,"Norman Budnitz","Michael Schultz",NA,56,333,"2011-05-22",FALSE
-"orng-01",2012,"Norman Budnitz","Michael Schultz",NA,51,343,"2012-06-10",FALSE
-"orng-01",2013,"Norman Budnitz","Michael Schultz",NA,45,287,"2013-06-13",FALSE
-"orng-01",2014,"Norman Budnitz","Michael Schultz",NA,45,249,"2014-06-22",FALSE
-"orng-01",2015,"Norman Budnitz","Michael Schultz",NA,55,345,"2015-05-24",FALSE
-"orng-01",2016,"Norman Budnitz","Michael Schultz",NA,49,291,"2016-05-16",FALSE
-"orng-01",2017,"Norman Budnitz","Michael Schultz",NA,52,281,"2017-05-28",FALSE
-"orng-01",2018,"Norman Budnitz","Michael Schultz",NA,43,315,"2018-05-28",FALSE
-"orng-01",2019,"Norman Budnitz","Michael Schultz",NA,45,284,"2019-05-18",FALSE
-"orng-01",2020,"Norman Budnitz",NA,NA,39,226,"2020-05-24",FALSE
-"orng-01",2021,"Norman Budnitz","Michael Schultz",NA,41,255,"2021-05-31",FALSE
-"orng-01",2022,"Norman Budnitz","Michael Schultz",NA,51,325,"2022-05-30",FALSE
-"orng-01",2023,"Norman Budnitz","Michael Schultz",NA,44,262,"2023-06-03",FALSE
-"orng-01",2024,"Michael Schultz","Norman Budnitz",NA,43,264,"2024-05-26",FALSE
-"orng-01",2025,"Michael Schultz","Norm Budnitz",NA,46,210,"2025-06-13",FALSE
-"orng-02",1999,"Barb Brooks",NA,NA,35,167,NA,FALSE
-"orng-02",2000,"Barb Brooks",NA,NA,32,170,NA,FALSE
-"orng-02",2001,"Barb Brooks",NA,NA,31,199,NA,FALSE
-"orng-02",2002,"Barb Brooks",NA,NA,41,238,NA,FALSE
-"orng-02",2003,"Barb Brooks",NA,NA,34,183,NA,FALSE
-"orng-02",2004,"Barb Brooks",NA,NA,34,186,"2004-05-28",FALSE
-"orng-02",2005,"Barb Brooks",NA,NA,34,189,"2005-05-08",TRUE
-"orng-02",2006,"Barb Brooks",NA,NA,32,214,"2006-05-28",FALSE
-"orng-02",2007,"Barb Brooks",NA,NA,27,187,"2007-05-27",FALSE
-"orng-02",2008,"Barb Brooks",NA,NA,36,157,"2008-06-06",FALSE
-"orng-02",2009,"Barb Brooks",NA,NA,31,149,"2009-06-03",FALSE
-"orng-02",2010,"Barb Brooks",NA,NA,35,132,"2010-05-29",FALSE
-"orng-02",2011,"Barb Brooks",NA,NA,31,171,"2011-05-30",FALSE
-"orng-02",2012,"Barb Brooks",NA,NA,27,168,"2012-05-28",FALSE
-"orng-02",2013,"Barb Brooks",NA,NA,25,132,"2013-05-26",FALSE
-"orng-02",2014,"Barb Brooks",NA,NA,20,128,"2014-05-25",FALSE
-"orng-02",2015,"Barb Brooks",NA,NA,33,147,"2015-05-31",FALSE
-"orng-02",2016,"Barb Brooks",NA,NA,21,93,"2016-05-29",FALSE
-"orng-02",2017,"Barb Brooks",NA,NA,19,83,"2017-05-28",FALSE
-"orng-02",2018,"Barb Brooks",NA,NA,24,108,"2018-05-27",FALSE
-"orng-02",2019,"Barb Brooks",NA,NA,22,65,"2019-06-09",FALSE
-"orng-02",2020,"Barb Brooks",NA,NA,16,73,"2020-05-24",FALSE
-"orng-02",2021,"Barb Brooks",NA,NA,25,92,"2021-06-06",FALSE
-"orng-02",2022,"Barb Brooks",NA,NA,24,82,"2022-06-18",TRUE
-"orng-02",2023,"Barb Brooks",NA,NA,25,93,"2023-06-03",FALSE
-"orng-02",2024,"Barb Brooks","William Mackin",NA,39,217,"2024-05-26",FALSE
-"orng-02",2025,"Barb Brooks","Will Mackin",NA,39,212,"2025-05-26",FALSE
-"orng-03",1999,"Kate Finlayson","Karen Piplani",NA,40,347,NA,FALSE
-"orng-03",2000,"Kate Finlayson","Karen Piplani",NA,40,281,NA,FALSE
-"orng-03",2001,"Kate Finlayson","Karen Piplani",NA,43,271,NA,FALSE
-"orng-03",2002,"Kate Finlayson","Karen Piplani",NA,48,272,NA,FALSE
-"orng-03",2003,"Kate Finlayson","Karen Piplani",NA,43,331,NA,FALSE
-"orng-03",2004,"Kate Finlayson","Karen Piplani",NA,45,272,"2004-05-23",FALSE
-"orng-03",2005,"Kate Finlayson","Karen Piplani",NA,45,233,"2005-06-23",FALSE
-"orng-03",2006,"Kate Finlayson","Karen Piplani",NA,46,299,"2006-06-23",FALSE
-"orng-03",2007,"Kate Finlayson","Karen Piplani",NA,43,192,"2007-06-17",FALSE
-"orng-03",2008,"Kate Finlayson","Karen Piplani",NA,42,204,"2008-06-01",FALSE
-"orng-03",2009,"Kate Finlayson","Karen Piplani",NA,40,252,"2009-06-01",FALSE
-"orng-03",2011,"Karen Piplani",NA,NA,21,120,"2011-06-12",FALSE
-"orng-03",2014,"Barb Brooks",NA,NA,23,97,"2014-06-01",FALSE
-"orng-03",2015,"Barb Brooks",NA,NA,28,142,"2015-06-07",FALSE
-"orng-03",2016,"Barb Brooks",NA,NA,24,82,"2016-06-05",FALSE
-"orng-03",2017,"Barb Brooks",NA,NA,23,120,"2017-06-04",FALSE
-"orng-03",2018,"Barb Brooks",NA,NA,21,98,"2018-06-03",FALSE
-"orng-03",2019,"Bradley Saul","Charity Kirk",NA,29,203,"2019-06-29",FALSE
-"orng-03",2020,"Bradley Saul",NA,NA,31,179,"2020-06-14",FALSE
-"orng-03",2021,"Bradley Saul",NA,NA,28,217,"2021-06-13",FALSE
-"orng-03",2022,"Bradley Saul",NA,NA,31,211,"2022-06-12",FALSE
-"orng-03",2023,"Bradley Saul",NA,NA,39,212,"2023-06-11",FALSE
-"orng-03",2024,"Bradley Saul",NA,NA,44,225,"2024-06-16",FALSE
-"orng-03",2025,"Bradley Saul","Evan Sopko",NA,41,225,"2025-06-22",FALSE
-"orng-04",1999,"Kent Fiala",NA,NA,37,194,NA,FALSE
-"orng-04",2000,"Kent Fiala",NA,NA,39,197,NA,FALSE
-"orng-04",2001,"Kent Fiala",NA,NA,45,231,NA,FALSE
-"orng-04",2002,"Kent Fiala",NA,NA,41,184,NA,FALSE
-"orng-04",2003,"Kent Fiala",NA,NA,36,194,NA,FALSE
-"orng-04",2004,"Kent Fiala",NA,NA,40,208,"2004-06-06",FALSE
-"orng-04",2005,"Kent Fiala",NA,NA,45,238,"2005-05-29",FALSE
-"orng-04",2006,"Kent Fiala",NA,NA,37,169,"2006-05-27",FALSE
-"orng-04",2007,"Kent Fiala",NA,NA,35,168,"2007-05-28",FALSE
-"orng-04",2008,"Kent Fiala",NA,NA,36,162,"2008-05-25",FALSE
-"orng-04",2009,"Kent Fiala",NA,NA,27,155,NA,FALSE
-"orng-04",2010,"Will Cook","Catherine Carter",NA,40,235,"2010-07-18",TRUE
-"orng-04",2011,"Jill Paul","Tom Driscoll",NA,52,439,"2011-06-19",FALSE
-"orng-04",2013,"Allen Hurlbert",NA,NA,39,210,"2013-06-09",FALSE
-"orng-04",2014,"Allen Hurlbert",NA,NA,36,178,"2014-06-15",FALSE
-"orng-04",2015,"Allen Hurlbert",NA,NA,36,208,"2015-05-31",FALSE
-"orng-04",2016,"Allen Hurlbert",NA,NA,31,151,"2016-06-05",FALSE
-"orng-04",2017,"Allen Hurlbert",NA,NA,32,184,"2017-06-04",FALSE
-"orng-04",2018,"Allen Hurlbert","Grace Di Cecco","Allison Duprey",37,228,"2018-06-03",FALSE
-"orng-04",2019,"Allen Hurlbert","Sarah Pollack",NA,45,228,"2019-05-26",FALSE
-"orng-04",2020,"Allen Hurlbert",NA,NA,40,231,"2020-05-31",FALSE
-"orng-04",2021,"Allen Hurlbert",NA,NA,40,225,"2021-06-06",FALSE
-"orng-04",2022,"Allen Hurlbert","Ashley Moore","Ellen Weaver",47,233,"2022-06-05",FALSE
-"orng-04",2023,"Allen Hurlbert",NA,NA,39,208,"2023-06-03",FALSE
-"orng-04",2024,"Allen Hurlbert",NA,NA,43,243,"2024-06-02",FALSE
-"orng-04",2025,"Allen Hurlbert","Ivara Goulden","Benjamin Acosta",41,248,"2025-06-01",FALSE
-"orng-05",1999,"Will Cook",NA,NA,54,420,"1999-06-12",FALSE
-"orng-05",2000,"Will Cook",NA,NA,49,395,"2000-05-29",FALSE
-"orng-05",2001,"Will Cook",NA,NA,59,463,"2001-06-09",FALSE
-"orng-05",2002,"Will Cook",NA,NA,48,375,"2002-06-15",FALSE
-"orng-05",2003,"Will Cook",NA,NA,56,341,"2003-06-21",FALSE
-"orng-05",2004,"Will Cook",NA,NA,56,478,"2004-05-29",FALSE
-"orng-05",2005,"Will Cook",NA,NA,49,363,"2005-06-11",FALSE
-"orng-05",2006,"Will Cook",NA,NA,53,389,"2006-06-24",FALSE
-"orng-05",2007,"Will Cook",NA,NA,51,333,"2007-06-17",FALSE
-"orng-05",2008,"Will Cook",NA,NA,57,424,"2008-06-07",FALSE
-"orng-05",2009,"Will Cook",NA,NA,58,424,"2009-06-20",FALSE
-"orng-05",2010,"Will Cook","Catherine Anderson",NA,51,377,"2010-05-30",FALSE
-"orng-05",2011,"Will Cook","Catherine Carter",NA,51,433,"2011-06-25",FALSE
-"orng-05",2012,"Will Cook",NA,NA,60,423,"2012-06-02",FALSE
-"orng-05",2013,"Will Cook",NA,NA,57,415,"2013-06-02",FALSE
-"orng-05",2014,"Will Cook",NA,NA,53,429,"2014-06-29",FALSE
-"orng-05",2015,"Will Cook",NA,NA,54,385,"2015-05-31",FALSE
-"orng-05",2016,"Will Cook",NA,NA,53,356,"2016-06-05",FALSE
-"orng-05",2017,"Will Cook",NA,NA,54,348,"2017-06-10",FALSE
-"orng-05",2018,"Will Cook",NA,NA,53,345,"2018-06-24",FALSE
-"orng-05",2019,"Will Cook",NA,NA,59,369,"2019-06-02",FALSE
-"orng-05",2020,"Will Cook",NA,NA,55,455,"2020-06-14",FALSE
-"orng-05",2021,"Will Cook",NA,NA,58,527,"2021-06-19",FALSE
-"orng-05",2022,"Will Cook",NA,NA,58,385,"2022-06-25",FALSE
-"orng-05",2023,"Will Cook",NA,NA,61,365,"2023-06-11",FALSE
-"orng-05",2024,"Will Cook",NA,NA,58,382,"2024-06-09",FALSE
-"orng-05",2025,"Will Cook",NA,NA,57,409,"2025-06-21",FALSE
-"orng-06",1999,"Judy Murray","Robin Moran",NA,34,250,NA,FALSE
-"orng-06",2000,"Judy Murray","Robin Moran",NA,38,245,NA,FALSE
-"orng-06",2001,"Judy Murray","Robin Moran",NA,38,289,NA,FALSE
-"orng-06",2002,"Robin Moran","Judy Murray",NA,32,237,NA,FALSE
-"orng-06",2003,"Robin Moran","Judy Murray",NA,40,245,NA,FALSE
-"orng-06",2004,"Robin Moran","Judy Murray",NA,38,254,"2004-06-06",FALSE
-"orng-06",2005,"Robin Moran","Judy Murray",NA,34,215,"2005-06-21",FALSE
-"orng-06",2006,"Robin Moran","Judy Murray",NA,38,253,"2006-05-28",FALSE
-"orng-06",2007,"Robin Moran","Judy Murray",NA,42,257,"2007-05-27",FALSE
-"orng-06",2008,"Robin Moran","Judy Murray",NA,41,223,"2008-05-18",FALSE
-"orng-06",2009,"Robin Moran","Judy Murray",NA,38,192,"2009-06-07",FALSE
-"orng-06",2010,"Robin Moran","Judy Murray",NA,36,193,"2010-06-08",FALSE
-"orng-06",2011,"Robin Moran","Judy Murray",NA,38,204,"2011-05-30",FALSE
-"orng-06",2012,"Judy Murray","Robin Moran",NA,41,209,"2012-06-03",FALSE
-"orng-06",2013,"Robin Moran","Judy Murray",NA,38,159,"2013-06-02",FALSE
-"orng-06",2014,"Robin Moran","Judy Murray",NA,38,212,"2014-06-08",FALSE
-"orng-06",2015,"Judy Murray",NA,NA,28,165,"2015-06-07",FALSE
-"orng-06",2016,"Robin Moran","Judy Murray",NA,31,155,"2016-05-15",FALSE
-"orng-06",2017,"Judy Murray","Robin Moran",NA,30,155,"2017-05-28",FALSE
-"orng-06",2019,"Karen Hogan","Robin Moran",NA,35,186,"2019-06-09",FALSE
-"orng-06",2020,"Karen Hogan","Mark Hogan",NA,38,248,"2020-06-07",FALSE
-"orng-06",2021,"Karen Hogan",NA,NA,40,236,"2021-06-06",FALSE
-"orng-06",2022,"Karen Hogan",NA,NA,38,201,"2022-06-05",FALSE
-"orng-06",2023,"Karen Hogan",NA,NA,35,182,"2023-06-09",FALSE
-"orng-06",2024,"Karen Hogan",NA,NA,39,221,"2024-06-02",FALSE
-"orng-06",2025,"Karen Hogan",NA,NA,33,190,"2025-06-07",FALSE
-"orng-07",1999,"Betty King",NA,NA,40,293,NA,FALSE
-"orng-07",2000,"Betty King",NA,NA,41,284,NA,FALSE
-"orng-07",2001,"Betty King",NA,NA,44,272,NA,FALSE
-"orng-07",2002,"Betty King",NA,NA,44,300,NA,FALSE
-"orng-07",2003,"Betty King",NA,NA,36,268,NA,FALSE
-"orng-07",2004,"Betty King",NA,NA,50,342,"2004-05-22",FALSE
-"orng-07",2005,"Betty King",NA,NA,45,265,"2005-05-23",FALSE
-"orng-07",2006,"Betty King",NA,NA,49,343,NA,FALSE
-"orng-07",2007,"Betty King",NA,NA,47,298,"2007-05-21",FALSE
-"orng-07",2008,"Betty King",NA,NA,43,338,"2008-05-28",FALSE
-"orng-07",2009,"Betty King",NA,NA,40,260,"2009-05-31",FALSE
-"orng-07",2010,"Betty King",NA,NA,40,261,"2010-05-23",FALSE
-"orng-07",2011,"Betty King",NA,NA,42,260,"2011-05-15",FALSE
-"orng-07",2012,"Betty King",NA,NA,42,313,"2012-05-17",FALSE
-"orng-07",2014,"Brian Bockhahn",NA,NA,51,373,"2014-05-27",FALSE
-"orng-07",2015,"Brian Bockhahn",NA,NA,48,327,"2015-05-31",FALSE
-"orng-07",2016,"Brian Bockhahn",NA,NA,48,303,"2016-06-26",FALSE
-"orng-07",2017,"Brian Bockhahn",NA,NA,53,334,"2017-06-06",FALSE
-"orng-07",2018,"Brian Bockhahn",NA,NA,49,294,"2018-06-05",FALSE
-"orng-07",2019,"Brian Bockhahn",NA,NA,47,280,"2019-05-23",FALSE
-"orng-07",2020,"Brian Bockhahn",NA,NA,42,232,"2020-06-01",FALSE
-"orng-07",2021,"Brian Bockhahn",NA,NA,50,243,"2021-06-03",FALSE
-"orng-07",2022,"Brian Bockhahn",NA,NA,43,284,"2022-06-09",FALSE
-"orng-07",2023,"Brian Bockhahn",NA,NA,53,279,"2023-06-06",FALSE
-"orng-07",2024,"Brian Bockhahn",NA,NA,50,294,"2024-06-06",FALSE
-"orng-07",2025,"Marc Howlett","Laurie Howlett","Ezra Howlett",53,271,"2025-06-22",FALSE
-"orng-08",1999,"Barb Brooks",NA,NA,39,245,NA,FALSE
-"orng-08",2000,"Barb Brooks",NA,NA,30,151,NA,FALSE
-"orng-08",2001,"Barb Brooks",NA,NA,37,178,NA,FALSE
-"orng-08",2002,"Barb Brooks",NA,NA,31,140,NA,FALSE
-"orng-08",2003,"Barb Brooks",NA,NA,23,110,NA,FALSE
-"orng-08",2004,"Barb Brooks",NA,NA,25,182,"2004-06-02",FALSE
-"orng-08",2005,"Barb Brooks",NA,NA,32,169,"2005-05-15",FALSE
-"orng-08",2006,"Barb Brooks",NA,NA,28,191,"2006-05-21",FALSE
-"orng-08",2007,"Barb Brooks",NA,NA,28,180,"2007-05-20",FALSE
-"orng-08",2008,"Barb Brooks",NA,NA,30,196,"2008-06-01",FALSE
-"orng-08",2009,"Barb Brooks",NA,NA,27,165,"2009-05-29",FALSE
-"orng-08",2010,"Barb Brooks",NA,NA,33,152,"2010-06-01",FALSE
-"orng-08",2011,"Barb Brooks",NA,NA,28,188,"2011-06-05",FALSE
-"orng-08",2012,"Barb Brooks",NA,NA,29,167,"2012-05-13",TRUE
-"orng-08",2013,"Barb Brooks",NA,NA,24,98,"2013-05-19",FALSE
-"orng-08",2014,"Barb Brooks",NA,NA,24,111,"2014-05-18",FALSE
-"orng-08",2015,"Barb Brooks",NA,NA,30,124,"2015-05-24",FALSE
-"orng-08",2016,"Barb Brooks",NA,NA,16,88,"2016-05-22",FALSE
-"orng-08",2017,"Barb Brooks",NA,NA,20,97,"2017-05-21",FALSE
-"orng-08",2018,"Barb Brooks",NA,NA,16,66,"2018-05-20",FALSE
-"orng-08",2019,"Barb Brooks",NA,NA,17,72,"2019-06-02",FALSE
-"orng-08",2020,"Barb Brooks",NA,NA,20,70,"2020-05-17",FALSE
-"orng-08",2021,"Barb Brooks",NA,NA,24,92,"2021-05-16",FALSE
-"orng-08",2022,"Barb Brooks",NA,NA,34,130,"2022-06-04",FALSE
-"orng-08",2023,"Barb Brooks",NA,NA,25,77,"2023-05-20",FALSE
-"orng-08",2024,"Barb Brooks","William Mackin",NA,37,150,"2024-05-19",FALSE
-"orng-08",2025,"Barb Brooks","Will Mackin",NA,42,239,"2025-05-18",FALSE
-"orng-09",1999,"Shantanu Phukan","T. Williams",NA,44,264,NA,FALSE
-"orng-09",2000,"Sandy Cash",NA,NA,37,158,NA,FALSE
-"orng-09",2001,"Shantanu Phukan",NA,NA,51,274,NA,FALSE
-"orng-09",2002,"Shantanu Phukan","Alan Johnston",NA,43,300,NA,FALSE
-"orng-09",2003,"Shantanu Phukan",NA,NA,NA,NA,NA,FALSE
-"orng-09",2004,"Shantanu Phukan",NA,NA,42,186,"2004-06-24",FALSE
-"orng-09",2005,"Shantanu Phukan",NA,NA,45,249,"2005-06-07",FALSE
-"orng-09",2006,"?",NA,NA,33,248,"2006-06-16",FALSE
-"orng-09",2007,"?",NA,NA,36,211,"2007-06-26",FALSE
-"orng-09",2008,"?",NA,NA,39,283,"2008-06-27",FALSE
-"orng-09",2009,"?",NA,NA,37,228,"2009-06-28",FALSE
-"orng-09",2011,"David Curtin",NA,NA,32,228,"2011-06-12",FALSE
-"orng-09",2012,"David Curtin",NA,NA,36,260,"2012-06-10",FALSE
-"orng-09",2013,"David Curtin",NA,NA,35,244,"2013-06-16",FALSE
-"orng-09",2014,"David Curtin",NA,NA,37,305,"2014-05-25",FALSE
-"orng-09",2015,"David Curtin",NA,NA,35,213,"2015-05-24",FALSE
-"orng-09",2016,"David Curtin",NA,NA,32,223,"2016-06-09",FALSE
-"orng-09",2019,"Karen Hogan","Mark Hogan",NA,33,192,"2019-06-10",FALSE
-"orng-09",2020,"Karen Hogan","Mark Hogan",NA,39,205,"2020-06-08",FALSE
-"orng-09",2021,"Karen Hogan",NA,NA,37,174,"2021-06-07",FALSE
-"orng-09",2022,"Karen Hogan",NA,NA,42,209,"2022-06-04",FALSE
-"orng-09",2023,"Karen Hogan",NA,NA,33,171,"2023-06-07",FALSE
-"orng-09",2024,"Karen Hogan",NA,NA,41,212,"2024-06-05",FALSE
-"orng-09",2025,"Karen Hogan",NA,NA,38,156,"2025-06-06",FALSE
-"orng-10",1999,"Will Cook",NA,NA,54,392,"1999-06-13",FALSE
-"orng-10",2000,"Will Cook",NA,NA,48,319,"2000-06-11",FALSE
-"orng-10",2001,"Will Cook",NA,NA,50,400,"2001-06-10",FALSE
-"orng-10",2002,"Will Cook",NA,NA,50,358,"2002-06-16",FALSE
-"orng-10",2003,"Will Cook",NA,NA,45,357,"2003-06-22",FALSE
-"orng-10",2004,"Will Cook",NA,NA,51,319,"2004-05-31",FALSE
-"orng-10",2005,"Will Cook","Doug Shadwick",NA,52,365,"2005-06-12",FALSE
-"orng-10",2006,"Doug Shadwick",NA,NA,46,304,"2006-06-18",FALSE
-"orng-10",2007,"Doug Shadwick",NA,NA,51,314,"2007-06-10",FALSE
-"orng-10",2008,"Doug Shadwick",NA,NA,47,369,"2008-06-01",FALSE
-"orng-10",2009,"Doug Shadwick",NA,NA,43,249,"2009-06-07",FALSE
-"orng-10",2012,"Nathan Swick",NA,NA,42,425,"2012-06-17",FALSE
-"orng-10",2013,"Nathan Swick",NA,NA,41,309,"2013-05-26",FALSE
-"orng-10",2016,"Barb Brooks",NA,NA,14,70,"2016-06-12",FALSE
-"orng-10",2017,"Barb Brooks",NA,NA,15,105,"2017-06-11",FALSE
-"orng-10",2018,"Barb Brooks",NA,NA,18,102,"2018-05-28",FALSE
-"orng-10",2019,"Vern Bothwell","Nan Dewire",NA,33,213,"2019-06-06",FALSE
-"orng-10",2020,"Vern Bothwell",NA,NA,28,158,"2020-06-24",FALSE
-"orng-10",2021,"Vern Bothwell",NA,NA,30,185,"2021-06-01",FALSE
-"orng-10",2023,"Allen Hurlbert",NA,NA,42,254,"2023-06-25",FALSE
-"orng-10",2024,"Paul Taillie",NA,NA,51,282,"2024-06-02",FALSE
-"orng-10",2025,"Paul Taillie",NA,NA,47,251,"2025-05-31",FALSE
-"orng-11",1999,"Marsha Stephens",NA,NA,42,397,NA,FALSE
-"orng-11",2000,"Marsha Stephens",NA,NA,37,291,NA,FALSE
-"orng-11",2001,"Marsha Stephens",NA,NA,38,264,NA,FALSE
-"orng-11",2002,"Marsha Stephens",NA,NA,37,266,NA,FALSE
-"orng-11",2003,"Marsha Stephens",NA,NA,19,175,NA,FALSE
-"orng-11",2004,"Marsha Stephens",NA,NA,24,201,"2004-06-06",FALSE
-"orng-11",2005,"Marsha Stephens",NA,NA,31,199,"2005-06-26",FALSE
-"orng-11",2006,"Marsha Stephens",NA,NA,40,337,"2006-06-26",FALSE
-"orng-11",2007,"?",NA,NA,34,238,"2007-06-16",FALSE
-"orng-11",2008,"?",NA,NA,26,254,"2008-06-07",FALSE
-"orng-11",2009,"?",NA,NA,26,216,"2009-06-13",FALSE
-"orng-11",2012,"Ali Iyoob",NA,NA,NA,NA,NA,FALSE
-"orng-11",2017,"Loren Hintz",NA,NA,36,152,"2017-06-18",FALSE
-"orng-11",2018,"Loren Hintz",NA,NA,40,137,"2018-06-02",FALSE
-"orng-11",2019,"Loren Hintz",NA,NA,38,169,"2019-06-16",FALSE
-"orng-11",2020,"Loren Hintz",NA,NA,39,211,"2020-06-14",FALSE
-"orng-11",2021,"Loren Hintz",NA,NA,38,181,"2021-06-05",FALSE
-"orng-11",2022,"Loren Hintz","Margaret Vimmerstedt",NA,40,191,"2022-06-04",FALSE
-"orng-11",2023,"Suzanne Roberts","Vicki Nebes",NA,48,298,"2023-06-03",FALSE
-"orng-11",2024,"Suzanne Roberts","Vicki Nebes",NA,46,289,"2024-06-16",FALSE
-"orng-11",2025,"Suzanne Roberts",NA,NA,45,231,"2025-06-15",FALSE
-"orng-12",1999,"Haven Wiley",NA,NA,45,330,NA,FALSE
-"orng-12",2000,NA,"Haven Wiley",NA,37,297,NA,FALSE
-"orng-12",2001,NA,"Haven Wiley",NA,42,314,NA,FALSE
-"orng-12",2002,"Haven Wiley",NA,NA,36,311,NA,FALSE
-"orng-12",2003,"Haven Wiley",NA,NA,38,284,NA,FALSE
-"orng-12",2004,"Haven Wiley",NA,NA,44,283,"2004-05-23",FALSE
-"orng-12",2005,"Haven Wiley",NA,NA,33,259,"2005-06-11",FALSE
-"orng-12",2006,"Haven Wiley",NA,NA,44,298,"2006-05-21",FALSE
-"orng-12",2007,"Haven Wiley",NA,NA,39,331,"2007-06-10",FALSE
-"orng-12",2008,"Haven Wiley",NA,NA,40,326,"2008-06-08",FALSE
-"orng-12",2009,"Haven Wiley",NA,NA,32,271,"2009-07-05",TRUE
-"orng-12",2010,"Haven Wiley",NA,NA,39,314,"2010-05-31",FALSE
-"orng-12",2011,"Haven Wiley",NA,NA,36,252,"2011-05-29",FALSE
-"orng-12",2012,"Haven Wiley",NA,NA,37,239,"2012-06-17",FALSE
-"orng-12",2013,"Haven Wiley",NA,NA,26,230,"2013-06-02",FALSE
-"orng-12",2014,"Haven Wiley",NA,NA,30,216,"2014-06-08",FALSE
-"orng-12",2015,"Haven Wiley",NA,NA,27,175,"2015-06-28",FALSE
-"orng-12",2016,"Haven Wiley",NA,NA,32,210,"2016-05-22",FALSE
-"orng-12",2017,"Haven Wiley",NA,NA,32,181,"2017-05-28",FALSE
-"orng-12",2018,"Haven Wiley",NA,NA,29,177,"2018-05-27",FALSE
-"orng-12",2019,"Haven Wiley",NA,NA,34,225,"2019-06-02",FALSE
-"orng-12",2020,"Haven Wiley",NA,NA,40,215,"2020-05-24",FALSE
-"orng-12",2021,"Haven Wiley",NA,NA,37,183,"2021-06-27",FALSE
-"orng-12",2022,"Haven Wiley",NA,NA,29,199,"2022-05-22",FALSE
-"orng-12",2023,"Haven Wiley",NA,NA,29,155,"2023-05-21",FALSE
-"orng-12",2024,"Haven Wiley",NA,NA,29,147,"2024-06-02",FALSE
-"orng-12",2025,"Haven Wiley","Minna Wiley",NA,26,109,"2025-05-25",FALSE
+"route","year","obs1","obs2","obs3","standardized_observers","total_species","total_abundance","date","source","nstops","stop_level","protocol_violation"
+"cthm-01",2000,"Patsy Bailey","Marsha Stephens",NA,"Marsha Stephens, Patsy Bailey",34,220,"2000-06-11","transcribed_paper",20,TRUE,FALSE
+"cthm-01",2001,"Patsy Bailey","Marsha Stephens",NA,"Marsha Stephens, Patsy Bailey",47,334,"2001-06-09","transcribed_paper",20,TRUE,FALSE
+"cthm-01",2002,"Marsha Stephens","Patsy Bailey",NA,"Marsha Stephens, Patsy Bailey",48,374,"2002-06-09","observer_xls",20,TRUE,FALSE
+"cthm-01",2003,"Patsy Bailey","Marsha Stephens",NA,"Marsha Stephens, Patsy Bailey",36,244,"2003-05-18","observer_xls",20,TRUE,FALSE
+"cthm-01",2004,"Patsy Bailey","Marsha Stephens",NA,"Marsha Stephens, Patsy Bailey",37,210,"2004-06-13","observer_xls",20,TRUE,FALSE
+"cthm-01",2005,"Patsy Bailey","Marsha Stephens",NA,"Marsha Stephens, Patsy Bailey",41,250,"2005-06-19","observer_xls",20,TRUE,FALSE
+"cthm-01",2006,"Patsy Bailey","Marsha Stephens",NA,"Marsha Stephens, Patsy Bailey",41,300,"2006-06-18","observer_xls",20,TRUE,FALSE
+"cthm-01",2007,"Patsy Bailey",NA,NA,"Patsy Bailey",44,283,"2007-06-17","observer_xls",20,TRUE,FALSE
+"cthm-01",2008,"Patsy Bailey",NA,NA,"Patsy Bailey",47,284,"2008-05-25","observer_xls",20,TRUE,FALSE
+"cthm-01",2009,"Patsy Bailey",NA,NA,"Patsy Bailey",36,181,"2009-06-11","observer_xls",20,TRUE,FALSE
+"cthm-01",2010,"Patsy Bailey",NA,NA,"Patsy Bailey",40,251,"2010-06-05","observer_xls",20,TRUE,FALSE
+"cthm-01",2011,"Patsy Bailey","Norman Budnitz",NA,"Norman Budnitz, Patsy Bailey",50,246,"2011-06-05","observer_xls",20,TRUE,FALSE
+"cthm-01",2012,"Patsy Bailey",NA,NA,"Patsy Bailey",45,392,"2012-06-03","ebird",20,FALSE,FALSE
+"cthm-01",2013,"Patsy Bailey",NA,NA,"Patsy Bailey",44,294,"2013-05-26","ebird",20,FALSE,FALSE
+"cthm-01",2014,"Patsy Bailey",NA,NA,"Patsy Bailey",43,288,"2014-05-26","ebird",20,FALSE,FALSE
+"cthm-01",2015,"Patsy Bailey",NA,NA,"Patsy Bailey",47,272,"2015-05-17","ebird",20,FALSE,FALSE
+"cthm-01",2016,"Patsy Bailey",NA,NA,"Patsy Bailey",34,204,"2016-05-22","ebird",20,FALSE,FALSE
+"cthm-01",2017,"Patsy Bailey",NA,NA,"Patsy Bailey",47,266,"2017-06-04","ebird",20,FALSE,FALSE
+"cthm-01",2018,"Patsy Bailey",NA,NA,"Patsy Bailey",40,214,"2018-05-28","ebird",20,FALSE,FALSE
+"cthm-01",2019,"Patsy Bailey",NA,NA,"Patsy Bailey",41,235,"2019-05-27","ebird",20,FALSE,FALSE
+"cthm-01",2020,"Patsy Bailey",NA,NA,"Patsy Bailey",39,213,"2020-05-25","ebird",20,FALSE,FALSE
+"cthm-01",2021,"Patsy Bailey",NA,NA,"Patsy Bailey",44,248,"2021-06-06","ebird",20,TRUE,FALSE
+"cthm-01",2022,"Patsy Bailey",NA,NA,"Patsy Bailey",39,239,"2022-05-22","ebird",20,TRUE,FALSE
+"cthm-01",2023,"Patsy Bailey",NA,NA,"Patsy Bailey",33,146,"2023-05-28","ebird",20,TRUE,FALSE
+"cthm-01",2024,"Patsy Bailey",NA,NA,"Patsy Bailey",42,192,"2024-06-16","ebird",20,TRUE,FALSE
+"cthm-01",2025,"Patsy Bailey",NA,NA,"Patsy Bailey",41,223,"2025-05-25","ebird",20,TRUE,FALSE
+"cthm-02",2000,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",45,297,"2000-05-28","transcribed_paper",20,TRUE,FALSE
+"cthm-02",2001,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",51,347,"2001-06-03","historical",20,FALSE,FALSE
+"cthm-02",2002,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",52,334,"2002-05-26","observer_xls",20,TRUE,FALSE
+"cthm-02",2003,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",41,308,"2003-06-11","observer_xls",20,TRUE,FALSE
+"cthm-02",2004,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",51,269,"2004-05-23","observer_xls",20,TRUE,FALSE
+"cthm-02",2005,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",54,299,"2005-05-22","observer_xls",20,TRUE,FALSE
+"cthm-02",2006,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",48,245,"2006-06-13","observer_xls",20,TRUE,FALSE
+"cthm-02",2007,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",43,302,"2007-05-20","observer_xls",20,TRUE,FALSE
+"cthm-02",2008,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",51,305,"2008-05-25","observer_xls",20,TRUE,FALSE
+"cthm-02",2009,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",47,299,"2009-05-31","observer_xls",20,TRUE,FALSE
+"cthm-02",2010,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",45,264,"2010-06-20","observer_xls",20,TRUE,FALSE
+"cthm-02",2011,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",52,273,"2011-05-15","observer_xls",20,TRUE,FALSE
+"cthm-02",2012,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",53,337,"2012-05-20","observer_xls",20,TRUE,FALSE
+"cthm-02",2013,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",47,263,"2013-06-19","observer_xls",20,TRUE,FALSE
+"cthm-02",2014,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",43,291,"2014-06-15","observer_xls",20,TRUE,FALSE
+"cthm-02",2015,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",45,261,"2015-05-17","observer_xls",20,TRUE,FALSE
+"cthm-02",2016,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",56,286,"2016-05-15","observer_xls",20,TRUE,FALSE
+"cthm-02",2017,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",48,284,"2017-05-29","obs_details",20,TRUE,FALSE
+"cthm-02",2018,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",53,300,"2018-05-27","obs_details",20,TRUE,FALSE
+"cthm-02",2019,"Norman Budnitz","Michael Schultz","Karen Hogan","Karen Hogan, Michael Schultz, Norman Budnitz",48,296,"2019-05-19","obs_details",20,TRUE,FALSE
+"cthm-02",2020,"Norman Budnitz",NA,NA,"Norman Budnitz",45,231,"2020-05-17","ebird",20,TRUE,FALSE
+"cthm-02",2021,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",43,230,"2021-05-16","ebird",20,TRUE,FALSE
+"cthm-02",2022,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",43,214,"2022-05-29","ebird",20,TRUE,FALSE
+"cthm-02",2023,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",40,157,"2023-05-27","ebird",20,TRUE,FALSE
+"cthm-02",2024,"Michael Schultz","Norman Budnitz",NA,"Michael Schultz, Norman Budnitz",46,201,"2024-05-25","ebird",20,TRUE,FALSE
+"cthm-02",2025,"Michael Schultz","Norman Budnitz",NA,"Michael Schultz, Norman Budnitz",42,167,"2025-06-07","ebird",20,TRUE,FALSE
+"cthm-03",2000,"Haven Wiley",NA,NA,"Haven Wiley",49,265,"2000-06-03","transcribed_paper",20,TRUE,FALSE
+"cthm-03",2001,"Haven Wiley",NA,NA,"Haven Wiley",49,234,"2001-06-10","transcribed_paper",20,TRUE,FALSE
+"cthm-03",2002,"Haven Wiley",NA,NA,"Haven Wiley",50,261,"2002-06-02","transcribed_paper",20,TRUE,FALSE
+"cthm-03",2003,"Haven Wiley",NA,NA,"Haven Wiley",42,251,"2003-06-08","historical",20,FALSE,FALSE
+"cthm-03",2004,"Haven Wiley",NA,NA,"Haven Wiley",44,248,"2004-05-31","historical",20,FALSE,FALSE
+"cthm-03",2005,"Haven Wiley",NA,NA,"Haven Wiley",49,325,"2005-05-15","historical",20,FALSE,FALSE
+"cthm-03",2006,"Haven Wiley",NA,NA,"Haven Wiley",40,237,"2006-06-18","historical",20,FALSE,FALSE
+"cthm-03",2007,"Haven Wiley",NA,NA,"Haven Wiley",44,230,"2007-06-17","historical",20,FALSE,FALSE
+"cthm-03",2008,"Haven Wiley",NA,NA,"Haven Wiley",41,235,"2008-06-15","historical",20,FALSE,FALSE
+"cthm-03",2009,"Haven Wiley",NA,NA,"Haven Wiley",44,381,"2009-06-21","historical",20,FALSE,FALSE
+"cthm-03",2010,"Haven Wiley",NA,NA,"Haven Wiley",47,248,"2010-05-30","ebird",20,FALSE,FALSE
+"cthm-03",2011,"Haven Wiley",NA,NA,"Haven Wiley",46,251,"2011-06-18","ebird",20,FALSE,FALSE
+"cthm-03",2012,"Haven Wiley",NA,NA,"Haven Wiley",49,257,"2012-06-03","ebird",20,FALSE,FALSE
+"cthm-03",2013,"Haven Wiley",NA,NA,"Haven Wiley",41,207,"2013-06-09","ebird",20,FALSE,FALSE
+"cthm-03",2014,"Haven Wiley",NA,NA,"Haven Wiley",41,230,"2014-06-15","ebird",20,FALSE,FALSE
+"cthm-03",2015,"Haven Wiley",NA,NA,"Haven Wiley",39,205,"2015-05-17","obs_details",20,TRUE,FALSE
+"cthm-03",2016,"Haven Wiley",NA,NA,"Haven Wiley",41,224,"2016-06-05","obs_details",20,TRUE,FALSE
+"cthm-03",2017,"Haven Wiley",NA,NA,"Haven Wiley",35,183,"2017-06-04","obs_details",20,TRUE,FALSE
+"cthm-03",2018,"Haven Wiley",NA,NA,"Haven Wiley",38,186,"2018-06-03","obs_details",20,TRUE,FALSE
+"cthm-03",2019,"Haven Wiley",NA,NA,"Haven Wiley",41,216,"2019-06-09","obs_details",20,TRUE,FALSE
+"cthm-03",2020,"Haven Wiley",NA,NA,"Haven Wiley",46,277,"2020-05-25","ebird",20,TRUE,FALSE
+"cthm-03",2021,"Haven Wiley",NA,NA,"Haven Wiley",40,187,"2021-06-13","ebird",20,TRUE,FALSE
+"cthm-03",2022,"Haven Wiley",NA,NA,"Haven Wiley",38,178,"2022-06-05","ebird",20,TRUE,FALSE
+"cthm-03",2023,"Haven Wiley",NA,NA,"Haven Wiley",38,153,"2023-06-25","ebird",20,TRUE,FALSE
+"cthm-03",2024,"Haven Wiley",NA,NA,"Haven Wiley",39,163,"2024-06-09","ebird",20,TRUE,FALSE
+"cthm-03",2025,"Haven Wiley",NA,NA,"Haven Wiley",26,98,"2025-06-16","ebird",20,TRUE,FALSE
+"cthm-04",2000,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",47,293,"2000-06-11","transcribed_paper",20,TRUE,FALSE
+"cthm-04",2001,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",45,261,"2001-06-10","transcribed_paper",20,TRUE,FALSE
+"cthm-04",2002,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",44,302,"2002-05-27","historical",20,FALSE,FALSE
+"cthm-04",2003,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",41,239,"2003-06-08","historical",20,FALSE,FALSE
+"cthm-04",2004,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",44,252,"2004-06-13","historical",20,FALSE,FALSE
+"cthm-04",2005,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",52,279,"2005-05-30","observer_xls",20,TRUE,FALSE
+"cthm-04",2006,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",46,293,"2006-06-18","historical",20,FALSE,FALSE
+"cthm-04",2007,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",50,299,"2007-05-28","historical",20,FALSE,FALSE
+"cthm-04",2008,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",51,278,"2008-05-18","observer_xls",20,TRUE,FALSE
+"cthm-04",2009,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",52,288,"2009-06-07","observer_xls",20,TRUE,FALSE
+"cthm-04",2010,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",45,250,"2010-06-01","observer_xls",20,TRUE,FALSE
+"cthm-04",2011,"Michael Schultz",NA,NA,"Michael Schultz",45,255,"2011-05-28","observer_xls",20,TRUE,FALSE
+"cthm-04",2012,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",46,301,"2012-05-28","obs_details",20,TRUE,FALSE
+"cthm-04",2013,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",44,286,"2013-05-26","obs_details",20,TRUE,FALSE
+"cthm-04",2014,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",45,286,"2014-05-25","obs_details",20,TRUE,FALSE
+"cthm-04",2015,"Michael Schultz",NA,NA,"Michael Schultz",45,266,"2015-05-25","obs_details",20,TRUE,FALSE
+"cthm-04",2016,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",41,214,"2016-06-14","obs_details",20,TRUE,FALSE
+"cthm-04",2017,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",38,208,"2017-06-04","obs_details",20,TRUE,FALSE
+"cthm-04",2018,"Michael Schultz","Lois Schultz",NA,"Lois Schultz, Michael Schultz",41,219,"2018-05-31","obs_details",20,TRUE,FALSE
+"cthm-04",2019,"Michael Schultz","Karen Hogan",NA,"Karen Hogan, Michael Schultz",45,223,"2019-06-02","obs_details",20,TRUE,FALSE
+"cthm-04",2020,"Michael Schultz",NA,NA,"Michael Schultz",48,209,"2020-05-25","obs_details",20,TRUE,FALSE
+"cthm-04",2021,"Michael Schultz","Norman Budnitz",NA,"Michael Schultz, Norman Budnitz",39,222,"2021-06-01","ebird",20,TRUE,FALSE
+"cthm-04",2022,"Michael Schultz","Norman Budnitz",NA,"Michael Schultz, Norman Budnitz",45,231,"2022-05-23","ebird",20,TRUE,FALSE
+"cthm-04",2023,"Michael Schultz","Norman Budnitz",NA,"Michael Schultz, Norman Budnitz",48,207,"2023-05-26","ebird",20,TRUE,FALSE
+"cthm-04",2024,"Michael Schultz","Norman Budnitz",NA,"Michael Schultz, Norman Budnitz",48,216,"2024-05-24","ebird",20,TRUE,FALSE
+"cthm-04",2025,"Michael Schultz","Norman Budnitz",NA,"Michael Schultz, Norman Budnitz",47,210,"2025-06-06","ebird",20,TRUE,FALSE
+"cthm-05",2000,"Jeff Pippen","Julie Rice",NA,"Jeff Pippen, Julie Rice",42,265,"2000-06-16","transcribed_paper",20,TRUE,FALSE
+"cthm-05",2001,"Jeff Pippen","Julie Rice",NA,"Jeff Pippen, Julie Rice",47,280,"2001-05-30","transcribed_paper",20,TRUE,FALSE
+"cthm-05",2002,"Haven Wiley",NA,NA,"Haven Wiley",43,317,"2002-05-27","transcribed_paper",20,TRUE,FALSE
+"cthm-05",2003,"Haven Wiley",NA,NA,"Haven Wiley",43,299,"2003-06-29","historical",20,FALSE,FALSE
+"cthm-05",2004,"Haven Wiley",NA,NA,"Haven Wiley",41,278,"2004-06-06","historical",20,FALSE,FALSE
+"cthm-05",2005,"Haven Wiley",NA,NA,"Haven Wiley",39,288,"2005-06-26","historical",20,FALSE,FALSE
+"cthm-05",2006,"Tom Driscoll","Colyer Durovich","Marsha Stephens","Colyer Durovich, Marsha Stephens, Tom Driscoll",51,483,"2006-06-10","historical",20,FALSE,FALSE
+"cthm-05",2007,"Tom Driscoll",NA,NA,"Tom Driscoll",44,471,"2007-06-24","historical",20,FALSE,FALSE
+"cthm-05",2008,"Tom Driscoll",NA,NA,"Tom Driscoll",44,359,"2008-06-08","historical",20,FALSE,FALSE
+"cthm-05",2009,"Tom Driscoll","Marsha Stephens",NA,"Marsha Stephens, Tom Driscoll",54,555,"2009-06-14","historical",20,FALSE,FALSE
+"cthm-05",2010,"Marsha Tuttle","Tom Driscoll","Colyer Durovich","Colyer Durovich, Marsha Tuttle, Tom Driscoll",56,714,"2010-06-05","ebird",20,FALSE,FALSE
+"cthm-05",2011,"Tom Driscoll",NA,NA,"Tom Driscoll",50,532,"2011-06-04","ebird",20,FALSE,FALSE
+"cthm-05",2012,"Tom Driscoll",NA,NA,"Tom Driscoll",48,484,"2012-05-27","transcribed_paper",20,TRUE,FALSE
+"cthm-05",2013,"Tom Driscoll",NA,NA,"Tom Driscoll",53,530,"2013-05-26","ebird",20,FALSE,FALSE
+"cthm-05",2014,"Tom Driscoll",NA,NA,"Tom Driscoll",41,485,"2014-06-21","ebird",20,FALSE,FALSE
+"cthm-05",2015,"Tom Driscoll","Vern Bothwell",NA,"Tom Driscoll, Vern Bothwell",45,500,"2015-06-16","ebird",20,FALSE,FALSE
+"cthm-05",2016,"Tom Driscoll",NA,NA,"Tom Driscoll",47,368,"2016-06-03","ebird",20,FALSE,FALSE
+"cthm-05",2017,"Tom Driscoll","Edison Buenano",NA,"Edison Buenano, Tom Driscoll",38,350,"2017-05-21","ebird",20,FALSE,FALSE
+"cthm-05",2018,"Tom Driscoll",NA,NA,"Tom Driscoll",42,446,"2018-06-02","ebird",20,FALSE,FALSE
+"cthm-05",2019,"Tom Driscoll",NA,NA,"Tom Driscoll",42,325,"2019-05-27","ebird",20,FALSE,FALSE
+"cthm-05",2020,"Tom Driscoll","Elizabeth Keating",NA,"Elizabeth Keating, Tom Driscoll",45,284,"2020-05-27","ebird",20,FALSE,FALSE
+"cthm-05",2021,"Tom Driscoll",NA,NA,"Tom Driscoll",43,285,"2021-05-31","ebird",20,TRUE,FALSE
+"cthm-05",2022,"Tom Driscoll",NA,NA,"Tom Driscoll",49,256,"2022-06-04","ebird",20,TRUE,FALSE
+"cthm-05",2023,"Tom Driscoll",NA,NA,"Tom Driscoll",49,296,"2023-06-03","ebird",20,TRUE,FALSE
+"cthm-05",2024,"Tom Driscoll",NA,NA,"Tom Driscoll",45,267,"2024-06-15","ebird",20,TRUE,FALSE
+"cthm-05",2025,"Tom Driscoll",NA,NA,"Tom Driscoll",45,281,"2025-06-14","ebird",20,TRUE,FALSE
+"cthm-06",2000,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",37,333,"2000-06-24","transcribed_paper",20,TRUE,FALSE
+"cthm-06",2001,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",44,366,"2001-06-16","transcribed_paper",20,TRUE,FALSE
+"cthm-06",2002,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",47,288,"2002-06-23","historical",20,FALSE,FALSE
+"cthm-06",2003,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",30,237,"2003-07-06","historical",20,FALSE,TRUE
+"cthm-06",2004,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",23,201,"2004-06-20","historical",20,FALSE,FALSE
+"cthm-06",2005,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",47,382,"2005-06-01","historical",20,FALSE,FALSE
+"cthm-06",2006,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",44,308,"2006-06-11","historical",20,FALSE,FALSE
+"cthm-06",2007,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",34,272,"2007-06-17","historical",20,FALSE,FALSE
+"cthm-06",2008,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",44,309,"2008-06-01","historical",20,FALSE,FALSE
+"cthm-06",2009,"Cynthia Fox","Marsha Stephens",NA,"Cynthia Fox, Marsha Stephens",48,355,"2009-06-21","transcribed_paper",20,TRUE,FALSE
+"cthm-06",2010,"Marsha Tuttle","Tom Driscoll","Laurie Kucharik","Laurie Kucharik, Marsha Tuttle, Tom Driscoll",56,663,"2010-06-20","ebird",20,FALSE,FALSE
+"cthm-06",2018,"Roger Shaw",NA,NA,"Roger Shaw",51,330,"2018-06-10","ebird",20,FALSE,FALSE
+"cthm-06",2019,"Roger Shaw",NA,NA,"Roger Shaw",41,264,"2019-06-29","ebird",20,FALSE,FALSE
+"cthm-06",2020,"Roger Shaw",NA,NA,"Roger Shaw",42,293,"2020-06-07","ebird",20,FALSE,FALSE
+"cthm-06",2021,"Roger Shaw",NA,NA,"Roger Shaw",43,289,"2021-06-15","ebird",20,TRUE,FALSE
+"cthm-06",2022,"Roger Shaw",NA,NA,"Roger Shaw",53,278,"2022-06-06","ebird",20,TRUE,FALSE
+"cthm-06",2023,"Roger Shaw",NA,NA,"Roger Shaw",44,281,"2023-06-03","ebird",20,TRUE,FALSE
+"cthm-06",2024,"Roger Shaw",NA,NA,"Roger Shaw",44,267,"2024-05-19","ebird",20,TRUE,FALSE
+"cthm-06",2025,"Roger Shaw",NA,NA,"Roger Shaw",51,313,"2025-05-18","ebird",20,TRUE,FALSE
+"cthm-07",2000,"Will Cook",NA,NA,"Will Cook",47,333,"2000-06-18","transcribed_paper",20,TRUE,FALSE
+"cthm-07",2001,"Will Cook",NA,NA,"Will Cook",54,318,"2001-06-16","transcribed_paper",20,TRUE,FALSE
+"cthm-07",2002,"Will Cook",NA,NA,"Will Cook",49,325,"2002-06-08","ebird",20,FALSE,FALSE
+"cthm-07",2003,"Will Cook",NA,NA,"Will Cook",45,319,"2003-06-28","ebird",20,FALSE,FALSE
+"cthm-07",2004,"Will Cook",NA,NA,"Will Cook",47,332,"2004-06-19","ebird",20,FALSE,FALSE
+"cthm-07",2005,"Will Cook",NA,NA,"Will Cook",51,316,"2005-07-09","ebird",20,FALSE,TRUE
+"cthm-07",2006,"Will Cook",NA,NA,"Will Cook",44,245,"2006-06-24","historical",20,FALSE,FALSE
+"cthm-07",2007,"Will Cook",NA,NA,"Will Cook",42,293,"2007-06-23","ebird",20,FALSE,FALSE
+"cthm-07",2008,"Will Cook",NA,NA,"Will Cook",52,302,"2008-06-08","ebird",20,FALSE,FALSE
+"cthm-07",2009,"Will Cook",NA,NA,"Will Cook",52,321,"2009-06-28","ebird",20,FALSE,FALSE
+"cthm-07",2010,"Will Cook","Catherine Carter",NA,"Catherine Carter, Will Cook",51,264,"2010-06-13","ebird",20,FALSE,FALSE
+"cthm-07",2011,"Will Cook","Lesley Starke",NA,"Lesley Starke, Will Cook",43,297,"2011-06-19","ebird",20,FALSE,FALSE
+"cthm-07",2012,"Will Cook","Lesley Starke",NA,"Lesley Starke, Will Cook",54,347,"2012-06-09","ebird",20,FALSE,FALSE
+"cthm-07",2013,"Will Cook","Lesley Starke",NA,"Lesley Starke, Will Cook",54,330,"2013-06-09","ebird",20,FALSE,FALSE
+"cthm-07",2014,"Will Cook",NA,NA,"Will Cook",48,303,"2014-07-13","ebird",20,FALSE,TRUE
+"cthm-07",2015,"Will Cook",NA,NA,"Will Cook",50,295,"2015-06-27","ebird",20,FALSE,FALSE
+"cthm-07",2016,"Will Cook",NA,NA,"Will Cook",50,341,"2016-06-19","ebird",20,FALSE,FALSE
+"cthm-07",2017,"Will Cook",NA,NA,"Will Cook",48,328,"2017-07-02","ebird",20,FALSE,TRUE
+"cthm-07",2018,"Will Cook",NA,NA,"Will Cook",52,298,"2018-06-16","ebird",20,FALSE,FALSE
+"cthm-07",2019,"Will Cook",NA,NA,"Will Cook",55,337,"2019-06-15","ebird",20,FALSE,FALSE
+"cthm-07",2020,"Will Cook",NA,NA,"Will Cook",52,320,"2020-06-28","ebird",20,FALSE,FALSE
+"cthm-07",2021,"Will Cook",NA,NA,"Will Cook",44,237,"2021-06-27","ebird",20,TRUE,FALSE
+"cthm-07",2022,"Will Cook",NA,NA,"Will Cook",52,300,"2022-06-26","ebird",20,TRUE,FALSE
+"cthm-07",2023,"Will Cook",NA,NA,"Will Cook",49,281,"2023-06-18","ebird",20,TRUE,FALSE
+"cthm-07",2024,"Will Cook",NA,NA,"Will Cook",50,328,"2024-06-16","ebird",20,TRUE,FALSE
+"cthm-07",2025,"Will Cook",NA,NA,"Will Cook",49,358,"2025-06-22","ebird",20,TRUE,FALSE
+"cthm-08",2000,"Judy Murray","Martha Girolami",NA,"Judy Murray, Martha Girolami",43,322,"2000-06-18","transcribed_paper",20,TRUE,FALSE
+"cthm-08",2001,"Judy Murray","Martha Girolami",NA,"Judy Murray, Martha Girolami",45,399,"2001-06-10","transcribed_paper",20,TRUE,FALSE
+"cthm-08",2002,"Judy Murray","Martha Girolami",NA,"Judy Murray, Martha Girolami",45,333,"2002-06-18","historical",20,FALSE,FALSE
+"cthm-08",2003,"Judy Murray","Martha Girolami",NA,"Judy Murray, Martha Girolami",42,342,"2003-06-22","historical",20,FALSE,FALSE
+"cthm-08",2004,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",37,262,"2004-06-27","historical",20,FALSE,FALSE
+"cthm-08",2005,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",44,230,"2005-06-26","historical",20,FALSE,FALSE
+"cthm-08",2006,"Martha Girolami","Pat Reid","Judy Murray","Judy Murray, Martha Girolami, Pat Reid",42,272,"2006-06-18","historical",20,FALSE,FALSE
+"cthm-08",2007,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",42,240,"2007-06-17","historical",20,FALSE,FALSE
+"cthm-08",2008,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",44,296,"2008-06-15","historical",20,FALSE,FALSE
+"cthm-08",2009,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",47,268,"2009-05-17","historical",20,FALSE,FALSE
+"cthm-08",2010,"Martha Girolami","Pat Reid","Judy Murray","Judy Murray, Martha Girolami, Pat Reid",43,266,"2010-06-06","ebird",20,FALSE,FALSE
+"cthm-08",2011,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",48,238,"2011-05-29","ebird",20,FALSE,FALSE
+"cthm-08",2012,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",46,302,"2012-06-17","ebird",20,FALSE,FALSE
+"cthm-08",2013,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",41,217,"2013-06-30","ebird",20,FALSE,FALSE
+"cthm-08",2014,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",49,250,"2014-05-25","ebird",20,FALSE,FALSE
+"cthm-08",2015,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",41,241,"2015-05-24","ebird",20,FALSE,FALSE
+"cthm-08",2016,"Martha Girolami","Judy Murray",NA,"Judy Murray, Martha Girolami",41,201,"2016-06-05","ebird",20,FALSE,FALSE
+"cthm-08",2017,"Martha Girolami","Pat Reid","Judy Murray","Judy Murray, Martha Girolami, Pat Reid",40,219,"2017-06-11","ebird",20,FALSE,FALSE
+"cthm-08",2019,"Nan Dewire","Fleeta Chauvigne",NA,"Fleeta Chauvigne, Nan Dewire",52,361,"2019-06-23","ebird",20,FALSE,FALSE
+"cthm-08",2020,"Nan Dewire","Fleeta Chauvigne",NA,"Fleeta Chauvigne, Nan Dewire",45,243,"2020-06-14","ebird",20,FALSE,FALSE
+"cthm-08",2021,"Nan Dewire","Fleeta Chauvigne",NA,"Fleeta Chauvigne, Nan Dewire",48,313,"2021-05-31","ebird",20,TRUE,FALSE
+"cthm-08",2022,"Nan Dewire","Fleeta Chauvigne",NA,"Fleeta Chauvigne, Nan Dewire",55,360,"2022-05-29","ebird",20,TRUE,FALSE
+"cthm-08",2023,"Nan Dewire","Fleeta Chauvigne",NA,"Fleeta Chauvigne, Nan Dewire",51,260,"2023-05-21","ebird",20,TRUE,FALSE
+"cthm-08",2024,"Nan Dewire","Fleeta Chauvigne",NA,"Fleeta Chauvigne, Nan Dewire",52,338,"2024-06-02","ebird",20,TRUE,FALSE
+"cthm-08",2025,"Nan Dewire","Fleeta Chauvigne",NA,"Fleeta Chauvigne, Nan Dewire",52,345,"2025-05-18","ebird",20,TRUE,FALSE
+"cthm-09",2000,"Shelley Theye","Lee Van Malssen",NA,"Lee Van Malssen, Shelley Theye",48,263,"2000-05-24","transcribed_paper",20,TRUE,FALSE
+"cthm-09",2001,"Shelley Theye","Lee Van Malssen",NA,"Lee Van Malssen, Shelley Theye",53,502,"2001-06-16","transcribed_paper",20,TRUE,FALSE
+"cthm-09",2002,"Shelley Theye","Lee Van Malssen",NA,"Lee Van Malssen, Shelley Theye",52,339,"2002-06-16","historical",20,FALSE,FALSE
+"cthm-09",2003,"Shelley Theye","Lee Van Malssen",NA,"Lee Van Malssen, Shelley Theye",54,427,"2003-06-22","historical",20,FALSE,FALSE
+"cthm-09",2005,"Shelley Theye",NA,NA,"Shelley Theye",53,339,"2005-06-19","historical",20,FALSE,FALSE
+"cthm-09",2006,"Shelley Theye","Marsha Stephens",NA,"Marsha Stephens, Shelley Theye",49,341,"2006-06-24","historical",20,FALSE,FALSE
+"cthm-09",2007,"Shelley Theye",NA,NA,"Shelley Theye",47,357,"2007-06-24","historical",20,FALSE,FALSE
+"cthm-09",2008,"Shelley Theye",NA,NA,"Shelley Theye",51,421,"2008-06-05","historical",20,FALSE,FALSE
+"cthm-09",2009,"Shelley Theye",NA,NA,"Shelley Theye",45,455,"2009-06-27","historical",20,FALSE,FALSE
+"cthm-09",2010,"Shelley Theye",NA,NA,"Shelley Theye",49,378,"2010-06-20","ebird",20,FALSE,FALSE
+"cthm-09",2011,"Shelley Theye",NA,NA,"Shelley Theye",49,345,"2011-07-02","ebird",20,FALSE,TRUE
+"cthm-09",2012,"Shelley Theye",NA,NA,"Shelley Theye",44,210,"2012-06-17","ebird",20,FALSE,FALSE
+"cthm-09",2013,"Shelley Theye",NA,NA,"Shelley Theye",48,230,"2013-06-16","ebird",20,FALSE,FALSE
+"cthm-09",2014,"Shelley Theye",NA,NA,"Shelley Theye",47,361,"2014-06-22","ebird",20,FALSE,FALSE
+"cthm-09",2015,"Shelley Theye",NA,NA,"Shelley Theye",43,322,"2015-06-30","ebird",20,FALSE,FALSE
+"cthm-09",2016,"Shelley Theye",NA,NA,"Shelley Theye",46,316,"2016-06-19","ebird",20,FALSE,FALSE
+"cthm-09",2017,"Shelley Theye","Lee Van Malssen",NA,"Lee Van Malssen, Shelley Theye",46,302,"2017-06-25","ebird",20,FALSE,FALSE
+"cthm-09",2018,"Shelley Theye",NA,NA,"Shelley Theye",45,362,"2018-06-17","ebird",20,FALSE,FALSE
+"cthm-09",2019,"Shelley Theye",NA,NA,"Shelley Theye",49,287,"2019-06-23","ebird",20,FALSE,FALSE
+"cthm-09",2020,"Shelley Theye",NA,NA,"Shelley Theye",44,302,"2020-06-20","ebird",20,FALSE,FALSE
+"cthm-09",2021,"Shelley Theye","Lee Van Malssen",NA,"Lee Van Malssen, Shelley Theye",36,223,"2021-06-20","ebird",20,TRUE,FALSE
+"cthm-09",2022,"Shelley Theye","Lee Van Malssen",NA,"Lee Van Malssen, Shelley Theye",47,280,"2022-06-19","ebird",20,TRUE,FALSE
+"cthm-09",2023,"Shelley Theye",NA,NA,"Shelley Theye",43,267,"2023-06-11","ebird",20,TRUE,FALSE
+"cthm-09",2024,"Shelley Theye",NA,NA,"Shelley Theye",44,254,"2024-06-25","ebird",20,TRUE,FALSE
+"cthm-09",2025,"Shelley Theye","Deborah Fowler",NA,"Deborah Fowler, Shelley Theye",42,272,"2025-06-16","ebird",20,TRUE,FALSE
+"cthm-10",2000,"Sue Brady",NA,NA,"Sue Brady",43,304,"2000-06-17","transcribed_paper",20,TRUE,FALSE
+"cthm-10",2001,"Will Cook",NA,NA,"Will Cook",51,275,"2001-06-23","transcribed_paper",20,TRUE,FALSE
+"cthm-10",2002,"Brian Strong",NA,NA,"Brian Strong",49,246,"2002-06-16","historical",20,FALSE,FALSE
+"cthm-10",2003,"Brian Strong",NA,NA,"Brian Strong",41,169,"2003-06-22","historical",20,FALSE,FALSE
+"cthm-10",2004,"Brian Strong",NA,NA,"Brian Strong",42,200,"2004-06-13","historical",20,FALSE,FALSE
+"cthm-10",2005,"Brian Strong",NA,NA,"Brian Strong",40,166,"2005-06-19","historical",20,FALSE,FALSE
+"cthm-10",2006,"Brian Strong",NA,NA,"Brian Strong",33,137,"2006-06-24","historical",20,FALSE,FALSE
+"cthm-10",2007,"Brian Strong",NA,NA,"Brian Strong",38,164,"2007-06-24","historical",20,FALSE,FALSE
+"cthm-10",2008,"Brian Strong",NA,NA,"Brian Strong",46,156,"2008-06-01","historical",20,FALSE,FALSE
+"cthm-10",2009,"Brian Strong",NA,NA,"Brian Strong",37,143,"2009-06-21","historical",20,FALSE,FALSE
+"cthm-10",2010,"Brian Strong",NA,NA,"Brian Strong",35,156,"2010-06-20","ebird",20,FALSE,FALSE
+"cthm-10",2011,"Brian Strong",NA,NA,"Brian Strong",47,186,"2011-06-19","ebird",20,FALSE,FALSE
+"cthm-10",2012,"Brian Strong",NA,NA,"Brian Strong",41,209,"2012-06-17","ebird",20,FALSE,FALSE
+"cthm-10",2013,"Brian Strong",NA,NA,"Brian Strong",40,168,"2013-06-23","ebird",20,FALSE,FALSE
+"cthm-10",2015,"Brian Strong",NA,NA,"Brian Strong",31,135,"2015-06-27","ebird",20,FALSE,FALSE
+"cthm-10",2016,"Brian Strong",NA,NA,"Brian Strong",40,169,"2016-06-26","ebird",20,FALSE,FALSE
+"cthm-10",2017,"Brian Strong",NA,NA,"Brian Strong",45,222,"2017-06-18","ebird",20,FALSE,FALSE
+"cthm-10",2018,"Brian Strong",NA,NA,"Brian Strong",44,178,"2018-06-24","ebird",20,FALSE,FALSE
+"cthm-10",2019,"Brian Strong",NA,NA,"Brian Strong",37,155,"2019-06-25","ebird",20,FALSE,FALSE
+"cthm-10",2020,"Brian Strong",NA,NA,"Brian Strong",39,161,"2020-06-29","ebird",20,FALSE,FALSE
+"cthm-10",2021,"Brian Strong",NA,NA,"Brian Strong",42,148,"2021-06-20","ebird",20,FALSE,FALSE
+"cthm-10",2022,"Brian Strong",NA,NA,"Brian Strong",46,188,"2022-06-24","ebird",20,TRUE,FALSE
+"cthm-10",2023,"Fleeta Chauvigne","Mark Montazer",NA,"Fleeta Chauvigne, Mark Montazer",48,251,"2023-06-04","ebird",20,TRUE,FALSE
+"cthm-10",2024,"Fleeta Wilkinson","Mark Montazer","Nan Dewire","Fleeta Wilkinson, Mark Montazer, Nan Dewire",51,317,"2024-06-09","ebird",20,TRUE,FALSE
+"cthm-10",2025,"Fleeta Wilkinson","Mark Montazer","Nan Dewire","Fleeta Wilkinson, Mark Montazer, Nan Dewire",58,298,"2025-05-25","ebird",20,TRUE,FALSE
+"cthm-11",2000,"M. Graves","Bob Chase",NA,"Bob Chase, M. Graves",36,195,"2000-05-27","transcribed_paper",20,TRUE,FALSE
+"cthm-11",2001,"M. Graves","Bob Chase",NA,"Bob Chase, M. Graves",35,211,"2001-06-17","transcribed_paper",20,TRUE,FALSE
+"cthm-11",2002,"Bob Chase",NA,NA,"Bob Chase",37,233,"2002-06-29","historical",20,FALSE,FALSE
+"cthm-11",2003,"Bob Chase",NA,NA,"Bob Chase",37,233,"2003-06-06","historical",20,FALSE,FALSE
+"cthm-11",2005,"Bob Chase",NA,NA,"Bob Chase",43,222,"2005-06-01","historical",20,FALSE,FALSE
+"cthm-11",2006,"Bob Chase",NA,NA,"Bob Chase",48,258,"2006-05-17","historical",20,FALSE,FALSE
+"cthm-11",2007,"Bob Chase",NA,NA,"Bob Chase",49,292,"2007-05-24","historical",20,FALSE,FALSE
+"cthm-11",2008,"Bob Chase",NA,NA,"Bob Chase",47,256,"2008-05-20","historical",20,FALSE,FALSE
+"cthm-11",2009,"Bob Chase",NA,NA,"Bob Chase",40,214,"2009-05-25","historical",20,FALSE,FALSE
+"cthm-11",2010,"Bob Chase",NA,NA,"Bob Chase",38,212,"2010-06-11","ebird",20,FALSE,FALSE
+"cthm-11",2011,"Bob Chase",NA,NA,"Bob Chase",37,210,"2011-06-12","ebird",20,FALSE,FALSE
+"cthm-11",2012,"Bob Chase",NA,NA,"Bob Chase",32,175,"2012-06-16","transcribed_paper",20,TRUE,FALSE
+"cthm-11",2013,"Bob Chase",NA,NA,"Bob Chase",34,135,"2013-06-19","obs_details",20,TRUE,FALSE
+"cthm-11",2016,"Bob Chase",NA,NA,"Bob Chase",27,108,"2016-05-29","obs_details",20,TRUE,FALSE
+"cthm-11",2020,"Nathan Howell",NA,NA,"Nathan Howell",43,162,"2020-06-25","ebird",20,FALSE,FALSE
+"cthm-11",2022,"Allen Hurlbert",NA,NA,"Allen Hurlbert",44,231,"2022-05-29","ebird",20,TRUE,FALSE
+"cthm-11",2023,"Allen Hurlbert",NA,NA,"Allen Hurlbert",47,210,"2023-06-04","ebird",20,TRUE,FALSE
+"cthm-11",2024,"Allen Hurlbert","Ivara Goulden",NA,"Allen Hurlbert, Ivara Goulden",48,266,"2024-06-09","ebird",20,TRUE,FALSE
+"cthm-11",2025,"Allen Hurlbert","Ivara Goulden",NA,"Allen Hurlbert, Ivara Goulden",46,232,"2025-06-08","ebird",20,TRUE,FALSE
+"cthm-12",2000,"Kate Finlayson","Chris Canfield",NA,"Chris Canfield, Kate Finlayson",38,295,"2000-06-18","transcribed_paper",20,TRUE,FALSE
+"cthm-12",2001,"Kate Finlayson","Chris Canfield",NA,"Chris Canfield, Kate Finlayson",42,241,"2001-06-10","transcribed_paper",20,TRUE,FALSE
+"cthm-12",2002,"Kate Finlayson","Chris Canfield",NA,"Chris Canfield, Kate Finlayson",48,292,"2002-06-23","transcribed_paper",20,TRUE,FALSE
+"cthm-12",2003,"Kate Finlayson","Chris Canfield",NA,"Chris Canfield, Kate Finlayson",47,248,"2003-06-21","historical",20,FALSE,FALSE
+"cthm-12",2004,"Chris Canfield","Kate Finlayson",NA,"Chris Canfield, Kate Finlayson",42,265,"2004-06-13","historical",20,FALSE,FALSE
+"cthm-12",2005,"Chris Canfield","Kate Finlayson",NA,"Chris Canfield, Kate Finlayson",46,306,"2005-06-12","historical",20,FALSE,FALSE
+"cthm-12",2006,"Chris Canfield","Kate Finlayson",NA,"Chris Canfield, Kate Finlayson",47,290,"2006-06-18","historical",20,FALSE,FALSE
+"cthm-12",2007,"Kate Finlayson","Chris Canfield",NA,"Chris Canfield, Kate Finlayson",50,269,"2007-06-17","historical",20,FALSE,FALSE
+"cthm-12",2008,"Kate Finlayson","Chris Canfield",NA,"Chris Canfield, Kate Finlayson",47,257,"2008-06-15","historical",20,FALSE,FALSE
+"cthm-12",2009,"Kate Finlayson","Chris Canfield",NA,"Chris Canfield, Kate Finlayson",46,215,"2009-05-31","historical",20,FALSE,FALSE
+"cthm-12",2017,"Tom Driscoll","Elizabeth Keating",NA,"Elizabeth Keating, Tom Driscoll",48,340,"2017-06-25","ebird",20,FALSE,FALSE
+"cthm-12",2019,"Tom Driscoll","Fleeta Chauvigne",NA,"Fleeta Chauvigne, Tom Driscoll",50,310,"2019-06-20","ebird",20,FALSE,FALSE
+"cthm-12",2020,"Tom Driscoll","Elizabeth Keating",NA,"Elizabeth Keating, Tom Driscoll",47,354,"2020-06-07","ebird",20,FALSE,FALSE
+"cthm-12",2021,"Tom Driscoll",NA,NA,"Tom Driscoll",42,307,"2021-06-02","ebird",20,TRUE,FALSE
+"cthm-12",2022,"Tom Driscoll",NA,NA,"Tom Driscoll",45,250,"2022-06-12","ebird",20,TRUE,FALSE
+"cthm-12",2023,"Tom Driscoll",NA,NA,"Tom Driscoll",46,204,"2023-05-27","ebird",20,TRUE,FALSE
+"cthm-12",2024,"Tom Driscoll",NA,NA,"Tom Driscoll",50,260,"2024-06-05","ebird",20,TRUE,FALSE
+"cthm-12",2025,"Tom Driscoll",NA,NA,"Tom Driscoll",47,239,"2025-06-18","ebird",20,TRUE,FALSE
+"cthm-13",2000,"Marsha Stephens","Patsy Bailey",NA,"Marsha Stephens, Patsy Bailey",40,321,"2000-07-02","transcribed_paper",20,TRUE,TRUE
+"cthm-13",2001,"Marsha Stephens",NA,NA,"Marsha Stephens",30,286,"2001-07-07","transcribed_paper",20,TRUE,TRUE
+"cthm-13",2002,"Marsha Stephens",NA,NA,"Marsha Stephens",25,327,"2002-06-30","historical",20,FALSE,FALSE
+"cthm-13",2003,"Marsha Stephens",NA,NA,"Marsha Stephens",21,230,"2003-06-29","historical",20,FALSE,FALSE
+"cthm-13",2004,"Marsha Stephens",NA,NA,"Marsha Stephens",23,273,"2004-06-27","historical",20,FALSE,FALSE
+"cthm-13",2005,"Marsha Stephens",NA,NA,"Marsha Stephens",19,134,"2005-06-13","historical",20,FALSE,FALSE
+"cthm-13",2006,"JA","HS",NA,"HS, JA",23,140,"2006-06-24","historical",20,FALSE,FALSE
+"cthm-13",2007,"Haven Wiley",NA,NA,"Haven Wiley",44,289,"2007-07-15","historical",20,FALSE,TRUE
+"cthm-13",2008,"unknown",NA,NA,"unknown",43,322,"2008-05-25","historical",20,FALSE,FALSE
+"cthm-13",2009,"unknown",NA,NA,"unknown",33,329,"2009-06-20","historical",20,FALSE,FALSE
+"cthm-13",2010,"Marsha Tuttle","Tom Driscoll","Laurie Kucharik","Laurie Kucharik, Marsha Tuttle, Tom Driscoll",55,546,"2010-06-06","ebird",20,FALSE,FALSE
+"cthm-13",2011,"Tom Driscoll",NA,NA,"Tom Driscoll",46,577,"2011-06-12","ebird",20,FALSE,FALSE
+"cthm-13",2012,"Tom Driscoll",NA,NA,"Tom Driscoll",46,456,"2012-06-24","ebird",20,FALSE,FALSE
+"cthm-13",2013,"Tom Driscoll",NA,NA,"Tom Driscoll",47,509,"2013-06-02","ebird",20,FALSE,FALSE
+"cthm-13",2014,"Tom Driscoll",NA,NA,"Tom Driscoll",43,435,"2014-06-08","ebird",20,FALSE,FALSE
+"cthm-13",2015,"Tom Driscoll",NA,NA,"Tom Driscoll",43,486,"2015-06-14","ebird",20,FALSE,FALSE
+"cthm-13",2016,"Tom Driscoll",NA,NA,"Tom Driscoll",47,446,"2016-06-26","ebird",20,FALSE,FALSE
+"cthm-13",2017,"Tom Driscoll","Bradley Saul",NA,"Bradley Saul, Tom Driscoll",50,384,"2017-06-04","ebird",20,FALSE,FALSE
+"cthm-13",2018,"Tom Driscoll",NA,NA,"Tom Driscoll",45,362,"2018-06-09","ebird",20,FALSE,FALSE
+"cthm-13",2019,"Tom Driscoll","Nan Dewire",NA,"Nan Dewire, Tom Driscoll",52,343,"2019-06-14","ebird",20,FALSE,FALSE
+"cthm-13",2020,"Tom Driscoll","Elizabeth Keating",NA,"Elizabeth Keating, Tom Driscoll",47,283,"2020-06-01","ebird",20,FALSE,FALSE
+"cthm-13",2021,"Tom Driscoll",NA,NA,"Tom Driscoll",46,322,"2021-06-06","ebird",20,TRUE,FALSE
+"cthm-13",2022,"Tom Driscoll",NA,NA,"Tom Driscoll",53,313,"2022-06-11","ebird",20,TRUE,FALSE
+"cthm-13",2023,"Tom Driscoll",NA,NA,"Tom Driscoll",45,293,"2023-06-04","ebird",20,TRUE,FALSE
+"cthm-13",2024,"Tom Driscoll",NA,NA,"Tom Driscoll",45,242,"2024-06-02","ebird",20,TRUE,FALSE
+"cthm-13",2025,"William Mackin",NA,NA,"William Mackin",42,251,"2025-06-22","ebird",20,TRUE,FALSE
+"cthm-14",2000,"Kent Fiala",NA,NA,"Kent Fiala",46,242,"2000-05-21","transcribed_paper",20,TRUE,FALSE
+"cthm-14",2001,"Kent Fiala",NA,NA,"Kent Fiala",47,307,"2001-05-27","historical",20,FALSE,FALSE
+"cthm-14",2002,"Kent Fiala",NA,NA,"Kent Fiala",51,288,"2002-06-02","historical",20,FALSE,FALSE
+"cthm-14",2003,"Kent Fiala",NA,NA,"Kent Fiala",42,209,"2003-06-01","historical",20,FALSE,FALSE
+"cthm-14",2004,"Kent Fiala",NA,NA,"Kent Fiala",43,228,"2004-05-31","historical",20,FALSE,FALSE
+"cthm-14",2005,"Kent Fiala",NA,NA,"Kent Fiala",43,237,"2005-05-30","historical",20,FALSE,FALSE
+"cthm-14",2006,"Kent Fiala",NA,NA,"Kent Fiala",46,251,"2006-05-21","historical",20,FALSE,FALSE
+"cthm-14",2007,"Kent Fiala",NA,NA,"Kent Fiala",45,238,"2007-06-10","historical",20,FALSE,FALSE
+"cthm-14",2008,"Kent Fiala",NA,NA,"Kent Fiala",41,207,"2008-05-26","historical",20,FALSE,FALSE
+"cthm-14",2009,"Kent Fiala",NA,NA,"Kent Fiala",38,200,"2009-05-25","historical",20,FALSE,FALSE
+"cthm-14",2014,"Josh Sims",NA,NA,"Josh Sims",45,321,"2014-06-01","ebird",20,FALSE,FALSE
+"cthm-14",2015,"Josh Sims",NA,NA,"Josh Sims",46,235,"2015-06-14","ebird",20,FALSE,FALSE
+"cthm-14",2019,"Richard Snow",NA,NA,"Richard Snow",14,87,"2019-06-30","ebird",20,FALSE,FALSE
+"cthm-14",2020,"Will Bennett","Jonathan Bennett",NA,"Jonathan Bennett, Will Bennett",50,298,"2020-05-24","ebird",20,TRUE,FALSE
+"cthm-14",2021,"Will Bennett","Jonathan Bennett",NA,"Jonathan Bennett, Will Bennett",61,413,"2021-05-16","ebird",20,TRUE,FALSE
+"cthm-14",2022,"Will Bennett","Jonathan Bennett",NA,"Jonathan Bennett, Will Bennett",47,273,"2022-06-30","ebird",20,TRUE,FALSE
+"cthm-14",2023,"Allen Hurlbert",NA,NA,"Allen Hurlbert",41,242,"2023-06-11","ebird",20,TRUE,FALSE
+"cthm-14",2024,"Allen Hurlbert",NA,NA,"Allen Hurlbert",43,201,"2024-06-23","ebird",20,TRUE,FALSE
+"cthm-14",2025,"Will Begley",NA,NA,"Will Begley",47,328,"2025-06-21","ebird",20,TRUE,FALSE
+"drhm-01",2002,"Judy Murray",NA,NA,"Judy Murray",40,239,"2002-06-06","historical",20,FALSE,FALSE
+"drhm-01",2003,"Judy Murray",NA,NA,"Judy Murray",38,214,"2003-06-28","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2004,"Judy Murray",NA,NA,"Judy Murray",42,264,"2004-06-13","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2005,"Judy Murray",NA,NA,"Judy Murray",43,249,"2005-06-19","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2006,"Judy Murray","Tom Krakauer",NA,"Judy Murray, Tom Krakauer",40,300,"2006-06-17","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2007,"Judy Murray",NA,NA,"Judy Murray",47,245,"2007-06-24","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2008,"Judy Murray",NA,NA,"Judy Murray",45,281,"2008-06-01","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2009,"Judy Murray",NA,NA,"Judy Murray",32,135,"2009-05-31","historical",20,FALSE,FALSE
+"drhm-01",2010,"Judy Murray",NA,NA,"Judy Murray",44,234,"2010-05-09","transcribed_paper",20,TRUE,TRUE
+"drhm-01",2011,"Judy Murray",NA,NA,"Judy Murray",40,225,"2011-05-28","ebird",20,FALSE,FALSE
+"drhm-01",2012,"Judy Murray",NA,NA,"Judy Murray",41,209,"2012-05-27","ebird",20,FALSE,FALSE
+"drhm-01",2013,"Judy Murray",NA,NA,"Judy Murray",38,238,"2013-06-16","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2014,"Judy Murray","Robin Moran",NA,"Judy Murray, Robin Moran",43,206,"2014-06-01","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2015,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",43,192,"2015-05-24","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2016,"Judy Murray",NA,NA,"Judy Murray",34,182,"2016-06-26","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2017,"Judy Murray","Robin Moran",NA,"Judy Murray, Robin Moran",40,222,"2017-06-04","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2018,"Robin Moran","Jennifer Maher",NA,"Jennifer Maher, Robin Moran",47,218,"2018-06-03","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2019,"Robin Moran","Jennifer Maher",NA,"Jennifer Maher, Robin Moran",49,212,"2019-05-26","transcribed_paper",20,TRUE,FALSE
+"drhm-01",2020,"Robin Moran","Jennifer Maher",NA,"Jennifer Maher, Robin Moran",48,227,"2020-05-24","ebird",20,FALSE,FALSE
+"drhm-01",2021,"Robin Moran","Jennifer Maher","Noah Rokoske","Jennifer Maher, Noah Rokoske, Robin Moran",60,329,"2021-05-31","ebird",20,TRUE,FALSE
+"drhm-01",2022,"Robin Moran","Jennifer Maher","Noah Rokoske","Jennifer Maher, Noah Rokoske, Robin Moran",61,429,"2022-05-22","ebird",20,TRUE,FALSE
+"drhm-01",2023,"Noah Rokoske","Robin Moran","Jennifer Maher","Jennifer Maher, Noah Rokoske, Robin Moran",55,339,"2023-05-21","ebird",20,TRUE,FALSE
+"drhm-01",2024,"Robin Moran","Jennifer Maher","Noah Rokoske","Jennifer Maher, Noah Rokoske, Robin Moran",55,309,"2024-06-02","ebird",20,TRUE,FALSE
+"drhm-01",2025,"Jennifer Maher","Noah Rokoske",NA,"Jennifer Maher, Noah Rokoske",58,375,"2025-05-25","ebird",20,TRUE,FALSE
+"drhm-02",2002,"Bruce Young",NA,NA,"Bruce Young",40,359,"2002-05-27","historical",20,FALSE,FALSE
+"drhm-02",2003,"Bruce Young",NA,NA,"Bruce Young",31,233,"2003-05-31","historical",20,FALSE,FALSE
+"drhm-02",2004,"Bruce Young",NA,NA,"Bruce Young",44,226,"2004-06-06","historical",20,FALSE,FALSE
+"drhm-02",2005,"Bruce Young",NA,NA,"Bruce Young",34,230,"2005-05-29","historical",20,FALSE,FALSE
+"drhm-02",2006,"Bruce Young",NA,NA,"Bruce Young",31,199,"2006-06-17","historical",20,FALSE,FALSE
+"drhm-02",2007,"unknown",NA,NA,"unknown",34,252,"2007-05-28","historical",20,FALSE,FALSE
+"drhm-02",2008,"unknown",NA,NA,"unknown",36,281,"2008-05-25","historical",20,FALSE,FALSE
+"drhm-02",2009,"unknown",NA,NA,"unknown",35,223,"2009-05-31","historical",20,FALSE,FALSE
+"drhm-02",2010,"unknown",NA,NA,"unknown",39,167,"2010-06-13","ebird",20,FALSE,FALSE
+"drhm-02",2011,"unknown",NA,NA,"unknown",36,201,"2011-06-05","ebird",20,FALSE,FALSE
+"drhm-02",2012,"unknown",NA,NA,"unknown",41,164,"2012-06-23","ebird",20,FALSE,FALSE
+"drhm-02",2013,"Edith Tatum",NA,NA,"Edith Tatum",39,116,"2013-06-14","ebird",20,FALSE,FALSE
+"drhm-02",2014,"Edith Tatum",NA,NA,"Edith Tatum",36,140,"2014-06-07","obs_details",20,TRUE,FALSE
+"drhm-02",2015,"Edith Tatum","Clea",NA,"Clea , Edith Tatum",32,121,"2015-06-01","ebird",20,FALSE,FALSE
+"drhm-02",2017,"Jeff Pippen",NA,NA,"Jeff Pippen",46,244,"2017-06-10","ebird",20,FALSE,FALSE
+"drhm-02",2018,"Jeff Pippen",NA,NA,"Jeff Pippen",39,263,"2018-06-10","ebird",20,FALSE,FALSE
+"drhm-02",2019,"Jeff Pippen",NA,NA,"Jeff Pippen",40,251,"2019-06-30","ebird",20,FALSE,FALSE
+"drhm-02",2020,"Jeff Pippen",NA,NA,"Jeff Pippen",50,312,"2020-06-07","ebird",20,TRUE,FALSE
+"drhm-02",2022,"Jeff Pippen",NA,NA,"Jeff Pippen",52,374,"2022-06-19","ebird",20,TRUE,FALSE
+"drhm-02",2023,"Jeff Pippen",NA,NA,"Jeff Pippen",49,356,"2023-06-11","ebird",20,TRUE,FALSE
+"drhm-02",2024,"Jeff Pippen",NA,NA,"Jeff Pippen",49,374,"2024-06-16","ebird",20,TRUE,FALSE
+"drhm-02",2025,"Jeff Pippen",NA,NA,"Jeff Pippen",46,304,"2025-06-15","ebird",20,TRUE,FALSE
+"drhm-03",2002,"Carol Williamson","Norman Budnitz",NA,"Carol Williamson, Norman Budnitz",41,315,"2002-06-02","observer_xls",20,TRUE,FALSE
+"drhm-03",2003,"Carol Williamson","Norman Budnitz",NA,"Carol Williamson, Norman Budnitz",39,317,"2003-06-22","observer_xls",20,TRUE,FALSE
+"drhm-03",2004,"Carol Williamson","Norman Budnitz",NA,"Carol Williamson, Norman Budnitz",40,294,"2004-06-20","observer_xls",20,TRUE,FALSE
+"drhm-03",2005,"Carol Williamson","Norman Budnitz",NA,"Carol Williamson, Norman Budnitz",35,227,"2005-06-26","observer_xls",20,TRUE,FALSE
+"drhm-03",2006,"Carol Williamson","Norman Budnitz",NA,"Carol Williamson, Norman Budnitz",36,304,"2006-05-28","observer_xls",20,TRUE,FALSE
+"drhm-03",2007,"Carol Williamson","Norman Budnitz",NA,"Carol Williamson, Norman Budnitz",44,319,"2007-05-27","observer_xls",20,TRUE,FALSE
+"drhm-03",2008,"Carol Williamson","Norman Budnitz",NA,"Carol Williamson, Norman Budnitz",35,308,"2008-06-01","observer_xls",20,TRUE,FALSE
+"drhm-03",2009,"Carol Williamson","Norman Budnitz",NA,"Carol Williamson, Norman Budnitz",37,320,"2009-06-21","observer_xls",20,TRUE,FALSE
+"drhm-03",2010,"Norman Budnitz","Carol Williamson",NA,"Carol Williamson, Norman Budnitz",40,324,"2010-06-13","observer_xls",20,TRUE,FALSE
+"drhm-03",2011,"Patsy Bailey","Norman Budnitz",NA,"Norman Budnitz, Patsy Bailey",40,324,"2011-06-09","observer_xls",20,TRUE,FALSE
+"drhm-03",2012,"Norman Budnitz",NA,NA,"Norman Budnitz",40,334,"2012-06-17","observer_xls",20,TRUE,FALSE
+"drhm-03",2013,"Norman Budnitz",NA,NA,"Norman Budnitz",35,250,"2013-06-16","observer_xls",20,TRUE,FALSE
+"drhm-03",2014,"Norman Budnitz",NA,NA,"Norman Budnitz",32,180,"2014-06-12","observer_xls",20,TRUE,FALSE
+"drhm-03",2015,"Norman Budnitz",NA,NA,"Norman Budnitz",37,243,"2015-06-13","observer_xls",20,TRUE,FALSE
+"drhm-03",2016,"Norman Budnitz",NA,NA,"Norman Budnitz",38,211,"2016-06-11","observer_xls",20,TRUE,FALSE
+"drhm-03",2017,"Norman Budnitz",NA,NA,"Norman Budnitz",33,192,"2017-06-10","obs_details",20,TRUE,FALSE
+"drhm-03",2018,"Norman Budnitz",NA,NA,"Norman Budnitz",34,233,"2018-06-02","obs_details",20,TRUE,FALSE
+"drhm-03",2019,"Norman Budnitz",NA,NA,"Norman Budnitz",33,175,"2019-06-15","obs_details",20,TRUE,FALSE
+"drhm-03",2020,"Norman Budnitz",NA,NA,"Norman Budnitz",33,218,"2020-06-13","ebird",20,TRUE,FALSE
+"drhm-03",2021,"Norman Budnitz",NA,NA,"Norman Budnitz",29,169,"2021-06-12","ebird",20,TRUE,FALSE
+"drhm-03",2022,"Norman Budnitz",NA,NA,"Norman Budnitz",31,173,"2022-06-04","ebird",20,TRUE,FALSE
+"drhm-03",2023,"Norman Budnitz",NA,NA,"Norman Budnitz",33,189,"2023-06-01","ebird",20,TRUE,FALSE
+"drhm-03",2024,"Norman Budnitz",NA,NA,"Norman Budnitz",36,187,"2024-06-01","ebird",20,TRUE,FALSE
+"drhm-03",2025,"Noah Rokoske","Norman Budnitz",NA,"Noah Rokoske, Norman Budnitz",38,312,"2025-06-15","ebird",20,TRUE,FALSE
+"drhm-04",2002,"Jeff Pippen","Julie Rice",NA,"Jeff Pippen, Julie Rice",49,215,"2002-06-11","historical",20,FALSE,FALSE
+"drhm-04",2003,"Jeff Pippen","Julie Rice",NA,"Jeff Pippen, Julie Rice",43,179,"2003-06-11","observer_xls",20,TRUE,FALSE
+"drhm-04",2004,"Jeff Pippen","Julie Rice",NA,"Jeff Pippen, Julie Rice",43,207,"2004-06-10","historical",20,FALSE,FALSE
+"drhm-04",2005,"Jeff Pippen","Julie Rice",NA,"Jeff Pippen, Julie Rice",46,239,"2005-06-08","observer_xls",20,TRUE,FALSE
+"drhm-04",2006,"Jeff Pippen","Julie Rice",NA,"Jeff Pippen, Julie Rice",46,267,"2006-06-17","observer_xls",20,TRUE,FALSE
+"drhm-04",2007,"Jeff Pippen",NA,NA,"Jeff Pippen",41,222,"2007-06-07","observer_xls",20,TRUE,FALSE
+"drhm-04",2008,"Jeff Pippen",NA,NA,"Jeff Pippen",51,274,"2008-06-01","observer_xls",20,TRUE,FALSE
+"drhm-04",2009,"Jeff Pippen",NA,NA,"Jeff Pippen",52,251,"2009-05-30","observer_xls",20,TRUE,FALSE
+"drhm-04",2010,"Jeff Pippen",NA,NA,"Jeff Pippen",43,253,"2010-06-13","observer_xls",20,TRUE,FALSE
+"drhm-04",2011,"Jeff Pippen",NA,NA,"Jeff Pippen",46,251,"2011-05-22","observer_xls",20,TRUE,FALSE
+"drhm-04",2012,"Jeff Pippen",NA,NA,"Jeff Pippen",47,278,"2012-06-10","observer_xls",20,TRUE,FALSE
+"drhm-04",2013,"Jeff Pippen",NA,NA,"Jeff Pippen",44,271,"2013-06-09","observer_xls",20,TRUE,FALSE
+"drhm-04",2014,"Jeff Pippen",NA,NA,"Jeff Pippen",40,196,"2014-05-15","observer_xls",20,TRUE,FALSE
+"drhm-04",2018,"Patsy Bailey",NA,NA,"Patsy Bailey",38,196,"2018-06-10","obs_details",20,TRUE,FALSE
+"drhm-04",2019,"Roger Shaw",NA,NA,"Roger Shaw",47,225,"2019-05-25","ebird",20,FALSE,FALSE
+"drhm-04",2020,"Roger Shaw",NA,NA,"Roger Shaw",51,272,"2020-05-24","ebird",20,FALSE,FALSE
+"drhm-04",2021,"Roger Shaw",NA,NA,"Roger Shaw",45,182,"2021-06-16","ebird",20,TRUE,FALSE
+"drhm-04",2022,"Roger Shaw","Stephen Brooks","Carey Jefferson","Carey Jefferson, Roger Shaw, Stephen Brooks",46,243,"2022-06-05","ebird",20,TRUE,FALSE
+"drhm-04",2023,"Stephen Brooks","Carey Jefferson",NA,"Carey Jefferson, Stephen Brooks",40,230,"2023-06-03","ebird",20,TRUE,FALSE
+"drhm-04",2024,"Stephen Brooks","Carey Jefferson",NA,"Carey Jefferson, Stephen Brooks",40,191,"2024-06-30","ebird",20,TRUE,FALSE
+"drhm-04",2025,"Allen Hurlbert",NA,NA,"Allen Hurlbert",45,199,"2025-06-22","ebird",20,TRUE,FALSE
+"drhm-05",2002,"Alan Johnston","Shantanu Phukan",NA,"Alan Johnston, Shantanu Phukan",43,373,"2002-06-02","historical",20,FALSE,FALSE
+"drhm-05",2003,"Alan Johnston","Shantanu Phukan",NA,"Alan Johnston, Shantanu Phukan",42,256,"2003-06-01","historical",20,FALSE,FALSE
+"drhm-05",2004,"Alan Johnston","Sally Johnston",NA,"Alan Johnston, Sally Johnston",39,285,"2004-05-31","historical",20,FALSE,FALSE
+"drhm-05",2005,"Alan Johnston","Denny Dobbin",NA,"Alan Johnston, Denny Dobbin",45,292,"2005-06-13","historical",20,FALSE,FALSE
+"drhm-05",2006,"Alan Johnston","Dan Williams",NA,"Alan Johnston, Dan Williams",43,337,"2006-06-17","historical",20,FALSE,FALSE
+"drhm-05",2007,"Alan Johnston","David Welch",NA,"Alan Johnston, David Welch",36,263,"2007-06-24","historical",20,FALSE,FALSE
+"drhm-05",2008,"Alan Johnston","Bobbie Johnston","Pamela Clark","Alan Johnston, Bobbie Johnston, Pamela Clark",42,359,"2008-06-08","historical",20,FALSE,FALSE
+"drhm-05",2009,"Alan Johnston","Denny Dobbin",NA,"Alan Johnston, Denny Dobbin",39,334,"2009-06-14","historical",20,FALSE,FALSE
+"drhm-05",2010,"Alan Johnston","Denny Dobbin",NA,"Alan Johnston, Denny Dobbin",40,266,"2010-06-13","ebird",20,FALSE,FALSE
+"drhm-05",2011,"Alan Johnston","Denny Dobbin",NA,"Alan Johnston, Denny Dobbin",43,293,"2011-05-15","ebird",20,FALSE,FALSE
+"drhm-05",2012,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",30,196,"2012-05-27","ebird",20,FALSE,FALSE
+"drhm-05",2013,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",35,193,"2013-06-09","ebird",20,FALSE,FALSE
+"drhm-05",2014,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",33,225,"2014-06-08","ebird",20,FALSE,FALSE
+"drhm-05",2015,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",32,224,"2015-05-24","ebird",20,FALSE,FALSE
+"drhm-05",2016,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",28,188,"2016-05-22","ebird",20,FALSE,FALSE
+"drhm-05",2017,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",31,194,"2017-06-04","obs_details",20,TRUE,FALSE
+"drhm-05",2018,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",28,172,"2018-06-03","obs_details",20,TRUE,FALSE
+"drhm-05",2019,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",32,229,"2019-05-26","obs_details",20,TRUE,FALSE
+"drhm-05",2020,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",29,205,"2020-05-24","ebird",20,TRUE,FALSE
+"drhm-05",2021,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",30,165,"2021-05-30","ebird",20,TRUE,FALSE
+"drhm-05",2022,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",36,221,"2022-05-29","ebird",20,TRUE,FALSE
+"drhm-05",2023,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",32,175,"2023-06-04","ebird",20,TRUE,FALSE
+"drhm-05",2024,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",37,182,"2024-06-02","ebird",20,TRUE,FALSE
+"drhm-05",2025,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",36,179,"2025-06-22","ebird",20,TRUE,FALSE
+"drhm-06",2002,"Rick Payne",NA,NA,"Rick Payne",29,151,"2002-06-30","historical",20,FALSE,FALSE
+"drhm-06",2003,"Rick Payne",NA,NA,"Rick Payne",26,117,"2003-06-15","historical",20,FALSE,FALSE
+"drhm-06",2004,"Rick Payne",NA,NA,"Rick Payne",36,159,"2004-06-06","historical",20,FALSE,FALSE
+"drhm-06",2005,"Rick Payne",NA,NA,"Rick Payne",35,174,"2005-06-19","historical",20,FALSE,FALSE
+"drhm-06",2006,"Rick Payne",NA,NA,"Rick Payne",33,210,"2006-06-18","historical",20,FALSE,FALSE
+"drhm-06",2007,"Rick Payne",NA,NA,"Rick Payne",30,179,"2007-06-24","historical",20,FALSE,FALSE
+"drhm-06",2008,"Rick Payne",NA,NA,"Rick Payne",37,204,"2008-06-08","historical",20,FALSE,FALSE
+"drhm-06",2009,"Rick Payne",NA,NA,"Rick Payne",32,166,"2009-06-14","historical",20,FALSE,FALSE
+"drhm-06",2010,"Rick Payne",NA,NA,"Rick Payne",30,172,"2010-06-13","ebird",20,FALSE,FALSE
+"drhm-06",2011,"David Smith",NA,NA,"David Smith",34,260,"2011-05-29","ebird",20,FALSE,FALSE
+"drhm-06",2012,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",30,238,"2012-05-20","ebird",20,FALSE,FALSE
+"drhm-06",2013,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",33,194,"2013-06-02","ebird",20,FALSE,FALSE
+"drhm-06",2014,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",28,178,"2014-06-01","ebird",20,FALSE,FALSE
+"drhm-06",2015,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",32,203,"2015-05-17","ebird",20,FALSE,FALSE
+"drhm-06",2016,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",29,183,"2016-05-15","ebird",20,FALSE,FALSE
+"drhm-06",2017,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",33,171,"2017-05-29","obs_details",20,TRUE,FALSE
+"drhm-06",2018,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",37,186,"2018-05-27","obs_details",20,TRUE,FALSE
+"drhm-06",2019,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",34,207,"2019-05-19","obs_details",20,TRUE,FALSE
+"drhm-06",2020,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",35,206,"2020-05-17","ebird",20,TRUE,FALSE
+"drhm-06",2021,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",33,190,"2021-05-23","ebird",20,TRUE,FALSE
+"drhm-06",2022,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",34,186,"2022-05-22","ebird",20,TRUE,FALSE
+"drhm-06",2023,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",31,221,"2023-06-03","ebird",20,TRUE,FALSE
+"drhm-06",2024,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",29,188,"2024-05-27","ebird",20,TRUE,FALSE
+"drhm-06",2025,"David Smith","Judy Smith",NA,"David Smith, Judy Smith",34,190,"2025-05-18","ebird",20,TRUE,FALSE
+"drhm-07",2002,"Brian Strong",NA,NA,"Brian Strong",44,193,"2002-06-13","historical",20,FALSE,FALSE
+"drhm-07",2003,"Brian Strong",NA,NA,"Brian Strong",41,153,"2003-06-13","historical",20,FALSE,FALSE
+"drhm-07",2004,"Brian Strong",NA,NA,"Brian Strong",40,162,"2004-06-15","historical",20,FALSE,FALSE
+"drhm-07",2005,"Brian Strong",NA,NA,"Brian Strong",45,193,"2005-06-13","historical",20,FALSE,FALSE
+"drhm-07",2006,"Brian Strong",NA,NA,"Brian Strong",38,176,"2006-06-15","historical",20,FALSE,FALSE
+"drhm-07",2007,"Brian Strong",NA,NA,"Brian Strong",45,181,"2007-06-22","historical",20,FALSE,FALSE
+"drhm-07",2008,"Brian Strong",NA,NA,"Brian Strong",33,167,"2008-06-03","historical",20,FALSE,FALSE
+"drhm-07",2009,"Brian Strong",NA,NA,"Brian Strong",33,154,"2009-06-30","historical",20,FALSE,FALSE
+"drhm-07",2010,"Brian Strong",NA,NA,"Brian Strong",39,161,"2010-06-15","ebird",20,FALSE,FALSE
+"drhm-07",2011,"Brian Strong",NA,NA,"Brian Strong",36,153,"2011-06-16","ebird",20,FALSE,FALSE
+"drhm-07",2012,"Brian Strong",NA,NA,"Brian Strong",34,147,"2012-06-12","ebird",20,FALSE,FALSE
+"drhm-07",2013,"Brian Strong",NA,NA,"Brian Strong",39,143,"2013-06-20","ebird",20,FALSE,FALSE
+"drhm-07",2015,"Brian Strong",NA,NA,"Brian Strong",34,162,"2015-06-24","ebird",20,FALSE,FALSE
+"drhm-07",2016,"Brian Strong",NA,NA,"Brian Strong",36,136,"2016-06-25","ebird",20,FALSE,FALSE
+"drhm-07",2017,"Brian Strong",NA,NA,"Brian Strong",38,175,"2017-06-17","ebird",20,FALSE,FALSE
+"drhm-07",2018,"Brian Strong",NA,NA,"Brian Strong",37,160,"2018-06-17","ebird",20,FALSE,FALSE
+"drhm-07",2019,"Brian Strong",NA,NA,"Brian Strong",38,164,"2019-06-23","ebird",20,FALSE,FALSE
+"drhm-07",2020,"Brian Strong",NA,NA,"Brian Strong",37,155,"2020-06-14","ebird",20,FALSE,FALSE
+"drhm-07",2021,"Brian Strong",NA,NA,"Brian Strong",37,179,"2021-06-18","ebird",20,FALSE,FALSE
+"drhm-07",2022,"Brian Strong",NA,NA,"Brian Strong",48,195,"2022-06-26","ebird",20,TRUE,FALSE
+"drhm-07",2023,"Noah Rokoske",NA,NA,"Noah Rokoske",44,234,"2023-06-28","ebird",20,TRUE,FALSE
+"drhm-07",2024,"William Mackin",NA,NA,"William Mackin",35,188,"2024-06-26","ebird",20,TRUE,FALSE
+"drhm-07",2025,"Noah Rokoske",NA,NA,"Noah Rokoske",52,328,"2025-06-01","ebird",20,TRUE,FALSE
+"drhm-08",2002,"Brian Strong",NA,NA,"Brian Strong",43,223,"2002-06-13","historical",20,FALSE,FALSE
+"drhm-08",2003,"Brian Bockhahn",NA,NA,"Brian Bockhahn",40,230,"2003-06-13","historical",20,FALSE,FALSE
+"drhm-08",2004,"Brian Bockhahn",NA,NA,"Brian Bockhahn",32,194,"2004-06-11","historical",20,FALSE,FALSE
+"drhm-08",2005,"Brian Bockhahn",NA,NA,"Brian Bockhahn",43,227,"2005-06-25","historical",20,FALSE,FALSE
+"drhm-08",2006,"Brian Bockhahn",NA,NA,"Brian Bockhahn",42,228,"2006-06-17","historical",20,FALSE,FALSE
+"drhm-08",2007,"Brian Bockhahn",NA,NA,"Brian Bockhahn",28,155,"2007-07-02","historical",20,FALSE,TRUE
+"drhm-08",2008,"Brian Bockhahn",NA,NA,"Brian Bockhahn",34,212,"2008-06-24","historical",20,FALSE,FALSE
+"drhm-08",2011,"Brian Bockhahn",NA,NA,"Brian Bockhahn",37,244,"2011-06-19","ebird",20,FALSE,FALSE
+"drhm-08",2012,"Brian Bockhahn",NA,NA,"Brian Bockhahn",41,301,"2012-06-10","ebird",20,FALSE,FALSE
+"drhm-08",2013,"Brian Bockhahn",NA,NA,"Brian Bockhahn",38,311,"2013-06-16","ebird",20,FALSE,FALSE
+"drhm-08",2014,"Brian Bockhahn",NA,NA,"Brian Bockhahn",42,312,"2014-06-01","ebird",20,FALSE,FALSE
+"drhm-08",2015,"Brian Bockhahn",NA,NA,"Brian Bockhahn",41,275,"2015-06-14","ebird",20,FALSE,FALSE
+"drhm-08",2016,"Brian Bockhahn",NA,NA,"Brian Bockhahn",42,468,"2016-06-19","ebird",20,FALSE,FALSE
+"drhm-08",2017,"Brian Bockhahn",NA,NA,"Brian Bockhahn",42,324,"2017-06-18","ebird",20,FALSE,FALSE
+"drhm-08",2018,"Brian Bockhahn",NA,NA,"Brian Bockhahn",44,280,"2018-06-03","ebird",20,FALSE,FALSE
+"drhm-08",2019,"Brian Bockhahn",NA,NA,"Brian Bockhahn",43,273,"2019-06-16","ebird",20,FALSE,FALSE
+"drhm-08",2020,"Brian Bockhahn",NA,NA,"Brian Bockhahn",38,233,"2020-05-31","ebird",20,FALSE,FALSE
+"drhm-08",2021,"Brian Bockhahn",NA,NA,"Brian Bockhahn",47,245,"2021-06-06","ebird",20,TRUE,FALSE
+"drhm-08",2022,"Brian Bockhahn",NA,NA,"Brian Bockhahn",41,283,"2022-06-19","ebird",20,TRUE,FALSE
+"drhm-08",2023,"Brian Bockhahn",NA,NA,"Brian Bockhahn",43,260,"2023-06-11","ebird",20,TRUE,FALSE
+"drhm-08",2024,"Brian Bockhahn",NA,NA,"Brian Bockhahn",43,256,"2024-06-09","ebird",20,TRUE,FALSE
+"drhm-08",2025,"Noah Rokoske",NA,NA,"Noah Rokoske",44,321,"2025-06-08","ebird",20,TRUE,FALSE
+"orng-01",1999,"Ginger Travis","Barb Brooks",NA,"Barb Brooks, Ginger Travis",45,255,"1999-06-06","historical",20,FALSE,FALSE
+"orng-01",2000,"Ginger Travis","Cathy Packer",NA,"Cathy Packer, Ginger Travis",39,220,"2000-06-04","historical",20,FALSE,FALSE
+"orng-01",2001,"Ginger Travis","Cathy Packer",NA,"Cathy Packer, Ginger Travis",41,243,"2001-06-03","transcribed_paper",20,TRUE,FALSE
+"orng-01",2002,"Ginger Travis","Cathy Packer",NA,"Cathy Packer, Ginger Travis",41,231,"2002-06-02","transcribed_paper",20,TRUE,FALSE
+"orng-01",2003,"Ginger Travis","Doug Shadwick",NA,"Doug Shadwick, Ginger Travis",54,376,"2003-06-07","historical",20,FALSE,FALSE
+"orng-01",2004,"Ginger Travis","Doug Shadwick",NA,"Doug Shadwick, Ginger Travis",58,405,"2004-06-06","ebird",20,FALSE,FALSE
+"orng-01",2005,"Ginger Travis","Cathy Packer",NA,"Cathy Packer, Ginger Travis",54,419,"2005-05-23","ebird",20,FALSE,FALSE
+"orng-01",2006,"Ginger Travis","Cathy Packer",NA,"Cathy Packer, Ginger Travis",42,216,"2006-06-10","ebird",20,FALSE,FALSE
+"orng-01",2007,"Ginger Travis","Doug Shadwick",NA,"Doug Shadwick, Ginger Travis",42,211,"2007-05-26","ebird",20,FALSE,FALSE
+"orng-01",2008,"Ginger Travis","Cathy Packer",NA,"Cathy Packer, Ginger Travis",43,190,"2008-06-15","ebird",20,FALSE,FALSE
+"orng-01",2009,"Ginger Travis","Cathy Packer",NA,"Cathy Packer, Ginger Travis",34,206,"2009-06-07","transcribed_paper",20,TRUE,FALSE
+"orng-01",2010,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",54,289,"2010-06-17","observer_xls",20,TRUE,FALSE
+"orng-01",2011,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",56,333,"2011-05-22","observer_xls",20,TRUE,FALSE
+"orng-01",2012,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",51,343,"2012-06-10","observer_xls",20,TRUE,FALSE
+"orng-01",2013,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",45,287,"2013-06-13","observer_xls",20,TRUE,FALSE
+"orng-01",2014,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",45,249,"2014-06-22","observer_xls",20,TRUE,FALSE
+"orng-01",2015,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",55,345,"2015-05-24","observer_xls",20,TRUE,FALSE
+"orng-01",2016,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",49,291,"2016-05-16","observer_xls",20,TRUE,FALSE
+"orng-01",2017,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",52,281,"2017-05-28","obs_details",20,TRUE,FALSE
+"orng-01",2018,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",43,315,"2018-05-28","obs_details",20,TRUE,FALSE
+"orng-01",2019,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",45,284,"2019-05-18","obs_details",20,TRUE,FALSE
+"orng-01",2020,"Norman Budnitz",NA,NA,"Norman Budnitz",39,226,"2020-05-24","ebird",20,TRUE,FALSE
+"orng-01",2021,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",41,255,"2021-05-31","ebird",20,TRUE,FALSE
+"orng-01",2022,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",51,325,"2022-05-30","ebird",20,TRUE,FALSE
+"orng-01",2023,"Norman Budnitz","Michael Schultz",NA,"Michael Schultz, Norman Budnitz",44,262,"2023-06-03","ebird",20,TRUE,FALSE
+"orng-01",2024,"Michael Schultz","Norman Budnitz",NA,"Michael Schultz, Norman Budnitz",43,264,"2024-05-26","ebird",20,TRUE,FALSE
+"orng-01",2025,"Michael Schultz","Norman Budnitz",NA,"Michael Schultz, Norman Budnitz",46,210,"2025-06-13","ebird",20,TRUE,FALSE
+"orng-02",1999,"Barb Brooks",NA,NA,"Barb Brooks",35,167,"1999-05-23","historical",20,FALSE,FALSE
+"orng-02",2000,"Barb Brooks",NA,NA,"Barb Brooks",32,170,"2000-05-27","historical",20,FALSE,FALSE
+"orng-02",2001,"Barb Brooks",NA,NA,"Barb Brooks",31,199,"2001-06-03","transcribed_paper",20,TRUE,FALSE
+"orng-02",2002,"Barb Brooks",NA,NA,"Barb Brooks",41,238,"2002-06-02","transcribed_paper",20,TRUE,FALSE
+"orng-02",2003,"Barb Brooks",NA,NA,"Barb Brooks",34,183,"2003-06-08","historical",20,FALSE,FALSE
+"orng-02",2004,"Barb Brooks",NA,NA,"Barb Brooks",34,186,"2004-05-28","ebird",20,FALSE,FALSE
+"orng-02",2005,"Barb Brooks",NA,NA,"Barb Brooks",34,189,"2005-05-08","ebird",20,FALSE,TRUE
+"orng-02",2006,"Barb Brooks",NA,NA,"Barb Brooks",32,214,"2006-05-28","ebird",20,FALSE,FALSE
+"orng-02",2007,"Barb Brooks",NA,NA,"Barb Brooks",27,187,"2007-05-27","ebird",20,FALSE,FALSE
+"orng-02",2008,"Barb Brooks",NA,NA,"Barb Brooks",36,157,"2008-06-06","ebird",20,FALSE,FALSE
+"orng-02",2009,"Barb Brooks",NA,NA,"Barb Brooks",31,149,"2009-06-03","ebird",20,FALSE,FALSE
+"orng-02",2010,"Barb Brooks",NA,NA,"Barb Brooks",35,132,"2010-05-29","ebird",20,FALSE,FALSE
+"orng-02",2011,"Barb Brooks",NA,NA,"Barb Brooks",31,171,"2011-05-30","ebird",20,FALSE,FALSE
+"orng-02",2012,"Barb Brooks",NA,NA,"Barb Brooks",27,168,"2012-05-28","ebird",20,FALSE,FALSE
+"orng-02",2013,"Barb Brooks",NA,NA,"Barb Brooks",25,132,"2013-05-26","ebird",20,FALSE,FALSE
+"orng-02",2014,"Barb Brooks",NA,NA,"Barb Brooks",20,128,"2014-05-25","ebird",20,FALSE,FALSE
+"orng-02",2015,"Barb Brooks",NA,NA,"Barb Brooks",33,147,"2015-05-31","ebird",20,FALSE,FALSE
+"orng-02",2016,"Barb Brooks",NA,NA,"Barb Brooks",21,93,"2016-05-29","ebird",20,FALSE,FALSE
+"orng-02",2017,"Barb Brooks",NA,NA,"Barb Brooks",19,83,"2017-05-28","obs_details",20,TRUE,FALSE
+"orng-02",2018,"Barb Brooks",NA,NA,"Barb Brooks",24,108,"2018-05-27","ebird",20,FALSE,FALSE
+"orng-02",2019,"Barb Brooks",NA,NA,"Barb Brooks",22,65,"2019-06-09","ebird",20,FALSE,FALSE
+"orng-02",2020,"Barb Brooks",NA,NA,"Barb Brooks",16,73,"2020-05-24","ebird",20,FALSE,FALSE
+"orng-02",2021,"Barb Brooks",NA,NA,"Barb Brooks",25,92,"2021-06-06","ebird",20,TRUE,FALSE
+"orng-02",2022,"Barb Brooks",NA,NA,"Barb Brooks",24,82,"2022-06-18","ebird",17,TRUE,TRUE
+"orng-02",2023,"Barb Brooks",NA,NA,"Barb Brooks",25,93,"2023-06-03","ebird",20,TRUE,FALSE
+"orng-02",2024,"Barb Brooks","William Mackin",NA,"Barb Brooks, William Mackin",39,217,"2024-05-26","ebird",20,TRUE,FALSE
+"orng-02",2025,"Barb Brooks","William Mackin",NA,"Barb Brooks, William Mackin",39,212,"2025-05-26","ebird",20,TRUE,FALSE
+"orng-03",1999,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",40,347,"1999-06-06","historical",20,FALSE,FALSE
+"orng-03",2000,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",40,281,"2000-06-11","historical",20,FALSE,FALSE
+"orng-03",2001,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",43,271,"2001-05-23","transcribed_paper",20,TRUE,FALSE
+"orng-03",2002,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",48,272,"2002-06-09","historical",20,FALSE,FALSE
+"orng-03",2003,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",43,331,"2003-06-22","historical",20,FALSE,FALSE
+"orng-03",2004,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",45,272,"2004-05-23","ebird",20,FALSE,FALSE
+"orng-03",2005,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",45,233,"2005-06-23","ebird",20,FALSE,FALSE
+"orng-03",2006,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",46,299,"2006-06-23","ebird",20,FALSE,FALSE
+"orng-03",2007,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",43,192,"2007-06-17","ebird",20,FALSE,FALSE
+"orng-03",2008,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",42,204,"2008-06-01","ebird",20,FALSE,FALSE
+"orng-03",2009,"Kate Finlayson","Karen Piplani",NA,"Karen Piplani, Kate Finlayson",40,252,"2009-06-01","ebird",20,FALSE,FALSE
+"orng-03",2011,"Karen Piplani",NA,NA,"Karen Piplani",21,120,"2011-06-12","ebird",20,FALSE,FALSE
+"orng-03",2014,"Barb Brooks",NA,NA,"Barb Brooks",23,97,"2014-06-01","ebird",20,FALSE,FALSE
+"orng-03",2015,"Barb Brooks",NA,NA,"Barb Brooks",28,142,"2015-06-07","ebird",20,FALSE,FALSE
+"orng-03",2016,"Barb Brooks",NA,NA,"Barb Brooks",24,82,"2016-06-05","ebird",20,FALSE,FALSE
+"orng-03",2017,"Barb Brooks",NA,NA,"Barb Brooks",23,120,"2017-06-04","obs_details",20,TRUE,FALSE
+"orng-03",2018,"Barb Brooks",NA,NA,"Barb Brooks",21,98,"2018-06-03","ebird",20,FALSE,FALSE
+"orng-03",2019,"Bradley Saul","Charity Kirk",NA,"Bradley Saul, Charity Kirk",29,203,"2019-06-29","ebird",20,FALSE,FALSE
+"orng-03",2020,"Bradley Saul",NA,NA,"Bradley Saul",31,179,"2020-06-14","ebird",20,TRUE,FALSE
+"orng-03",2021,"Bradley Saul",NA,NA,"Bradley Saul",28,217,"2021-06-13","ebird",20,TRUE,FALSE
+"orng-03",2022,"Bradley Saul",NA,NA,"Bradley Saul",31,211,"2022-06-12","ebird",20,TRUE,FALSE
+"orng-03",2023,"Bradley Saul",NA,NA,"Bradley Saul",39,212,"2023-06-11","ebird",20,TRUE,FALSE
+"orng-03",2024,"Bradley Saul",NA,NA,"Bradley Saul",44,225,"2024-06-16","ebird",20,TRUE,FALSE
+"orng-03",2025,"Bradley Saul","Evan Sopko",NA,"Bradley Saul, Evan Sopko",41,225,"2025-06-22","ebird",20,TRUE,FALSE
+"orng-04",1999,"Kent Fiala",NA,NA,"Kent Fiala",37,194,"1999-05-30","historical",20,FALSE,FALSE
+"orng-04",2000,"Kent Fiala",NA,NA,"Kent Fiala",39,197,"2000-05-27","historical",20,FALSE,FALSE
+"orng-04",2001,"Kent Fiala",NA,NA,"Kent Fiala",45,231,"2001-06-10","historical",20,FALSE,FALSE
+"orng-04",2002,"Kent Fiala",NA,NA,"Kent Fiala",41,184,"2002-06-09","historical",20,FALSE,FALSE
+"orng-04",2003,"Kent Fiala",NA,NA,"Kent Fiala",36,194,"2003-05-26","historical",20,FALSE,FALSE
+"orng-04",2004,"Kent Fiala",NA,NA,"Kent Fiala",40,208,"2004-06-06","ebird",20,FALSE,FALSE
+"orng-04",2005,"Kent Fiala",NA,NA,"Kent Fiala",45,238,"2005-05-29","ebird",20,FALSE,FALSE
+"orng-04",2006,"Kent Fiala",NA,NA,"Kent Fiala",37,169,"2006-05-27","ebird",20,FALSE,FALSE
+"orng-04",2007,"Kent Fiala",NA,NA,"Kent Fiala",35,168,"2007-05-28","ebird",20,FALSE,FALSE
+"orng-04",2008,"Kent Fiala",NA,NA,"Kent Fiala",36,162,"2008-05-25","ebird",20,FALSE,FALSE
+"orng-04",2009,"Kent Fiala",NA,NA,"Kent Fiala",27,155,"2009-05-24","historical",20,FALSE,FALSE
+"orng-04",2010,"Will Cook","Catherine Carter",NA,"Catherine Carter, Will Cook",40,235,"2010-07-18","ebird",20,FALSE,TRUE
+"orng-04",2011,"Jill Paul","Tom Driscoll",NA,"Jill Paul, Tom Driscoll",52,439,"2011-06-19","ebird",20,FALSE,FALSE
+"orng-04",2013,"Allen Hurlbert",NA,NA,"Allen Hurlbert",39,210,"2013-06-09","observer_xls",20,TRUE,FALSE
+"orng-04",2014,"Allen Hurlbert",NA,NA,"Allen Hurlbert",36,178,"2014-06-15","observer_xls",20,TRUE,FALSE
+"orng-04",2015,"Allen Hurlbert",NA,NA,"Allen Hurlbert",36,208,"2015-05-31","observer_xls",20,TRUE,FALSE
+"orng-04",2016,"Allen Hurlbert",NA,NA,"Allen Hurlbert",31,151,"2016-06-05","observer_xls",20,TRUE,FALSE
+"orng-04",2017,"Allen Hurlbert",NA,NA,"Allen Hurlbert",32,184,"2017-06-04","observer_xls",20,TRUE,FALSE
+"orng-04",2018,"Allen Hurlbert","Grace Di Cecco","Allison Duprey","Allen Hurlbert, Allison Duprey, Grace Di Cecco",37,228,"2018-06-03","observer_xls",20,TRUE,FALSE
+"orng-04",2019,"Allen Hurlbert","Sarah Pollack",NA,"Allen Hurlbert, Sarah Pollack",45,228,"2019-05-26","obs_details",20,TRUE,FALSE
+"orng-04",2020,"Allen Hurlbert",NA,NA,"Allen Hurlbert",40,231,"2020-05-31","ebird",20,TRUE,FALSE
+"orng-04",2021,"Allen Hurlbert",NA,NA,"Allen Hurlbert",40,225,"2021-06-06","ebird",20,TRUE,FALSE
+"orng-04",2022,"Allen Hurlbert","Ashley Moore","Ellen Weaver","Allen Hurlbert, Ashley Moore, Ellen Weaver",47,233,"2022-06-05","ebird",20,TRUE,FALSE
+"orng-04",2023,"Allen Hurlbert",NA,NA,"Allen Hurlbert",39,208,"2023-06-03","ebird",20,TRUE,FALSE
+"orng-04",2024,"Allen Hurlbert",NA,NA,"Allen Hurlbert",43,243,"2024-06-02","ebird",20,TRUE,FALSE
+"orng-04",2025,"Allen Hurlbert","Ivara Goulden","Benjamin Acosta","Allen Hurlbert, Benjamin Acosta, Ivara Goulden",41,248,"2025-06-01","ebird",20,TRUE,FALSE
+"orng-05",1999,"Will Cook",NA,NA,"Will Cook",54,420,"1999-06-12","ebird",20,FALSE,FALSE
+"orng-05",2000,"Will Cook",NA,NA,"Will Cook",49,395,"2000-05-29","ebird",20,FALSE,FALSE
+"orng-05",2001,"Will Cook",NA,NA,"Will Cook",59,463,"2001-06-09","transcribed_paper",20,TRUE,FALSE
+"orng-05",2002,"Will Cook",NA,NA,"Will Cook",48,375,"2002-06-15","ebird",20,FALSE,FALSE
+"orng-05",2003,"Will Cook",NA,NA,"Will Cook",56,341,"2003-06-21","ebird",20,FALSE,FALSE
+"orng-05",2004,"Will Cook",NA,NA,"Will Cook",56,478,"2004-05-29","ebird",20,FALSE,FALSE
+"orng-05",2005,"Will Cook",NA,NA,"Will Cook",49,363,"2005-06-11","ebird",20,FALSE,FALSE
+"orng-05",2006,"Will Cook",NA,NA,"Will Cook",53,389,"2006-06-24","ebird",20,FALSE,FALSE
+"orng-05",2007,"Will Cook",NA,NA,"Will Cook",51,333,"2007-06-17","ebird",20,FALSE,FALSE
+"orng-05",2008,"Will Cook",NA,NA,"Will Cook",57,424,"2008-06-07","ebird",20,FALSE,FALSE
+"orng-05",2009,"Will Cook",NA,NA,"Will Cook",58,424,"2009-06-20","ebird",20,FALSE,FALSE
+"orng-05",2010,"Will Cook","Catherine Anderson",NA,"Catherine Anderson, Will Cook",51,377,"2010-05-30","ebird",20,FALSE,FALSE
+"orng-05",2011,"Will Cook","Catherine Carter",NA,"Catherine Carter, Will Cook",51,433,"2011-06-25","ebird",20,FALSE,FALSE
+"orng-05",2012,"Will Cook",NA,NA,"Will Cook",60,423,"2012-06-02","ebird",20,FALSE,FALSE
+"orng-05",2013,"Will Cook",NA,NA,"Will Cook",57,415,"2013-06-02","ebird",20,FALSE,FALSE
+"orng-05",2014,"Will Cook",NA,NA,"Will Cook",53,429,"2014-06-29","ebird",20,FALSE,FALSE
+"orng-05",2015,"Will Cook",NA,NA,"Will Cook",54,385,"2015-05-31","ebird",20,FALSE,FALSE
+"orng-05",2016,"Will Cook",NA,NA,"Will Cook",53,356,"2016-06-05","ebird",20,FALSE,FALSE
+"orng-05",2017,"Will Cook",NA,NA,"Will Cook",54,348,"2017-06-10","ebird",20,FALSE,FALSE
+"orng-05",2018,"Will Cook",NA,NA,"Will Cook",53,345,"2018-06-24","ebird",20,TRUE,FALSE
+"orng-05",2019,"Will Cook",NA,NA,"Will Cook",59,369,"2019-06-02","ebird",20,FALSE,FALSE
+"orng-05",2020,"Will Cook",NA,NA,"Will Cook",55,455,"2020-06-14","ebird",20,FALSE,FALSE
+"orng-05",2021,"Will Cook",NA,NA,"Will Cook",58,527,"2021-06-19","ebird",20,TRUE,FALSE
+"orng-05",2022,"Will Cook",NA,NA,"Will Cook",58,385,"2022-06-25","ebird",20,TRUE,FALSE
+"orng-05",2023,"Will Cook",NA,NA,"Will Cook",61,365,"2023-06-11","ebird",20,TRUE,FALSE
+"orng-05",2024,"Will Cook",NA,NA,"Will Cook",58,382,"2024-06-09","ebird",20,TRUE,FALSE
+"orng-05",2025,"Will Cook",NA,NA,"Will Cook",57,409,"2025-06-21","ebird",20,TRUE,FALSE
+"orng-06",1999,"Judy Murray","Robin Moran",NA,"Judy Murray, Robin Moran",34,250,"1999-06-13","historical",20,FALSE,FALSE
+"orng-06",2000,"Judy Murray","Robin Moran",NA,"Judy Murray, Robin Moran",38,245,"2000-06-04","historical",20,FALSE,FALSE
+"orng-06",2001,"Judy Murray","Robin Moran",NA,"Judy Murray, Robin Moran",38,289,"2001-06-03","transcribed_paper",20,TRUE,FALSE
+"orng-06",2002,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",32,237,"2002-06-09","historical",20,FALSE,FALSE
+"orng-06",2003,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",40,245,"2003-06-30","historical",20,FALSE,FALSE
+"orng-06",2004,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",38,254,"2004-06-06","ebird",20,FALSE,FALSE
+"orng-06",2005,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",34,215,"2005-06-21","ebird",20,FALSE,FALSE
+"orng-06",2006,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",38,253,"2006-05-28","ebird",20,FALSE,FALSE
+"orng-06",2007,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",42,257,"2007-05-27","ebird",20,FALSE,FALSE
+"orng-06",2008,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",41,223,"2008-05-18","ebird",20,FALSE,FALSE
+"orng-06",2009,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",38,192,"2009-06-07","ebird",20,FALSE,FALSE
+"orng-06",2010,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",36,193,"2010-06-08","ebird",20,FALSE,FALSE
+"orng-06",2011,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",38,204,"2011-05-30","ebird",20,FALSE,FALSE
+"orng-06",2012,"Judy Murray","Robin Moran",NA,"Judy Murray, Robin Moran",41,209,"2012-06-03","ebird",20,FALSE,FALSE
+"orng-06",2013,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",38,159,"2013-06-02","ebird",20,FALSE,FALSE
+"orng-06",2014,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",38,212,"2014-06-08","ebird",20,FALSE,FALSE
+"orng-06",2015,"Judy Murray",NA,NA,"Judy Murray",28,165,"2015-06-07","ebird",20,FALSE,FALSE
+"orng-06",2016,"Robin Moran","Judy Murray",NA,"Judy Murray, Robin Moran",31,155,"2016-05-15","ebird",20,FALSE,FALSE
+"orng-06",2017,"Judy Murray","Robin Moran",NA,"Judy Murray, Robin Moran",30,155,"2017-05-28","ebird",20,FALSE,FALSE
+"orng-06",2019,"Karen Hogan","Robin Moran",NA,"Karen Hogan, Robin Moran",35,186,"2019-06-09","obs_details",20,TRUE,FALSE
+"orng-06",2020,"Karen Hogan","Mark Hogan",NA,"Karen Hogan, Mark Hogan",38,248,"2020-06-07","obs_details",20,TRUE,FALSE
+"orng-06",2021,"Karen Hogan",NA,NA,"Karen Hogan",40,236,"2021-06-06","ebird",20,TRUE,FALSE
+"orng-06",2022,"Karen Hogan",NA,NA,"Karen Hogan",38,201,"2022-06-05","ebird",20,TRUE,FALSE
+"orng-06",2023,"Karen Hogan",NA,NA,"Karen Hogan",35,182,"2023-06-09","ebird",20,TRUE,FALSE
+"orng-06",2024,"Karen Hogan",NA,NA,"Karen Hogan",39,221,"2024-06-02","ebird",20,TRUE,FALSE
+"orng-06",2025,"Karen Hogan",NA,NA,"Karen Hogan",33,190,"2025-06-07","ebird",20,TRUE,FALSE
+"orng-07",1999,"Betty King",NA,NA,"Betty King",40,293,"1999-06-10","historical",20,FALSE,FALSE
+"orng-07",2000,"Betty King",NA,NA,"Betty King",41,284,"2000-05-25","historical",20,FALSE,FALSE
+"orng-07",2001,"Betty King",NA,NA,"Betty King",44,272,"2001-05-23","transcribed_paper",20,TRUE,FALSE
+"orng-07",2002,"Betty King",NA,NA,"Betty King",44,300,"2002-05-22","historical",20,FALSE,FALSE
+"orng-07",2003,"Betty King",NA,NA,"Betty King",36,268,"2003-05-15","historical",20,FALSE,FALSE
+"orng-07",2004,"Betty King",NA,NA,"Betty King",50,342,"2004-05-22","ebird",20,FALSE,FALSE
+"orng-07",2005,"Betty King",NA,NA,"Betty King",45,265,"2005-05-23","ebird",20,FALSE,FALSE
+"orng-07",2006,"Betty King",NA,NA,"Betty King",49,343,"2006-05-21","historical",20,FALSE,FALSE
+"orng-07",2007,"Betty King",NA,NA,"Betty King",47,298,"2007-05-21","ebird",20,FALSE,FALSE
+"orng-07",2008,"Betty King",NA,NA,"Betty King",43,338,"2008-05-28","ebird",20,FALSE,FALSE
+"orng-07",2009,"Betty King",NA,NA,"Betty King",40,260,"2009-05-31","ebird",20,FALSE,FALSE
+"orng-07",2010,"Betty King",NA,NA,"Betty King",40,261,"2010-05-23","ebird",20,FALSE,FALSE
+"orng-07",2011,"Betty King",NA,NA,"Betty King",42,260,"2011-05-15","ebird",20,FALSE,FALSE
+"orng-07",2012,"Betty King",NA,NA,"Betty King",42,310,"2012-05-17","transcribed_paper",20,TRUE,FALSE
+"orng-07",2014,"Brian Bockhahn",NA,NA,"Brian Bockhahn",51,373,"2014-05-27","ebird",20,FALSE,FALSE
+"orng-07",2015,"Brian Bockhahn",NA,NA,"Brian Bockhahn",48,327,"2015-05-31","ebird",20,FALSE,FALSE
+"orng-07",2016,"Brian Bockhahn",NA,NA,"Brian Bockhahn",48,303,"2016-06-26","ebird",20,FALSE,FALSE
+"orng-07",2017,"Brian Bockhahn",NA,NA,"Brian Bockhahn",53,334,"2017-06-06","ebird",20,FALSE,FALSE
+"orng-07",2018,"Brian Bockhahn",NA,NA,"Brian Bockhahn",49,294,"2018-06-05","ebird",20,FALSE,FALSE
+"orng-07",2019,"Brian Bockhahn",NA,NA,"Brian Bockhahn",47,280,"2019-05-23","ebird",20,FALSE,FALSE
+"orng-07",2020,"Brian Bockhahn",NA,NA,"Brian Bockhahn",42,232,"2020-06-01","ebird",20,FALSE,FALSE
+"orng-07",2021,"Brian Bockhahn",NA,NA,"Brian Bockhahn",50,243,"2021-06-03","ebird",20,TRUE,FALSE
+"orng-07",2022,"Brian Bockhahn",NA,NA,"Brian Bockhahn",43,284,"2022-06-09","ebird",20,TRUE,FALSE
+"orng-07",2023,"Brian Bockhahn",NA,NA,"Brian Bockhahn",53,279,"2023-06-06","ebird",20,TRUE,FALSE
+"orng-07",2024,"Brian Bockhahn",NA,NA,"Brian Bockhahn",50,294,"2024-06-06","ebird",20,TRUE,FALSE
+"orng-07",2025,"Marc Howlett","Laurie Howlett","Ezra Howlett","Ezra Howlett, Laurie Howlett, Marc Howlett",53,271,"2025-06-22","ebird",20,TRUE,FALSE
+"orng-08",1999,"Barb Brooks",NA,NA,"Barb Brooks",39,245,"1999-05-30","historical",20,FALSE,FALSE
+"orng-08",2000,"Barb Brooks",NA,NA,"Barb Brooks",30,151,"2000-05-28","historical",20,FALSE,FALSE
+"orng-08",2001,"Barb Brooks",NA,NA,"Barb Brooks",37,178,"2001-05-27","transcribed_paper",20,TRUE,FALSE
+"orng-08",2002,"Barb Brooks",NA,NA,"Barb Brooks",31,140,"2002-06-30","historical",20,FALSE,FALSE
+"orng-08",2003,"Barb Brooks",NA,NA,"Barb Brooks",23,110,"2003-06-01","historical",20,FALSE,FALSE
+"orng-08",2004,"Barb Brooks",NA,NA,"Barb Brooks",25,182,"2004-06-02","ebird",20,FALSE,FALSE
+"orng-08",2005,"Barb Brooks",NA,NA,"Barb Brooks",32,169,"2005-05-15","ebird",20,FALSE,FALSE
+"orng-08",2006,"Barb Brooks",NA,NA,"Barb Brooks",28,191,"2006-05-21","ebird",20,FALSE,FALSE
+"orng-08",2007,"Barb Brooks",NA,NA,"Barb Brooks",28,180,"2007-05-20","ebird",20,FALSE,FALSE
+"orng-08",2008,"Barb Brooks",NA,NA,"Barb Brooks",30,196,"2008-06-01","ebird",20,FALSE,FALSE
+"orng-08",2009,"Barb Brooks",NA,NA,"Barb Brooks",27,165,"2009-05-29","ebird",20,FALSE,FALSE
+"orng-08",2010,"Barb Brooks",NA,NA,"Barb Brooks",33,152,"2010-06-01","ebird",20,FALSE,FALSE
+"orng-08",2011,"Barb Brooks",NA,NA,"Barb Brooks",28,188,"2011-06-05","ebird",20,FALSE,FALSE
+"orng-08",2012,"Barb Brooks",NA,NA,"Barb Brooks",29,167,"2012-05-13","ebird",20,FALSE,TRUE
+"orng-08",2013,"Barb Brooks",NA,NA,"Barb Brooks",24,98,"2013-05-19","ebird",20,FALSE,FALSE
+"orng-08",2014,"Barb Brooks",NA,NA,"Barb Brooks",24,111,"2014-05-18","ebird",20,FALSE,FALSE
+"orng-08",2015,"Barb Brooks",NA,NA,"Barb Brooks",30,124,"2015-05-24","ebird",20,FALSE,FALSE
+"orng-08",2016,"Barb Brooks",NA,NA,"Barb Brooks",16,88,"2016-05-22","ebird",20,FALSE,FALSE
+"orng-08",2017,"Barb Brooks",NA,NA,"Barb Brooks",20,97,"2017-05-21","obs_details",20,TRUE,FALSE
+"orng-08",2018,"Barb Brooks",NA,NA,"Barb Brooks",16,66,"2018-05-20","ebird",20,FALSE,FALSE
+"orng-08",2019,"Barb Brooks",NA,NA,"Barb Brooks",17,72,"2019-06-02","ebird",20,FALSE,FALSE
+"orng-08",2020,"Barb Brooks",NA,NA,"Barb Brooks",20,70,"2020-05-17","ebird",20,FALSE,FALSE
+"orng-08",2021,"Barb Brooks",NA,NA,"Barb Brooks",24,92,"2021-05-16","ebird",20,TRUE,FALSE
+"orng-08",2022,"Barb Brooks",NA,NA,"Barb Brooks",34,130,"2022-06-04","ebird",20,TRUE,FALSE
+"orng-08",2023,"Barb Brooks",NA,NA,"Barb Brooks",25,77,"2023-05-20","ebird",20,TRUE,FALSE
+"orng-08",2024,"Barb Brooks","William Mackin",NA,"Barb Brooks, William Mackin",37,150,"2024-05-19","ebird",20,TRUE,FALSE
+"orng-08",2025,"Barb Brooks","William Mackin",NA,"Barb Brooks, William Mackin",42,239,"2025-05-18","ebird",20,TRUE,FALSE
+"orng-09",1999,"Shantanu Phukan","T. Williams",NA,"Shantanu Phukan, T. Williams",44,264,"1999-05-31","historical",20,FALSE,FALSE
+"orng-09",2000,"Sandy Cash",NA,NA,"Sandy Cash",37,158,"2000-06-08","historical",20,FALSE,FALSE
+"orng-09",2001,"Shantanu Phukan",NA,NA,"Shantanu Phukan",51,274,"2001-06-19","transcribed_paper",20,TRUE,FALSE
+"orng-09",2002,"Shantanu Phukan","Alan Johnston",NA,"Alan Johnston, Shantanu Phukan",43,300,"2002-05-31","historical",20,FALSE,FALSE
+"orng-09",2004,"Shantanu Phukan",NA,NA,"Shantanu Phukan",42,186,"2004-06-24","ebird",20,FALSE,FALSE
+"orng-09",2005,"Shantanu Phukan",NA,NA,"Shantanu Phukan",45,249,"2005-06-07","ebird",20,FALSE,FALSE
+"orng-09",2006,"unknown",NA,NA,"unknown",33,248,"2006-06-16","ebird",20,FALSE,FALSE
+"orng-09",2007,"unknown",NA,NA,"unknown",36,211,"2007-06-26","ebird",20,FALSE,FALSE
+"orng-09",2008,"unknown",NA,NA,"unknown",39,283,"2008-06-27","ebird",20,FALSE,FALSE
+"orng-09",2009,"unknown",NA,NA,"unknown",37,228,"2009-06-28","ebird",20,FALSE,FALSE
+"orng-09",2011,"David Curtin",NA,NA,"David Curtin",32,228,"2011-06-12","ebird",20,FALSE,FALSE
+"orng-09",2012,"David Curtin",NA,NA,"David Curtin",36,260,"2012-06-10","ebird",20,FALSE,FALSE
+"orng-09",2013,"David Curtin",NA,NA,"David Curtin",35,244,"2013-06-16","ebird",20,FALSE,FALSE
+"orng-09",2014,"David Curtin",NA,NA,"David Curtin",37,305,"2014-05-25","ebird",20,FALSE,FALSE
+"orng-09",2015,"David Curtin",NA,NA,"David Curtin",35,213,"2015-05-24","ebird",20,FALSE,FALSE
+"orng-09",2016,"David Curtin",NA,NA,"David Curtin",32,223,"2016-06-09","ebird",20,FALSE,FALSE
+"orng-09",2019,"Karen Hogan","Mark Hogan",NA,"Karen Hogan, Mark Hogan",33,192,"2019-06-10","obs_details",20,TRUE,FALSE
+"orng-09",2020,"Karen Hogan","Mark Hogan",NA,"Karen Hogan, Mark Hogan",39,205,"2020-06-08","obs_details",20,TRUE,FALSE
+"orng-09",2021,"Karen Hogan",NA,NA,"Karen Hogan",37,174,"2021-06-07","ebird",20,TRUE,FALSE
+"orng-09",2022,"Karen Hogan",NA,NA,"Karen Hogan",42,209,"2022-06-04","ebird",20,TRUE,FALSE
+"orng-09",2023,"Karen Hogan",NA,NA,"Karen Hogan",33,171,"2023-06-07","ebird",20,TRUE,FALSE
+"orng-09",2024,"Karen Hogan",NA,NA,"Karen Hogan",41,212,"2024-06-05","ebird",20,TRUE,FALSE
+"orng-09",2025,"Karen Hogan",NA,NA,"Karen Hogan",38,156,"2025-06-06","ebird",20,TRUE,FALSE
+"orng-10",1999,"Will Cook",NA,NA,"Will Cook",54,392,"1999-06-13","ebird",20,FALSE,FALSE
+"orng-10",2000,"Will Cook",NA,NA,"Will Cook",48,319,"2000-06-11","ebird",20,FALSE,FALSE
+"orng-10",2001,"Will Cook",NA,NA,"Will Cook",50,400,"2001-06-10","transcribed_paper",20,TRUE,FALSE
+"orng-10",2002,"Will Cook",NA,NA,"Will Cook",50,358,"2002-06-16","ebird",20,FALSE,FALSE
+"orng-10",2003,"Will Cook",NA,NA,"Will Cook",45,357,"2003-06-22","ebird",20,FALSE,FALSE
+"orng-10",2004,"Will Cook",NA,NA,"Will Cook",51,319,"2004-05-31","ebird",20,FALSE,FALSE
+"orng-10",2005,"Will Cook","Doug Shadwick",NA,"Doug Shadwick, Will Cook",52,365,"2005-06-12","ebird",20,FALSE,FALSE
+"orng-10",2006,"Doug Shadwick",NA,NA,"Doug Shadwick",46,304,"2006-06-18","ebird",20,FALSE,FALSE
+"orng-10",2007,"Doug Shadwick",NA,NA,"Doug Shadwick",51,314,"2007-06-10","ebird",20,FALSE,FALSE
+"orng-10",2008,"Doug Shadwick",NA,NA,"Doug Shadwick",47,369,"2008-06-01","ebird",20,FALSE,FALSE
+"orng-10",2009,"Doug Shadwick",NA,NA,"Doug Shadwick",43,249,"2009-06-07","ebird",20,FALSE,FALSE
+"orng-10",2012,"Nathan Swick",NA,NA,"Nathan Swick",42,425,"2012-06-17","ebird",20,FALSE,FALSE
+"orng-10",2013,"Nathan Swick",NA,NA,"Nathan Swick",41,309,"2013-05-26","ebird",20,FALSE,FALSE
+"orng-10",2016,"Barb Brooks",NA,NA,"Barb Brooks",14,70,"2016-06-12","ebird",20,FALSE,FALSE
+"orng-10",2017,"Barb Brooks",NA,NA,"Barb Brooks",15,105,"2017-06-11","obs_details",20,TRUE,FALSE
+"orng-10",2018,"Barb Brooks",NA,NA,"Barb Brooks",18,102,"2018-05-28","ebird",20,FALSE,FALSE
+"orng-10",2019,"Vern Bothwell","Nan Dewire",NA,"Nan Dewire, Vern Bothwell",33,213,"2019-06-06","ebird",20,FALSE,FALSE
+"orng-10",2020,"Vern Bothwell",NA,NA,"Vern Bothwell",28,158,"2020-06-24","ebird",20,TRUE,FALSE
+"orng-10",2021,"Vern Bothwell",NA,NA,"Vern Bothwell",30,185,"2021-06-01","ebird",20,TRUE,FALSE
+"orng-10",2023,"Allen Hurlbert",NA,NA,"Allen Hurlbert",42,254,"2023-06-25","ebird",20,TRUE,FALSE
+"orng-10",2024,"Paul Taillie",NA,NA,"Paul Taillie",51,282,"2024-06-02","ebird",20,TRUE,FALSE
+"orng-10",2025,"Paul Taillie",NA,NA,"Paul Taillie",47,251,"2025-05-31","ebird",20,TRUE,FALSE
+"orng-11",1999,"Marsha Stephens",NA,NA,"Marsha Stephens",42,397,"1999-06-06","historical",20,FALSE,FALSE
+"orng-11",2000,"Marsha Stephens",NA,NA,"Marsha Stephens",37,291,"2000-06-18","historical",20,FALSE,FALSE
+"orng-11",2001,"Marsha Stephens",NA,NA,"Marsha Stephens",38,264,"2001-06-24","transcribed_paper",20,TRUE,FALSE
+"orng-11",2002,"Marsha Stephens",NA,NA,"Marsha Stephens",37,266,"2002-06-24","historical",20,FALSE,FALSE
+"orng-11",2003,"Marsha Stephens",NA,NA,"Marsha Stephens",19,175,"2003-06-22","historical",20,FALSE,FALSE
+"orng-11",2004,"Marsha Stephens",NA,NA,"Marsha Stephens",24,201,"2004-06-06","ebird",20,FALSE,FALSE
+"orng-11",2005,"Marsha Stephens",NA,NA,"Marsha Stephens",31,199,"2005-06-26","ebird",20,FALSE,FALSE
+"orng-11",2006,"Marsha Stephens",NA,NA,"Marsha Stephens",40,337,"2006-06-26","ebird",20,FALSE,FALSE
+"orng-11",2007,"unknown",NA,NA,"unknown",34,238,"2007-06-16","ebird",20,FALSE,FALSE
+"orng-11",2008,"unknown",NA,NA,"unknown",26,254,"2008-06-07","ebird",20,FALSE,FALSE
+"orng-11",2009,"unknown",NA,NA,"unknown",26,216,"2009-06-13","ebird",20,FALSE,FALSE
+"orng-11",2017,"Loren Hintz",NA,NA,"Loren Hintz",36,152,"2017-06-18","obs_details",20,TRUE,FALSE
+"orng-11",2018,"Loren Hintz",NA,NA,"Loren Hintz",40,137,"2018-06-02","ebird",20,FALSE,FALSE
+"orng-11",2019,"Loren Hintz",NA,NA,"Loren Hintz",38,169,"2019-06-16","obs_details",20,TRUE,FALSE
+"orng-11",2020,"Loren Hintz",NA,NA,"Loren Hintz",39,211,"2020-06-14","obs_details",20,TRUE,FALSE
+"orng-11",2021,"Loren Hintz",NA,NA,"Loren Hintz",38,181,"2021-06-05","obs_details",20,TRUE,FALSE
+"orng-11",2022,"Loren Hintz","Margaret Vimmerstedt",NA,"Loren Hintz, Margaret Vimmerstedt",40,191,"2022-06-04","ebird",20,TRUE,FALSE
+"orng-11",2023,"Suzanne Roberts","Vicki Nebes",NA,"Suzanne Roberts, Vicki Nebes",48,298,"2023-06-03","ebird",20,TRUE,FALSE
+"orng-11",2024,"Suzanne Roberts","Vicki Nebes",NA,"Suzanne Roberts, Vicki Nebes",46,289,"2024-06-16","ebird",20,TRUE,FALSE
+"orng-11",2025,"Suzanne Roberts",NA,NA,"Suzanne Roberts",45,231,"2025-06-15","ebird",20,TRUE,FALSE
+"orng-12",1999,"Haven Wiley",NA,NA,"Haven Wiley",45,330,"1999-05-23","historical",20,FALSE,FALSE
+"orng-12",2000,NA,"Haven Wiley",NA,"Haven Wiley",37,297,"2000-05-28","historical",20,FALSE,FALSE
+"orng-12",2001,NA,"Haven Wiley",NA,"Haven Wiley",42,314,"2001-06-06","transcribed_paper",20,TRUE,FALSE
+"orng-12",2002,"Haven Wiley",NA,NA,"Haven Wiley",36,311,"2002-05-27","historical",20,FALSE,FALSE
+"orng-12",2003,"Haven Wiley",NA,NA,"Haven Wiley",38,284,"2003-05-18","historical",20,FALSE,FALSE
+"orng-12",2004,"Haven Wiley",NA,NA,"Haven Wiley",44,283,"2004-05-23","ebird",20,FALSE,FALSE
+"orng-12",2005,"Haven Wiley",NA,NA,"Haven Wiley",33,259,"2005-06-11","ebird",20,FALSE,FALSE
+"orng-12",2006,"Haven Wiley",NA,NA,"Haven Wiley",44,298,"2006-05-21","ebird",20,FALSE,FALSE
+"orng-12",2007,"Haven Wiley",NA,NA,"Haven Wiley",39,331,"2007-06-10","ebird",20,FALSE,FALSE
+"orng-12",2008,"Haven Wiley",NA,NA,"Haven Wiley",40,326,"2008-06-08","ebird",20,FALSE,FALSE
+"orng-12",2009,"Haven Wiley",NA,NA,"Haven Wiley",32,271,"2009-07-05","ebird",20,FALSE,TRUE
+"orng-12",2010,"Haven Wiley",NA,NA,"Haven Wiley",39,314,"2010-05-31","ebird",20,FALSE,FALSE
+"orng-12",2011,"Haven Wiley",NA,NA,"Haven Wiley",36,252,"2011-05-29","ebird",20,FALSE,FALSE
+"orng-12",2012,"Haven Wiley",NA,NA,"Haven Wiley",37,239,"2012-06-17","ebird",20,FALSE,FALSE
+"orng-12",2013,"Haven Wiley",NA,NA,"Haven Wiley",26,230,"2013-06-02","ebird",20,FALSE,FALSE
+"orng-12",2014,"Haven Wiley",NA,NA,"Haven Wiley",30,216,"2014-06-08","ebird",20,FALSE,FALSE
+"orng-12",2015,"Haven Wiley",NA,NA,"Haven Wiley",27,175,"2015-06-28","obs_details",20,TRUE,FALSE
+"orng-12",2016,"Haven Wiley",NA,NA,"Haven Wiley",32,210,"2016-05-22","obs_details",20,TRUE,FALSE
+"orng-12",2017,"Haven Wiley",NA,NA,"Haven Wiley",32,181,"2017-05-28","obs_details",20,TRUE,FALSE
+"orng-12",2018,"Haven Wiley",NA,NA,"Haven Wiley",29,177,"2018-05-27","obs_details",20,TRUE,FALSE
+"orng-12",2019,"Haven Wiley",NA,NA,"Haven Wiley",34,225,"2019-06-02","obs_details",20,TRUE,FALSE
+"orng-12",2020,"Haven Wiley",NA,NA,"Haven Wiley",40,215,"2020-05-24","ebird",20,TRUE,FALSE
+"orng-12",2021,"Haven Wiley",NA,NA,"Haven Wiley",37,183,"2021-06-27","ebird",20,TRUE,FALSE
+"orng-12",2022,"Haven Wiley",NA,NA,"Haven Wiley",29,199,"2022-05-22","ebird",20,TRUE,FALSE
+"orng-12",2023,"Haven Wiley",NA,NA,"Haven Wiley",29,155,"2023-05-21","ebird",20,TRUE,FALSE
+"orng-12",2024,"Haven Wiley",NA,NA,"Haven Wiley",29,147,"2024-06-02","ebird",20,TRUE,FALSE
+"orng-12",2025,"Haven Wiley",NA,NA,"Haven Wiley",26,109,"2025-05-25","ebird",20,TRUE,FALSE

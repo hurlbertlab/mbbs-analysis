@@ -97,9 +97,9 @@ make_trend_table <- function(cols_list, rows_list = c("NA")) {
 #
 add_survey_events <- function(mbbs, mbbs_survey_events) {
   mbbs <- mbbs %>% 
-    left_join(mbbs_survey_events, by = c("route", "year")) %>%
-    dplyr::select(-route_num.y) %>%
-    rename(route_num = route_num.x)
+    left_join(mbbs_survey_events, by = c("route", "year")) #%>%
+    #dplyr::select(-route_num.y) %>%
+    #rename(route_num = route_num.x)
   
   return(mbbs)
 } 
@@ -230,4 +230,201 @@ make_testing_df <- function(mbbs, obs_only = FALSE) {
 
   filtered_mbbs
 
+}
+
+
+#' Creates a fixed effect (numeric value) of observer quality, which reflects
+#' (observer's mean on this route - mean richness of years they are not one of the obs1-3)/
+#' (mean richness of years they are not one of the obs1-3) ie:
+#' (x-y)/y
+#' observer_quality = max(obs1_quality, obs2_quality, obs3_quality, na.rm = TRUE)
+#' Corrects for cases where a one-time observer accompanied a more experienced observer
+#' and saw a high number of species in a particularly good year (putting their quality
+#' above that of the more experienced observer)
+#' @importFrom dplyr
+#'  group_by summarize filter ungroup left_join first
+#'  relocate mutate rename select rowwise case_when n
+#' @importFrom tidyr pivot_longer
+#' @param mbbs_survey_events a dataframe with the list of survey events, importantly needs to include information about number of species and the observers for each survey
+get_observer_quality <- function(mbbs_survey_events) {
+  # goal is to create a fixed effect of observer quality
+  
+  # table of average n species seen on each route
+  S_average_route <-
+    mbbs_survey_events %>%
+    group_by(route) %>%
+    summarize(
+      route_meanS = mean(total_species),
+      n_surveys_route = n()
+    ) %>%
+    ungroup()
+  
+  # summary of number of mean(S) across routes for each observer,
+  # + n surveys they've done
+  observer_average <- mbbs_survey_events %>%
+    # obs1/obs2/obs3 don't matter now
+    tidyr::pivot_longer(obs1:obs3, values_to = "obs") %>%
+    filter(!is.na(obs)) %>%
+    # group by just how many times the observer has surveyed at all
+    group_by(obs) %>%
+    summarize(
+      obs_meanS = mean(total_species),
+      n_surveys_obs = n()
+    ) %>%
+    ungroup()
+  
+  # Calculate proportion deviation from mean species of other observers
+  # on the route for each observer
+  observer_average_route <-
+    mbbs_survey_events %>%
+    tidyr::pivot_longer(obs1:obs3, values_to = "obs") %>%
+    filter(!is.na(obs)) %>%
+    group_by(route, obs) %>%
+    summarize(
+      obsroute_meanS = mean(total_species),
+      n_surveys_obsroute = n()
+    ) %>%
+    ungroup() %>%
+    # left join dfs we created above
+    left_join(S_average_route, by = c("route")) %>%
+    left_join(observer_average, by = c("obs")) %>%
+    relocate(
+      n_surveys_obsroute,
+      n_surveys_obs,
+      .after = "obs_meanS"
+    ) %>%
+    # meanS on route in years not run by that row's observer,
+    # back calculated with means,
+    # essentially
+    # removing the observer's proportion of contribution towards the route_meanS
+    mutate(
+      non_focal_obsroute_meanS =
+        ((route_meanS * n_surveys_route) -
+           (obsroute_meanS * n_surveys_obsroute)) /
+        (n_surveys_route - n_surveys_obsroute)
+    )
+  
+  # use all the information we have about an observer to calculate how they do
+  # compared to all other observers on the mbbs.
+  # On each survey they've done, calculate their performance as follows:
+  # (obsroute_year_S(route, year, observer) - non_focal_obsroute_meanS)
+  # / non_focal_obsroute_meanS
+  # If an observer has 5 route_years they've run, they will have 5 rows of data
+  # and each row will contain a comparison score of how well they did that year
+  # on that route
+  # compared to every other year that route has been done by someone else.
+  # To get their total performance or observer quality across all years and routes
+  # group by observer and average their route_year observer qualities.
+  # This method also produces a value where routes the observer has run more
+  # frequently have more impact on their observer quality.
+  # and we have more information about their performance than a single datapoint
+  # for each route they've participated in.
+  observer_year_average_route <-
+    mbbs_survey_events %>%
+    tidyr::pivot_longer(obs1:obs3, values_to = "obs") %>%
+    filter(!is.na(obs)) %>%
+    group_by(route, obs, year) %>%
+    summarize(
+      obsroute_year_S = total_species
+    ) %>%
+    # left join the above dataframes bc we need some of that info
+    left_join(observer_average_route, by = c("obs", "route")) %>%
+    mutate( # create comparison score within the route year
+      obs_yr_rt_quality =
+        (obsroute_year_S - non_focal_obsroute_meanS) / non_focal_obsroute_meanS,
+      obs_yr_rt_quality =
+        ifelse(is.nan(obs_yr_rt_quality), 0, obs_yr_rt_quality)
+    )
+  
+  # group by observer and take the mean quality from all their route-years
+  # to get the average quality of each observer
+  # proportion of species each observer observes relative
+  # to what other people observe on their route(s)
+  # using data from ALL their years of observations (each route-year combo)
+  # instead of taking the average in each route and then averaging that (prev way)
+  # which (prev way) gave equal influence to a route run once and a route run 15x
+  # in (prev way) determining obs_quality
+  # Interpretation is as follows:
+  # a -0.08 observer quality means that observer on average sees 8% fewer
+  # species on their route(s) compared to the average number of species
+  # seen on their route(s) in years run by other observers
+  observer_quality <-
+    observer_year_average_route %>%
+    group_by(obs) %>%
+    summarize(
+      obs_quality = mean(obs_yr_rt_quality),
+      n_surveys_obs = first(n_surveys_obs)
+    ) %>%
+    ungroup()
+  
+  # assign observer_quality based on the performance of the top observer
+  mbbs_survey_events <-
+    mbbs_survey_events %>%
+    # add obs1_deviation
+    left_join(
+      observer_quality,
+      by = c("obs1" = "obs")
+    ) %>%
+    mutate(
+      obs1_quality = obs_quality,
+      obs1_nsurveys = n_surveys_obs
+    ) %>%
+    select(-c(obs_quality, n_surveys_obs)) %>%
+    # add obs2_deviation
+    left_join(observer_quality, by = c("obs2" = "obs")) %>%
+    mutate(
+      obs2_quality = obs_quality,
+      obs2_nsurveys = n_surveys_obs
+    ) %>%
+    select(-c(obs_quality, n_surveys_obs)) %>%
+    # add obs3 deviation
+    left_join(observer_quality, by = c("obs3" = "obs")) %>%
+    mutate(
+      obs3_quality = obs_quality,
+      obs3_nsurveys = n_surveys_obs
+    ) %>%
+    select(-c(obs_quality, n_surveys_obs)) %>%
+    rowwise() %>%
+    # Get the maximum observer_quality between obs1, obs2, obs,
+    # and which column it comes from
+    mutate(
+      # observer quality is max btwn the three obs deviations
+      observer_quality =
+        max(obs1_quality, obs2_quality, obs3_quality,
+            na.rm = TRUE
+        ),
+      # record which observer was the best
+      max_qual_observer =
+        which.max(c(obs1_quality, obs2_quality, obs3_quality)),
+      observer_quality = case_when(
+        # if there's only one observer
+        # don't change obs_quality
+        (sum(is.na(c(obs1, obs2, obs3)) == FALSE) == 1) ~ observer_quality,
+        # if obs 1 is the best observer but only has one survey across all routes
+        # take max of obs2 and obs3
+        (max_qual_observer == 1 & obs1_nsurveys == 1) ~ suppressWarnings(max(obs2_quality, obs3_quality, na.rm = TRUE)),
+        # if obs 2 is the best observer but only has one survey across all routes
+        # take max of obs1 and obs3
+        (max_qual_observer == 2 & obs2_nsurveys == 1) ~ suppressWarnings(max(obs1_quality, obs3_quality, na.rm = TRUE)),
+        # if obs 3 is the best observer but only has one survey across all routes
+        # take max of obs1 and obs2
+        (max_qual_observer == 3 & obs3_nsurveys == 1) ~ suppressWarnings(max(obs1_quality, obs2_quality, na.rm = TRUE)),
+        # if none of the other statements are true, leave obs_quality the same
+        TRUE ~ observer_quality
+      )
+    ) %>%
+    ungroup() %>%
+    # assign primary observer and observer ID based on the top observer
+    mutate(primary_observer = case_when(
+      max_qual_observer == 1 ~ obs1,
+      max_qual_observer == 2 ~ obs2,
+      max_qual_observer == 3 ~ obs3
+    )) %>%
+    dplyr::relocate(primary_observer, .before = "obs1") %>%
+    group_by(primary_observer) %>%
+    mutate(observer_ID = cur_group_id()) %>%
+    ungroup()
+  
+  # return
+  mbbs_survey_events
 }

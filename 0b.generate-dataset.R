@@ -19,22 +19,10 @@ library(beepr)
 #get the functions we need for this script that are stored elsewhere
 source("2.species-trend-estimate-functions.R")
 
-#load in survey events
-#we load in a version where we've created observer quality.
-load("C:/git/mbbs-analysis/data/mbbs/mbbs_survey_events.rda")
-mbbs_survey_events <- mbbs_survey_events %>%
-  #add updated route id style
-  mutate(route = make_route(mbbs_county, route_num)) %>%
-  dplyr::relocate(route, .before = mbbs_county) %>%
-  #give primary observer to whoever had the highest max quality
-  mutate(primary_observer = case_when(max_qual_observer == 1 ~ obs1,
-                                      max_qual_observer == 2 ~ obs2,
-                                      max_qual_observer == 3 ~ obs3)) %>%
-  group_by(primary_observer) %>%
-  mutate(observer_ID = cur_group_id()) %>%
-  ungroup() %>%
-  #select just the variables we need
-  dplyr::select(route, mbbs_county, route_num, year, primary_observer, max_qual_observer, observer_ID, observer_quality)
+#load in survey events and calc. observer quality
+mbbs_survey_events <- read.csv("data/mbbs/surveys.csv") %>%
+  get_observer_quality() %>%
+  select(route, year, primary_observer, standardized_observers, nstops, observer_quality, observer_ID)
 
 #read in the mbbs route data
 #this already includes the 0s for when species are not observed.
@@ -63,7 +51,7 @@ mbbs <- filter_to_min_sightings(mbbs,
 
 n_distinct(mbbs$common_name) #61
 
-#OK. The mbbs has zeros already added, but we've gone and removed some by filtering the species that have only been seen on minimun n routes. So we'll add in the 0 values for when routes were surveyed but the species that remain in this filtered dataset were not seen.
+#OK. The mbbs has zeros already added, but we've gone and removed some by filtering the species that have only been seen on minimum n routes. So we'll add in the 0 values for when routes were surveyed but the species that remain in this filtered dataset were not seen.
 mbbs <- mbbs %>% complete(
   nesting(year, year_standard, county, route, route_num, route_standard),
   nesting(common_name, sci_name, common_name_standard),
