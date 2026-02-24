@@ -20,7 +20,7 @@ unloadNamespace("rethinking")
 options(scipen=999)
 options(mc.cores = parallel::detectCores())
 
-source("2.species-trend-estimate-functions.R")
+source("2.analysis-functions.R")
 
 #read in data we need
 barren <- read.csv("data/nlcd-landcover/nlcd_annual_barren.csv") 

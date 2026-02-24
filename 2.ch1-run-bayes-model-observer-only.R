@@ -18,7 +18,7 @@ library(StanHeaders) #stan helper
 options(scipen=999)
 
 #source functions
-source("2.species-trend-estimate-functions.R")
+source("2.analysis-functions.R")
 
 #read in analysis file 
 mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 

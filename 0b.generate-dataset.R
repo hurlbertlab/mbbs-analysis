@@ -17,7 +17,7 @@ library(stringr)
 library(beepr)
 
 #get the functions we need for this script that are stored elsewhere
-source("2.species-trend-estimate-functions.R")
+source("2.analysis-functions.R")
 
 #load in survey events and calc. observer quality
 mbbs_survey_events <- read.csv("data/mbbs/surveys.csv") %>%

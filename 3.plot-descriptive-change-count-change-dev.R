@@ -11,7 +11,7 @@ library(stringr)
 library(ggplot2)
 library(ggpubr)
 library(gridExtra)
-source("2.species-trend-estimate-functions.R")
+source("2.analysis-functions.R")
 
 
 #load in dataset and create change per change

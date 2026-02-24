@@ -12,7 +12,7 @@ library(rstan)
 library(stringr)
 unloadNamespace("rethinking")
 
-source("2.species-trend-estimate-functions.R")
+source("2.analysis-functions.R")
 
 #read in data we need
 dev <- read.csv("data/nlcd-landcover/nlcd_annual_running_max_developed.csv") %>%
