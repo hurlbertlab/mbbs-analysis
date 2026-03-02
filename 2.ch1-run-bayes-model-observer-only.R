@@ -21,11 +21,7 @@ options(scipen=999)
 source("2.analysis-functions.R")
 
 #read in analysis file 
-mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 
-
-    #routes with errors
-    temp_rm <- mbbs %>% filter(route == "drhm-04", year == 2010)
-    mbbs <- anti_join(mbbs, temp_rm) %>%
+mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
       #add species route
       mutate(sprt = paste0(route,common_name)) %>%
       group_by(sprt) %>%
@@ -45,7 +41,7 @@ filtered_mbbs <- make_testing_df(mbbs, obs_only = TRUE)
 #change to filtered_mbbs for testing, mbbs for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.08.27_obsonly_withregional_testing_mu/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2026.02.25_obsonly_matrix2/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -80,8 +76,8 @@ datstan <- list(
   sp = mbbs_dataset$common_name_standard, #species indices
   rt = mbbs_dataset$route_standard, #route indicies
   year = mbbs_dataset$year_standard, #year indices
-  regional_trend_mean = regional_trend$usgs_trend_estimate,
-  regional_trend_sd = regional_trend$usgs_sd,
+  #regional_trend_mean = regional_trend$usgs_trend_estimate,
+  #regional_trend_sd = regional_trend$usgs_sd,
   observer_quality = mbbs_dataset$observer_quality, 
 #  observer_quality = obs_q_base$observer_quality, #measure of observer quality, NOT CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
   #but on the other hand, is this a variable that is going to be interpreted? no. And centering takes this from relating to the number of species, to relating observers to each other. Also numerically it may make stan's job easier. 
@@ -106,11 +102,16 @@ fit <- sampling(stan_model,
                 data = datstan, 
                 chains = 4,
                 cores = 4, 
-                iter = 4000, 
-                warmup = 2000
+                iter = 2000, 
+                warmup = 1000
 )
 #expect 23 minutes to run this model with the full data.
 beepr::beep()
+timestamp()
+#2026.02.26 7.8 mins to run model with 2000 iter warmup 1000
+#ah yeah okay after vectorizing, 6.5 minutes, which is a definete improvement, esp when I run it with way more iterations :)
+
+
 #3 minutes with the testing data.
 #hmmm yeah. With the new method of transforming the alphas the testing data now takes 7.5 minutes.
 #getting ESS warnings. uhmmmm. Okay but it's still actually sampling the a's better than the last version I ran in terms of neff
@@ -133,35 +134,19 @@ fit_final <- fit_final %>%
   #rename numeric columns
   rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]")) %>%
   #remove %s in column names
-  rename_with(~ str_remove(., "%"), .cols = everything())
+  rename_with(~ str_remove(., "%"), .cols = everything()) %>%
+  mutate(sp = str_extract(.$rownames, "[0-9]([0-9])?,"),
+         rt = str_extract(.$rownames, ",[0-9]([0-9])?")) %>%
+  mutate(sp = str_remove(sp, ","),
+         rt = str_remove(rt, ","))
 #Save the summary
 write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 
+#Save traceplots
+save_stan_traceplot_pdf(fit,
+                        file = paste0(save_to), "traceplots.pdf")
 
 #Done, with everything saved :) for further work, assessing the quality of the fit, plotting, etc. see later files
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

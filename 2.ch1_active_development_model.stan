@@ -36,10 +36,12 @@ parameters {
   
   //intercept
   real a; //universal base intercept, taking the mean out of the intercept distribution and treating it as a constant plus a species and route gaussian distribution centered on zero
-  vector[Nsp] a_sp_raw; //intercept for each unique sp
-  real<lower = 0> sig_sp; //variance in species-specific intercepts
-  vector[Nrt] a_rt_raw; //intercept for each unique route
-  real<lower = 0> sig_rt; //variance in route-specific intercepts
+  matrix[Nsp, Nrt] a_sprt_raw; //intercept for each unique sp
+  real<lower = 0> sig_sprt; //variance in species-specific intercepts
+//  vector[Nsp] a_sp_raw; //intercept for each unique sp
+//  real<lower = 0> sig_sp; //variance in species-specific intercepts
+//  vector[Nrt] a_rt_raw; //intercept for each unique route
+//  real<lower = 0> sig_rt; //variance in route-specific intercepts
   
 //...............PREV MATRIX METHOD OF INTERCEPT.......................
 //  matrix[Nsp, Nrt] a; //species-route interaction matrix, fit a species trend along each sp+rt combo.
@@ -73,11 +75,18 @@ transformed parameters {
   //matrix[Nsp, Nrt] a = a_bar + a_z*sigma_a;
   
   //transform z-score easy-to-fit alphas 
-  vector[Nsp] a_sp = a_sp_raw * sig_sp;
-  vector[Nrt] a_rt = a_rt_raw * sig_rt;
+  matrix[Nsp, Nrt] a_sprt = a_sprt_raw * sig_sprt;
+  //vector[Nsp] a_sp = a_sp_raw * sig_sp;
+  //vector[Nrt] a_rt = a_rt_raw * sig_rt;
+  
+  //vectorize intercept matrix
+  vector[N] sprt_intercept;
+  for(n in 1:N) {
+    sprt_intercept[n] = a_sprt[sp[n], rt[n]];
+  }
   
   //vectorize eta
-  vector[N] eta = a + a_sp[sp] + a_rt[rt] + b[sp] .* to_vector(year) + c_obs * observer_quality;
+  vector[N] eta = a + sprt_intercept + b[sp] .* to_vector(year) + c_obs * observer_quality;
   
 }
 
@@ -86,10 +95,12 @@ model {
 //priors first
 //intercepts
   a ~ normal(0, 2); //universal intercept, trying not to constrain the prior too lightly so using 2 instead of 1. 
-  a_sp_raw ~ std_normal(); //centered on zero, use a hyperparam to set the distribution param.
-  a_rt_raw ~ std_normal(); //^^ same as above
-  sig_rt ~ normal(0, .5); //half normal
-  sig_sp ~ normal(0, .5); //half normal
+  to_vector(a_sprt_raw) ~ std_normal();
+  sig_sprt ~ normal(0, .5); //half normal
+//  a_sp_raw ~ std_normal(); //centered on zero, use a hyperparam to set the distribution param.
+//  a_rt_raw ~ std_normal(); //^^ same as above
+//  sig_rt ~ normal(0, .5); //half normal
+//  sig_sp ~ normal(0, .5); //half normal
 
 //observer prior
   c_obs ~ normal(0, 0.5); //half normal, there's one effect of changing observers across routes and species and I don't expect it to be a large effect so I constrain it.

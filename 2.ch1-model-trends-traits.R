@@ -36,11 +36,8 @@ options(scipen=999)
 #------------------------------------------------------------------------------
 
 #read in analysis file, this has already been filtered to remove species without the minimum number of sightings or that are excluded species
-mbbs <- read.csv("data/analysis.df.csv", header = TRUE) 
-
-  
+mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
   #do everything we need to do! 
-  mbbs <- mbbs %>%
     #remove eastern whip-por-will because it lacks ssi habitat selectivity data
     filter(!common_name == "Eastern Whip-poor-will") %>%
     #remove hummingbird because it's the only one of it's diet group
@@ -76,7 +73,7 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
     dplyr::mutate(usgs_trend_estimate = usgs_trend_estimate/100,
                   usgs_sd = usgs_sd/100) %>%
     #remove extra columns
-    dplyr::select(-usgs_note) %>%
+    dplyr::select(-usgs_note, -county, -route_num, -sci_name, -standardized_observers, -nstops) %>%
     #center variables as possible :)
     mutate(scale_habitat_ssi = (habitat_ssi - mean(habitat_ssi))/sd(habitat_ssi),
            scale_ztempwq = (z_tempwq - mean(z_tempwq))/sd(z_tempwq),
@@ -92,12 +89,12 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE)
 #   ungroup()
 
 #filtered mbbs, 5 species for testing purposes.
-filtered_mbbs <- make_testing_df(mbbs)
+filtered_mbbs <- make_testing_df(mbbs) 
 
 #change to filtered_mbbs for testing, mbbs for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2025.08.29_newch1model1_log_trytovectorize/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2026.03.24_ch1_rematrix_intercepts/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -172,9 +169,17 @@ fit_final <- fit_final %>%
   #rename numeric columns
   rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]")) %>%
   #remove %s in column names
-  rename_with(~ str_remove(., "%"), .cols = everything())
+  rename_with(~ str_remove(., "%"), .cols = everything()) %>%
+  filter(!stringr::str_detect(.$rownames, "intercept"))
 #Save the summary
 write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
+
+#Save the traceplots of the fit
+save_stan_traceplot_pdf(fit,
+                        file = paste0((save_to), "traceplots.pdf"),
+                        pars = NULL,
+                        n_per_page = 6,
+                        remove_pars = "eta\\[[0-9]+\\]|lp__|sprt_intercept\\[[0-9]+\\]")
 
 #last model run, 3051 seconds, 22 second warm up time
 #adding
@@ -183,6 +188,8 @@ write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 #new model run:
 # 591.515 seconds
 # 22 second warmup time, like the exact same. No difference
+#new model run with matrix:
+# 492 - 684 seconds. 
 
 #####################
 
