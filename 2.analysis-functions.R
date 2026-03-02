@@ -428,3 +428,50 @@ get_observer_quality <- function(mbbs_survey_events) {
   # return
   mbbs_survey_events
 }
+
+
+#' Function to save traceplot plots for viewing
+#' takes either NULL pars (all pars) or a vector of pars
+#' defaults to remove eta and lp__ pars from the traceplot
+#' and n_per_page of 4.
+#' fit is the stanfit input
+save_stan_traceplot_pdf <- function(fit, 
+                                    file = "traceplots.pdf", 
+                                    pars = NULL, 
+                                    n_per_page = 4,
+                                    remove_pars = "eta\\[[0-9]+\\]|lp__") {
+  
+  if (!inherits(fit, "stanfit")) {
+    stop("fit must be an rstan stanfit object")
+  }
+  
+  # If no parameters specified, filter to use every parameter besides eta
+  if (is.null(pars)) {
+    pars <- names(fit)
+    #remove any entries which are eta or lp__
+    pars <- str_remove(pars, remove_pars)
+    pars <- pars[pars != ""]
+    
+  }
+  
+  #open pdf
+  pdf(file)
+  #create sequence of i's to iterate over
+  sequence <- seq(from = 1, to = length(pars), by = n_per_page)
+  #about to start
+  print("saving traceplots")
+  #loop through traceplots to save
+  for (i in sequence) {
+    print(i)
+    idx <- i:min(i + n_per_page - 1, length(pars))
+    p <-  traceplot(
+      fit,
+      pars = names(fit)[idx]
+    ) 
+    print(p)
+  }
+  
+  dev.off()
+  #done!
+  message("Pairs plots saved to: ", normalizePath(file))
+}
