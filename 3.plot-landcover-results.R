@@ -29,10 +29,12 @@ load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_tra
 load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.10.16_traits_on_cpc/"
 load_from_cpc_grassland <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_rm0to0_grassland/"
 
-lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_bayesmeeting/"
+lf_ch1m1prev <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_bayesmeeting/"
+lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2026.03.02_ch1_m1_matrix_intercepts_5k/"
 lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.12.1_ch1_m1_diettest/"
 lf_tempo <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_temponly/"
 lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m2_kpriors1_FINAL/"
+lf_ch1nR <- "Z:/Goulden/mbbs-analysis/model/2026.03.02_ch1_m2_matrix_intercepts_NRT/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -626,6 +628,32 @@ plot(x = dev$mean,
     bind_rows(c1m1) %>%
     mutate(id = row_number())
   
+  c1mNR <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
+    filter(str_detect(.$rownames, "kappa")) %>%
+    mutate(model = "m1", 
+           color = "black",
+           id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1))
+  par(mar = c(2, 10, 2, 1))
+  plot(x = c1mNR$mean,
+       y = c1mNR$id, 
+       pch = c1mNR$pch,
+       cex = 2,
+       xlim = c(-.5,.5),
+       yaxt = "n",
+       ylab = "") +
+    abline(v = 0, lty = "dashed") +
+    segments(x0 = c1mNR$conf_2.5,
+             x1 = c1mNR$conf_97.5,
+             y0 = c1mNR$id,
+             lwd = 5) +
+    axis(side = 2,           # Side 2 is the left side (y-axis)
+         at = c1mNR$id,     # Specify the locations of the tick marks
+         labels =  c1mNR$rownames, # Specify the labels for those locations
+         las = 2
+         )
+  
   ch1dieto <- read.csv(paste0(lf_dieto, "fit_summary.csv")) %>%
     filter(str_detect(.$rownames, "kappa")) %>%
     mutate(id = row_number(),
@@ -707,6 +735,21 @@ plot(x = dev$mean,
              significant = case_when(significant == TRUE ~ significant,
                                      sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
                                      TRUE ~ FALSE))
+    
+    prev_ch1sp <- read.csv(paste0(lf_ch1m1prev, "fit_summary.csv")) %>%
+      filter(str_detect(.$rownames, "b")) %>%
+      filter(!str_detect(.$rownames, "kappa|sig|gamma|c_")) %>%
+      mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
+      left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
+      left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv"))) %>%
+      left_join(ch1sp, by = "common_name") %>%
+      mutate(prev_CI = abs(conf_97.5.x - conf_2.5.x),
+             new_CI = abs(conf_97.5.y - conf_2.5.y)) %>%
+      select(common_name, prev_CI, new_CI) 
+    plot(x = prev_ch1sp$prev_CI,
+         y = prev_ch1sp$new_CI) +
+      abline(a = 0, b = 1)
+      
 
     #plot mean against temperature niche
     maxColorValue <- 100
