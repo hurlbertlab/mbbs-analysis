@@ -1,62 +1,62 @@
-"common_name","Family","Family_Fraction_Diet","Diet_Type","Fraction_Diet","Prey_Name","Prey_Level"
-"Acadian Flycatcher","Tyrannidae",0.811417446619048,"Wt_or_Vol",0.9636,"Arthropoda","Phylum"
-"American Crow","Corvidae",0.379502332117725,"Wt_or_Vol",0.17839,"Arthropoda","Phylum"
-"American Goldfinch","Fringillidae",0.238380544217687,"Wt_or_Vol",0.257857142857143,"Arthropoda","Phylum"
-"American Robin","Turdidae",0.38074026102103,"Wt_or_Vol",0.321583333333333,"Arthropoda","Phylum"
-"Barn Swallow","Hirundinidae",0.947050413703704,"Wt_or_Vol",0.9761,"Arthropoda","Phylum"
-"Blue Grosbeak","Cardinalidae",0.380907175814815,"Wt_or_Vol",0.3344,"Arthropoda","Phylum"
-"Blue Jay","Corvidae",0.379502332117725,"Wt_or_Vol",0.308571428571429,"Arthropoda","Phylum"
-"Blue-gray Gnatcatcher","Polioptilidae",0.960897,"Wt_or_Vol",1.006794,"Arthropoda","Phylum"
-"Brown Thrasher","Mimidae",0.221245408163265,"Wt_or_Vol",0.195575,"Arthropoda","Phylum"
-"Brown-headed Cowbird","Icteridae",0.418166689935882,"Wt_or_Vol",0.0402692307692308,"Arthropoda","Phylum"
-"Brown-headed Nuthatch","Sittidae",0.823030674666667,"Wt_or_Vol",0.819,"Arthropoda","Phylum"
-"Carolina Chickadee","Paridae",0.36332487547619,"Wt_or_Vol",0.14388,"Arthropoda","Phylum"
-"Carolina Wren","Troglodytidae",0.840186111111111,"Wt_or_Vol",0.319466666666667,"Arthropoda","Phylum"
-"Chimney Swift","Apodidae",0.68,"Family_Wt_or_Vol",0.68,"Arthropoda","Phylum"
-"Chipping Sparrow","Passerellidae",0.281933747554937,"Wt_or_Vol",0.305875,"Arthropoda","Phylum"
-"Common Grackle","Icteridae",0.418166689935882,"Wt_or_Vol",0.2002353085,"Arthropoda","Phylum"
-"Common Yellowthroat","Parulidae",0.869571515152282,"Wt_or_Vol",0.787972764,"Arthropoda","Phylum"
-"Downy Woodpecker","Picidae",0.567924156161364,"Wt_or_Vol",0.4785,"Arthropoda","Phylum"
-"Eastern Bluebird","Turdidae",0.38074026102103,"Wt_or_Vol",0.322342857142857,"Arthropoda","Phylum"
-"Eastern Kingbird","Tyrannidae",0.811417446619048,"Wt_or_Vol",0.222325,"Arthropoda","Phylum"
-"Eastern Meadowlark","Icteridae",0.418166689935882,"Wt_or_Vol",0.500555555555556,"Arthropoda","Phylum"
-"Eastern Phoebe","Tyrannidae",0.811417446619048,"Wt_or_Vol",0.297,"Arthropoda","Phylum"
-"Eastern Towhee","Passerellidae",0.281933747554937,"Wt_or_Vol",0.031,"Arthropoda","Phylum"
-"Eastern Whip-poor-will","Caprimulgidae",0.8350131803,"Wt_or_Vol",1,"Arthropoda","Phylum"
-"Eastern Wood-Pewee","Tyrannidae",0.811417446619048,"Wt_or_Vol",0.9944,"Arthropoda","Phylum"
-"European Starling","Sturnidae",0.177814810333333,"Wt_or_Vol",0.177814810333333,"Arthropoda","Phylum"
-"Field Sparrow","Passerellidae",0.281933747554937,"Family_Wt_or_Vol",0.281933747554937,"Arthropoda","Phylum"
-"Fish Crow","Corvidae",0.379502332117725,"Family_Wt_or_Vol",0.379502332117725,"Arthropoda","Phylum"
-"Grasshopper Sparrow","Passerellidae",0.281933747554937,"Wt_or_Vol",0.601318181818182,"Arthropoda","Phylum"
-"Gray Catbird","Mimidae",0.221245408163265,"Wt_or_Vol",0.148714285714286,"Arthropoda","Phylum"
-"Great Crested Flycatcher","Tyrannidae",0.811417446619048,"Wt_or_Vol",0.37332,"Arthropoda","Phylum"
-"Hooded Warbler","Parulidae",0.869571515152282,"Family_Wt_or_Vol",0.869571515152282,"Arthropoda","Phylum"
-"House Finch","Fringillidae",0.238380544217687,"Family_Wt_or_Vol",0.238380544217687,"Arthropoda","Phylum"
-"House Sparrow","Passeridae",0.11432380952381,"Wt_or_Vol",0.11432380952381,"Arthropoda","Phylum"
-"Indigo Bunting","Cardinalidae",0.380907175814815,"Family_Wt_or_Vol",0.380907175814815,"Arthropoda","Phylum"
-"Mourning Dove","Columbidae",0.026280530958486,"Wt_or_Vol",0.0000333333333333333,"Arthropoda","Phylum"
-"Northern Bobwhite","Odontophoridae",0.0647890175407407,"Wt_or_Vol",0.0891483333333333,"Arthropoda","Phylum"
-"Northern Cardinal","Cardinalidae",0.380907175814815,"Wt_or_Vol",0.0443666666666667,"Arthropoda","Phylum"
-"Northern Mockingbird","Mimidae",0.221245408163265,"Wt_or_Vol",0.150328571428571,"Arthropoda","Phylum"
-"Northern Parula","Parulidae",0.869571515152282,"Wt_or_Vol",0.9902,"Arthropoda","Phylum"
-"Orchard Oriole","Icteridae",0.418166689935882,"Family_Wt_or_Vol",0.418166689935882,"Arthropoda","Phylum"
-"Ovenbird","Parulidae",0.869571515152282,"Wt_or_Vol",0.82851875,"Arthropoda","Phylum"
-"Pileated Woodpecker","Picidae",0.567924156161364,"Wt_or_Vol",0.288166666666667,"Arthropoda","Phylum"
-"Pine Warbler","Parulidae",0.869571515152282,"Wt_or_Vol",1.0015,"Arthropoda","Phylum"
-"Prairie Warbler","Parulidae",0.869571515152282,"Wt_or_Vol",0.695729411764706,"Arthropoda","Phylum"
-"Purple Martin","Hirundinidae",0.947050413703704,"Wt_or_Vol",1.00215,"Arthropoda","Phylum"
-"Red-bellied Woodpecker","Picidae",0.567924156161364,"Wt_or_Vol",0.06644,"Arthropoda","Phylum"
-"Red-eyed Vireo","Vireonidae",0.691844078703704,"Wt_or_Vol",0.514122,"Arthropoda","Phylum"
-"Red-winged Blackbird","Icteridae",0.418166689935882,"Wt_or_Vol",0.195736842105263,"Arthropoda","Phylum"
-"Ruby-throated Hummingbird","Trochilidae",0.97333,"Wt_or_Vol",0.9015,"Arthropoda","Phylum"
-"Scarlet Tanager","Cardinalidae",0.380907175814815,"Wt_or_Vol",0.2485,"Arthropoda","Phylum"
-"Song Sparrow","Passerellidae",0.281933747554937,"Wt_or_Vol",0.246301803454545,"Arthropoda","Phylum"
-"Summer Tanager","Cardinalidae",0.380907175814815,"Wt_or_Vol",0.999999999,"Arthropoda","Phylum"
-"Tufted Titmouse","Paridae",0.36332487547619,"Wt_or_Vol",0.277340666666667,"Arthropoda","Phylum"
-"White-breasted Nuthatch","Sittidae",0.823030674666667,"Family_Wt_or_Vol",0.823030674666667,"Arthropoda","Phylum"
-"White-eyed Vireo","Vireonidae",0.691844078703704,"Wt_or_Vol",0.17574,"Arthropoda","Phylum"
-"Wood Thrush","Turdidae",0.38074026102103,"Wt_or_Vol",0.3540875,"Arthropoda","Phylum"
-"Yellow-billed Cuckoo","Cuculidae",0.851523291666667,"Wt_or_Vol",0.99623975,"Arthropoda","Phylum"
-"Yellow-breasted Chat","Icteriidae",0.08,"Wt_or_Vol",0.08,"Arthropoda","Phylum"
-"Yellow-throated Vireo","Vireonidae",0.691844078703704,"Wt_or_Vol",0.982,"Arthropoda","Phylum"
-"Yellow-throated Warbler","Parulidae",0.869571515152282,"Family_Wt_or_Vol",0.869571515152282,"Arthropoda","Phylum"
+"common_name","Family","Family_Fraction_Diet_Wt","Fraction_Diet_Wt","method","Final_Fraction_Diet_Wt"
+"Acadian Flycatcher","Tyrannidae",0.596187561931973,0.9604,"s/s/f",0.9604
+"American Crow","Corvidae",0.476538306306122,0.2459,"s/s/f Corvid.Thrush",0.2459
+"American Goldfinch","Fringillidae",0.275611111111111,0.458,"s/s/f",0.458
+"American Robin","Turdidae",0.199196665834166,0.2631,"s/s/f Corvid.Thrush",0.2631
+"Barn Swallow","Hirundinidae",0.947050413703704,0.9994,"all_seasons",0.9994
+"Blue Grosbeak","Cardinalidae",0.309616406125,0.6,"s/s/f",0.6
+"Blue Jay","Corvidae",0.476538306306122,0.388,"s/s/f Corvid.Thrush",0.388
+"Blue-gray Gnatcatcher","Polioptilidae",1.006794,1.0068,"s/s/f",1
+"Brown Thrasher","Mimidae",0.215018214285714,0.4821,"s/s/f",0.4821
+"Brown-headed Cowbird","Icteridae",0.183577920617394,0.2135,"s/s/f",0.2135
+"Brown-headed Nuthatch","Sittidae",0.6525,0.819,"all_seasons",0.819
+"Carolina Chickadee","Paridae",0.407281,0.8233,"s/s/f",0.8233
+"Carolina Wren","Troglodytidae",0.665752222222222,0.985,"s/s/f",0.985
+"Chimney Swift","Apodidae",0.68,NA,"family all seasons",0.68
+"Chipping Sparrow","Passerellidae",0.266068871156037,0.605,"s/s/f",0.605
+"Common Grackle","Icteridae",0.183577920617394,0.3988,"s/s/f",0.3988
+"Common Yellowthroat","Parulidae",0.725843037691044,0.687,"s/s/f",0.687
+"Downy Woodpecker","Picidae",0.606252752060606,0.7933,"s/s/f",0.7933
+"Eastern Bluebird","Turdidae",0.199196665834166,0.25,"s/s/f Corvid.Thrush",0.25
+"Eastern Kingbird","Tyrannidae",0.596187561931973,0.8133,"s/s/f",0.8133
+"Eastern Meadowlark","Icteridae",0.183577920617394,0.9549,"s/s/f",0.9549
+"Eastern Phoebe","Tyrannidae",0.596187561931973,0.8054,"s/s/f",0.8054
+"Eastern Towhee","Passerellidae",0.266068871156037,0.4554,"s/s/f",0.4554
+"Eastern Whip-poor-will","Caprimulgidae",0.719391475375,1,"all_seasons",1
+"Eastern Wood-Pewee","Tyrannidae",0.596187561931973,1.0006,"s/s/f",1
+"European Starling","Sturnidae",0.022375,0.4911,"s/s/f",0.4911
+"Field Sparrow","Passerellidae",0.266068871156037,0.3833,"s/s/f",0.3833
+"Fish Crow","Corvidae",0.476538306306122,NA,"family s/s/f",0.476538306306122
+"Grasshopper Sparrow","Passerellidae",0.266068871156037,0.7463,"s/s/f",0.7463
+"Gray Catbird","Mimidae",0.215018214285714,0.3877,"s/s/f",0.3877
+"Great Crested Flycatcher","Tyrannidae",0.596187561931973,0.928,"s/s/f",0.928
+"Hooded Warbler","Parulidae",0.725843037691044,NA,"family s/s/f",0.725843037691044
+"House Finch","Fringillidae",0.275611111111111,0.04,"s/s/f",0.04
+"House Sparrow","Passeridae",0.0151095238095238,0.0991,"s/s/f",0.0991
+"Indigo Bunting","Cardinalidae",0.309616406125,NA,"family s/s/f",0.309616406125
+"Mourning Dove","Columbidae",0.0031970695970696,0,"s/s/f",0
+"Northern Bobwhite","Odontophoridae",0.0495230209077441,0.1756,"s/s/f",0.1756
+"Northern Cardinal","Cardinalidae",0.309616406125,0.4233,"s/s/f",0.4233
+"Northern Mockingbird","Mimidae",0.215018214285714,0.525,"s/s/f",0.525
+"Northern Parula","Parulidae",0.725843037691044,1,"s/s/f",1
+"Orchard Oriole","Icteridae",0.183577920617394,0.9533,"s/s/f",0.9533
+"Ovenbird","Parulidae",0.725843037691044,0.9538,"s/s/f",0.9538
+"Pileated Woodpecker","Picidae",0.606252752060606,0.7567,"s/s/f",0.7567
+"Pine Warbler","Parulidae",0.725843037691044,1,"s/s/f",1
+"Prairie Warbler","Parulidae",0.725843037691044,1.0739,"s/s/f",1
+"Purple Martin","Hirundinidae",0.947050413703704,1.0022,"all_seasons",1
+"Red-bellied Woodpecker","Picidae",0.606252752060606,0.3767,"s/s/f",0.3767
+"Red-eyed Vireo","Vireonidae",0.514171454545455,0.7781,"s/s/f",0.7781
+"Red-winged Blackbird","Icteridae",0.183577920617394,0.3442,"s/s/f",0.3442
+"Ruby-throated Hummingbird","Trochilidae",0.9958,0.9015,"all_seasons",0.9015
+"Scarlet Tanager","Cardinalidae",0.309616406125,0.9335,"s/s/f",0.9335
+"Song Sparrow","Passerellidae",0.266068871156037,0.4429,"s/s/f",0.4429
+"Summer Tanager","Cardinalidae",0.309616406125,1,"s/s/f",1
+"Tufted Titmouse","Paridae",0.407281,0.8296,"s/s/f",0.8296
+"White-breasted Nuthatch","Sittidae",0.6525,0.7433,"s/s/f",0.7433
+"White-eyed Vireo","Vireonidae",0.514171454545455,0.82,"s/s/f",0.82
+"Wood Thrush","Turdidae",0.199196665834166,NA,"family s/s/f",0.199196665834166
+"Yellow-billed Cuckoo","Cuculidae",0.65541325,0.9925,"s/s/f",0.9925
+"Yellow-breasted Chat","Icteriidae",0.08,0.08,"s/s/f",0.08
+"Yellow-throated Vireo","Vireonidae",0.514171454545455,0.9826,"all_seasons",0.9826
+"Yellow-throated Warbler","Parulidae",0.725843037691044,NA,"family s/s/f",0.725843037691044

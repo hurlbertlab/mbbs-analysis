@@ -4,6 +4,12 @@
 # Get the percent of diet that is
 # insects for every species on the MBBS
 #
+# We use the Wt_or_Vol metric in the following order:
+# 1) Data is available for Wt_or_Vol for the species in spring/summer/fall. Because of a quirk in the sources for avian diet database, we combine "Arthropods" and "Unid. Animalia" which is *also* arthropods
+# 2) Data is available for Wt_or_Vol for sp. in s/s/f and the species is a corvid or thrush, for which we use only "Arthropods" as "Unid. Animalia" for these species could be mammalian or worms
+# 3) Data is available for Wt_or_Vol for the sp. in any season
+# 4) Wt_or_Vol is not available for the species, we use the mean of the Wt_or_Vol metric for the family in s/s/f
+# 5) Mean Wt_or_Vol metric for the family in any season
 #
 #####################
 
@@ -22,57 +28,108 @@ data(dietdb)
 
 #get taxonomy
 taxonomy <- read.csv("data/species-traits/eBird_taxonomy_v2024.csv") |>
-  dplyr::select(PRIMARY_COM_NAME, SCI_NAME, ORDER, FAMILY, SPECIES_GROUP)
+  dplyr::select(PRIMARY_COM_NAME, SCI_NAME, ORDER, FAMILY) |>
+  mutate(Family = str_remove(FAMILY, "\\([^)]*\\)")) |>
+  mutate(Family = str_remove_all(Family, " ")) |>
+  dplyr::select(-FAMILY)
 
 #get mbbs species list
 mbbs <- read.csv("data/analysis.df.csv") |>
   group_by(common_name) |>
   summarize() |>
-  left_join(taxonomy, by = c("common_name" = "PRIMARY_COM_NAME")) |>
-  mutate(Family = str_remove(FAMILY, "\\([^)]*\\)")) |>
-  mutate(Family = str_remove_all(Family, " ")) |>
-  dplyr::select(-FAMILY)
+  left_join(taxonomy, by = c("common_name" = "PRIMARY_COM_NAME"))
 
-#let's get the averages for each family from the wt 
+#let's get the averages for each family from the wt. We'll use this for species when we have no other data. Only spring/summer/fall is prefered
 family_Wt <- dietSummaryByPrey("Arthropoda", 
                                preyLevel = "Phylum", 
                                dietType = "Wt_or_Vol",
-                               speciesMean = TRUE) |>
+                               speciesMean = TRUE,
+                               season = c("spring", "summer", "fall")) |>
   group_by(Family) %>%
-  summarize(Family_Fraction_Diet = mean(Fraction_Diet))
+  summarize(Family_Fraction_Diet_Wt = mean(Fraction_Diet),
+            method = "family s/s/f")
 
-#isectivory by weight
-insectivory_Wt <- dietSummaryByPrey("Arthropoda", 
-                                    preyLevel = "Phylum", 
-                                    dietType = "Wt_or_Vol",
-                                    speciesMean = TRUE) |>
-  filter(Common_Name %in% mbbs$common_name) %>%
-  arrange(Common_Name) |>
-  left_join(family_Wt, by = c("Family"))
+#Hirundinidae don't have only spring/summer/fall data on weight or volume so we have to use the full time range.
+hirundinidae_apodidae_Wt <- dietSummaryByPrey("Arthropoda",
+                                              preyLevel = "Phylum",
+                                              dietType = "Wt_or_Vol",
+                                              speciesMean = TRUE) %>%
+  filter(Family %in% c("Hirundinidae", "Apodidae")) %>%
+  group_by(Family) %>%
+  summarize(Family_Fraction_Diet_Wt = mean(Fraction_Diet),
+            method = "family all seasons")
 
-        cor(insectivory_Wt$Fraction_Diet, insectivory_Wt$Family_Fraction_Diet)
-        #corr is .75, perfect. I think that's a good enough correlation to feel comfortable working with.
-        m <- lm(Fraction_Diet ~ Family_Fraction_Diet, data = insectivory_Wt)
-        summary(m) #r2 = .56
-        plot(x = insectivory_Wt$Family_Fraction_Diet,
-             y = insectivory_Wt$Fraction_Diet,
-             pch = 16) +
-          abline(m)
+family_Wt <- bind_rows(family_Wt, hirundinidae_apodidae_Wt)
 
+###
+#okay, now to get the summary for each species in the mbbs
+prey_summaries <- as.data.frame(NULL)
+#no chimney swift i = 14
+for(i in 1:nrow(mbbs)) {
+  
+  if(mbbs$common_name[i] %in% c("Chimney Swift", "Hooded Warbler", "Indigo Bunting", "Yellow-throated Warbler")) {
+    #Chimney swift breaks b/c no information about them in the database at all
+    #Hooded Warbler, Indigo Bunting, and Yellow-throated Warbler breaks bc doesn't have Wt or Vol measurement
+  } else if (mbbs$common_name[i] %in% c("Barn Swallow", "Brown-headed Nuthatch", "Eastern Whip-poor-will", "Purple Martin", "Ruby-throated Hummingbird", "Yellow-throated Vireo")) {
+    #Breaks b/c no information about them in the database for only "summer", "spring", and "fall". get diet information available from any season
+    tmp <- dietSummary(mbbs$common_name[i],
+                       by = "Phylum", 
+                       dietType = "Wt_or_Vol") |>
+      mutate(common_name = mbbs$common_name[i],
+             method = "all_seasons")
+    prey_summaries <- bind_rows(prey_summaries, tmp)
+    
+  } else {
+    tmp <- dietSummary(mbbs$common_name[i],
+                       by = "Phylum", 
+                       season = c("summer", "spring", "fall"), 
+                       dietType = "Wt_or_Vol") |>
+      mutate(common_name = mbbs$common_name[i],
+             method = "s/s/f")
+    prey_summaries <- bind_rows(prey_summaries, tmp)
+  }
+  
+}
+
+#There's a key source in the avian diet database that uses only %plant food vs %animal food and doesn't break it down further taxonomically. These are sorted into Unid. Animalia which isn't part of arthropods, BUT 100% of the food in unid. animalia is actually arthropods. 
+account_for_unid_animalia <- prey_summaries |>
+  dplyr::select(-Prey_Part) |>
+  filter(Taxon %in% c("Arthropoda", "Unid. Animalia")) |>
+  #remove any Unid. Animalia for corvidae (eat animals) or thrushes (eat worms)
+  left_join(taxonomy, by = c("common_name" = "PRIMARY_COM_NAME")) |>
+  filter(
+    !(Taxon == "Unid. Animalia" & Family %in% c("Corvidae", "Turdidae"))
+  ) |>
+  mutate(method = case_when(
+    Family %in% c("Corvidae", "Turdidae") ~ "s/s/f Corvid.Thrush",
+    TRUE ~ method
+  )
+  ) |>
+  group_by(common_name, method) |>
+  summarize(Fraction_Diet_Wt = sum(Frac_Diet))
+
+
+#join everything together
 diet <- mbbs |>
   left_join(family_Wt, by = c("Family")) |>
-  left_join(insectivory_Wt, by = c("common_name" = "Common_Name", "Family", "Family_Fraction_Diet")) |>
-  mutate(Fraction_Diet = case_when(
-    is.na(Fraction_Diet) ~ Family_Fraction_Diet,
-    !is.na(Fraction_Diet) ~ Fraction_Diet
-  ),
-  Diet_Type = case_when(
-    is.na(Diet_Type) ~ "Family_Wt_or_Vol",
-    !is.na(Diet_Type) ~ Diet_Type
-  ),
-  Prey_Name = "Arthropoda",
-  Prey_Level = "Phylum") |>
-  dplyr::select(common_name, Family, Family_Fraction_Diet, Diet_Type, Fraction_Diet, Prey_Name, Prey_Level)
+  left_join(account_for_unid_animalia, by = c("common_name")) |>
+  mutate(method = case_when(
+    !is.na(method.y) ~ method.y,
+    TRUE ~ method.x
+  )) |>
+  dplyr::select(-method.x, -method.y) |>
+  mutate(Final_Fraction_Diet_Wt = case_when(
+    str_detect(method, "family") ~ Family_Fraction_Diet_Wt,
+    TRUE ~ Fraction_Diet_Wt
+    ),
+    #round anything above 1 down to 1
+    Final_Fraction_Diet_Wt = ifelse(Final_Fraction_Diet_Wt > 1, 1, Final_Fraction_Diet_Wt)
+  ) |>
+  #remove unneeded columns
+  dplyr::select(-SCI_NAME, -ORDER)
+
+hist(diet$Final_Fraction_Diet_Wt)
+#awesome :)
 
 write.csv(diet, "data/species-traits/fraction_diet_arthropods.csv", row.names = FALSE)
 
@@ -80,7 +137,8 @@ write.csv(diet, "data/species-traits/fraction_diet_arthropods.csv", row.names = 
 
 
 
-####################
+
+#################### SCRATCH
 #checking correlation between different diet metrics
 #insectivory by item
 insectivory_Item <- dietSummaryByPrey("Arthropoda", 
@@ -109,16 +167,6 @@ cor(insectivory_Item[insectivory_Item$Common_Name %in% overlap$Common_Name, 4], 
 
 #wellll which mbbs species don't we have by weight?
 missing_mbbs_sp <- anti_join(mbbs, insectivory_Wt, by = c("common_name" = "Common_Name"))
-#[1] "Chimney Swift"          
-#[2] "Field Sparrow"          
-#[3] "Fish Crow"              
-#[4] "Hooded Warbler"         
-#[5] "House Finch"            
-#[6] "Indigo Bunting"         
-#[7] "Orchard Oriole"         
-#[8] "White-breasted Nuthatch"
-#[9] "Yellow-throated Warbler"
-
 
 #okay, now if we got the diet 5 cat categories, how closely does that align with the data we have? To help fill in gaps in the missing species
 elton_traits <- read.delim("Z:/Databases/Elton Traits/BirdFuncDat.txt") %>%
