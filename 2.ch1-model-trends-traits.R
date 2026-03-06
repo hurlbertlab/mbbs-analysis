@@ -77,7 +77,9 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
     #center variables as possible :)
     mutate(scale_habitat_ssi = (habitat_ssi - mean(habitat_ssi))/sd(habitat_ssi),
            scale_ztempwq = (z_tempwq - mean(z_tempwq))/sd(z_tempwq),
-           scale_obs_quality = (observer_quality - mean(observer_quality))/sd(observer_quality)
+           scale_obs_quality = (observer_quality - mean(observer_quality))/sd(observer_quality),
+           scale_usgs_trend = (usgs_trend_estimate - mean(usgs_trend_estimate))/sd(usgs_trend_estimate),
+           scale_usgs_sd = usgs_sd/sd(usgs_trend_estimate)
     )
 
 # 
@@ -94,7 +96,7 @@ filtered_mbbs <- make_testing_df(mbbs)
 #change to filtered_mbbs for testing, mbbs for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2026.03.24_ch1_rematrix_intercepts/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2026.03.05_ch1_rematrix_scaleRT/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -107,7 +109,7 @@ beta_to_common_name <- mbbs_dataset %>%
 #get traits so it's one trait per species, so we can put this in datlist
 #this is in the same order as the mbbs_dataset. Still, check intuition works?
 traits <- mbbs_dataset %>%
-  dplyr::select(common_name_standard, habitat_ssi:scale_ztempwq) %>%
+  dplyr::select(common_name_standard, habitat_ssi: scale_usgs_sd) %>%
   distinct(common_name_standard, .keep_all = TRUE) 
   write.csv(traits, paste0(save_to, "species_traits.csv"), row.names = FALSE)
 
@@ -127,10 +129,12 @@ datstan <- list(
   t_temp_pos = traits$scale_ztempwq,
   t_habitat_selection = traits$scale_habitat_ssi,
   t_diet_cat = traits$diet_category_standard,
-  regional_trend_mean = traits$usgs_trend_estimate,
-  regional_trend_sd = traits$usgs_sd,
+  regional_trend_mean = traits$scale_usgs_trend,
+  regional_trend_sd = traits$scale_usgs_sd,
   C = mbbs_dataset$count #count data
 )
+
+#okay I think I'm breaking it bc the computer is running out of memory. Not sure why... going to try and move this to longleaf.
 
 #specify the stan model code
 stan_model_file <- "2.ch1_active_development_model.stan"
@@ -147,8 +151,8 @@ fit <- sampling(stan_model,
                 data = datstan, 
                 chains = 4,
                 cores = 4, 
-                iter = 2000, 
-                warmup = 1000
+                iter = 3000, 
+                warmup = 2000
                 )
 beepr::beep()
 
