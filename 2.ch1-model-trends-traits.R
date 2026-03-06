@@ -66,6 +66,10 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
     group_by(avonet_diet) %>%
     mutate(diet_category_standard = cur_group_id()) %>%
     ungroup() %>%
+    #percent insectivory
+    left_join(y = (read.csv("data/species-traits/fraction_diet_arthropods.csv") %>%
+                              dplyr::select(common_name, Final_Fraction_Diet_Wt)),
+              by = c("common_name")) %>%
     #regional trend
     left_join(read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv"), by = "common_name") %>%
     dplyr::mutate(usgs_sd = (.$usgs_97.5CI - .$usgs_2.5CI)/(2 * qnorm(0.95))) %>%
@@ -78,6 +82,7 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
     mutate(scale_habitat_ssi = (habitat_ssi - mean(habitat_ssi))/sd(habitat_ssi),
            scale_ztempwq = (z_tempwq - mean(z_tempwq))/sd(z_tempwq),
            scale_obs_quality = (observer_quality - mean(observer_quality))/sd(observer_quality),
+           scale_insect_perc = ((Final_Fraction_Diet_Wt - mean(Final_Fraction_Diet_Wt))/sd(Final_Fraction_Diet_Wt)),
            scale_usgs_trend = (usgs_trend_estimate - mean(usgs_trend_estimate))/sd(usgs_trend_estimate),
            scale_usgs_sd = usgs_sd/sd(usgs_trend_estimate)
     )
@@ -96,7 +101,7 @@ filtered_mbbs <- make_testing_df(mbbs)
 #change to filtered_mbbs for testing, mbbs for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2026.03.05_ch1_rematrix_scaleRT/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2026.03.05_ch1_rematrix_scaleRT_percinsect/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -109,7 +114,7 @@ beta_to_common_name <- mbbs_dataset %>%
 #get traits so it's one trait per species, so we can put this in datlist
 #this is in the same order as the mbbs_dataset. Still, check intuition works?
 traits <- mbbs_dataset %>%
-  dplyr::select(common_name_standard, habitat_ssi: scale_usgs_sd) %>%
+  dplyr::select(common_name_standard, habitat_ssi:scale_usgs_sd) %>%
   distinct(common_name_standard, .keep_all = TRUE) 
   write.csv(traits, paste0(save_to, "species_traits.csv"), row.names = FALSE)
 
@@ -128,7 +133,7 @@ datstan <- list(
   #used to not be CENTERED and maybe should be? Right now there are still negative and positive observer qualities, but these are ''centered'' within routes. Actually I think this is fine non-centered, because the interpretation is that the observer observes 'quality' species of birds more or less than any other observer who's run the route. Only way it could not be fine is bc it's based on each individual route, but the observer is actually judged cross-routes.
   t_temp_pos = traits$scale_ztempwq,
   t_habitat_selection = traits$scale_habitat_ssi,
-  t_diet_cat = traits$diet_category_standard,
+  t_diet = traits$scale_insect_perc,
   regional_trend_mean = traits$scale_usgs_trend,
   regional_trend_sd = traits$scale_usgs_sd,
   C = mbbs_dataset$count #count data
@@ -151,8 +156,8 @@ fit <- sampling(stan_model,
                 data = datstan, 
                 chains = 4,
                 cores = 4, 
-                iter = 3000, 
-                warmup = 2000
+                iter = 1000, 
+                warmup = 200
                 )
 beepr::beep()
 

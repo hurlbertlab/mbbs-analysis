@@ -26,7 +26,7 @@ data {
 //...............predictor variables.....................
   vector[Nsp] t_temp_pos; //temp position value for every species 
   vector[Nsp] t_habitat_selection; //ndvi habitat selection for every species
-  array[Nsp] int<lower=1, upper=Ndc> t_diet_cat; //diet category for every species
+  vector[Nsp] t_diet; //diet (percent insects) for every species
   vector[Nsp] regional_trend_mean; //mean for each sp regional trend
   vector[Nsp] regional_trend_sd; //sd for each sp regional trend
   
@@ -62,7 +62,7 @@ parameters {
   real kappa_regional; //one effect of regional trend on slopes across species
   real kappa_habitat_selection; //one effect of habitat selectivity on slopes across species
   real kappa_temp_pos; //one effect of temperature niche position on slopes across species
-  vector[Ndc] kappa_diet_cat; //each diet category may have a different effect on slopes across species.
+  real kappa_diet; //category may have one effect on slopes across species.
   
   real c_obs; //effect of observer, calculated across all observers since we use a quantitative measure of observer quality rather than a vector of observer identifiers
   
@@ -124,7 +124,7 @@ model {
     kappa_regional ~ normal(0, 1);
     kappa_temp_pos ~ normal(0, 1);
     kappa_habitat_selection ~ normal(0, 1);
-    kappa_diet_cat ~ normal(0, 1);
+    kappa_diet ~ normal(0, 1);
 
 //overdispersion param prior
 //chatgpt says typical prior for the overdispersion param is a gamma prior. I've seen a beta used as well, some questions remain here.
@@ -137,39 +137,10 @@ model {
              kappa_regional * regional_trend + 
              kappa_temp_pos * t_temp_pos + 
              kappa_habitat_selection * t_habitat_selection + 
-             kappa_diet_cat[t_diet_cat], //categorical so no *
+             kappa_diet * t_diet, //categorical so no *
              sig_b);
 
 // Vectorized
 C ~ neg_binomial_2_log(eta, overdispersion_param);
-
-//notes from previous versions below here.
-
-// Non-vectorized, so slower than it could be. Let's ignore speed and work on content.
-//   for (n in 1:N) {
-//     C[n] ~ neg_binomial_2_log(
-//       a + //universal intercept
-//       a_sp[sp[n]] + //species specific intercept modifier
-//       a_rt[rt[n]] + //route specific intercept modifier
-//       b[sp[n]] * year[n] + //slope for effect of time
-//       c_obs * observer_quality[n], //slope effect for observer quality
-//       overdispersion_param //controls for overdispersion in a neg_binom
-//       );
-//   }
-// eg... for every row/observation in the data.
-// The count is a function of the poisson distribution log(lambda), and lamda modeled by (literally subbed in, didn't bother with a lambda intermediary step) the species trend along a species+route combo, the b*year overall trend, and observer quality.
-
-//previous method
-//  to_vector(a) ~ normal(a_bar[sp_sprt], sigma_a[sp_sprt]); //use sp_sprt to index a_bar and sigma_a because a is a vector of length sp*rt after we to_vector the matrix
-//  a_bar ~ normal(2, 2); //bc a_bar is a vector of sp_a, fits once for each species. Keeping narrow for now...with bad neffs the average ranges from -4 -> 4, so perhaps this prior should be expanded. Fitting it mean 2 with stdev of 2, so 0 is a reasonable value and as is 0. Gives it a little more space to explore.
-//  sigma_a ~ exponential(1);
-////  a ~ normal(a_bar[sp_sprt], sigma_a); //sp_sprt maps species+route combos to species
-////  a_bar ~ normal(1, 0.5); //bc a_bar is a vector of sp_sprt, fits one for each sp.
-////  sigma_a ~ exponential(1);
-  
-//    c ~ normal(gamma_c + kappa_obs*observer_quality, sig_c); //observer quality may need some indexing? no, b/c dependent on both observer and route.
-    //add priors for gamma_c and sig_c
-//    gamma_c ~ normal(0,0.5);
-//    sig_c ~ exponential(1);
 
 }
