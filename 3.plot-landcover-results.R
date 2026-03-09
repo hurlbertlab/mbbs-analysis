@@ -734,7 +734,8 @@ plot(x = dev$mean,
              mean_gt01 = ifelse(mean < -0.01 | mean > 0.01, TRUE, FALSE),
              significant = case_when(significant == TRUE ~ significant,
                                      sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
-                                     TRUE ~ FALSE))
+                                     TRUE ~ FALSE),
+             trend_direction = ifelse(conf_2.5 > 0, "positive", "negative"))
     
     prev_ch1sp <- read.csv(paste0(lf_ch1m1prev, "fit_summary.csv")) %>%
       filter(str_detect(.$rownames, "b")) %>%
@@ -782,33 +783,59 @@ plot(x = dev$mean,
     #n significantly decreasing species:
 
     #and these are percent change per year, so maybe it makes sense to multiply the means by 100 and add to xaxis
+    decrease <- ch1sp %>%
+      filter(significant == TRUE) %>%
+      filter(trend_direction == "negative") %>%
+      arrange(desc(mean)) %>%
+      mutate(group_order = cur_group_rows(),
+             sp_id = group_order,
+             color = "brown") %>%
+      ungroup()
+    
+    stable <- ch1sp %>%
+      filter(significant == FALSE) %>%
+      arrange(desc(mean)) %>%
+      mutate(group_order = cur_group_rows(),
+             sp_id = group_order,
+             color = "brown1") %>%
+      ungroup()
+    
+    increase <- ch1sp %>%
+      filter(significant == TRUE) %>%
+      filter(trend_direction == "positive") %>%
+      arrange(desc(mean)) %>%
+      mutate(group_order = cur_group_rows(),
+             sp_id = group_order,
+             color = "brown3") %>%
+      ungroup()
+    
     
     omniv <- ch1sp %>%
       filter(avonet_diet == "Omnivore") %>%
       arrange(desc(mean)) %>%
-      mutate(diet_group_order = cur_group_rows(),
-             sp_id = diet_group_order,
+      mutate(group_order = cur_group_rows(),
+             sp_id = group_order,
              color = "brown") %>%
       ungroup()
     
     graniv <- ch1sp %>%
       filter(avonet_diet == "Granivore") %>%
       arrange(desc(mean)) %>%
-      mutate(diet_group_order = cur_group_rows(),
-             sp_id = diet_group_order,
+      mutate(group_order = cur_group_rows(),
+             sp_id = group_order,
              color = "brown1") 
     
     invertiv <- ch1sp %>%
       filter(avonet_diet == "Invertivore") %>%
       arrange(desc(mean)) %>%
-      mutate(diet_group_order = cur_group_rows(),
-             sp_id = diet_group_order,
+      mutate(group_order = cur_group_rows(),
+             sp_id = group_order,
              color = "brown3")
 
       
     #now we can plot side by side the three panels, first invertivore, then omnivore, then granivore to follow size of groups
     #color code by temperature niche position (tho not predictive)
-    png(filename = "figures/ch1_pop_change_by_diet.png", 
+    png(filename = "figures/ch1_pop_change_by_trend.png", 
         width = 1000,
         height = 500,
         units = "px", 
@@ -820,37 +847,82 @@ plot(x = dev$mean,
         cex.main = 1.6,
         cex.sub = 1.4,
         mfrow = c(1,3))
-    plot_intervals(plot_df = invertiv,
+    plot_intervals(plot_df = decrease,
                    xlab = "", 
-                   ylim_select = c(0, 39),
-                   xlim_select = c(-.08, .08),
-                   title = "Invertivores",
+                   ylim_select = c(0, 33),
+                   xlim_select = c(-.15, .0),
+                   title = "Declining",
                    xaxt = "n") 
-      axis(side = 1, at = seq(-.08, .08, by = 0.02), 
+      axis(side = 1, at = seq(-.14, .0, by = 0.02), 
            labels = TRUE)
     #split invertivores at purple martin?
-    plot_intervals(plot_df = omniv,
+    plot_intervals(plot_df = stable,
                    xlab = "Population Change Per Year", 
-                   ylim_select = c(.5, 14.5),
-                   xlim_select = c(-.14, .08),
-                   title = "Omnivores",
+                   ylim_select = c(.5, 13.5),
+                   xlim_select = c(-.04, .04),
+                   title = "Stable",
                    xaxt = "n") 
-      axis(side = 1, at = seq(-.14, .08, by = 0.02), 
+      axis(side = 1, at = seq(-.04, .04, by = 0.02), 
            labels = TRUE)
     par(mar = c(4, 12, 1, 1))
-    plot_intervals(plot_df = graniv,
+    plot_intervals(plot_df = increase,
                    xlab = "", 
-                   ylim_select = c(.5, 7.5),
-                   xlim_select = c(-.1, .02),
-                   title = "Granivores",
+                   ylim_select = c(.5, 14.5),
+                   xlim_select = c(0, .08),
+                   title = "Increasing",
                    xaxt = "n") 
-      axis(side = 1, at = seq(-.1, .02, by = 0.02), 
+      axis(side = 1, at = seq(0, .08, by = 0.02), 
            labels = TRUE)
     dev.off()
     #notes:
-    #- make sure there are more tickmarks, more helpful
-    #- add label for which group
+    #- hm. this actually isn't my favorite because while the groups are good.. maybe I do want them all 
+    # on the same graph? Or split the stable populations in half so one panel is decrease + half of stable, one panel is half of stable + increase?
+    #plot on dif panels but everything form -.14 to .07?
+    #or have a ... for the Bobwhite? No, there's overlap on house sparrows
     
+################### DIET ######################################
+    # png(filename = "figures/ch1_pop_change_by_diet.png", 
+    #     width = 1000,
+    #     height = 500,
+    #     units = "px", 
+    #     type = "windows")
+    # par(mar = c(4, 13.5, 1, 1), 
+    #     cex = 1.3,
+    #     cex.axis = 1.3,
+    #     cex.lab = 1.6,
+    #     cex.main = 1.6,
+    #     cex.sub = 1.4,
+    #     mfrow = c(1,3))
+    # plot_intervals(plot_df = invertiv,
+    #                xlab = "", 
+    #                ylim_select = c(0, 39),
+    #                xlim_select = c(-.08, .08),
+    #                title = "Invertivores",
+    #                xaxt = "n") 
+    # axis(side = 1, at = seq(-.08, .08, by = 0.02), 
+    #      labels = TRUE)
+    # #split invertivores at purple martin?
+    # plot_intervals(plot_df = omniv,
+    #                xlab = "Population Change Per Year", 
+    #                ylim_select = c(.5, 14.5),
+    #                xlim_select = c(-.14, .08),
+    #                title = "Omnivores",
+    #                xaxt = "n") 
+    # axis(side = 1, at = seq(-.14, .08, by = 0.02), 
+    #      labels = TRUE)
+    # par(mar = c(4, 12, 1, 1))
+    # plot_intervals(plot_df = graniv,
+    #                xlab = "", 
+    #                ylim_select = c(.5, 7.5),
+    #                xlim_select = c(-.1, .02),
+    #                title = "Granivores",
+    #                xaxt = "n") 
+    # axis(side = 1, at = seq(-.1, .02, by = 0.02), 
+    #      labels = TRUE)
+    # dev.off()
+    # #notes:
+    # #- make sure there are more tickmarks, more helpful
+    # #- add label for which group
 
 ############################################
 # ch2 landscape change correlation matrix
