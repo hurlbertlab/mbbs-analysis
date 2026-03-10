@@ -26,7 +26,18 @@
 ##############
   
 # plot all intervals
-  plot_intervals <- function(plot_df, xlab, first_overlay = NA, second_overlay = NA, xlim_select = c(-0.4, 0.2), ylim_select = c(1, 66), title = NA, xaxt = "s") {
+  plot_intervals <- function(plot_df,
+                             xlab = "",
+                             ylab = "",
+                             species_axis = "y",
+                             first_overlay = NA, 
+                             second_overlay = NA, 
+                             xlim_select = c(-0.4, 0.2), 
+                             ylim_select = c(1, 66), 
+                             title = NA, 
+                             xaxt = "s", 
+                             yaxt = "s") {
+  if(species_axis == "y") {
     plot(y = plot_df$sp_id,
          x = plot_df$mean,
          xlim = xlim_select,
@@ -34,7 +45,7 @@
          ylim = ylim_select,
          yaxt = "n",
          xlab = xlab,
-         ylab = "",
+         ylab = ylab,
          pch = 16, 
          cex = 2,
          yaxs = "i",
@@ -72,6 +83,40 @@
              y = second_overlay$sp_id,
              col = second_overlay$color)
     }
+  } else if (species_axis == "x") {
+    plot(y = plot_df$mean,
+         x = plot_df$sp_id,
+         xlim = xlim_select,
+         col = plot_df$color,
+         ylim = ylim_select,
+         xaxt = "n",
+         xlab = xlab,
+         ylab = ylab,
+         pch = 16, 
+         cex = 2,
+         xaxs = "i",
+         main = title,
+         yaxt = yaxt
+    ) +
+      abline(h = c(seq(-.14,0.08, by = .02)),
+             col = "grey",
+             lty = "dashed") +
+      abline(h = 0, lty = "dashed") + 
+      points(y = plot_df$mean,
+             x = plot_df$sp_id,
+             col = plot_df$color)
+      segments(y0 = plot_df$conf_2.5,
+               y1 = plot_df$conf_97.5,
+               x0 = plot_df$sp_id,
+               x1 = plot_df$sp_id,
+               col = plot_df$color,
+               lwd = 5) +
+      axis(1, at = seq(round(min(plot_df$sp_id)),
+                       round(max(plot_df$sp_id)), by = 1),
+           labels = plot_df$common_name,
+           las = 2,
+           cex.axis = 1.25)
+  }
   }
   
   

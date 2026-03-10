@@ -783,6 +783,50 @@ plot(x = dev$mean,
     #n significantly decreasing species:
 
     #and these are percent change per year, so maybe it makes sense to multiply the means by 100 and add to xaxis
+    
+    plot_horiz <- ch1sp %>%
+      mutate(color = case_when(
+        significant == TRUE & trend_direction == "negative" ~ "#762a83", #decreasing
+        significant == FALSE ~ "#5aae61", #stable
+        significant == TRUE & trend_direction == "positive" ~ "#1b7837" #increasing
+      )) %>%
+      arrange(mean) %>%
+      mutate(sp_id = cur_group_rows()) %>%
+      ungroup()
+    
+    table(ch1sp$significant, ch1sp$trend_direction)
+    table(ch1sp$significant, ch1sp$trend_direction)[2]#n decreasing
+    sum(table(ch1sp$significant, ch1sp$trend_direction)[1],table(ch1sp$significant, ch1sp$trend_direction)[3])#n stable
+    table(ch1sp$significant, ch1sp$trend_direction)[4]#n increasing
+    
+    png(filename = "figures/ch1_horiz_pop_change.png", 
+        width = 1200,
+        height = 600,
+        units = "px", 
+        type = "windows")
+    par(mar = c(13.5, 5, 2, 2), 
+        cex = 1.1,
+        cex.axis = 1.3,
+        cex.lab = 1.2,
+        cex.main = 1.6,
+        cex.sub = 1.4)
+    plot_intervals(plot_df = plot_horiz,
+                   species_axis = "x",
+                   ylim_select = c(-.15, .07),
+                   xlim_select = c(0, 60),
+                   title = "all sp",
+                   yaxt = "n") +
+      axis(side = 2, at = seq(-.14, .08, by = 0.02), 
+           labels = TRUE,
+           las = 1) +
+      axis(side = 2, at = seq(-.13, 0.05, by = 0.02),
+           labels = FALSE,
+           tck = -0.01) +
+      mtext(text = "Population Change per Year", side = 2, line = 4, cex = 1.3)
+    dev.off()
+    #notes:
+      #would like to color the species labels by the plotting color as well
+    
     decrease <- ch1sp %>%
       filter(significant == TRUE) %>%
       filter(trend_direction == "negative") %>%
@@ -831,7 +875,6 @@ plot(x = dev$mean,
       mutate(group_order = cur_group_rows(),
              sp_id = group_order,
              color = "brown3")
-
       
     #now we can plot side by side the three panels, first invertivore, then omnivore, then granivore to follow size of groups
     #color code by temperature niche position (tho not predictive)
@@ -849,8 +892,8 @@ plot(x = dev$mean,
         mfrow = c(1,3))
     plot_intervals(plot_df = decrease,
                    xlab = "", 
-                   ylim_select = c(0, 33),
-                   xlim_select = c(-.15, .0),
+                   ylim_select = c(0, 32.5),
+                   xlim_select = c(-.15, 0),
                    title = "Declining",
                    xaxt = "n") 
       axis(side = 1, at = seq(-.14, .0, by = 0.02), 
