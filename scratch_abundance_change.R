@@ -6,6 +6,8 @@ library(stringr)
 source("2.analysis-functions.R")
 
 #How has abundance changed on routes over time?
+#Could incorporate this into Chapter 2 like abundance has changed the most on routes that have
+#changed the most (e.g. make it do more by incorporating other predictors)
 surveys_all <- read.csv("data/mbbs/surveys.csv") %>%
   get_observer_quality() %>%
   mutate(date = as.Date(date)) %>%
@@ -177,3 +179,79 @@ lines(x, y_hat, col = "red", lwd = 2)
 
 
 write.csv(fit_final, "scratch_abundance_change_fitsummary.csv", row.names = FALSE)
+
+
+###########################
+#okay, let's try to plot the effect of obs quality with credible intervals around my bayes lines
+      post <- rstan::extract(fit, inc_warmup = FALSE) %>%
+        as.data.frame() #%>%
+        #select(starts_with("b"), starts_with("k"), starts_with("g"), starts_with("s"))
+      
+      post_obs <- post$beta_obs
+      obs_seq <- seq(min(surveys_all$observer_quality), max(surveys_all$observer_quality),
+                     length.out = 100)
+      
+      #hold the other variables constant (pick sensible values)
+      year0 <- mean(surveys_all$year_standard)
+      jday0 <- mean(surveys_all$standard_jday)
+      route0 <- 1
+      
+      #compute posterior predictions to get the curves..
+      n_draws <- length(post_obs)
+      
+      lambda_pred <- sapply(obs_seq,
+                            function(obs) {
+                              exp(
+                                post$a_bar + #use average route intercept
+                                  post$b_year_bar * year0 + #use average year intercept
+                                  post$beta_obs * obs +
+                                  post$beta_jday * jday0
+                              )
+                            })
+      
+      pred_mean <- apply(lambda_pred, 2, mean)
+      pred_ci <- apply(lambda_pred, 2, quantile, probs = c(0.025, 0.975))
+      
+      df_pred <- data.frame(observer_quality = obs_seq,
+                            mean = pred_mean,
+                            lower = pred_ci[1,],
+                            upper = pred_ci[2,])
+      
+      plot(x = surveys_all$observer_quality,
+           y = surveys_all$total_abundance) + lines(x = df_pred$observer_quality,
+                                                    y = df_pred$mean) +
+        lines(x = df_pred$observer_quality,
+              y = df_pred$lower,
+              col = "blue") + 
+        lines(x = df_pred$observer_quality,
+              y = df_pred$upper,
+              col = "red")
+      
+      #plot the partial effect of just the obs trait
+      lambda_pred <- sapply(obs_seq,
+                            function(obs) {
+                              exp(
+                                post$a_bar + #use average route intercept
+                                  post$beta_obs * obs
+                              )
+                            })
+      pred_mean <- apply(lambda_pred, 2, mean)
+      pred_ci <- apply(lambda_pred, 2, quantile, probs = c(0.025, 0.975))
+      
+      df_pred <- data.frame(observer_quality = obs_seq,
+                            mean = pred_mean,
+                            lower = pred_ci[1,],
+                            upper = pred_ci[2,])
+      
+      plot(x = surveys_all$observer_quality,
+           y = surveys_all$total_abundance) + lines(x = df_pred$observer_quality,
+                                                    y = df_pred$mean) +
+        lines(x = df_pred$observer_quality,
+              y = df_pred$lower,
+              col = "blue") + 
+        lines(x = df_pred$observer_quality,
+              y = df_pred$upper,
+              col = "red")
+      
+#alright, doable, but kinda annoying. What if I have the model fit?
+#okay, plot the mean effect of year
