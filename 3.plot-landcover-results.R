@@ -755,7 +755,8 @@ plot(x = dev$mean,
     #plot mean against temperature niche
     maxColorValue <- 100
     palette <- colorRampPalette(c("blue","red"))(maxColorValue)
-    plot(x, y, col = palette[cut(x, maxColorValue)])
+    #Example of how you use this in practice:
+    #plot(x, y, col = palette[cut(x, maxColorValue)])
     #saved at 400 x 400 pixels
     plot(x = ch1sp$scale_ztempwq, 
          y = ch1sp$mean,
@@ -769,10 +770,7 @@ plot(x = dev$mean,
                y0 = ch1sp$conf_2.5,
                y1 = ch1sp$conf_97.5,
                lwd = 3,
-               col = palette[cut(ch1sp$scale_ztempwq, maxColorValue)]) #+
-      #legend("bottomleft",
-      #       )
-
+               col = palette[cut(ch1sp$scale_ztempwq, maxColorValue)])
     
     #n significantly increasing/decreasing species:
     table(ch1sp$significant, ch1sp$conf_2.5 > 0)
@@ -922,6 +920,89 @@ plot(x = dev$mean,
     # on the same graph? Or split the stable populations in half so one panel is decrease + half of stable, one panel is half of stable + increase?
     #plot on dif panels but everything form -.14 to .07?
     #or have a ... for the Bobwhite? No, there's overlap on house sparrows
+    
+    
+ch1lineareffects <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
+  filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
+  mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
+  left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
+  left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv"))) %>%
+  mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+         conf_6.5 = (mean - (sd * z)),
+         conf_93.5 = (mean + (sd * z)),
+         sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
+         mean_gt01 = ifelse(mean < -0.01 | mean > 0.01, TRUE, FALSE),
+         significant = case_when(significant == TRUE ~ significant,
+                                 sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
+                                 TRUE ~ FALSE),
+         trend_direction = ifelse(conf_2.5 > 0, "positive", "negative"))
+
+    #plot mean against temperature niche
+    maxColorValue <- 100
+    palette <- colorRampPalette(c("blue","red"))(maxColorValue)
+    #Example of how you use this in practice:
+    #plot(x, y, col = palette[cut(x, maxColorValue)])
+    #saved at 400 x 400 pixels
+    plot(x = ch1sp$scale_ztempwq, 
+         y = ch1sp$mean,
+         ylim = c(-.14, .07),
+         col = palette[cut(ch1sp$scale_ztempwq, maxColorValue)],
+         pch = 16,
+         xlab = "Scaled Temperature Niche",
+         ylab = "Population Trend") +
+      abline(h = 0, lty = "dashed") +
+      segments(x0 = ch1sp$scale_ztempwq,
+               y0 = ch1sp$conf_2.5,
+               y1 = ch1sp$conf_97.5,
+               lwd = 3,
+               col = palette[cut(ch1sp$scale_ztempwq, maxColorValue)])
+    
+    #now, need to use a sequence of scale_ztempwq variables to predict what the betas would be to get the average line
+    pred_ztemp <- seq(min(ch1sp$scale_ztempwq), max(ch1sp$scale_ztempwq), length.out = 100)
+    gamma_b <- ch1lineareffects$mean[ch1lineareffects$rownames == "gamma_b"]
+    kappa_temp <- ch1lineareffects$mean[ch1lineareffects$rownames == "kappa_temp_pos"]
+    
+    pred_betas_ztemp <- gamma_b +  kappa_temp * pred_ztemp
+    
+    lines(x = pred_ztemp, 
+            y = pred_betas_ztemp, 
+            lwd = 2.5,
+            col = "white") + #outline the line
+    lines(x = pred_ztemp, 
+          y = pred_betas_ztemp, 
+          lwd = 2) #plot the main line
+    
+    
+    
+    #this requires posteriors!!
+    pred_betas_ztemp <- sapply(
+      pred_ztemp,
+      function(ztemp) {
+        ch1lineareffects$mean[ch1lineareffects$rownames == "gamma_b"] +
+          ch1lineareffects$mean[ch1lineareffects$rownames == "kappa_habitat_selection"] * 0  + 
+          #oh yeah! all the variables are scaled so means are 0... so... 
+          #i don't have to include any other predictors except the one I'm interested in :) how lovely!
+        ch1lineareffects$mean[ch1lineareffects$rownames == "kappa_temp_pos"] * ztemp
+      }
+    )
+    
+    #ah. right. this is breaking bc I don't currently have posterior draws to use in this. oops.
+    #once I do it will be
+    sapply(pred_ztemp, function(ztemp) {
+      gamma_draws + kappa_draws * ztemp
+    })
+    #up above instead of what's there now.
+    pred_mean <- apply(pred_betas_ztemp, 2, mean)
+    pred_ci <- apply(pred_betas_ztemp, 2, quantile, probs = c(0.025, 0.975))
+    
+    df_pred <- data.frame(scale_ztempwq = pred_ztemp,
+                          mean = pred_mean,
+                          lower = pred_ci[1,],
+                          upper = pred_ci[2,])
+    #+
+    #legend("bottomleft",
+    #       )
+
     
 ################### DIET ######################################
     # png(filename = "figures/ch1_pop_change_by_diet.png", 

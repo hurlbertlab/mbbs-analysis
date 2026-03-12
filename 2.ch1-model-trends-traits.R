@@ -183,6 +183,14 @@ fit_final <- fit_final %>%
 #Save the summary
 write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 
+#Save the posterior samples
+post <- rstan::extract(fit, inc_warmup = FALSE) %>%
+  as.data.frame() %>%
+  dplyr::select(starts_with("b"), starts_with("k"), starts_with("g"), starts_with("s"))
+
+write.csv(post, paste0(save_to, "posterior_draws.csv"), row.names = FALSE)
+print("saved posterior samples")
+
 #Save the traceplots of the fit
 save_stan_traceplot_pdf(fit,
                         file = paste0((save_to), "traceplots.pdf"),
