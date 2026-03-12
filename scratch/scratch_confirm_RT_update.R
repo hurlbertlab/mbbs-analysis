@@ -77,7 +77,7 @@ rt_checks <- mbbs %>%
 
 
 #specify stan model
-stan_model_file <- "scratch_confirm_RT_update.stan"
+stan_model_file <- "scratch/scratch_confirm_RT_update.stan"
 
 #compile
 stan_model <- stan_model(file = stan_model_file)
@@ -97,7 +97,7 @@ fit <- sampling(stan_model,
                 data = datstan, 
                 chains = 4,
                 cores = 4, 
-                iter = 6000, 
+                iter = 3000, 
                 warmup = 1000
 )
 beepr::beep()

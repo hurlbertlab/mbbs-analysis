@@ -101,7 +101,7 @@ filtered_mbbs <- make_testing_df(mbbs)
 #change to filtered_mbbs for testing, mbbs for the real thing
 mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model/2026.03.05_ch1_rematrix_scaleRT_percinsect/"
+save_to <- "Z:/Goulden/mbbs-analysis/model/2026.03.12_ch1_fix_scaledRT_attempt/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 
@@ -156,8 +156,8 @@ fit <- sampling(stan_model,
                 data = datstan, 
                 chains = 4,
                 cores = 4, 
-                iter = 1000, 
-                warmup = 200
+                iter = 4000, 
+                warmup = 1000
                 )
 beepr::beep()
 

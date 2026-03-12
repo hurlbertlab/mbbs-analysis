@@ -57,8 +57,8 @@ parameters {
   
   //traits variables predicting betas
   vector[Nsp] regional_trend; //each species has one regional trend, sampled from the mean,sd distribution provided in the data block
-  vector[Nsp] mu_regional_trend;
-  vector<lower=0>[Nsp] sigma_regional_trend;
+  real mu_regional_trend;
+  real<lower=0> sigma_regional_trend;
   real kappa_regional; //one effect of regional trend on slopes across species
   real kappa_habitat_selection; //one effect of habitat selectivity on slopes across species
   real kappa_temp_pos; //one effect of temperature niche position on slopes across species
