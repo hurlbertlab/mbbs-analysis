@@ -186,7 +186,9 @@ write.csv(fit_final, paste0(save_to,"fit_summary.csv"), row.names = FALSE)
 #Save the posterior samples
 post <- rstan::extract(fit, inc_warmup = FALSE) %>%
   as.data.frame() %>%
-  dplyr::select(starts_with("b"), starts_with("k"), starts_with("g"), starts_with("s"))
+  dplyr::select(starts_with("b"), starts_with("k"), starts_with("g"), starts_with("sig")) %>%
+  mutate(row_id = row_number()) %>%
+  dplyr::filter(row_id <= 5000)
 
 write.csv(post, paste0(save_to, "posterior_draws.csv"), row.names = FALSE)
 print("saved posterior samples")
