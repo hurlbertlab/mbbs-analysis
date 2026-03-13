@@ -131,6 +131,9 @@ diet <- mbbs |>
 hist(diet$Final_Fraction_Diet_Wt)
 #awesome :)
 
+#correlation between diet and family diet
+cor(diet$Fraction_Diet_Wt, diet$Family_Fraction_Diet_Wt, use = "complete.obs")
+
 write.csv(diet, "data/species-traits/fraction_diet_arthropods.csv", row.names = FALSE)
 
 
