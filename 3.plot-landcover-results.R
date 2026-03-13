@@ -30,11 +30,11 @@ load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.
 load_from_cpc_grassland <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_rm0to0_grassland/"
 
 lf_ch1m1prev <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_bayesmeeting/"
-lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2026.03.02_ch1_m1_matrix_intercepts_5k/"
+lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2026.03.12_ch1_m1_real_musigRT/"
 lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.12.1_ch1_m1_diettest/"
 lf_tempo <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_temponly/"
 lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m2_kpriors1_FINAL/"
-lf_ch1nR <- "Z:/Goulden/mbbs-analysis/model/2026.03.02_ch1_m2_matrix_intercepts_NRT/"
+lf_ch1nR <- "Z:/Goulden/mbbs-analysis/model/2026.03.12_ch1_m2_insectdiet_hummer/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -619,14 +619,21 @@ plot(x = dev$mean,
            color = "black",
            id = row_number(),
            significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           pch = ifelse(significant == TRUE, 16, 1))
-  c2m2 <- read.csv(paste0(lf_ch1m2, "fit_summary.csv")) %>%
-    filter(!str_detect(.$rownames, "eta")) %>%
-    filter(str_detect(.$rownames, "kappa")) %>%
-    mutate(model = "m2", 
-           color = "turquoise") %>%
-    bind_rows(c1m1) %>%
-    mutate(id = row_number())
+           pch = ifelse(significant == TRUE, 16, 1),
+           ylab = case_when(
+             rownames == "kappa_regional" ~ "Regional Trend",
+             rownames == "kappa_habitat_selection" ~ "Habitat Selectivity",
+             rownames == "kappa_temp_pos" ~ "Temp. Niche Position",
+             rownames == "kappa_diet" ~ "Percent Insectivory"
+             )
+           )
+  #c2m2 <- read.csv(paste0(lf_ch1m2, "fit_summary.csv")) %>%
+  #  filter(!str_detect(.$rownames, "eta")) %>%
+  #  filter(str_detect(.$rownames, "kappa")) %>%
+  #  mutate(model = "m2", 
+  #         color = "turquoise") %>%
+  #  bind_rows(c1m1) %>%
+  #  mutate(id = row_number())
   
   c1mNR <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
     filter(str_detect(.$rownames, "kappa")) %>%
@@ -635,24 +642,61 @@ plot(x = dev$mean,
            id = row_number(),
            significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
            pch = ifelse(significant == TRUE, 16, 1))
+  png(filename = "figures/ch1_model_CI_comparison.png", 
+      width = 400,
+      height = 440,
+      units = "px", 
+      type = "windows")
   par(mar = c(2, 10, 2, 1))
-  plot(x = c1mNR$mean,
-       y = c1mNR$id, 
-       pch = c1mNR$pch,
+  plot(x = c1m1$mean,
+       y = c1m1$id, 
+       pch = c1m1$pch,
        cex = 2,
-       xlim = c(-.5,.5),
+       xlim = c(-.04,.04),
+       xaxt = "n",
        yaxt = "n",
-       ylab = "") +
+       ylab = "",
+       col = "grey30") +
     abline(v = 0, lty = "dashed") +
+    axis(side = 1, at = seq(-0.04, 0.04, by = 0.01), 
+         labels = TRUE) +
+    segments(x0 = c1m1$conf_2.5,
+             x1 = c1m1$conf_97.5,
+             y0 = c1m1$id,
+             lwd = 4.5,
+             col = "grey30") +
+    axis(side = 2,           # Side 2 is the left side (y-axis)
+         at = c1m1$id,     # Specify the locations of the tick marks
+         labels =  c1m1$ylab, # Specify the labels for those locations
+         las = 2
+         ) +
+    points(x = c1mNR$mean,
+           y = c1mNR$id+.75, 
+           pch = c1mNR$pch,
+           cex = 2,
+           col = "black") +
     segments(x0 = c1mNR$conf_2.5,
              x1 = c1mNR$conf_97.5,
-             y0 = c1mNR$id,
-             lwd = 5) +
-    axis(side = 2,           # Side 2 is the left side (y-axis)
-         at = c1mNR$id,     # Specify the locations of the tick marks
-         labels =  c1mNR$rownames, # Specify the labels for those locations
-         las = 2
-         )
+             y0 = c1mNR$id+.75,
+             lwd = 4.5,
+             col = "black")
+  dev.off()
+  #make legend seperately and paste later
+  png(filename = "figures/ch1_model_CI_comparison_LEGEND.png", 
+      width = 400,
+      height = 440,
+      units = "px", 
+      type = "windows")
+  par(mar = c(2, 10, 2, 1))
+  plot(1:10, 
+       1:10, 
+       pch = NA) 
+    legend("center",
+           bty = "n",
+           legend = c("Base Model", "Model with \nRegional Trend"), 
+           fill = c("black", "grey30")
+           )
+  dev.off()
   
   ch1dieto <- read.csv(paste0(lf_dieto, "fit_summary.csv")) %>%
     filter(str_detect(.$rownames, "kappa")) %>%
@@ -785,12 +829,15 @@ plot(x = dev$mean,
     plot_horiz <- ch1sp %>%
       mutate(color = case_when(
         significant == TRUE & trend_direction == "negative" ~ "#762a83", #decreasing
-        significant == FALSE ~ "#5aae61", #stable
+        significant == FALSE & sig_87 == TRUE & mean_gt01 == TRUE ~ "#c2a5cf", #decline supported
+        significant == FALSE & sig_87 == TRUE & mean_gt01 == FALSE ~ "#5aae61", #stable
+        significant == FALSE & sig_87 == FALSE ~ "#5aae61", #stable
         significant == TRUE & trend_direction == "positive" ~ "#1b7837" #increasing
       )) %>%
       arrange(mean) %>%
       mutate(sp_id = cur_group_rows()) %>%
       ungroup()
+    #no species are in the "decline supported at the 87% CI and mean greater than .01 
     
     table(ch1sp$significant, ch1sp$trend_direction)
     table(ch1sp$significant, ch1sp$trend_direction)[2]#n decreasing
@@ -811,8 +858,8 @@ plot(x = dev$mean,
     plot_intervals(plot_df = plot_horiz,
                    species_axis = "x",
                    ylim_select = c(-.15, .07),
-                   xlim_select = c(0, 60),
-                   title = "all sp",
+                   xlim_select = c(0, 61),
+                   title = "NCMBBS Species Population Trends",
                    yaxt = "n") +
       axis(side = 2, at = seq(-.14, .08, by = 0.02), 
            labels = TRUE,
@@ -922,7 +969,7 @@ plot(x = dev$mean,
     #or have a ... for the Bobwhite? No, there's overlap on house sparrows
     
     
-ch1lineareffects <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
+ch1lineareffects <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
   filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
   mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
   left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
@@ -943,6 +990,18 @@ ch1lineareffects <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
     #Example of how you use this in practice:
     #plot(x, y, col = palette[cut(x, maxColorValue)])
     #saved at 400 x 400 pixels
+    png(filename = "figures/ch1_ztemp_effect.png", 
+        width = 400,
+        height = 400,
+        units = "px", 
+        type = "windows")
+    par(mar =c(5.1, 5.1, 4.1, 2.1), 
+        cex = 1.3,
+        cex.axis = 1.3,
+        cex.lab = 1.6,
+        cex.main = 1.6,
+        cex.sub = 1.4,
+        mfrow = c(1,1))
     plot(x = ch1sp$scale_ztempwq, 
          y = ch1sp$mean,
          ylim = c(-.14, .07),
@@ -972,36 +1031,43 @@ ch1lineareffects <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
           y = pred_betas_ztemp, 
           lwd = 2) #plot the main line
     
-    
-    
+    #use posteriors to get the shape around the average line
+    ch1posteriors <- read.csv(paste0(lf_ch1nR, "posterior_draws.csv"))
+    ztemp_seq <- seq(min(ch1sp$scale_ztempwq), max(ch1sp$scale_ztempwq), length.out = 100)
+    post_ztemp <- ch1posteriors$kappa_temp_pos
+    post_average_beta <- ch1posteriors$gamma_b
     #this requires posteriors!!
-    pred_betas_ztemp <- sapply(
-      pred_ztemp,
-      function(ztemp) {
-        ch1lineareffects$mean[ch1lineareffects$rownames == "gamma_b"] +
-          ch1lineareffects$mean[ch1lineareffects$rownames == "kappa_habitat_selection"] * 0  + 
-          #oh yeah! all the variables are scaled so means are 0... so... 
-          #i don't have to include any other predictors except the one I'm interested in :) how lovely!
-        ch1lineareffects$mean[ch1lineareffects$rownames == "kappa_temp_pos"] * ztemp
+    predicted_betas_ztemp <- sapply(
+      ztemp_seq,
+      function(ztemp_seq){
+        post_average_beta +
+          post_ztemp * ztemp_seq
       }
     )
     
-    #ah. right. this is breaking bc I don't currently have posterior draws to use in this. oops.
-    #once I do it will be
-    sapply(pred_ztemp, function(ztemp) {
-      gamma_draws + kappa_draws * ztemp
-    })
-    #up above instead of what's there now.
-    pred_mean <- apply(pred_betas_ztemp, 2, mean)
-    pred_ci <- apply(pred_betas_ztemp, 2, quantile, probs = c(0.025, 0.975))
+    predicted_mean_ztemp_effect <- apply(predicted_betas_ztemp, 2, mean)
+    predicted_ztemp_ci <- apply(predicted_betas_ztemp, 2, quantile, probs = c(0.025, 0.975))
     
-    df_pred <- data.frame(scale_ztempwq = pred_ztemp,
-                          mean = pred_mean,
-                          lower = pred_ci[1,],
-                          upper = pred_ci[2,])
-    #+
-    #legend("bottomleft",
-    #       )
+    pred_ztemp_df <- data.frame(ztemp = ztemp_seq,
+                                mean = predicted_mean_ztemp_effect,
+                                lower = predicted_ztemp_ci[1,],
+                                upper = predicted_ztemp_ci[2,])
+    lines(x = pred_ztemp_df$ztemp,
+          y = pred_ztemp_df$lower,
+          lwd = 1.2,
+          col = "white")
+    lines(x = pred_ztemp_df$ztemp,
+          y = pred_ztemp_df$lower,
+          lwd = 1)
+    lines(x = pred_ztemp_df$ztemp,
+          y = pred_ztemp_df$upper,
+          lwd = 1.2,
+          col = "white")
+    lines(x = pred_ztemp_df$ztemp,
+          y = pred_ztemp_df$upper)
+    lines(x = pred_ztemp_df$ztemp,
+          y = pred_ztemp_df$mean) #yeah, perfectly encompassed by the plotting line above
+    dev.off()
 
     
 ################### DIET ######################################
