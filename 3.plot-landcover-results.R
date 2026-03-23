@@ -29,12 +29,16 @@ load_from_cpc_traits <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.07.14_tra
 load_from_cpc_traits_together <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.10.16_traits_on_cpc/"
 load_from_cpc_grassland <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.15_cpc_rm0to0_grassland/"
 
-lf_ch1m1prev <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_bayesmeeting/"
-lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2026.03.12_ch1_m1_real_musigRT/"
-lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.12.1_ch1_m1_diettest/"
-lf_tempo <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_temponly/"
-lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m2_kpriors1_FINAL/"
-lf_ch1nR <- "Z:/Goulden/mbbs-analysis/model/2026.03.12_ch1_m2_insectdiet_hummer/"
+
+lf_ch1m1 <- "model/2026.03.12_ch1_m1_final/"
+lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
+
+#lf_ch1m1prev <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_bayesmeeting/"
+#lf_ch1m1 <- "Z:/Goulden/mbbs-analysis/model/2026.03.12_ch1_m1_real_musigRT/"
+#lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.12.1_ch1_m1_diettest/"
+#lf_tempo <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_temponly/"
+#lf_ch1m2 <- "Z:/Goulden/mbbs-analysis/model/2025.09.08_ch1_m2_kpriors1_FINAL/"
+#lf_ch1nR <- "Z:/Goulden/mbbs-analysis/model/2026.03.12_ch1_m2_insectdiet_hummer/"
 
 ######### section for fitting bayesplot themes
   #let's make text larger :)
@@ -776,9 +780,9 @@ plot(x = dev$mean,
              conf_93.5 = (mean + (sd * z)),
              sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
              mean_gt01 = ifelse(mean < -0.01 | mean > 0.01, TRUE, FALSE),
-             significant = case_when(significant == TRUE ~ significant,
-                                     sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
-                                     TRUE ~ FALSE),
+             #significant = case_when(significant == TRUE ~ significant,
+            #                         sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
+             #                        TRUE ~ FALSE),
              trend_direction = ifelse(conf_2.5 > 0, "positive", "negative"))
     
     prev_ch1sp <- read.csv(paste0(lf_ch1m1prev, "fit_summary.csv")) %>%
@@ -844,7 +848,8 @@ plot(x = dev$mean,
     sum(table(ch1sp$significant, ch1sp$trend_direction)[1],table(ch1sp$significant, ch1sp$trend_direction)[3])#n stable
     table(ch1sp$significant, ch1sp$trend_direction)[4]#n increasing
     
-    png(filename = "figures/ch1_horiz_pop_change.png", 
+    png(#filename = "figures/ch1_horiz_pop_change.png", 
+      filename = "figures/ORNITHOLOGY_DAY.png",
         width = 1200,
         height = 600,
         units = "px", 
@@ -859,15 +864,24 @@ plot(x = dev$mean,
                    species_axis = "x",
                    ylim_select = c(-.15, .07),
                    xlim_select = c(0, 61),
-                   title = "NCMBBS Species Population Trends",
-                   yaxt = "n") +
-      axis(side = 2, at = seq(-.14, .08, by = 0.02), 
-           labels = TRUE,
-           las = 1) +
+                   title = "North Carolina Mini Breeding Bird Survey Species Population Trends",
+                   yaxt = "n") 
+      axis(side = 2, 
+           #at = seq(-.14, .08, by = 0.02), 
+           #labels = TRUE,
+           at = c(-.14, -.12, -.10, -.08, -.06, -.04, -.02, 0, .02, .04, .06, .08),
+           labels = c("-14%", "-12%", "-10%", "-8%", "-6%", "-4%", 
+                     "-2%", "0", "+2%", "+4%", "+6%", "+8%"),
+           las = 1) 
       axis(side = 2, at = seq(-.13, 0.05, by = 0.02),
            labels = FALSE,
-           tck = -0.01) +
-      mtext(text = "Population Change per Year", side = 2, line = 4, cex = 1.3)
+           tck = -0.01) 
+      #mtext(text = "Population Change per Year", side = 2, line = 4, cex = 1.3) +
+      mtext(text = "Percent Population Change per Year", side = 2, line = 4, cex = 1.3) 
+      legend("topleft",
+             legend = c("Decreasing", "Stable", "Increasing"),
+             fill = c("#762a83", "#5aae61", "#1b7837"),
+             bty = "n")
     dev.off()
     #notes:
       #would like to color the species labels by the plotting color as well
@@ -878,7 +892,10 @@ plot(x = dev$mean,
       arrange(desc(mean)) %>%
       mutate(group_order = cur_group_rows(),
              sp_id = group_order,
-             color = "brown") %>%
+             color = "#762a83",
+             mean = mean*100,
+             conf_2.5 = conf_2.5*100,
+             conf_97.5 = conf_97.5*100) %>%
       ungroup()
     
     stable <- ch1sp %>%
@@ -886,7 +903,10 @@ plot(x = dev$mean,
       arrange(desc(mean)) %>%
       mutate(group_order = cur_group_rows(),
              sp_id = group_order,
-             color = "brown1") %>%
+             color = "#5aae61",
+             mean = mean*100,
+             conf_2.5 = conf_2.5*100,
+             conf_97.5 = conf_97.5*100) %>%
       ungroup()
     
     increase <- ch1sp %>%
@@ -895,7 +915,10 @@ plot(x = dev$mean,
       arrange(desc(mean)) %>%
       mutate(group_order = cur_group_rows(),
              sp_id = group_order,
-             color = "brown3") %>%
+             color = "#1b7837",
+             mean = mean*100,
+             conf_2.5 = conf_2.5*100,
+             conf_97.5 = conf_97.5*100) %>%
       ungroup()
     
     
@@ -924,11 +947,11 @@ plot(x = dev$mean,
     #now we can plot side by side the three panels, first invertivore, then omnivore, then granivore to follow size of groups
     #color code by temperature niche position (tho not predictive)
     png(filename = "figures/ch1_pop_change_by_trend.png", 
-        width = 1000,
-        height = 500,
+        width = 1100,
+        height = 600,
         units = "px", 
         type = "windows")
-    par(mar = c(4, 13.5, 1, 1), 
+    par(mar = c(4, 15, 1, 1), 
         cex = 1.3,
         cex.axis = 1.3,
         cex.lab = 1.6,
@@ -937,29 +960,34 @@ plot(x = dev$mean,
         mfrow = c(1,3))
     plot_intervals(plot_df = decrease,
                    xlab = "", 
-                   ylim_select = c(0, 32.5),
-                   xlim_select = c(-.15, 0),
-                   title = "Declining",
+                   ylim_select = c(0, 33.5),
+                   #xlim_select = c(-.15, 0),
+                   xlim_select = c(-15, 0),
+                   #title = "Declining",
                    xaxt = "n") 
-      axis(side = 1, at = seq(-.14, .0, by = 0.02), 
-           labels = TRUE)
+      #axis(side = 1, at = seq(-.14, .0, by = 0.02), 
+      #     labels = TRUE)
+    axis(side = 1, at = seq(-14, 0, by = 2), 
+         labels = TRUE)
     #split invertivores at purple martin?
     plot_intervals(plot_df = stable,
-                   xlab = "Population Change Per Year", 
+                   xlab = "% Population Change Per Year", 
                    ylim_select = c(.5, 13.5),
-                   xlim_select = c(-.04, .04),
-                   title = "Stable",
+                   #xlim_select = c(-.04, .04),
+                   xlim_select = c(-4, 4),
+                   #title = "Stable",
                    xaxt = "n") 
-      axis(side = 1, at = seq(-.04, .04, by = 0.02), 
+      axis(side = 1, at = seq(-4, 4, by = 2), 
            labels = TRUE)
     par(mar = c(4, 12, 1, 1))
     plot_intervals(plot_df = increase,
                    xlab = "", 
                    ylim_select = c(.5, 14.5),
-                   xlim_select = c(0, .08),
-                   title = "Increasing",
+                   #xlim_select = c(0, .08),
+                   xlim_select = c(0, 7),
+                   #title = "Increasing",
                    xaxt = "n") 
-      axis(side = 1, at = seq(0, .08, by = 0.02), 
+      axis(side = 1, at = seq(0, 6, by = 2), 
            labels = TRUE)
     dev.off()
     #notes:
