@@ -169,7 +169,7 @@
 ########### plot bayesian linear effects on top of a scatterplot
   plot_linear_effects <- function(
     fit_summary = ch1lineareffects,
-    posterior_draws = read.csv(paste0(lf_ch1m1, "posterior_draws.csv")),
+    load_from,
     variable_of_interest,
     variable_kappa,
     abline_at_zero = FALSE,
@@ -178,11 +178,15 @@
     ylab = "Population Trend",
     maxColorValue = 100,
     palette = colorRampPalette(c("blue","red"))(maxColorValue),
+    regional_trend_colors = FALSE,
+    trendline_lty = "solid",
     white_lwd = 2.5,
     lwd = 2,
     outer_bound_lwd = 1.5,
     polygon_color = "steelblue"
   ) {
+    
+    posterior_draws = read.csv(paste0(load_from, "posterior_draws.csv"))
     
     #scatterplot the variable of interest
     plot(x = fit_summary[,variable_of_interest],
@@ -204,6 +208,21 @@
              lwd = 3, 
              col = palette[cut(fit_summary[,variable_of_interest], maxColorValue)]
              )
+    
+    #if we're doing the regional trend, then:
+    #reprint the dots and segments using coded regional trend colors.
+    if(regional_trend_colors == TRUE){
+      points(x = fit_summary[,variable_of_interest],
+             y = fit_summary$mean,
+             col = fit_summary$rt_colors,
+             pch = 16)
+      segments(x0 = fit_summary[,variable_of_interest],
+               y0 = fit_summary$conf_2.5,
+               y1 = fit_summary$conf_97.5,
+               lwd = 3, 
+               col = fit_summary$rt_colors
+      )
+    }
     
     #create a sequence of the variable of interest that we can then use to predict what the betas would be, this will give us the main slope line
     voi_sequence <- seq(min(fit_summary[,variable_of_interest], na.rm = TRUE),
@@ -235,10 +254,12 @@
     lines(x = predicted_df$variable_of_interest,
           y = predicted_df$mean,
           lwd = white_lwd, 
-          col = "white")
+          col = "white",
+          lty = trendline_lty)
     lines(x = predicted_df$variable_of_interest,
           y = predicted_df$mean,
-          lwd = lwd)
+          lwd = lwd,
+          lty = trendline_lty)
     #outer confidence bounds
     lines(x = predicted_df$variable_of_interest,
           y = predicted_df$lower,

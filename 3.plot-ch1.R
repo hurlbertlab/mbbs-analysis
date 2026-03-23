@@ -57,12 +57,14 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
       height = 440,
       units = "px", 
       type = "windows")
-  par(mar = c(2, 10, 2, 1))
+  {
+  par(mar = c(4, 10, 2, 1))
   plot(x = c1m1$mean,
        y = c1m1$id, 
        pch = c1m1$pch,
        cex = 2,
        xlim = c(-.02,.04),
+       xlab = "Effect Size",
        xaxt = "n",
        yaxt = "n",
        ylab = "",
@@ -81,16 +83,17 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
          las = 2
     ) 
     #add the second model without regional trend
-    #points(x = c1mNR$mean,
-    #       y = c1mNR$id+.75, 
-    #       pch = c1mNR$pch,
-    #       cex = 2,
-    #       col = "grey30") +
-    #segments(x0 = c1mNR$conf_2.5,
-    #         x1 = c1mNR$conf_97.5,
-    #         y0 = c1mNR$id+.75,
-    #         lwd = 4.5,
-    #         col = "grey30")
+    points(x = c1mNR$mean,
+           y = c1mNR$id+.75, 
+           pch = c1mNR$pch,
+           cex = 2,
+           col = "grey30") +
+    segments(x0 = c1mNR$conf_2.5,
+             x1 = c1mNR$conf_97.5,
+             y0 = c1mNR$id+.75,
+             lwd = 4.5,
+             col = "grey30")
+  }
   dev.off()
   #make legend seperately and paste later
   #only needed if plotting both models (with and without regional trend)
@@ -156,6 +159,7 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
     height = 600,
     units = "px", 
     type = "windows")
+  {
   par(mar = c(13.5, 5, 2, 2), 
       cex = 1.1,
       cex.axis = 1.3,
@@ -184,6 +188,7 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
          legend = c("Decreasing", "Likely Decreasing [87% CI]", "Stable", "Increasing"),
          fill = c("#762a83", "#c2a5cf", "#5aae61", "#1b7837"),
          bty = "n")
+  }
   dev.off()
   
 ######################
@@ -195,47 +200,113 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
   z <- qnorm((1+0.87)/2) #confidence interval 87%
   
   #read in and manipulate data
-  ch1lineareffects <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
+  ch1lineareffects <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
     filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
     mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
     left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
-     left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv"))) #%>%
-    # mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-    #        conf_6.5 = (mean - (sd * z)),
-    #        conf_93.5 = (mean + (sd * z)),
-    #        sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
-    #        mean_gt01 = ifelse(mean < -0.01 | mean > 0.01, TRUE, FALSE),
-    #        significant = case_when(significant == TRUE ~ significant,
-    #                                sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
-    #                                TRUE ~ FALSE),
-    #        trend_direction = ifelse(conf_2.5 > 0, "positive", "negative"))
+     left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv"))) |>
+    #THESE MEAN DIFFERENT THINGS THAN BEFORE, COLORS BASED ON REGIONAL TREND
+    mutate(rt_sig = ifelse(usgs_2.5CI < 0 & usgs_97.5CI > 0, FALSE, TRUE),
+           usgs_6.5 = (usgs_trend_estimate - (usgs_sd * z)),
+           usgs_93.5 = (usgs_trend_estimate + (usgs_sd * z)),
+           rt_87 = ifelse(usgs_6.5 < 0 & usgs_93.5 > 0, FALSE, TRUE),
+           mean_gt01 = ifelse(usgs_trend_estimate < -0.01 | usgs_trend_estimate > 0.01, TRUE, FALSE),
+           trend_direction = ifelse(usgs_2.5CI > 0, "positive", "negative")) |>
+    mutate(rt_colors = case_when(
+      rt_sig == TRUE & trend_direction == "negative" ~ "#762a83", #decreasing
+      rt_sig == FALSE & rt_87 == TRUE & mean_gt01 == TRUE ~ "#c2a5cf", #decline supported at 87% confidence interval
+      rt_sig == FALSE & rt_87 == TRUE & mean_gt01 == FALSE ~ "#5aae61", #stable
+      rt_sig == FALSE & rt_87 == FALSE ~ "#5aae61", #stable
+      rt_sig == TRUE & trend_direction == "positive" ~ "#1b7837" #increasing
+    ))
+  
+  ch1noregionaleffects <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
+    filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
+    mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
+    left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
+    left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv")))
   
   
-  png(filename = "figures/ch1_ztemp_effect.png", 
-      width = 400,
-      height = 400,
+  #difference in the beta calculations between these two is minuscule. Up above showing the betas for either is fine.
+  min(ch1lineareffects$mean[1:60] - ch1noregionaleffects$mean[1:60])
+  max(ch1lineareffects$mean[1:60] - ch1noregionaleffects$mean[1:60])
+  
+  png(filename = "figures/ch1_linear_effects.png", 
+      width = 1000,
+      height = 600,
       units = "px", 
       type = "windows")
-  par(mar =c(5.1, 5.1, 4.1, 2.1), 
+  {
+    par(mar =c(5.1, 5.1, 4.1, 2.1), 
       cex = 1.3,
       cex.axis = 1.3,
       cex.lab = 1.6,
       cex.main = 1.6,
       cex.sub = 1.4,
-      mfrow = c(1,1))
+      mfrow = c(2,4))
   
-  plot_linear_effects(variable_of_interest = "scale_ztempwq",
+  #Temperature Niche
+  plot_linear_effects(load_from = lf_ch1m1,
+                      variable_of_interest = "scale_ztempwq",
+                      variable_kappa = "kappa_temp_pos",
+                      xlab = "Scaled Temperature Niche",
+                      trendline_lty = "dashed")
+  #should add a color bar legend
+  #or text just above x axis with "colder" in blue and "warmer" in red
+  #Percent Insectivory
+  plot_linear_effects(load_from = lf_ch1m1,
+                      variable_of_interest = "scale_insect_perc",
+                      variable_kappa = "kappa_diet",
+                      xlab = "Scaled Percent Insectivory",
+                      maxColorValue = 100,
+                      palette = colorRampPalette(c("black","black"))(maxColorValue))
+  
+  #Habitat selectivity
+  plot_linear_effects(load_from = lf_ch1m1,
+                      variable_of_interest = "scale_habitat_ssi",
+                      variable_kappa = "kappa_habitat_selection",
+                      xlab = "Scaled Habitat Selectivity",
+                      maxColorValue = 100,
+                      palette = colorRampPalette(c("black","black"))(maxColorValue),
+                      trendline_lty = "dashed")
+  #Regional Trend
+  plot_linear_effects(load_from = lf_ch1m1,
+                      variable_of_interest = "scale_usgs_trend",
+                      variable_kappa = "kappa_regional",
+                      xlab = "Scaled Regional Trend",
+                      regional_trend_colors = TRUE)
+  #should add a color bar legend
+  
+  
+  #Now, plot without regional trends.
+  #temp niche
+  plot_linear_effects(fit_summary = ch1noregionaleffects,
+                      load_from = lf_ch1nR,
+                      variable_of_interest = "scale_ztempwq",
                       variable_kappa = "kappa_temp_pos",
                       xlab = "Scaled Temperature Niche")
-  plot_linear_effects(variable_of_interest = "scale_usgs_trend",
-                      variable_kappa = "kappa_regional",
-                      xlab = "Scaled Regional Trend")
-  plot_linear_effects(variable_of_interest = "scale_insect_perc",
+  
+  #Percent Insectivory
+  plot_linear_effects(fit_summary = ch1noregionaleffects,
+                      load_from = lf_ch1nR,
+                      variable_of_interest = "scale_insect_perc",
                       variable_kappa = "kappa_diet",
-                      xlab = "Scaled Percent Insectivory")
-  plot_linear_effects(variable_of_interest = "scale_habitat_ssi",
+                      xlab = "Scaled Percent Insectivory",
+                      maxColorValue = 100,
+                      palette = colorRampPalette(c("black","black"))(maxColorValue))
+  
+  #Habitat selectivity
+  plot_linear_effects(fit_summary = ch1noregionaleffects,
+                      load_from = lf_ch1nR,
+                      variable_of_interest = "scale_habitat_ssi",
                       variable_kappa = "kappa_habitat_selection",
-                      xlab = "Scaled Habitat Selectivity")
+                      xlab = "Scaled Habitat Selectivity",
+                      maxColorValue = 100,
+                      palette = colorRampPalette(c("black","black"))(maxColorValue),
+                      trendline_lty = "dashed")
+  }
+  
+  dev.off()
   
   
   
