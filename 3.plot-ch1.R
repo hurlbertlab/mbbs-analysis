@@ -52,6 +52,9 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
            significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
            pch = ifelse(significant == TRUE, 16, 1))
   
+  rt_model_color = "black"
+  wo_model_color = "grey30"
+  
   png(filename = "figures/ch1_model_CI_comparison.png", 
       width = 420,
       height = 440,
@@ -68,7 +71,7 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
        xaxt = "n",
        yaxt = "n",
        ylab = "",
-       col = "black") 
+       col = rt_model_color) 
     abline(v = 0, lty = "dashed") 
     axis(side = 1, at = seq(-0.04, 0.04, by = 0.01), 
          labels = TRUE) 
@@ -76,7 +79,7 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
              x1 = c1m1$conf_97.5,
              y0 = c1m1$id,
              lwd = 4.5,
-             col = "black") 
+             col = rt_model_color) 
     axis(side = 2,           # Side 2 is the left side (y-axis)
          at = c1m1$id,     # Specify the locations of the tick marks
          labels =  c1m1$ylab, # Specify the labels for those locations
@@ -87,31 +90,33 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
            y = c1mNR$id+.75, 
            pch = c1mNR$pch,
            cex = 2,
-           col = "grey30") +
+           col = wo_model_color) +
     segments(x0 = c1mNR$conf_2.5,
              x1 = c1mNR$conf_97.5,
              y0 = c1mNR$id+.75,
              lwd = 4.5,
-             col = "grey30")
+             col = wo_model_color)
   }
   dev.off()
   #make legend seperately and paste later
   #only needed if plotting both models (with and without regional trend)
-  #png(filename = "figures/ch1_model_CI_comparison_LEGEND.png", 
-  #    width = 400,
-  #    height = 440,
-  #    units = "px", 
-  #    type = "windows")
-  #par(mar = c(2, 10, 2, 1))
-  #plot(1:10, 
-  #     1:10, 
-  #     pch = NA) 
-  #legend("center",
-  #       bty = "n",
-  #       legend = c("Base Model", "Model with \nRegional Trend"), 
-  #       fill = c("grey30", "black")
-  #)
-  #dev.off()
+  png(filename = "figures/ch1_model_CI_comparison_LEGEND.png", 
+      width = 400,
+      height = 440,
+      units = "px", 
+      type = "windows") 
+  {
+  par(mar = c(2, 10, 2, 1))
+  plot(1:10, 
+       1:10, 
+       pch = NA) 
+  legend("center",
+         bty = "n",
+         legend = c("Model with \nRegional Trend\n", "Model without \nRegional Trend"), 
+         fill = c(rt_model_color, wo_model_color)
+  )
+  }
+  dev.off()
   
 ######################
 #
@@ -231,26 +236,98 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
   min(ch1lineareffects$mean[1:60] - ch1noregionaleffects$mean[1:60])
   max(ch1lineareffects$mean[1:60] - ch1noregionaleffects$mean[1:60])
   
+  maxColorValue = 100
+  
+  
+  #figure for main publication
   png(filename = "figures/ch1_linear_effects.png", 
-      width = 1000,
+      width = 800,
+      height = 800,
+      units = "px", 
+      type = "windows")
+  {
+    par(mar =c(5.1, 6.1, 4.1, 2.1), 
+        cex = 1.3,
+        cex.axis = 1.3,
+        cex.lab = 1.6,
+        cex.main = 1.6,
+        cex.sub = 1.4,
+        mfrow = c(2,2))
+    
+    #Temperature Niche
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_ztempwq",
+                        variable_kappa = "kappa_temp_pos",
+                        xlab = "Scaled Temperature Niche Position",
+                        trendline_lty = "dashed")
+    legend("bottomleft",
+           legend = c("NC Colder"),
+           fill = c("blue"),
+           bty = "n")
+    legend("bottomright",
+           legend = c("NC Warmer"),
+           fill = c("red"),
+           bty = "n")
+    #should add a color bar legend
+    #or text just above x axis with "colder" in blue and "warmer" in red
+    #Percent Insectivory
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_insect_perc",
+                        variable_kappa = "kappa_diet",
+                        xlab = "Scaled Percent Insectivory",
+                        maxColorValue = 100,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        plot_ylab = FALSE)
+    
+    #Habitat selectivity
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_habitat_ssi",
+                        variable_kappa = "kappa_habitat_selection",
+                        xlab = "Scaled Habitat Selectivity",
+                        maxColorValue = 100,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        trendline_lty = "dashed")
+    #Regional Trend
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_usgs_trend",
+                        variable_kappa = "kappa_regional",
+                        xlab = "Scaled Regional Trend",
+                        regional_trend_colors = TRUE,
+                        plot_ylab = FALSE)
+    legend("topleft",
+           legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing"),
+           fill = c("#762a83", "#c2a5cf", "#5aae61", "#1b7837"),
+           bty = "n")
+  }
+  
+  dev.off()
+  
+  
+  
+  #supplemental figure
+  png(filename = "figures/ch1_SUPPLEMENTAL_linear_effects.png", 
+      width = 1100,
       height = 600,
       units = "px", 
       type = "windows")
   {
-    par(mar =c(5.1, 5.1, 4.1, 2.1), 
+    par(mar =c(5.1, 6.1, 4.1, 2.1), 
       cex = 1.3,
       cex.axis = 1.3,
       cex.lab = 1.6,
       cex.main = 1.6,
       cex.sub = 1.4,
       mfrow = c(2,4))
+    
+    new_ylab_distance = -1.6
   
   #Temperature Niche
   plot_linear_effects(load_from = lf_ch1m1,
                       variable_of_interest = "scale_ztempwq",
                       variable_kappa = "kappa_temp_pos",
-                      xlab = "Scaled Temperature Niche",
-                      trendline_lty = "dashed")
+                      xlab = "Scaled Temperature Niche Position",
+                      trendline_lty = "dashed",
+                      ylab_distance = new_ylab_distance)
   #should add a color bar legend
   #or text just above x axis with "colder" in blue and "warmer" in red
   #Percent Insectivory
@@ -259,7 +336,8 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
                       variable_kappa = "kappa_diet",
                       xlab = "Scaled Percent Insectivory",
                       maxColorValue = 100,
-                      palette = colorRampPalette(c("black","black"))(maxColorValue))
+                      palette = colorRampPalette(c("black","black"))(maxColorValue),
+                      plot_ylab = FALSE)
   
   #Habitat selectivity
   plot_linear_effects(load_from = lf_ch1m1,
@@ -268,13 +346,15 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
                       xlab = "Scaled Habitat Selectivity",
                       maxColorValue = 100,
                       palette = colorRampPalette(c("black","black"))(maxColorValue),
-                      trendline_lty = "dashed")
+                      trendline_lty = "dashed",
+                      plot_ylab = FALSE)
   #Regional Trend
   plot_linear_effects(load_from = lf_ch1m1,
                       variable_of_interest = "scale_usgs_trend",
                       variable_kappa = "kappa_regional",
                       xlab = "Scaled Regional Trend",
-                      regional_trend_colors = TRUE)
+                      regional_trend_colors = TRUE,
+                      plot_ylab = FALSE)
   #should add a color bar legend
   
   
@@ -284,7 +364,8 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
                       load_from = lf_ch1nR,
                       variable_of_interest = "scale_ztempwq",
                       variable_kappa = "kappa_temp_pos",
-                      xlab = "Scaled Temperature Niche")
+                      xlab = "Scaled Temperature Niche Position",
+                      ylab_distance = new_ylab_distance)
   
   #Percent Insectivory
   plot_linear_effects(fit_summary = ch1noregionaleffects,
@@ -293,7 +374,8 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
                       variable_kappa = "kappa_diet",
                       xlab = "Scaled Percent Insectivory",
                       maxColorValue = 100,
-                      palette = colorRampPalette(c("black","black"))(maxColorValue))
+                      palette = colorRampPalette(c("black","black"))(maxColorValue),
+                      plot_ylab = FALSE)
   
   #Habitat selectivity
   plot_linear_effects(fit_summary = ch1noregionaleffects,
@@ -303,7 +385,8 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
                       xlab = "Scaled Habitat Selectivity",
                       maxColorValue = 100,
                       palette = colorRampPalette(c("black","black"))(maxColorValue),
-                      trendline_lty = "dashed")
+                      trendline_lty = "dashed",
+                      plot_ylab = FALSE)
   }
   
   dev.off()

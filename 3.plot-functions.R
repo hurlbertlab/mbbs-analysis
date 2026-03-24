@@ -172,13 +172,17 @@
     load_from,
     variable_of_interest,
     variable_kappa,
+    xaxt = "s",
     abline_at_zero = FALSE,
-    ylim = c(-.14, 0.07),
+    ylim = c(-.15, 0.07),
     xlab = "",
     ylab = "Population Trend",
+    plot_ylab = TRUE,
+    ylab_distance = - 1.2,
     maxColorValue = 100,
     palette = colorRampPalette(c("blue","red"))(maxColorValue),
     regional_trend_colors = FALSE,
+    secondary_tck = -0.02,
     trendline_lty = "solid",
     white_lwd = 2.5,
     lwd = 2,
@@ -191,12 +195,23 @@
     #scatterplot the variable of interest
     plot(x = fit_summary[,variable_of_interest],
          y = fit_summary$mean,
+         yaxt = "n",
+         xaxt = xaxt,
          ylim = ylim,
          col = palette[cut(fit_summary[,variable_of_interest], maxColorValue)],
          pch = 16,
          xlab = xlab,
-         ylab = ylab
+         ylab = "",
          )
+    #plot ylab or not
+    if(plot_ylab == TRUE) {
+      text(x = par("usr")[1] + ylab_distance,  # Position left of plot region
+           y = mean(par("usr")[3:4]), # Center vertically within plot region
+           labels = "Population Trend",
+           srt = 90,                  # Rotate 90 degrees for vertical orientation
+           xpd = NA,                  # Allow plotting outside plot region
+           cex = 1.6) 
+    }
     #abline at 0
     if(abline_at_zero == TRUE) {
     abline(h = 0, lty = "dashed")
@@ -208,6 +223,23 @@
              lwd = 3, 
              col = palette[cut(fit_summary[,variable_of_interest], maxColorValue)]
              )
+    #re-add the axes
+    #y
+    axis(2,          
+         at = c(-.14, -.12, -.10, -.08, -.06, -.04, -.02, 0, .02, .04, .06, .08),
+         labels = c("-0.14", "-0.12", "-0.10", "-0.08", "-0.06", "-0.04", 
+                    "-0.02", "0", "0.02", "0.04", "0.06", "0.08"),
+         las = 2,
+         #cex.axis = 1.25
+         ) 
+    #x
+    #axis(1,
+    #     at = c(-3, -2, -1, 0, 1, 2, 3),
+    #     labels = TRUE)
+    #axis(1, 
+    #     at = c(-3.5, -2.5, -1.5, -0.5, .5, 1.5, 2.5, 3.5),
+    #     labels = FALSE,
+    #     tck = secondary_tck)
     
     #if we're doing the regional trend, then:
     #reprint the dots and segments using coded regional trend colors.
