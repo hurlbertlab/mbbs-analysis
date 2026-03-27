@@ -125,7 +125,6 @@ model {
     kappa_diet ~ normal(0, 1);
 
 //overdispersion param prior
-//chatgpt says typical prior for the overdispersion param is a gamma prior. I've seen a beta used as well, some questions remain here.
     overdispersion_param ~ gamma(2,1);
     
 //modeling beta
@@ -135,7 +134,7 @@ model {
              kappa_regional * regional_trend + 
              kappa_temp_pos * t_temp_pos + 
              kappa_habitat_selection * t_habitat_selection + 
-             kappa_diet * t_diet, //categorical so no *
+             kappa_diet * t_diet, 
              sig_b);
 
 // Vectorized
