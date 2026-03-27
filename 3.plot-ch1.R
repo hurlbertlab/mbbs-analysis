@@ -12,6 +12,7 @@ library(stringr)
 library(cowplot) #used to make multi-panel figures
 library(reshape2) #for any correlation matrix heatmaps
 library(statuser) #from the data collada blog, more useful tables: https://datacolada.org/132
+library(tinytex) #lightweight LaTeX distribution that makes it easy to use in R
 
 #load functions
 source("3.plot-functions.R")
@@ -19,6 +20,7 @@ source("3.plot-functions.R")
 #where are we pulling data from?
 lf_ch1m1 <- "model/2026.03.12_ch1_m1_final/"
 lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
+stable_color <- "#4393c3"
 #lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.12.1_ch1_m1_diettest/"
 #lf_tempo <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_temponly/"
 
@@ -140,19 +142,29 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
            #significant = case_when(significant == TRUE ~ significant,
           #                         sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
           #                         TRUE ~ FALSE),
-           trend_direction = ifelse(conf_2.5 > 0, "positive", "negative"))
+           trend_direction = case_when(
+             conf_2.5 > 0 ~ "positive",
+             conf_97.5 < 0 ~ "negative",
+             conf_2.5 < 0 & conf_6.5 > 0 & mean_gt01 == TRUE ~ "slightly_positive",
+             conf_2.5 < 0 & conf_6.5 > 0 & mean_gt01 == FALSE ~ "stable",
+             conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == TRUE ~ "slightly_negative",
+             conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == FALSE ~ "stable",
+             conf_6.5 < 0 & conf_93.5 > 0 ~ "stable",
+             TRUE ~ "unaccounted"
+           ))
+
   
   
   #n sigifnicantly increasing/decreasing species:
-  statuser::table2(ch1sp$sig_87, ch1sp$significant, ch1sp$conf_2.5>0)
+  statuser::table2(ch1sp$trend_direction)
   
   plot_horiz <- ch1sp %>%
     mutate(color = case_when(
-      significant == TRUE & trend_direction == "negative" ~ "#762a83", #decreasing
-      significant == FALSE & sig_87 == TRUE & mean_gt01 == TRUE ~ "#c2a5cf", #decline supported at 87% confidence interval
-      significant == FALSE & sig_87 == TRUE & mean_gt01 == FALSE ~ "#5aae61", #stable
-      significant == FALSE & sig_87 == FALSE ~ "#5aae61", #stable
-      significant == TRUE & trend_direction == "positive" ~ "#1b7837" #increasing
+      trend_direction == "negative" ~ "#762a83", #decreasing
+      trend_direction == "slightly_negative" ~ "#c2a5cf", #decline supported at 87% confidence interval
+      trend_direction == "stable" ~ stable_color, #stable, not significant at 95 or 87%
+      trend_direction == "slightly_positive" ~ "#5aae61", #increase supported at 87% confidence interval
+      trend_direction == "positive" ~ "#1b7837" #increasing
     )) %>%
     arrange(mean) %>%
     mutate(sp_id = cur_group_rows()) %>%
@@ -181,18 +193,81 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
        #at = seq(-.14, .08, by = 0.02), 
        #labels = TRUE,
        at = c(-.14, -.12, -.10, -.08, -.06, -.04, -.02, 0, .02, .04, .06, .08),
-       labels = c("-0.14", "-0.12", "-0.10", "-0.08", "-0.06", "-0.04", 
-                  "-0.02", "0", "0.02", "0.04", "0.06", "0.08"),
+       labels = c("-14%", "-12%", "-10%", "-8%", "-6%", "-4%", 
+                  "-2%", "0", "2%", "4%", "6%", "8%"),
        las = 1) 
   axis(side = 2, at = seq(-.13, 0.05, by = 0.02),
        labels = FALSE,
        tck = -0.01) 
-  mtext(text = "Population Change per Year", side = 2, line = 4, cex = 1.3) 
-  #mtext(text = "Percent Population Change per Year", side = 2, line = 4, cex = 1.3) 
+  mtext(text = "Percent Population Change per Year", side = 2, line = 4, cex = 1.3) 
   legend("topleft",
-         legend = c("Decreasing", "Likely Decreasing [87% CI]", "Stable", "Increasing"),
-         fill = c("#762a83", "#c2a5cf", "#5aae61", "#1b7837"),
+         legend = c("Decreasing [95% CI]", "Likely Decreasing [87% CI]", "Stable", "Likely Increasing [87% CI]","Increasing [95% CI]"),
+         fill = c("#762a83", "#c2a5cf", stable_color,"#5aae61", "#1b7837"),
          bty = "n")
+  }
+  dev.off()
+  
+  ##try a two-panel version
+  png(filename = "figures/ch1_horiz_pop_change_twopanel.png", 
+      width = 900,
+      height = 800,
+      units = "px", 
+      type = "windows") 
+  {
+    par(mar = c(11, 6, 2, 1), 
+        cex = 1.1,
+        cex.axis = 1.4,
+        cex.lab = 1.2,
+        cex.main = 1.6,
+        cex.sub = 1.4,
+        mfrow = c(2,1))
+    {
+    plot_intervals(plot_df = plot_horiz[1:30,],
+                   species_axis = "x",
+                   ylim_select = c(-.15, .01),
+                   xlim_select = c(0, 30.5),
+                   title = "North Carolina Mini Breeding Bird Survey Species Population Trends",
+                   yaxt = "n") 
+    axis(side = 2, 
+         #at = seq(-.14, .08, by = 0.02), 
+         #labels = TRUE,
+         at = c(-.14, -.12, -.10, -.08, -.06, -.04, -.02, 0, .02, .04, .06, .08),
+         labels = c("-14%", "-12%", "-10%", "-8%", "-6%", "-4%", 
+                    "-2%", "0", "2%", "4%", "6%", "8%"),
+         las = 1) 
+    axis(side = 2, at = seq(-.13, 0.05, by = 0.02),
+         labels = FALSE,
+         tck = -0.01) 
+    mtext(text = "Population Change per Year", side = 2, line = 4, cex = 1.3) 
+    legend("bottomright",
+           legend = c("Decreasing [95% CI]", "Likely Decreasing [87% CI]", "Stable", "Likely Increasing [87% CI]","Increasing [95% CI]"),
+           fill = c("#762a83", "#c2a5cf", stable_color,"#5aae61", "#1b7837"),
+           bty = "n")
+    }
+    par(mar = c(11, 6, .5, 1))
+    {
+    plot_intervals(plot_df = plot_horiz[31:60,],
+                   species_axis = "x",
+                   ylim_select = c(-.08, .08),
+                   xlim_select = c(30, 60.5),
+                   title = "",
+                   yaxt = "n") 
+      axis(side = 2, 
+           #at = seq(-.14, .08, by = 0.02), 
+           #labels = TRUE,
+           at = c(-.14, -.12, -.10, -.08, -.06, -.04, -.02, 0, .02, .04, .06, .08),
+           labels = c("-14%", "-12%", "-10%", "-8%", "-6%", "-4%", 
+                      "-2%", "0", "2%", "4%", "6%", "8%"),
+           las = 1) 
+      axis(side = 2, at = seq(-.13, 0.05, by = 0.02),
+           labels = FALSE,
+           tck = -0.01) 
+      mtext(text = "Population Change per Year", side = 2, line = 4, cex = 1.3)
+      legend("bottomright",
+             legend = c("Decreasing [95% CI]", "Likely Decreasing [87% CI]", "Stable", "Likely Increasing [87% CI]","Increasing [95% CI]"),
+             fill = c("#762a83", "#c2a5cf", stable_color,"#5aae61", "#1b7837"),
+             bty = "n")
+    }
   }
   dev.off()
   
@@ -210,31 +285,76 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
     mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
     left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
      left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv"))) |>
+    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+            conf_6.5 = (mean - (sd * z)),
+            conf_93.5 = (mean + (sd * z)),
+            sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
+            mean_gt01 = ifelse(mean < -0.01 | mean > 0.01, TRUE, FALSE),
+            #significant = case_when(significant == TRUE ~ significant,
+            #                         sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
+            #                         TRUE ~ FALSE),
+           trend_direction = case_when(
+             conf_2.5 > 0 ~ "positive",
+             conf_97.5 < 0 ~ "negative",
+             conf_2.5 < 0 & conf_6.5 > 0 & mean_gt01 == TRUE ~ "slightly_positive",
+             conf_2.5 < 0 & conf_6.5 > 0 & mean_gt01 == FALSE ~ "stable",
+             conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == TRUE ~ "slightly_negative",
+             conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == FALSE ~ "stable",
+             conf_6.5 < 0 & conf_93.5 > 0 ~ "stable",
+             TRUE ~ "unaccounted"
+           )) |>
     #THESE MEAN DIFFERENT THINGS THAN BEFORE, COLORS BASED ON REGIONAL TREND
     mutate(rt_sig = ifelse(usgs_2.5CI < 0 & usgs_97.5CI > 0, FALSE, TRUE),
            usgs_6.5 = (usgs_trend_estimate - (usgs_sd * z)),
            usgs_93.5 = (usgs_trend_estimate + (usgs_sd * z)),
            rt_87 = ifelse(usgs_6.5 < 0 & usgs_93.5 > 0, FALSE, TRUE),
-           mean_gt01 = ifelse(usgs_trend_estimate < -0.01 | usgs_trend_estimate > 0.01, TRUE, FALSE),
-           trend_direction = ifelse(usgs_2.5CI > 0, "positive", "negative")) |>
+           rtmean_gt01 = ifelse(usgs_trend_estimate < -0.01 | usgs_trend_estimate > 0.01, TRUE, FALSE),
+           rt_direction = case_when(
+             usgs_2.5CI > 0 ~ "positive",
+             usgs_97.5CI < 0 ~ "negative",
+             usgs_2.5CI < 0 & usgs_6.5 > 0 & rtmean_gt01 == TRUE ~ "slightly_positive",
+             usgs_2.5CI < 0 & usgs_6.5 > 0 & rtmean_gt01 == FALSE ~ "stable",
+             usgs_97.5CI > 0 & usgs_93.5 < 0 & rtmean_gt01 == TRUE ~ "slightly_negative",
+             usgs_97.5CI > 0 & usgs_93.5 < 0 & rtmean_gt01 == FALSE ~ "stable",
+             usgs_6.5 < 0 & usgs_93.5 > 0 ~ "stable",
+             is.na(common_name_standard) ~ NA,
+             TRUE ~ "unaccounted"
+           )) |>
+    mutate(trend_agreement = case_when(
+      #cases when both significant and agree or disagree
+      trend_direction %in% c("positive", "slightly_positive") & rt_direction %in% c("positive", "slightly_positive") ~ "agree",
+      trend_direction %in% c("negative", "slightly_negative") & rt_direction %in% c("negative", "slightly_negative") ~ "agree",
+      trend_direction %in% c("positive", "slightly_positive") & rt_direction %in% c("negative", "slightly_negative") ~ "disagree",
+      trend_direction %in% c("negative", "slightly_negative") & rt_direction %in% c("positive", "slightly_positive") ~ "disagree",
+      trend_direction %in% c("negative", "slightly_negative", "positive", "slightly_positive") & rt_direction == "stable" ~ "disagree, regional NS",
+      trend_direction == "stable" & rt_direction == "stable" ~ "agree",
+      trend_direction == "stable" & rt_direction != "stable" ~ "disagree, local NS"
+    )
+    ) |>
     mutate(rt_colors = case_when(
-      rt_sig == TRUE & trend_direction == "negative" ~ "#762a83", #decreasing
-      rt_sig == FALSE & rt_87 == TRUE & mean_gt01 == TRUE ~ "#c2a5cf", #decline supported at 87% confidence interval
-      rt_sig == FALSE & rt_87 == TRUE & mean_gt01 == FALSE ~ "#5aae61", #stable
-      rt_sig == FALSE & rt_87 == FALSE ~ "#5aae61", #stable
-      rt_sig == TRUE & trend_direction == "positive" ~ "#1b7837" #increasing
-    ))
+      rt_direction == "negative" ~ "#762a83", #decreasing
+      rt_direction == "slightly_negative" ~ "#c2a5cf", #decline supported at 87% confidence interval
+      rt_direction == "stable" ~ stable_color, #stable
+      rt_direction == "slightly_positive" ~ "#5aae61", #increase supported at 87% confidence interval
+      rt_direction == "positive" ~ "#1b7837" #increasing
+    ),
+    ta_colors = case_when(
+      trend_agreement == "agree" ~ "gold",
+      trend_agreement == "disagree" ~ "red",
+      TRUE ~ "blue" #error color
+    )
+    )
   
-  ch1noregionaleffects <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
-    filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
-    mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
-    left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
-    left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv")))
+  #ch1noregionaleffects <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
+  #  filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
+  #  mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
+  #  left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
+  #  left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv")))
   
   
   #difference in the beta calculations between these two is minuscule. Up above showing the betas for either is fine.
-  min(ch1lineareffects$mean[1:60] - ch1noregionaleffects$mean[1:60])
-  max(ch1lineareffects$mean[1:60] - ch1noregionaleffects$mean[1:60])
+  #min(ch1lineareffects$mean[1:60] - ch1noregionaleffects$mean[1:60])
+  #max(ch1lineareffects$mean[1:60] - ch1noregionaleffects$mean[1:60])
   
   maxColorValue = 100
   
@@ -294,15 +414,20 @@ lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
                         xlab = "Scaled Regional Trend",
                         regional_trend_colors = TRUE,
                         plot_ylab = FALSE)
+    abline(v = 0, lty = "dashed", col = "grey")
+    abline(h = 0, lty = "dashed", col = "grey")
     legend("topleft",
-           legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing"),
-           fill = c("#762a83", "#c2a5cf", "#5aae61", "#1b7837"),
+           legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
+           fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
            bty = "n")
   }
   
   dev.off()
   
-  
+  #which ones do and don't agree?
+  disagreement <- ch1lineareffects |>
+    filter(trend_agreement != "agree") |>
+    dplyr::select(common_name, mean, sig_87, trend_direction, usgs_trend_estimate, scale_usgs_trend, rt_87, rt_direction, trend_agreement)
   
   #supplemental figure
   png(filename = "figures/ch1_SUPPLEMENTAL_linear_effects.png", 

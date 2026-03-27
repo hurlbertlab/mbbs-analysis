@@ -51,13 +51,13 @@
          yaxs = "i",
          main = title,
          xaxt = xaxt
-    ) +
+    ) 
       segments(x0 = plot_df$conf_2.5,
                x1 = plot_df$conf_97.5,
                y0 = plot_df$sp_id,
                col = plot_df$color,
-               lwd = 5) +
-      abline(v = 0, lty = "dashed") + 
+               lwd = 5) 
+      abline(v = 0, lty = "dashed") 
       axis(2, at = seq(round(min(plot_df$sp_id)),
                        round(max(plot_df$sp_id)), by = 1),
            labels = plot_df$common_name,
@@ -111,6 +111,19 @@
                x1 = plot_df$sp_id,
                col = plot_df$color,
                lwd = 5) 
+                #plot a slightly wider border around any white segments
+                border_segments <- plot_df |>
+                  filter(color == "white")
+                segments(y0 = border_segments$conf_2.5,
+                         y1 = border_segments$conf_97.5,
+                         x0 = border_segments$sp_id,
+                         col = "black",
+                         lwd = 5.5)
+                segments(y0 = border_segments$conf_2.5,
+                         y1 = border_segments$conf_97.5,
+                         x0= border_segments$sp_id,
+                         col = border_segments$color,
+                         lwd = 4.5)
       axis(1, at = seq(round(min(plot_df$sp_id)),
                        round(max(plot_df$sp_id)), by = 1),
            #labels = plot_df$common_name,
@@ -200,6 +213,7 @@
          ylim = ylim,
          col = palette[cut(fit_summary[,variable_of_interest], maxColorValue)],
          pch = 16,
+         cex = 2,
          xlab = xlab,
          ylab = "",
          )
@@ -244,16 +258,25 @@
     #if we're doing the regional trend, then:
     #reprint the dots and segments using coded regional trend colors.
     if(regional_trend_colors == TRUE){
-      points(x = fit_summary[,variable_of_interest],
-             y = fit_summary$mean,
-             col = fit_summary$rt_colors,
-             pch = 16)
+      #population trend segments
       segments(x0 = fit_summary[,variable_of_interest],
                y0 = fit_summary$conf_2.5,
                y1 = fit_summary$conf_97.5,
                lwd = 3, 
                col = fit_summary$rt_colors
       )
+      #regional trend segments - this means I have to calculate like the 97.5 and 2.5 intervals again from the scale_usgs_trend and scale_usgs_sd
+      #segments(x0 = fit_summary[,"usgs_2.5CI"],
+      #         x1 = fit_summary[,"usgs_97.5CI"],
+      #         y0 = fit_summary$mean,
+      #         col = fit_summary$rt_colors,
+      #         lwd = 3)
+      #points
+      points(x = fit_summary[,variable_of_interest],
+             y = fit_summary$mean,
+             col = fit_summary$rt_colors,
+             pch = 16,
+             cex = 2)
     }
     
     #create a sequence of the variable of interest that we can then use to predict what the betas would be, this will give us the main slope line
