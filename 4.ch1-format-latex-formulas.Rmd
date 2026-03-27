@@ -15,7 +15,7 @@ FULL FORMULA: $C \sim \text{negative binomial} (\alpha + \alpha_{[sp, rt]} + \be
 
 Overdispersion prior: $\theta \sim \text{gamma}(2,1)$
 
-Effects of observer skill formula: $\text{observer quality} = \frac{N_{[rt, yr, obs_f]} - \text{mean}(N_{[rt, obs_a]})}{\text{mean}(N_{[rt, obs_a]})}$
+Effects of observer skill formula: $\text{observer quality}_{{[obs_{f}]}} = \text{mean} ( \frac{N_{[rt, yr, obs_f]} - \text{mean}(N_{[rt, obs_a]})}{\text{mean}(N_{[rt, obs_a]})})$
 
 Traits formula: $\beta_{[sp]} \sim (\gamma_{\beta} + \\ \kappa_{\text{temp.niche}} * \text{temperature niche position}_{[sp]} + \\ \kappa_{\text{perc.insect}} * \text{percent insectivory}_{[sp]} + \\ \kappa_{\text{hab.select}} * \text{habitat selectivity}_{[sp]} + \\ \kappa_{\text{regional.trend}} * \text{regional trend}_{[sp]} , \\ \sigma_{\beta})$
 
