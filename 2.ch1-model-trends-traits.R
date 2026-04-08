@@ -17,8 +17,7 @@
 #some variables of importance as well eg. excluded species
 source("2.analysis-functions.R")
 
-#is this run of the model a sensitivity analysis?
-run_type = "sensitivity_analysis"
+run_type = "testing_run"
   #options are:
   #full_run with all species
   #testing_run with 6 species
