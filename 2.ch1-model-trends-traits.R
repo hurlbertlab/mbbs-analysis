@@ -108,7 +108,6 @@ if(run_type == "full_run") {
   
   mbbs_dataset <- make_testing_df(mbbs,
                                   filter_species_to = c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse"))
-  #filter to just the default filter_species_to
   #5 species for testing purposes
   
 } else if(run_type == "sensitivity_analysis") {
