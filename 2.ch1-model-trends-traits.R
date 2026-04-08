@@ -223,7 +223,7 @@ save_stan_traceplot_pdf(fit,
                         file = paste0((save_to), "traceplots.pdf"),
                         pars = NULL,
                         n_per_page = 6,
-                        remove_pars = "eta\\[[0-9]+\\]|lp__|sprt_intercept\\[[0-9]+\\]")
+                        remove_pars = "eta\\[[0-9]+\\]|lp__|sprt(_raw)?\\[[0-9]+\\]") #don't need the a intercepts anymore now that we know they're working correctly (there are like 500pages of them in the full model otherwise...)
 
 #last model run, 3051 seconds, 22 second warm up time
 #adding
