@@ -208,9 +208,16 @@ add_all_traits <- function(mbbs) {
 #' make_testing_df
 #' Function to trim down the mbbs to just a few test species
 #' @returns a trimmed down version of the mbbs, filtered to just a few species
-make_testing_df <- function(mbbs, obs_only = FALSE) {
+make_testing_df <- function(mbbs,
+                            obs_only = FALSE,
+                            filter_species_to = c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse"),
+                            remove_species = c("")) {
   
-  filtered_mbbs <- mbbs %>% filter(common_name %in% c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse")) %>%
+  filtered_mbbs <- mbbs %>% 
+    #filter to only the species of interest
+    filter(common_name %in% filter_species_to) %>%
+    #or filter OUT the species we don't want
+    filter(!common_name %in% remove_species) %>%
     #Recreate IDs for common name
     group_by(common_name) %>%
     mutate(common_name_standard = cur_group_id()) %>%

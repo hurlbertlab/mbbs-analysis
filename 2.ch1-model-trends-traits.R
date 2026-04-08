@@ -17,6 +17,13 @@
 #some variables of importance as well eg. excluded species
 source("2.analysis-functions.R")
 
+#is this run of the model a sensitivity analysis?
+run_type = "sensitivity_analysis"
+  #options are:
+  #full_run with all species
+  #testing_run with 6 species
+  #sensitivity_analysis with outlier species removed.
+
 #libraries
 library(beepr) #beeps
 library(dplyr) #data manip
@@ -40,8 +47,6 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
   #do everything we need to do! 
     #remove eastern whip-por-will because it lacks ssi habitat selectivity data
     filter(!common_name == "Eastern Whip-poor-will") %>%
-    #remove hummingbird because it's the only one of it's diet group
-    filter(!common_name == "Ruby-throated Hummingbird") %>% 
     group_by(common_name) %>%
     mutate(common_name_standard = dplyr::cur_group_id()) %>%
     ungroup() %>%
@@ -95,11 +100,30 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
 #   mutate(sprt_standard = cur_group_id()) %>%
 #   ungroup()
 
-#filtered mbbs, 5 species for testing purposes.
-filtered_mbbs <- make_testing_df(mbbs) 
+#set the mbbs_dataset based on the run type (full_run, filtered_run, or sensitivity_analysis)
+if(run_type == "full_run") {
+  
+  mbbs_dataset <- mbbs
+  
+} else if(run_type == "filtered_run") {
+  
+  mbbs_dataset <- make_testing_df(mbbs)
+  #filter to just the default filter_species_to
+  #5 species for testing purposes
+  
+} else if(run_type == "sensitivity_analysis") {
+  
+  mbbs_dataset <- make_testing_df(mbbs,
+                                  filter_species_to = unique(mbbs$common_name),
+                                  remove_species = c("Wood Thrush"))
+  
+} else {
+  
+  paste("ERROR, run type not specified")
+  return(NULL)
+  
+}
 
-#change to filtered_mbbs for testing, mbbs for the real thing
-mbbs_dataset <- filtered_mbbs
 #where to save stan code and fit
 save_to <- "Z:/Goulden/mbbs-analysis/model/2026.03.12_ch1_fix_scaledRT_attempt/"
 #if the output folder doesn't exist, create it
@@ -156,8 +180,8 @@ fit <- sampling(stan_model,
                 data = datstan, 
                 chains = 4,
                 cores = 4, 
-                iter = 4000, 
-                warmup = 1000
+                iter = 4000, #10,000 on longleaf HPC
+                warmup = 1000 #2,000 on longleaf HPC
                 )
 beepr::beep()
 
