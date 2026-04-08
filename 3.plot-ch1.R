@@ -12,7 +12,7 @@ library(stringr)
 library(cowplot) #used to make multi-panel figures
 library(reshape2) #for any correlation matrix heatmaps
 library(statuser) #from the data collada blog, more useful tables: https://datacolada.org/132
-library(tinytex) #lightweight LaTeX distribution that makes it easy to use in R
+#library(tinytex) #lightweight LaTeX distribution that makes it easy to use in R
 
 #load functions
 source("3.plot-functions.R")
@@ -424,10 +424,18 @@ stable_color <- "#4393c3"
   
   dev.off()
   
-  #which ones do and don't agree?
+  #which ones do and don't agree between regional and local trend?
   disagreement <- ch1lineareffects |>
     filter(trend_agreement != "agree") |>
     dplyr::select(common_name, mean, sig_87, trend_direction, usgs_trend_estimate, scale_usgs_trend, rt_87, rt_direction, trend_agreement)
+  
+  #rt more or less extreme
+  extremeness <- ch1lineareffects |>
+    dplyr::select(common_name, mean, trend_direction, usgs_trend_estimate, rt_direction, trend_agreement) |>
+    mutate(extreme = case_when(mean > 0 & mean > usgs_trend_estimate ~ "more positive",
+                               mean > 0 & mean < usgs_trend_estimate ~ "less positive", 
+                               mean < 0 & mean < usgs_trend_estimate ~ "more negative",
+                               mean < 0 & mean > usgs_trend_estimate ~ "less negative"))
   
   #supplemental figure
   png(filename = "figures/ch1_SUPPLEMENTAL_linear_effects.png", 
@@ -518,4 +526,57 @@ stable_color <- "#4393c3"
   
   
   
+###################################
+#
+# Plot effect of observer effects
+#
+#
+####################################
   
+  #get all the count datapoints
+  data <- read.csv("data/analysis.df.csv") |>
+    dplyr::select(common_name, route, count, observer_ID, observer_quality)
+  
+  plot(x = data$observer_quality,
+       y = data$count,
+       xlab = "Observer Quality",
+       ylab = "Route-level Species Counts",
+       pch = 1)
+  
+  variable_of_interest = "observer_quality"
+  fit_summary = data
+  voi_sequence <- seq(min(fit_summary[,variable_of_interest], na.rm = TRUE),
+                      max(fit_summary[,variable_of_interest], na.rm = TRUE),
+                      length.out = 100)
+  
+  #use universal intercept and the gamma_b species slope. M you know what I didn't save the posterior samples for the any of the intercepts. Okay, I can't plot this rn unless I re-run the model and let it include the universal intercept in the posterior samples output. Shouldn't do that unless it's asked for by reviewers by from feedback.
+
+  #hum. idk that I really need to plot this so much.
+  #alright yeah, let me just report the effect size without doing anything else
+  
+#############################
+#
+# Calculate 87% credible intervals for kappa variables.
+#
+#############################
+  load_from = lf_ch1m1
+  posterior_draws = read.csv(paste0(load_from, "posterior_draws.csv")) |>
+    dplyr::select(kappa_regional, kappa_habitat_selection, kappa_temp_pos, kappa_diet, gamma_b)
+  
+  hab_6.5 <- as.numeric(quantile(posterior_draws$kappa_habitat_selection, probs = 0.065))  # (1-0.87)/2 = 0.065
+  hab_93.5 <- as.numeric(quantile(posterior_draws$kappa_habitat_selection, probs = 0.935))  # 1 - 0.065 = 0.935
+  hab_2.5 <- as.numeric(quantile(posterior_draws$kappa_habitat_selection, probs = 0.025))
+  hab_97.5 <- as.numeric(quantile(posterior_draws$kappa_habitat_selection, probs = 0.975))
+  
+  temp_6.5 <- as.numeric(quantile(posterior_draws$kappa_temp_pos, probs = 0.065))  # (1-0.87)/2 = 0.065
+  temp_93.5 <- as.numeric(quantile(posterior_draws$kappa_temp_pos, probs = 0.935))  # 1 - 0.065 = 0.935   
+  temp_2.5 <- as.numeric(quantile(posterior_draws$kappa_temp_pos, probs = 0.025))
+  temp_97.5 <- as.numeric(quantile(posterior_draws$kappa_temp_pos, probs = 0.975))
+  
+  #and just confirm that the 95% match our actual known values..
+  kappas <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) |>
+    filter(str_detect(rownames, "kappa_")) |>
+    dplyr::select(rownames, mean, sd, conf_2.5, conf_97.5)
+
+  round(temp_2.5, 4) == round(kappas$conf_2.5[kappas$rownames == "kappa_temp_pos"], 4)
+  #-0.0094 vs -0.0092 - off by a bit. I don't htink this lets us confirm temp_93.5 is accurate at 87% credible interval, but magnitude of error suggests that habitat is supported at that margin. m. If I need to provide more details, I can rerun the model and have it calculate that 87% CI with the full fit summary.

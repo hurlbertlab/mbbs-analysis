@@ -21,7 +21,7 @@ Traits formula: $\beta_{[sp]} \sim (\gamma_{\beta} + \\ \kappa_{\text{temp.niche
 
 Trait priors: $\kappa_{\text{[temp.niche : regional.trend]}} \sim \text{normal}(0, 1)$
 
-Regional Trend: $\text{USGS Regional Trend}_{[sp]} \sim \text{normal}( \text{Modeled Regional Trend}_{[sp]}, \text{USGS }\sigma_{[sp]}) \\ \text{Modeled Regional Trend}_{[sp]} \sim \text{normal}(\mu_{\text{regional.trend}}, \sigma_{\text{regional.trend}}) \\ \mu_{\text{regional.trend}} \sim \text{normal}(0,1.5) \\ \sigma_{\text{regional.trend}} \sim \text{half-normal}(0,0.5) $
+Regional Trend: $\text{BBS Regional Trend}_{[sp]} \sim \text{normal}( \text{Modeled Regional Trend}_{[sp]}, \text{BBS }\sigma_{[sp]}) \\ \text{Modeled Regional Trend}_{[sp]} \sim \text{normal}(\mu_{\text{regional.trend}}, \sigma_{\text{regional.trend}}) \\ \mu_{\text{regional.trend}} \sim \text{normal}(0,1.5) \\ \sigma_{\text{regional.trend}} \sim \text{half-normal}(0,0.5) $
 
 
 
