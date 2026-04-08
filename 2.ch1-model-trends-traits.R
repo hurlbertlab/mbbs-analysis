@@ -107,15 +107,18 @@ if(run_type == "full_run") {
   
 } else if(run_type == "filtered_run") {
   
-  mbbs_dataset <- make_testing_df(mbbs)
+  mbbs_dataset <- make_testing_df(mbbs,
+                                  filter_species_to = c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse"))
   #filter to just the default filter_species_to
   #5 species for testing purposes
   
 } else if(run_type == "sensitivity_analysis") {
   
+  #get species to remove
+  species_to_remove <- read.csv("data/species-traits/ch1-sensitivity-analysis/species_to_remove.csv")
+  
   mbbs_dataset <- make_testing_df(mbbs,
-                                  filter_species_to = unique(mbbs$common_name),
-                                  remove_species = c("Wood Thrush"))
+                                  remove_species = species_to_remove$common_name)
   
 } else {
   

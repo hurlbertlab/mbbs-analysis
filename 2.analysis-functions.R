@@ -206,11 +206,14 @@ add_all_traits <- function(mbbs) {
 
 
 #' make_testing_df
-#' Function to trim down the mbbs to just a few test species
+#' Function to trim down the mbbs to just a few test species,
+#' or to remove only a few species
+#' default does not alter mbbs at all. must specify a filter.
 #' @returns a trimmed down version of the mbbs, filtered to just a few species
+#' 
 make_testing_df <- function(mbbs,
                             obs_only = FALSE,
-                            filter_species_to = c("Wood Thrush", "Acadian Flycatcher", "Northern Bobwhite", "White-eyed Vireo", "Tufted Titmouse"),
+                            filter_species_to = unique(mbbs$common_name),
                             remove_species = c("")) {
   
   filtered_mbbs <- mbbs %>% 
