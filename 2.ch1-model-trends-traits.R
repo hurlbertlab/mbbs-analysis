@@ -17,7 +17,7 @@
 #some variables of importance as well eg. excluded species
 source("2.analysis-functions.R")
 
-run_type = "testing_run"
+run_type = "sensitivity_analysis"
   #options are:
   #full_run with all species
   #testing_run with 6 species
@@ -113,10 +113,12 @@ if(run_type == "full_run") {
 } else if(run_type == "sensitivity_analysis") {
   
   #get species to remove
-  species_to_remove <- read.csv("data/species-traits/ch1-sensitivity-analysis/species_to_remove.csv")
+  #species_to_remove <- read.csv("data/species-traits/ch1-sensitivity-analysis/species_to_remove.csv")
+  #Just going to remove bobwhite, it's x2 more extreme than any other species, clearly in a class of it's own in terms of declines, and is exerting a lot of influence
+  #over both the Temperature Niche and Percent Insectivory slopes.
   
   mbbs_dataset <- make_testing_df(mbbs,
-                                  remove_species = species_to_remove$common_name)
+                                  remove_species = "Northern Bobwhite")
   
 } else {
   
@@ -223,7 +225,7 @@ save_stan_traceplot_pdf(fit,
                         file = paste0((save_to), "traceplots.pdf"),
                         pars = NULL,
                         n_per_page = 6,
-                        remove_pars = "eta\\[[0-9]+\\]|lp__|sprt(_raw)?\\[[0-9]+\\]") #don't need the a intercepts anymore now that we know they're working correctly (there are like 500pages of them in the full model otherwise...)
+                        remove_pars = "eta\\[[0-9]+\\]|lp__|a_sprt(_raw)?\\[[0-9]+\\]") #don't need the a intercepts anymore now that we know they're working correctly (there are like 500pages of them in the full model otherwise...)
 
 #last model run, 3051 seconds, 22 second warm up time
 #adding

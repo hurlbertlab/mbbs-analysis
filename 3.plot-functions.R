@@ -183,6 +183,7 @@
   plot_linear_effects <- function(
     fit_summary = ch1lineareffects,
     load_from,
+    new_plot = TRUE,
     variable_of_interest,
     variable_kappa,
     xaxt = "s",
@@ -206,6 +207,7 @@
     posterior_draws = read.csv(paste0(load_from, "posterior_draws.csv"))
     
     #scatterplot the variable of interest
+    if(new_plot == TRUE) {
     plot(x = fit_summary[,variable_of_interest],
          y = fit_summary$mean,
          yaxt = "n",
@@ -217,6 +219,7 @@
          xlab = xlab,
          ylab = "",
          )
+    } 
     #plot ylab or not
     if(plot_ylab == TRUE) {
       text(x = par("usr")[1] + ylab_distance,  # Position left of plot region

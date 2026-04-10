@@ -20,6 +20,8 @@ source("3.plot-functions.R")
 #where are we pulling data from?
 lf_ch1m1 <- "model/2026.03.12_ch1_m1_final/"
 lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
+lf_ch1sens <- "model/2026.04.09_rmNOBO_final/"
+lf_ch1NOBO_nR <- "model/2026.04.09_ch1_rmNOBO_woRegional_final/"
 stable_color <- "#4393c3"
 #lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.12.1_ch1_m1_diettest/"
 #lf_tempo <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_temponly/"
@@ -49,21 +51,43 @@ stable_color <- "#4393c3"
   c1mNR <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
     filter(str_detect(.$rownames, "kappa")) %>%
     mutate(model = "m1", 
-           color = "black",
+           color = "azure2",
+           id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1))
+  
+  ch1sens <- read.csv(paste0(lf_ch1sens, "fit_summary.csv")) |>
+    filter(str_detect(rownames, "kappa")) |>
+    mutate(model = "msens",
+           color = "orange",
+           id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1))
+  
+  ch1mNRsens <- read.csv(paste0(lf_ch1NOBO_nR, "fit_summary.csv")) |>
+    filter(str_detect(rownames, "kappa")) |>
+    mutate(model = "mNRsens",
+           color = "pink",
            id = row_number(),
            significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
            pch = ifelse(significant == TRUE, 16, 1))
   
   rt_model_color = "black"
-  wo_model_color = "grey30"
+  wo_model_color = "brown2"
+  
+  
+  ###!!!!!!!!!!!!!!!!Make a new plotting function for plotting these effects. Have an option where it makes a new plot or not. rmNOBO models should be the main ones.
+  
   
   png(filename = "figures/ch1_model_CI_comparison.png", 
-      width = 420,
-      height = 440,
+      width = 620,
+      height = 640,
       units = "px", 
       type = "windows")
+  #honestly, might want to think about increasing the width and height and text sizes.
   {
-  par(mar = c(4, 10, 2, 1))
+  par(mar = c(4, 10, 2, 1),
+      cex = 1.5)
   plot(x = c1m1$mean,
        y = c1m1$id, 
        pch = c1m1$pch,
@@ -73,7 +97,8 @@ stable_color <- "#4393c3"
        xaxt = "n",
        yaxt = "n",
        ylab = "",
-       col = rt_model_color) 
+       col = rt_model_color,
+       ylim = c(.5, 4)) 
     abline(v = 0, lty = "dashed") 
     axis(side = 1, at = seq(-0.04, 0.04, by = 0.01), 
          labels = TRUE) 
@@ -89,35 +114,45 @@ stable_color <- "#4393c3"
     ) 
     #add the second model without regional trend
     points(x = c1mNR$mean,
-           y = c1mNR$id+.75, 
+           y = c1mNR$id+.5, 
            pch = c1mNR$pch,
            cex = 2,
            col = wo_model_color) +
     segments(x0 = c1mNR$conf_2.5,
              x1 = c1mNR$conf_97.5,
-             y0 = c1mNR$id+.75,
+             y0 = c1mNR$id+.5,
              lwd = 4.5,
              col = wo_model_color)
+    #add the third model with the sensitivity analysis
+    points(x = ch1sens$mean,
+           y = ch1sens$id-.25,
+           pch = ch1sens$pch,
+           cex = 2,
+           col = ch1sens$color) +
+      segments(x0 = ch1sens$conf_2.5,
+               x1 = ch1sens$conf_97.5,
+               y0 = ch1sens$id-.25,
+               lwd = 4.5,
+               col = ch1sens$color)
+    #add the fourth model with no RT and sensitivity analysis
+    points(x = ch1mNRsens$mean,
+           y = ch1mNRsens$id+.3,
+           pch = ch1mNRsens$pch,
+           cex = 2,
+           col = ch1mNRsens$color) +
+      segments(x0 = ch1mNRsens$conf_2.5,
+               x1 = ch1mNRsens$conf_97.5,
+               y0 = ch1mNRsens$id+.3,
+               lwd = 4.5,
+               col = ch1mNRsens$color)
   }
-  dev.off()
-  #make legend seperately and paste later
-  #only needed if plotting both models (with and without regional trend)
-  png(filename = "figures/ch1_model_CI_comparison_LEGEND.png", 
-      width = 400,
-      height = 440,
-      units = "px", 
-      type = "windows") 
-  {
-  par(mar = c(2, 10, 2, 1))
-  plot(1:10, 
-       1:10, 
-       pch = NA) 
-  legend("center",
+  legend("right",
          bty = "n",
-         legend = c("Model with \nRegional Trend\n", "Model without \nRegional Trend"), 
-         fill = c(rt_model_color, wo_model_color)
+         legend = c("Full Model", "Full Model, \nNo Bobwhite\n", "Model without \nRegional Trend\n", "No Regional Trend \nNo Bobwhite\n"), 
+         fill = c(rt_model_color, "orange", wo_model_color, "pink")
+         #scientific name is Colinus virginianus, if I want to change text to reflect that.
   )
-  }
+  #}
   dev.off()
   
 ######################
@@ -345,6 +380,18 @@ stable_color <- "#4393c3"
     )
     )
   
+  #sensitivity analysis
+  ch1sensitivity <- read.csv(paste0(lf_ch1sens, "fit_summary.csv")) %>%
+    filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
+    mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
+    left_join(read.csv(paste0(lf_ch1sens, "species_traits.csv")), by = "common_name_standard") %>%
+    left_join(read.csv(paste0(lf_ch1sens, "beta_to_common_name.csv"))) |>
+    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           conf_6.5 = (mean - (sd * z)),
+           conf_93.5 = (mean + (sd * z)),
+           sig_87 = ifelse(conf_6.5 < 0 & conf_93.5 > 0, FALSE, TRUE),
+           mean_gt01 = ifelse(mean < -0.01 | mean > 0.01, TRUE, FALSE))
+  
   #ch1noregionaleffects <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
   #  filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
   #  mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
@@ -388,6 +435,36 @@ stable_color <- "#4393c3"
            legend = c("NC Warmer"),
            fill = c("red"),
            bty = "n")
+    #and now if I want to add the sensitivity analysis on top.... I want to be able to plot JUST the line without starting a new plot.
+    #and I want to re-print the segments and cex with issues.
+    rm_species <- ch1lineareffects |>
+      left_join(read.csv("data/species-traits/ch1-sensitivity-analysis/species_to_remove.csv"), by = "common_name") |>
+      filter(!is.na(reason))
+    plot_linear_effects(load_from = lf_ch1sens,
+                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
+                        variable_of_interest = "scale_ztempwq",
+                        variable_kappa = "kappa_temp_pos",
+                        xlab = "Scaled Temperature Niche Position",
+                        trendline_lty = "solid",
+                        new_plot = FALSE,
+                        polygon_color = "orange")
+    variable_of_interest = "scale_ztempwq"
+    segments(x0 = rm_species[,variable_of_interest],
+             y0 = rm_species$conf_2.5,
+             y1 = rm_species$conf_97.5,
+             lwd = 3, 
+             col = "orange"
+    )
+    points(x = rm_species[,variable_of_interest],
+           y = rm_species$mean,
+           cex = 2, 
+           pch = 16,
+           col = "orange")
+    legend("bottom",
+           legend = c("Removed in Sensitivity Analysis"),
+           fill = c("orange"),
+           bty = "n")
+    #SO when I do the final plot now, I'll JUST plot the orange bar from the sensitivity analysis.
     #should add a color bar legend
     #or text just above x axis with "colder" in blue and "warmer" in red
     #Percent Insectivory
@@ -398,6 +475,31 @@ stable_color <- "#4393c3"
                         maxColorValue = 100,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         plot_ylab = FALSE)
+    plot_linear_effects(load_from = lf_ch1sens,
+                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
+                        variable_of_interest = "scale_insect_perc",
+                        variable_kappa = "kappa_diet",
+                        xlab = "Scaled Percent Insectivory",
+                        trendline_lty = "dashed",
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        new_plot = FALSE,
+                        polygon_color = "orange")
+    variable_of_interest = "scale_insect_perc"
+    segments(x0 = rm_species[,variable_of_interest],
+             y0 = rm_species$conf_2.5,
+             y1 = rm_species$conf_97.5,
+             lwd = 3, 
+             col = "orange"
+    )
+    points(x = rm_species[,variable_of_interest],
+           y = rm_species$mean,
+           cex = 2, 
+           pch = 16,
+           col = "orange")
+    legend("bottom",
+           legend = c("Removed in Sensitivity Analysis"),
+           fill = c("orange"),
+           bty = "n")
     
     #Habitat selectivity
     plot_linear_effects(load_from = lf_ch1m1,
