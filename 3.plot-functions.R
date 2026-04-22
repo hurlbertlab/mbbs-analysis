@@ -201,6 +201,7 @@
     white_lwd = 2.5,
     lwd = 2,
     outer_bound_lwd = 1.5,
+    plot_slope = TRUE,
     polygon_color = "steelblue"
   ) {
     
@@ -309,6 +310,7 @@
                                upper = predicted_voi_ci[2,])
     
     #plot the mean line, first in white then overtop in black (for contrast)
+    if(plot_slope == TRUE) {
     lines(x = predicted_df$variable_of_interest,
           y = predicted_df$mean,
           lwd = white_lwd, 
@@ -339,10 +341,41 @@
             c(predicted_df$lower, rev(predicted_df$upper)), 
             col = adjustcolor(polygon_color, alpha.f = 0.3), 
             border = NA)
-    
+    }
   }
   
-  
+#######################Add an outlier species to plot in outlier color
+  add_outlier <- function(df,
+                          variable_of_interest,
+                          rm_species_list = c("Northern Bobwhite"),
+                          outlier_color = "orange",
+                          add_legend = TRUE) {
+    #filter to just the species you want to remove
+    rm_species <- df |>
+      filter(common_name %in% rm_species_list)
+    
+    #plot
+    segments(x0 = rm_species[,variable_of_interest],
+             y0 = rm_species$conf_2.5,
+             y1 = rm_species$conf_97.5,
+             lwd = 3, 
+             col = outlier_color
+    )
+    points(x = rm_species[,variable_of_interest],
+           y = rm_species$mean,
+           cex = 2, 
+           pch = 16,
+           col = outlier_color)
+    
+    #add legend
+    if(add_legend == TRUE) {
+    legend("bottom",
+           legend = c("Removed Outlier"),
+           fill = c(outlier_color),
+           bty = "n")
+    }
+    
+  }
   
   
   
