@@ -465,7 +465,7 @@ stable_color <- "#4393c3"
     )
     )
   
-  #sensitivity analysis
+  #without bobwhite
   ch1NOBOlinear <- read.csv(paste0(lf_ch1NOBO, "fit_summary.csv")) %>%
     filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
     mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
@@ -492,7 +492,7 @@ stable_color <- "#4393c3"
   
   
   #figure for main publication
-  png(filename = "figures/ch1_linear_effects.png", 
+  png(filename = "figures/ch1_linear_effects_3panel.png", 
       width = 800,
       height = 800,
       units = "px", 
@@ -505,6 +505,54 @@ stable_color <- "#4393c3"
         cex.main = 1.6,
         cex.sub = 1.4,
         mfrow = c(2,2))
+    
+    #Habitat selectivity
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_habitat_ssi",
+                        variable_kappa = "kappa_habitat_selection",
+                        xlab = "Scaled Habitat Selectivity",
+                        maxColorValue = 100,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        trendline_lty = "dashed",
+                        plot_slope = FALSE)
+    plot_linear_effects(load_from = lf_ch1NOBO,
+                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
+                        variable_of_interest = "scale_habitat_ssi",
+                        variable_kappa = "kappa_habitat_selection",
+                        xlab = "Scaled Percent Insectivory",
+                        trendline_lty = "solid",
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        new_plot = FALSE#,
+                        #polygon_color = "orange"
+    )
+    add_outlier(df = ch1lineareffects,
+                variable_of_interest = "scale_habitat_ssi",
+                add_legend = TRUE)
+
+    #Percent Insectivory
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_insect_perc",
+                        variable_kappa = "kappa_diet",
+                        xlab = "Scaled Percent Insectivory",
+                        maxColorValue = 100,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        plot_ylab = FALSE,
+                        #plot_ylab = TRUE,
+                        #ylab_distance = - .7,
+                        plot_slope = FALSE)
+    plot_linear_effects(load_from = lf_ch1NOBO,
+                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
+                        variable_of_interest = "scale_insect_perc",
+                        variable_kappa = "kappa_diet",
+                        xlab = "Scaled Percent Insectivory",
+                        trendline_lty = "dashed",
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        new_plot = FALSE,#,
+                        #polygon_color = "orange"
+                        plot_ylab = FALSE)
+    add_outlier(df = ch1lineareffects,
+                variable_of_interest = "scale_insect_perc",
+                add_legend = TRUE)
     
     #Temperature Niche
     plot_linear_effects(load_from = lf_ch1m1,
@@ -531,36 +579,98 @@ stable_color <- "#4393c3"
                         trendline_lty = "solid",
                         new_plot = FALSE#,
                         #polygon_color = "orange"
-                        )
+    )
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_ztempwq",
                 add_legend = TRUE)
-   
+    
     #SO when I do the final plot now, I'll JUST plot the orange bar from the sensitivity analysis.
+  }
+  dev.off()
 
-    #Percent Insectivory
+  
+  
+  #And, for plotting regional trend seperate, I want an unscaled version so it's easy to show the 1:1 lines.
+  #trend ~ gamma_b + kappa_regional * scaled_rt
+  #trend ~ gamma_b + kappa_regional * (sub in formula for scaled rt = (rt - mean(rt))/sd(rt)
+  #trend ~ gamma_b + kappa_rt*(rt/sd_rt) - kappa_rt*(mean(rt)/sd(rt))
+  #rearrange:
+  # ~ gamma_b - kappa_rt*(mean(rt)/sd(rt)) + kappa_rt*(rt/sd_rt)
+  # ~ gamma_b - kappa_rt*(mean(rt)/sd(rt)) + regional_trend*(kappa_rt/sd_rt)
+  #so the new unscaled intercept is gamma_b - kappa_rt*(mean(rt)/sd(rt))
+  #and the new unscaled slope is (kappa_rt/sd_rt) (*regional_trend)
+  unscaled_intercept <- ch1NOBOlinear$mean[ch1NOBOlinear$rownames == "gamma_b"] -
+    ch1NOBOlinear$mean[ch1NOBOlinear$rownames == "kappa_regional"]*(mean(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE)/sd(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE)) 
+  #scaling is done with all the species so it's trend line w/o bobwhite but mean and sd with bobwhite included
+  #and let's unscale things for regional trend
+  unscaled_kappa_regional = ch1NOBOlinear$mean[ch1NOBOlinear$rownames == "kappa_regional"] / sd(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE)
+  all_rt_sd = sd(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE)
+  all_rt_mean = (mean(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE))
+  
+  png(filename = "figures/ch1_linear_effects_RT.png", 
+      width = 800,
+      height = 800,
+      units = "px", 
+      type = "windows")
+  {
+    par(mar =c(5.1, 6.1, 4.1, 2.1), 
+        cex = 1.3,
+        cex.axis = 1.3,
+        cex.lab = 1.6,
+        cex.main = 1.6,
+        cex.sub = 1.4)
+    #Regional Trend
+
     plot_linear_effects(load_from = lf_ch1m1,
-                        variable_of_interest = "scale_insect_perc",
-                        variable_kappa = "kappa_diet",
-                        xlab = "Scaled Percent Insectivory",
-                        maxColorValue = 100,
-                        palette = colorRampPalette(c("black","black"))(maxColorValue),
-                        plot_ylab = FALSE,
+                        variable_of_interest = "usgs_trend_estimate",
+                        variable_kappa = "kappa_regional",
+                        xlab = "Regional Trend",
+                        regional_trend_colors = TRUE,
+                        plot_ylab = TRUE,
                         plot_slope = FALSE)
+    #m, and now I kinda think I need to plot things by hand...
+    
     plot_linear_effects(load_from = lf_ch1NOBO,
                         fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
-                        variable_of_interest = "scale_insect_perc",
-                        variable_kappa = "kappa_diet",
-                        xlab = "Scaled Percent Insectivory",
-                        trendline_lty = "dashed",
-                        palette = colorRampPalette(c("black","black"))(maxColorValue),
-                        new_plot = FALSE#,
+                        variable_of_interest = "usgs_trend_estimate",
+                        variable_kappa = "kappa_regional",
+                        xlab = "Regional Trend",
+                        trendline_lty = "solid",
+                        regional_trend_colors = TRUE,
+                        new_plot = FALSE,
+                        unscale_regional_trend = TRUE,
+                        all_rt_sd = all_rt_sd, 
+                        all_rt_mean = all_rt_mean,
+                        base_rt_kappa = ch1NOBOlinear$mean[ch1NOBOlinear$rownames == "kappa_regional"]#,
                         #polygon_color = "orange"
                         )
+    abline(v = 0, lty = "dashed", col = "grey")
+    abline(h = 0, lty = "dashed", col = "grey")
+    legend("topleft",
+           legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
+           fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
+           bty = "n")
     add_outlier(df = ch1lineareffects,
-                variable_of_interest = "scale_insect_perc",
+                variable_of_interest = "scale_usgs_trend",
                 add_legend = TRUE)
-    
+  
+  }
+  dev.off()
+  
+  
+  png(filename = "figures/ch1_linear_effects.png", 
+      width = 800,
+      height = 800,
+      units = "px", 
+      type = "windows")
+  {
+    par(mar =c(5.1, 6.1, 4.1, 2.1), 
+        cex = 1.3,
+        cex.axis = 1.3,
+        cex.lab = 1.6,
+        cex.main = 1.6,
+        cex.sub = 1.4,
+        mfrow = c(2,2))
     
     #Habitat selectivity
     plot_linear_effects(load_from = lf_ch1m1,
@@ -580,13 +690,66 @@ stable_color <- "#4393c3"
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         new_plot = FALSE#,
                         #polygon_color = "orange"
-                        )
+    )
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_habitat_ssi",
                 add_legend = TRUE)
     
+    #Percent Insectivory
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_insect_perc",
+                        variable_kappa = "kappa_diet",
+                        xlab = "Scaled Percent Insectivory",
+                        maxColorValue = 100,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        plot_ylab = TRUE,
+                        plot_slope = FALSE,
+                        ylab_distance = - .7)
+    plot_linear_effects(load_from = lf_ch1NOBO,
+                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
+                        variable_of_interest = "scale_insect_perc",
+                        variable_kappa = "kappa_diet",
+                        xlab = "Scaled Percent Insectivory",
+                        trendline_lty = "dashed",
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        new_plot = FALSE,#,
+                        #polygon_color = "orange"
+                        plot_ylab = FALSE)
+    add_outlier(df = ch1lineareffects,
+                variable_of_interest = "scale_insect_perc",
+                add_legend = TRUE)
+    
+    #Temperature Niche
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_ztempwq",
+                        variable_kappa = "kappa_temp_pos",
+                        xlab = "Scaled Temperature Niche Position",
+                        trendline_lty = "dashed",
+                        plot_slope = FALSE)
+    legend("bottomleft",
+           legend = c("NC Colder"),
+           fill = c("blue"),
+           bty = "n")
+    legend("bottomright",
+           legend = c("NC Warmer"),
+           fill = c("red"),
+           bty = "n")
+    #and now if I want to add the sensitivity analysis on top.... I want to be able to plot JUST the line without starting a new plot.
+    #and I want to re-print the segments and cex with issues.
+    plot_linear_effects(load_from = lf_ch1NOBO,
+                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
+                        variable_of_interest = "scale_ztempwq",
+                        variable_kappa = "kappa_temp_pos",
+                        xlab = "Scaled Temperature Niche Position",
+                        trendline_lty = "solid",
+                        new_plot = FALSE#,
+                        #polygon_color = "orange"
+    )
+    add_outlier(df = ch1lineareffects,
+                variable_of_interest = "scale_ztempwq",
+                add_legend = TRUE)
+    
     #Regional Trend
-    ####UNSCALE THESE PLS!
     plot_linear_effects(load_from = lf_ch1m1,
                         variable_of_interest = "scale_usgs_trend",
                         variable_kappa = "kappa_regional",
@@ -603,7 +766,7 @@ stable_color <- "#4393c3"
                         regional_trend_colors = TRUE,
                         new_plot = FALSE#,
                         #polygon_color = "orange"
-                        )
+    )
     abline(v = 0, lty = "dashed", col = "grey")
     abline(h = 0, lty = "dashed", col = "grey")
     legend("topleft",
@@ -613,9 +776,12 @@ stable_color <- "#4393c3"
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_usgs_trend",
                 add_legend = TRUE)
+    
   }
-  
   dev.off()
+  
+  
+  
   
   #which ones do and don't agree between regional and local trend?
   disagreement <- ch1lineareffects |>

@@ -202,7 +202,11 @@
     lwd = 2,
     outer_bound_lwd = 1.5,
     plot_slope = TRUE,
-    polygon_color = "steelblue"
+    polygon_color = "steelblue",
+    unscale_regional_trend = FALSE,
+    all_rt_sd = NA,
+    all_rt_mean = NA,
+    base_rt_kappa = NA
   ) {
     
     posterior_draws = read.csv(paste0(load_from, "posterior_draws.csv"))
@@ -291,6 +295,14 @@
     #get posteriors for the kappa we want
     post_kappa <- posterior_draws[,variable_kappa]
     post_average_beta <- posterior_draws[,"gamma_b"]
+    
+    if(unscale_regional_trend == TRUE) {
+      #transform post_kappas
+      post_kappa <- post_kappa / all_rt_sd
+      #transform post_average_betas
+      post_average_beta <- post_average_beta - (base_rt_kappa * (all_rt_mean/all_rt_sd))
+    }
+    
     #predict the population trend using the posterior kappas and betas for the entire sequence of the variable of interest
     predicted_results <- sapply(
       voi_sequence,
