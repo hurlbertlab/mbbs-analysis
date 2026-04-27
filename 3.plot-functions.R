@@ -196,6 +196,7 @@
     maxColorValue = 100,
     palette = colorRampPalette(c("blue","red"))(maxColorValue),
     regional_trend_colors = FALSE,
+    rt_colors_variable = "rt_colors",
     secondary_tck = -0.02,
     trendline_lty = "solid",
     white_lwd = 2.5,
@@ -271,7 +272,7 @@
                y0 = fit_summary$conf_2.5,
                y1 = fit_summary$conf_97.5,
                lwd = 3, 
-               col = fit_summary$rt_colors
+               col = fit_summary[,rt_colors_variable]
       )
       #regional trend segments - this means I have to calculate like the 97.5 and 2.5 intervals again from the scale_usgs_trend and scale_usgs_sd
       #segments(x0 = fit_summary[,"usgs_2.5CI"],
@@ -282,7 +283,22 @@
       #points
       points(x = fit_summary[,variable_of_interest],
              y = fit_summary$mean,
-             col = fit_summary$rt_colors,
+             col = fit_summary[,rt_colors_variable],
+             pch = 16,
+             cex = 2)
+      
+      #and then reprint the disagreements so they come out on top
+      disagreements <- fit_summary |>
+        filter(trend_agreement == "disagree")
+      segments(x0 = disagreements[,variable_of_interest],
+               y0 = disagreements$conf_2.5,
+               y1 = disagreements$conf_97.5,
+               lwd = 3, 
+               col = disagreements[,rt_colors_variable]
+      )
+      points(x = disagreements[,variable_of_interest],
+             y = disagreements$mean,
+             col = disagreements[,rt_colors_variable],
              pch = 16,
              cex = 2)
     }

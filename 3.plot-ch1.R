@@ -457,12 +457,25 @@ stable_color <- "#4393c3"
       rt_direction == "stable" ~ stable_color, #stable
       rt_direction == "slightly_positive" ~ "#5aae61", #increase supported at 87% confidence interval
       rt_direction == "positive" ~ "#1b7837" #increasing
-    ),
-    ta_colors = case_when(
-      trend_agreement == "agree" ~ "gold",
-      trend_agreement == "disagree" ~ "red",
+    )) |>
+    #m, actually.... I want colors on the regional trend graph to reflect the actual trend I think...
+    mutate(color = case_when(
+      trend_direction == "negative" ~ "#762a83", #decreasing
+      #trend_direction == "slightly_negative" ~ "#c2a5cf", #decline supported at 87% confidence interval
+      trend_direction == "slightly_negative" ~ stable_color,
+      trend_direction == "stable" ~ stable_color, #stable, not significant at 95 or 87%
+      trend_direction == "slightly_positive" ~ "#5aae61", #increase supported at 87% confidence interval
+      trend_direction == "positive" ~ "#1b7837" #increasing
+    )) |>
+    mutate(rt_colors = color) |>
+    mutate(ta_colors = case_when(
+      trend_agreement == "agree" ~ "#5aae61",
+      trend_agreement == "disagree" ~ "#762a83",
+      trend_agreement == "disagree, regional NS" ~ "#5e4fa2",
+      trend_agreement == "disagree, local NS" ~ "#5e4fa2",
       TRUE ~ "blue" #error color
-    )
+    ),
+    no_color = "black"
     )
   
   #without bobwhite
@@ -607,28 +620,48 @@ stable_color <- "#4393c3"
   all_rt_sd = sd(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE)
   all_rt_mean = (mean(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE))
   
-  png(filename = "figures/ch1_linear_effects_RT.png", 
-      width = 800,
-      height = 800,
+  png(filename = "figures/ch1_linear_effects_RT_black.png", #black, tacol, trendcol
+      width = 500,
+      height = 500,
       units = "px", 
       type = "windows")
   {
-    par(mar =c(5.1, 6.1, 4.1, 2.1), 
+    par(mar =c(5.1, 6.1, 3.1, 2.1), 
         cex = 1.3,
         cex.axis = 1.3,
         cex.lab = 1.6,
         cex.main = 1.6,
         cex.sub = 1.4)
     #Regional Trend
+    
+    #rt_colors_variable = "ta_colors"
+    #rt_colors_variable = "color"
+    rt_colors_variable = "no_color"
 
     plot_linear_effects(load_from = lf_ch1m1,
                         variable_of_interest = "usgs_trend_estimate",
                         variable_kappa = "kappa_regional",
                         xlab = "Regional Trend",
                         regional_trend_colors = TRUE,
+                        rt_colors_variable = rt_colors_variable,
                         plot_ylab = TRUE,
+                        ylab_distance = -0.03,
                         plot_slope = FALSE)
-    #m, and now I kinda think I need to plot things by hand...
+    #add triangles
+    #above the 1:1 line above zero
+    polygon(c(0, 0.08, 0), 
+            c(0, 0.08, 0.08), 
+            col = adjustcolor("grey", alpha.f = 0.3), 
+            border = NA)
+    #below the 1:1 line below zero
+    polygon(c(0, -0.16, 0), 
+            c(0, -0.16, -0.16), 
+            col = adjustcolor("grey", alpha.f = 0.3), 
+            border = NA)
+    abline(v = 0, lty = "dashed", col = "grey")
+    abline(h = 0, lty = "dashed", col = "grey")
+    abline(a = 0, b = 1, lty = "dashed", col = "grey")
+    
     
     plot_linear_effects(load_from = lf_ch1NOBO,
                         fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
@@ -637,6 +670,7 @@ stable_color <- "#4393c3"
                         xlab = "Regional Trend",
                         trendline_lty = "solid",
                         regional_trend_colors = TRUE,
+                        rt_colors_variable = rt_colors_variable,
                         new_plot = FALSE,
                         unscale_regional_trend = TRUE,
                         all_rt_sd = all_rt_sd, 
@@ -644,16 +678,56 @@ stable_color <- "#4393c3"
                         base_rt_kappa = ch1NOBOlinear$mean[ch1NOBOlinear$rownames == "kappa_regional"]#,
                         #polygon_color = "orange"
                         )
-    abline(v = 0, lty = "dashed", col = "grey")
-    abline(h = 0, lty = "dashed", col = "grey")
-    legend("topleft",
-           legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
-           fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
-           bty = "n")
+    #legend("topleft",
+    #       legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
+    #       fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
+    #       bty = "n")
     add_outlier(df = ch1lineareffects,
-                variable_of_interest = "scale_usgs_trend",
+                variable_of_interest = "usgs_trend_estimate",
                 add_legend = TRUE)
-  
+    legend("topleft",
+           legend = c("Local Trends More Extreme"),
+           fill = c(adjustcolor("grey", alpha.f = 0.8)
+           ),
+           #density = 50,
+           bty = "n")
+    if(rt_colors_variable == "no_color") {
+    #legend("topleft",
+           #legend = c("Shaded Area Local Trends More Extreme"),
+           #fill = c(adjustcolor("grey", alpha.f = 0.8)
+          #          ),
+          # bty = "n")
+      #add_outlier(df = ch1lineareffects,
+      #            variable_of_interest = "usgs_trend_estimate",
+      #            add_legend = TRUE)
+    } else if(rt_colors_variable == "color") {
+      legend("bottomright",
+             legend = c("Decreasing Locally",
+                        "Stable Locally",
+                        "Increasing Locally"#,
+                        #"Removed Outlier"
+                        ),
+             fill = c("#762a83",
+                      stable_color,
+                      "#1b7837"#, 
+                      #"orange"
+                      ),
+             bty= "n")
+      legend("topleft",
+             legend = c("Local Trends More Extreme"),
+             fill = c(adjustcolor("grey", alpha.f = 0.8)
+             ),
+             density = 50,
+             bty = "n")
+    } else if(rt_colors_variable == "ta_colors") {
+      legend("bottomright",
+             legend = c("Agree",
+                        "Disagree, stable",
+                        "Disagree",
+                        "Removed Outlier"),
+             fill = c("#5aae61", "#5e4fa2", "#762a83", "orange"),
+             bty = "n")
+    }
   }
   dev.off()
   
