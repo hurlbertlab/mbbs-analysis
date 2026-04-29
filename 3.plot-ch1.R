@@ -80,7 +80,7 @@ stable_color <- "#4393c3"
            pch = ifelse(significant == TRUE, 16, 1))
   
   rt_model_color = "black"
-  wo_model_color = "brown2"
+  wo_model_color = "black"
   
   
   ###!!!!!!!!!!!!!!!!Make a new plotting function for plotting these effects. Have an option where it makes a new plot or not. rmNOBO models should be the main ones.
@@ -127,12 +127,15 @@ stable_color <- "#4393c3"
                x1 = ch1NOBO_nR$conf_97.5,
                y0 = ch1NOBO_nR$id+.75,
                lwd = 4.5,
-               col = wo_model_color)
+               col = wo_model_color,
+               lty = "dotted")
   }
   legend("right",
          bty = "n",
          legend = c("Full Model", "Model without \nRegional Trend\n"), 
-         fill = c(rt_model_color, wo_model_color)
+         #fill = c(rt_model_color, wo_model_color
+         lty = c("solid", "dotted"),
+         lwd = c(4.5, 4.5)
          #scientific name is Colinus virginianus, if I want to change text to reflect that.
   )
   #}
@@ -828,7 +831,8 @@ stable_color <- "#4393c3"
                         variable_of_interest = "scale_usgs_trend",
                         variable_kappa = "kappa_regional",
                         xlab = "Scaled Regional Trend",
-                        regional_trend_colors = TRUE,
+                        #regional_trend_colors = TRUE,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
                         plot_ylab = FALSE,
                         plot_slope = FALSE)
     plot_linear_effects(load_from = lf_ch1NOBO,
@@ -837,16 +841,17 @@ stable_color <- "#4393c3"
                         variable_kappa = "kappa_regional",
                         xlab = "Scaled Regional Trend",
                         trendline_lty = "solid",
-                        regional_trend_colors = TRUE,
+                        #regional_trend_colors = TRUE,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
                         new_plot = FALSE#,
                         #polygon_color = "orange"
     )
     abline(v = 0, lty = "dashed", col = "grey")
     abline(h = 0, lty = "dashed", col = "grey")
-    legend("topleft",
-           legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
-           fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
-           bty = "n")
+    #legend("topleft",
+    #       legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
+    #       fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
+    #       bty = "n")
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_usgs_trend",
                 add_legend = TRUE)
