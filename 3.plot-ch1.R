@@ -992,29 +992,100 @@ stable_color <- "#4393c3"
   #hum. idk that I really need to plot this so much.
   #alright yeah, let me just report the effect size without doing anything else
   
-#############################
+#------------------------------------
 #
-# Calculate 87% credible intervals for kappa variables.
+# Plot a map of the three counties and the routes. Should include a scale bar 
+# in the final version.
 #
-#############################
-  load_from = lf_ch1m1
-  posterior_draws = read.csv(paste0(load_from, "posterior_draws.csv")) |>
-    dplyr::select(kappa_regional, kappa_habitat_selection, kappa_temp_pos, kappa_diet, gamma_b)
-  
-  hab_6.5 <- as.numeric(quantile(posterior_draws$kappa_habitat_selection, probs = 0.065))  # (1-0.87)/2 = 0.065
-  hab_93.5 <- as.numeric(quantile(posterior_draws$kappa_habitat_selection, probs = 0.935))  # 1 - 0.065 = 0.935
-  hab_2.5 <- as.numeric(quantile(posterior_draws$kappa_habitat_selection, probs = 0.025))
-  hab_97.5 <- as.numeric(quantile(posterior_draws$kappa_habitat_selection, probs = 0.975))
-  
-  temp_6.5 <- as.numeric(quantile(posterior_draws$kappa_temp_pos, probs = 0.065))  # (1-0.87)/2 = 0.065
-  temp_93.5 <- as.numeric(quantile(posterior_draws$kappa_temp_pos, probs = 0.935))  # 1 - 0.065 = 0.935   
-  temp_2.5 <- as.numeric(quantile(posterior_draws$kappa_temp_pos, probs = 0.025))
-  temp_97.5 <- as.numeric(quantile(posterior_draws$kappa_temp_pos, probs = 0.975))
-  
-  #and just confirm that the 95% match our actual known values..
-  kappas <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) |>
-    filter(str_detect(rownames, "kappa_")) |>
-    dplyr::select(rownames, mean, sd, conf_2.5, conf_97.5)
+#------------------------------------
 
-  round(temp_2.5, 4) == round(kappas$conf_2.5[kappas$rownames == "kappa_temp_pos"], 4)
-  #-0.0094 vs -0.0092 - off by a bit. I don't htink this lets us confirm temp_93.5 is accurate at 87% credible interval, but magnitude of error suggests that habitat is supported at that margin. m. If I need to provide more details, I can rerun the model and have it calculate that 87% CI with the full fit summary.
+library(sf)
+library(terra)
+library(ggplot2)
+library(dplyr)
+
+  # NLCD data
+  nlcd <- rast("C:/Users/Ivara/Downloads/devo_1km_east.tif")
+  nlcd <- rast("C:/Users/Ivara/Downloads/Annual_NLCD_LndCov_2023_CU_C1V0.tif") #awesome, the 2023 works :)
+  #we will want to resample this later probably to have fewer colors. Just water/urban/grassland/forest at maybe the 400m scale instead of 30m
+  # colors
+  nlcd_col <- hcl.colors(100, "Blues")
+  
+  # NC couties: 
+  counties <- read_sf("spatial/shapefiles/NC_County_Polygons/North_Carolina_State_and_County_Boundary_Polygons.shp") |>
+    filter(County %in% c("Orange", "Durham", "Chatham")) |>
+    st_transform(crs(nlcd))
+  #counties_vect <- vect(counties)  # Convert sf to SpatVector for terra::mask
+    
+    # Verify CRS match (optional - for debugging)
+    #cat("NLCD CRS:", crs(nlcd), "\n")
+    #cat("Counties CRS:", st_crs(counties)$wkt, "\n")
+  
+    # Trim NLCD to county boundaries
+    trimmed_nlcd <- nlcd |>
+      crop(counties) |>
+      mask(counties)
+    
+  #colors for nlcd
+  #colors <- read.csv("spatial/")
+    
+  # routes
+  surveys <- read.csv("spatial/route_stop_coordinates.csv") |>
+    st_as_sf(coords = c('lon', 'lat'), crs = 4269) |>
+    st_transform(crs(nlcd)) # Transform surveys to match the NLCD's CRS) 
+  unique_routes <- unique(surveys$route)  # Assuming column name is 'route'
+  library(scales)
+  #get ggplot2 default hex color codes from 1 to 34
+  colors <- hue_pal()(34)
+  colors <- c("#F8766D",
+              "#00BCD6",
+              "#F07E4E",
+              "#00C19D",
+              "#00BE6E",
+              "#00C087",
+              "#DD8D00",
+              "#45B500",
+              "#B2A100",
+              "#9FA700",
+              "#E46DF5",
+              "#F166E8",
+              "#E7851E",
+              "#FA62D9",
+              "#9C8DFF",
+              "#FF61C7",
+              "#D277FF",
+              "#00B3F2",
+              "#00ABFC",
+              "#6DB100",
+              "#29A3FF",
+              "#BA82FF",
+              "#FD6F87",
+              "#FF63B4",
+              "#89AC00",
+              "#D09400",
+              "#00B927",
+              "#7398FF",
+              "#00C0B2",
+              "#00BC51",
+              "#00B8E5",
+              "#FD6F86",
+              "#00BFC4",
+              "#FF689E")
+  names(colors) <- unique_routes
+  
+  plot(trimmed_nlcd)
+  plot(st_geometry(counties), add = TRUE, border = "black", lwd = 2)
+  plot(st_geometry(surveys), add = TRUE, col = "white", pch = 16, cex = .8)
+  # Add each route with different color
+  for(route in unique_routes) {
+    route_points <- surveys[surveys$route == route, ]
+    plot(st_geometry(route_points), 
+         add = TRUE, 
+         col = colors[route], 
+         pch = 16, 
+         cex = 0.6)
+  }
+  #needs a scale bar
+  #and to remove the legends
+  #but yay! moving towards a map ^u^
+ 
