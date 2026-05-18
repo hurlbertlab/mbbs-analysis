@@ -13,6 +13,10 @@ library(cowplot) #used to make multi-panel figures
 library(reshape2) #for any correlation matrix heatmaps
 library(statuser) #from the data collada blog, more useful tables: https://datacolada.org/132
 #library(tinytex) #lightweight LaTeX distribution that makes it easy to use in R
+library(sf)
+library(terra)
+library(ggplot2)
+library(scales) #for some color selection from ggplot
 
 #load functions
 source("3.plot-functions.R")
@@ -508,6 +512,7 @@ stable_color <- "#4393c3"
   
   
   #figure for main publication
+  #make 1 row. move panels closer together. only need y axis on first one.
   png(filename = "figures/ch1_linear_effects_3panel.png", 
       width = 800,
       height = 800,
@@ -520,7 +525,7 @@ stable_color <- "#4393c3"
         cex.lab = 1.6,
         cex.main = 1.6,
         cex.sub = 1.4,
-        mfrow = c(2,2))
+        mfrow = c(1,3))
     
     #Habitat selectivity
     plot_linear_effects(load_from = lf_ch1m1,
@@ -543,7 +548,7 @@ stable_color <- "#4393c3"
     )
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_habitat_ssi",
-                add_legend = TRUE)
+                add_legend = FALSE)
 
     #Percent Insectivory
     plot_linear_effects(load_from = lf_ch1m1,
@@ -568,7 +573,7 @@ stable_color <- "#4393c3"
                         plot_ylab = FALSE)
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_insect_perc",
-                add_legend = TRUE)
+                add_legend = FALSE)
     
     #Temperature Niche
     plot_linear_effects(load_from = lf_ch1m1,
@@ -598,7 +603,7 @@ stable_color <- "#4393c3"
     )
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_ztempwq",
-                add_legend = TRUE)
+                add_legend = FALSE)
     
     #SO when I do the final plot now, I'll JUST plot the orange bar from the sensitivity analysis.
   }
@@ -770,7 +775,7 @@ stable_color <- "#4393c3"
     )
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_habitat_ssi",
-                add_legend = TRUE)
+                add_legend = FALSE)
     
     #Percent Insectivory
     plot_linear_effects(load_from = lf_ch1m1,
@@ -794,7 +799,7 @@ stable_color <- "#4393c3"
                         plot_ylab = FALSE)
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_insect_perc",
-                add_legend = TRUE)
+                add_legend = FALSE)
     
     #Temperature Niche
     plot_linear_effects(load_from = lf_ch1m1,
@@ -824,7 +829,7 @@ stable_color <- "#4393c3"
     )
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_ztempwq",
-                add_legend = TRUE)
+                add_legend = FALSE)
     
     #Regional Trend
     plot_linear_effects(load_from = lf_ch1m1,
@@ -999,17 +1004,27 @@ stable_color <- "#4393c3"
 #
 #------------------------------------
 
-library(sf)
-library(terra)
-library(ggplot2)
-library(dplyr)
+
 
   # NLCD data
-  nlcd <- rast("C:/Users/Ivara/Downloads/devo_1km_east.tif")
+  nlcd <- rast("C:/Users/Ivara/Downloads/devo_1km_east.tif") #this is percent urbanization.
   nlcd <- rast("C:/Users/Ivara/Downloads/Annual_NLCD_LndCov_2023_CU_C1V0.tif") #awesome, the 2023 works :)
   #we will want to resample this later probably to have fewer colors. Just water/urban/grassland/forest at maybe the 400m scale instead of 30m
-  # colors
-  nlcd_col <- hcl.colors(100, "Blues")
+
+  # reclassify matrix
+  #reclass_matrix <- matrix(c(
+  #  # NLCD Code, Your Code
+  #  11, 1,  # Water
+  #  41, 2,  # Forest
+  #  42, 2, 
+  #  43, 2,
+  #  71, 3,  # Grassland
+  #  21, 4,  # Urban
+  #  22, 4,
+  #  23, 4,
+  #  24, 4
+  #), ncol = 2, byrow = TRUE)
+  
   
   # NC couties: 
   counties <- read_sf("spatial/shapefiles/NC_County_Polygons/North_Carolina_State_and_County_Boundary_Polygons.shp") |>
@@ -1024,7 +1039,11 @@ library(dplyr)
     # Trim NLCD to county boundaries
     trimmed_nlcd <- nlcd |>
       crop(counties) |>
-      mask(counties)
+      mask(counties) #|>
+    # Aggregate from 30m to 300m using the modal (most frequent) value
+    # fact = 10 because 300m / 30m = 10
+    # eh, honestly it just looks worse aggregated. I think actually leave it at the 30x30 resolution
+    # aggregate(fact = 10, fun = "modal", na.rm = TRUE)
     
   #colors for nlcd
   #colors <- read.csv("spatial/")
@@ -1034,7 +1053,6 @@ library(dplyr)
     st_as_sf(coords = c('lon', 'lat'), crs = 4269) |>
     st_transform(crs(nlcd)) # Transform surveys to match the NLCD's CRS) 
   unique_routes <- unique(surveys$route)  # Assuming column name is 'route'
-  library(scales)
   #get ggplot2 default hex color codes from 1 to 34
   colors <- hue_pal()(34)
   colors <- c("#F8766D",
@@ -1073,7 +1091,7 @@ library(dplyr)
               "#FF689E")
   names(colors) <- unique_routes
   
-  plot(trimmed_nlcd)
+  plot(trimmed_nlcd, axes = FALSE) #maybe just re-code all water as blue.
   plot(st_geometry(counties), add = TRUE, border = "black", lwd = 2)
   plot(st_geometry(surveys), add = TRUE, col = "white", pch = 16, cex = .8)
   # Add each route with different color
@@ -1085,7 +1103,7 @@ library(dplyr)
          pch = 16, 
          cex = 0.6)
   }
-  #needs a scale bar
+   #needs a scale bar
   #and to remove the legends
   #but yay! moving towards a map ^u^
  

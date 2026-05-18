@@ -190,7 +190,7 @@
     abline_at_zero = FALSE,
     ylim = c(-.15, 0.07),
     xlab = "",
-    ylab = "Population Trend",
+    ylab = "Local Population Trend",
     plot_ylab = TRUE,
     ylab_distance = - 1.2,
     maxColorValue = 100,
