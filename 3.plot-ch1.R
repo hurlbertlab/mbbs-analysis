@@ -264,7 +264,7 @@ stable_color <- "#4393c3"
     mutate(color = case_when(
       trend_direction == "negative" ~ "#762a83", #decreasing
       #trend_direction == "slightly_negative" ~ "#c2a5cf", #decline supported at 87% confidence interval
-      trend_direction == "slightly_negative" ~ stable_color,
+      trend_direction == "slightly_negative" ~ "#762a83",
       trend_direction == "stable" ~ stable_color, #stable, not significant at 95 or 87%
       trend_direction == "slightly_positive" ~ "#5aae61", #increase supported at 87% confidence interval
       trend_direction == "positive" ~ "#1b7837" #increasing
@@ -285,7 +285,8 @@ stable_color <- "#4393c3"
       cex.axis = 1.3,
       cex.lab = 1.2,
       cex.main = 1.6,
-      cex.sub = 1.4)
+      cex.sub = 1.4,
+      bg = NA)
   plot_intervals(plot_df = plot_horiz,
                  species_axis = "x",
                  ylim_select = c(-.15, .07),
@@ -304,11 +305,11 @@ stable_color <- "#4393c3"
        tck = -0.01) 
   mtext(text = "Percent Population Change per Year", side = 2, line = 4, cex = 1.3) 
   legend("topleft",
-         legend = c("Decreasing [95% CI]", 
+         legend = c("Decreasing", 
                     #"Likely Decreasing [87% CI]", 
                     "Stable", 
                     #"Likely Increasing [87% CI]",
-                    "Increasing [95% CI]"),
+                    "Increasing"),
          fill = c("#762a83",
                   #"#c2a5cf", 
                   stable_color,
@@ -331,7 +332,8 @@ stable_color <- "#4393c3"
         cex.lab = 1.2,
         cex.main = 1.6,
         cex.sub = 1.4,
-        mfrow = c(2,1))
+        mfrow = c(2,1),
+        bg = NA)
     {
     plot_intervals(plot_df = plot_horiz[1:30,],
                    species_axis = "x",
@@ -483,7 +485,9 @@ stable_color <- "#4393c3"
       TRUE ~ "blue" #error color
     ),
     no_color = "black"
-    )
+    ) |>
+    #and, let's filter out Bobwhite up here
+    filter(!common_name %in% "Northern Bobwhite")
   
   #without bobwhite
   ch1NOBOlinear <- read.csv(paste0(lf_ch1NOBO, "fit_summary.csv")) %>%
@@ -525,7 +529,8 @@ stable_color <- "#4393c3"
         cex.lab = 1.6,
         cex.main = 1.6,
         cex.sub = 1.4,
-        mfrow = c(1,3))
+        mfrow = c(2,2), #SHOULD BE 1,3
+        bg = NA)
     
     #Habitat selectivity
     plot_linear_effects(load_from = lf_ch1m1,
@@ -548,7 +553,8 @@ stable_color <- "#4393c3"
     )
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "scale_habitat_ssi",
-                add_legend = FALSE)
+                add_legend = FALSE,
+                outlier_color = "grey20") #might end up removing the outlier completely in the end, and would rescale the axes..
 
     #Percent Insectivory
     plot_linear_effects(load_from = lf_ch1m1,
@@ -639,7 +645,8 @@ stable_color <- "#4393c3"
         cex.axis = 1.3,
         cex.lab = 1.6,
         cex.main = 1.6,
-        cex.sub = 1.4)
+        cex.sub = 1.4,
+        bg = NA)
     #Regional Trend
     
     #rt_colors_variable = "ta_colors"
@@ -692,7 +699,7 @@ stable_color <- "#4393c3"
     #       bty = "n")
     add_outlier(df = ch1lineareffects,
                 variable_of_interest = "usgs_trend_estimate",
-                add_legend = TRUE)
+                add_legend = FALSE)
     legend("topleft",
            legend = c("Local Trends More Extreme"),
            fill = c(adjustcolor("grey", alpha.f = 0.8)
@@ -1007,9 +1014,10 @@ stable_color <- "#4393c3"
 
 
   # NLCD data
-  nlcd <- rast("C:/Users/Ivara/Downloads/devo_1km_east.tif") #this is percent urbanization.
-  nlcd <- rast("C:/Users/Ivara/Downloads/Annual_NLCD_LndCov_2023_CU_C1V0.tif") #awesome, the 2023 works :)
+  #nlcd <- rast("C:/Users/Ivara/Downloads/devo_1km_east.tif") #this is percent urbanization.
+  nlcd <- rast("spatial/nlcd/Annual_NLCD_LndCov_2023_CU_C1V0.tif") #awesome, the 2023 works :)
   #we will want to resample this later probably to have fewer colors. Just water/urban/grassland/forest at maybe the 400m scale instead of 30m
+  nlcd_classif <- read.csv("spatial/nlcd_classifications.csv", header = TRUE) %>% mutate(code = as.factor(code))
 
   # reclassify matrix
   #reclass_matrix <- matrix(c(
@@ -1026,9 +1034,13 @@ stable_color <- "#4393c3"
   #), ncol = 2, byrow = TRUE)
   
   
-  # NC couties: 
+  # NC couties:
+  NC <- read_sf("spatial/shapefiles/NC_County_Polygons/North_Carolina_State_and_County_Boundary_Polygons.shp")
   counties <- read_sf("spatial/shapefiles/NC_County_Polygons/North_Carolina_State_and_County_Boundary_Polygons.shp") |>
     filter(County %in% c("Orange", "Durham", "Chatham")) |>
+    st_transform(crs(nlcd))
+  surrounding_counties <- read_sf("spatial/shapefiles/NC_County_Polygons/North_Carolina_State_and_County_Boundary_Polygons.shp") |>
+    filter(County %in% c("Alamance", "Caswell", "Person", "Granville", "Wake", "Lee", "Moore", "Randolph")) |>
     st_transform(crs(nlcd))
   #counties_vect <- vect(counties)  # Convert sf to SpatVector for terra::mask
     
@@ -1039,7 +1051,10 @@ stable_color <- "#4393c3"
     # Trim NLCD to county boundaries
     trimmed_nlcd <- nlcd |>
       crop(counties) |>
-      mask(counties) #|>
+      mask(counties) 
+    
+    resampled_nlcd <- trimmed_nlcd |>
+      aggregate(fact = 10, fun = "modal", na.rm = TRUE)
     # Aggregate from 30m to 300m using the modal (most frequent) value
     # fact = 10 because 300m / 30m = 10
     # eh, honestly it just looks worse aggregated. I think actually leave it at the 30x30 resolution
@@ -1091,19 +1106,66 @@ stable_color <- "#4393c3"
               "#FF689E")
   names(colors) <- unique_routes
   
-  plot(trimmed_nlcd, axes = FALSE) #maybe just re-code all water as blue.
+  #North American Breeding Bird Survey routes
+  bbs_routes <- read_sf("Z:/Databases/BBS/GPS_stoplocations/bbsrte_2012_alb/") |>
+    #put in same transformation as everything else
+    st_transform(crs(NC)) |>
+    #crop to NC
+    st_crop(NC) |>
+    st_transform(crs(nlcd))
+  plot(st_geometry(bbs_routes))
+  
+  #set all background to transparent
+  par(bg = NA)  # or par(bg = "transparent")
+  
+  
+  {
+  plot(
+    #resampled_nlcd, 
+    resampled_nlcd,
+       axes = FALSE,
+       bg = "transparent") #maybe just re-code all water as blue.
   plot(st_geometry(counties), add = TRUE, border = "black", lwd = 2)
+  plot(st_geometry(surrounding_counties), add = TRUE, border = "black", lwd = 1)
+  #add a little transparency overtop
+  #plot(st_geometry(counties), add = TRUE, col = adjustcolor("white", alpha = ".1"))
+  
+  #add the NABBS routes
+  plot(st_geometry(bbs_routes), add = TRUE, col = "white", lwd = 5)
+  plot(st_geometry(bbs_routes), add = TRUE, 
+       col = "purple",
+       lwd = 3)
+  
+  #add the NCMBBS routes
+  plot(st_geometry(surveys), add = TRUE, col = "black", pch = 16, cex = 1)
   plot(st_geometry(surveys), add = TRUE, col = "white", pch = 16, cex = .8)
-  # Add each route with different color
-  for(route in unique_routes) {
-    route_points <- surveys[surveys$route == route, ]
-    plot(st_geometry(route_points), 
-         add = TRUE, 
-         col = colors[route], 
-         pch = 16, 
-         cex = 0.6)
+  plot(st_geometry(surveys), add = TRUE, col = "black", pch = 16, cex = .6)
+  
   }
+  
+  {
+  plot(x = 1, y = 1, xlim = c(1,10), ylim = c(1,10))
+  legend("center",
+         legend = c("developed"),
+         fill = c("red"),
+         bty = "n")
+  }
+  
+  # Add each route with different color
+  #for(route in unique_routes) {
+  #  route_points <- surveys[surveys$route == route, ]
+  #  plot(st_geometry(route_points), 
+  #       add = TRUE, 
+  #       col = colors[route], 
+  #       pch = 16, 
+  #      cex = 0.6)
+  #}
    #needs a scale bar
   #and to remove the legends
   #but yay! moving towards a map ^u^
- 
+  
+  #inset
+  plot(st_geometry(NC), border = "grey20") 
+  plot(st_geometry(counties |> st_transform(crs(NC))), add = TRUE, col = "#68AA63")
+  dev.off()
+  

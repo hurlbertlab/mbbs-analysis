@@ -188,7 +188,7 @@
     variable_kappa,
     xaxt = "s",
     abline_at_zero = FALSE,
-    ylim = c(-.15, 0.07),
+    ylim = c(-.1, 0.065), #with bobwhite, ylim = c(-.15, 0.07)
     xlab = "",
     ylab = "Local Population Trend",
     plot_ylab = TRUE,
@@ -207,7 +207,8 @@
     unscale_regional_trend = FALSE,
     all_rt_sd = NA,
     all_rt_mean = NA,
-    base_rt_kappa = NA
+    base_rt_kappa = NA,
+    rm_species = NA
   ) {
     
     posterior_draws = read.csv(paste0(load_from, "posterior_draws.csv"))
