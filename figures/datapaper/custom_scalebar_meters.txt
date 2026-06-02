@@ -1,0 +1,22 @@
+  add_scale_bar_meters <- function(x, y, length_m, segments = 4) {
+    
+    segment_length <- length_m / segments
+    
+    # Draw alternating segments
+    for(i in 1:segments) {
+      rect(x + (i-1)*segment_length, y, 
+           x + i*segment_length, y + 1000,  # 5000m height for scale bar
+           col = ifelse(i %% 2 == 1, "black", "white"),
+           border = "black")
+    }
+    
+    # Add km label
+    length_km <- length_m / 1000
+    text(x + length_m/2, y + 3000, 
+         paste(length_km, "km"), 
+         cex = 0.8, adj = c(0.5, 0))
+  }
+  add_scale_bar_meters(x = 1536876 - 10000,   # Slightly offset from edge
+                       y = 1512039 + 5000,   # Slightly offset from edge
+                       length_m = 10000,      # 10 km
+                       segments = 4)
