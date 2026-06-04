@@ -93,8 +93,19 @@ dev.off()
 #nlcd <- rast("C:/Users/Ivara/Downloads/devo_1km_east.tif") #this is percent urbanization.
 nlcd <- rast("spatial/nlcd/Annual_NLCD_LndCov_2023_CU_C1V0.tif") #awesome, the 2023 works :)
 #we will want to resample this later probably to have fewer colors. Just water/urban/grassland/forest at maybe the 400m scale instead of 30m
-nlcd_classif <- read.csv("spatial/nlcd_classifications.csv", header = TRUE) %>% mutate(code = as.factor(code))
-
+nlcd_classif <- read.csv("spatial/nlcd_classifications.csv", header = TRUE) %>%
+  mutate(code = as.factor(code)) |>
+  filter(!description %in% c("Moss", "Lichens", "Perennial Ice/Snow", "Emergent Herbaceous Wetlands", "Dwarf Scrub", "Sedge/Herbaceuous")) |>
+  mutate(description = case_when(description == "Barren Land (Rock/Sand/Clay)" ~ "Barren Land",
+                                 TRUE ~ description))
+plot(NULL)
+legend("center",
+       legend = nlcd_classif$description,
+       fill = nlcd_classif$color)
+plot(NA)
+legend("center",
+       legend = c("NCMBBS Routes", "NABBS Routes"),
+       fill = c("black", "#2c7fb8"))
 # reclassify matrix
 #reclass_matrix <- matrix(c(
 #  # NLCD Code, Your Code
@@ -213,15 +224,15 @@ par(bg = NA,
   #plot(st_geometry(counties), add = TRUE, col = adjustcolor("white", alpha = ".1"))
   
   #add the NABBS routes
-  plot(st_geometry(bbs_routes), add = TRUE, col = "white", lwd = 5)
+  plot(st_geometry(bbs_routes), add = TRUE, col = "white", lwd = 6)
   plot(st_geometry(bbs_routes), add = TRUE, 
        col = "#2c7fb8",
-       lwd = 3)
+       lwd = 4)
   
     #add the NCMBBS routes
+  #plot(st_geometry(surveys), add = TRUE, col = "black", pch = 16, cex = 1)
+  plot(st_geometry(surveys), add = TRUE, col = "white", pch = 16, cex = 1.2)
   plot(st_geometry(surveys), add = TRUE, col = "black", pch = 16, cex = 1)
-  plot(st_geometry(surveys), add = TRUE, col = "white", pch = 16, cex = .8)
-  plot(st_geometry(surveys), add = TRUE, col = "black", pch = 16, cex = .6)
   
   add_scale_bar_meters <- function(x, y, length_m, segments = 4) {
     
@@ -407,7 +418,7 @@ palette <- c(
   "#2b8cbe",
   "#0868ac",
   "#084081",
-  "#edf8b1" #NA values
+  "white" #NA values
 )
 rainbow(11)
   
@@ -473,7 +484,7 @@ plot(NULL)
 legend("topleft",
        title = "Observer Turnover", 
        legend = c("First Observer", "Color Change = \nNew Observer", "No Survey"),
-       fill = c("#e0f3db", "NA", "#edf8b1"), 
+       fill = c("#e0f3db", "#7bccc4", "white"), 
        #col = c("#2c7fb8", "#41b6c4", "#edf8b1"),
        #pch = 15
 )
@@ -492,7 +503,11 @@ sum(quant$mult_obs == TRUE) / nrow(quant)
 #
 ##################################
 surveys <- read.csv("data/mbbs/surveys.csv") |>
-  left_join(read.csv("data/mbbs/comments.csv"), by = c("route", "year"))
+  left_join(read.csv("data/mbbs/comments.csv"), by = c("route", "year")) |>
+  group_by(route, year) |>
+  summarize(has_habitat = any(is.na(habitat) == FALSE))
+table(surveys$has_habitat)
+212/818
 
 comments <- read.csv("data/mbbs/comments.csv") |>
   dplyr::select(route, year, habitat) |>
