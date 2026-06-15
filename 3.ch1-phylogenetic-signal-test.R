@@ -15,6 +15,7 @@ library(rtrees)
 library(ape)
 library(phytools)
 library(stringr)
+library(RColorBrewer)
 
 #get the species residuals from the final model.
 #mean for each species from the mean line
@@ -64,8 +65,11 @@ species_list <- read.csv("model/2026.04.09_ch1_rmNOBO_final/beta_to_common_name.
   rename(family = FAMILY) |>
   mutate(family = str_remove(str_extract(family, "[A-Z][a-z]+ "), " ")) |>
   #left-join the trait data, here the residuals from the model.
-  left_join(eps_k, by = "common_name")
-  
+  left_join(eps_k, by = "common_name") |>
+  # add color based on eps_k 
+  arrange(eps_k) |>
+  mutate(color = colorRampPalette(c("blue", "red"))(59))
+
 #For bird, the mega-trees are loaded via megatrees::get_tree_bird_n100()
 megatrees::get_tree_bird_n100()
 
@@ -77,13 +81,16 @@ tree = get_tree(sp_list = species_list,
 #5 species added at genus level (*) 
 #4 species added at family level (**) 
 
-plot(tree[[1]]) #ah! okay this gives 100 different trees off the bat.
+plot(tree[[1]], tip.color =  species_list$color) #ah! okay this gives 100 different trees off the bat.
 
 #okay, we'll loop this through to calculate these metrics across 100 trees, then average.
 source("2.analysis-functions.R")
 tree_stats <- make_trend_table(
   cols_list = c("iteration", "K", "K.p", "lambda", "lambda.p"), 
   rows_list = c(1:100))
+
+pdf()
+
 for(t in 1:length(tree)) {
   
   #pull the labels in the right order.
@@ -104,7 +111,10 @@ for(t in 1:length(tree)) {
   tree_stats$lambda[t] <- lambda$lambda
   tree_stats$lambda.p[t] = lambda$P
   
+  plot(tree[[t]], tip.color = species_list$color)
 }
+
+dev.off()
 
 tree_stats <- tree_stats |>
   mutate(mean_K = mean(K),
@@ -129,3 +139,8 @@ temp_table <- temp_table |>
          K.p = blomK$P,
          lambda = lambda$lambda,
          lambda.p = lambda$P)
+
+
+X<-fastBM(tree[[1]],nsim=1000)
+K<-apply(X,2,phylosig,tree=tree[[1]])
+quantile(K,c(0.05,0.95))
