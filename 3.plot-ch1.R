@@ -30,197 +30,6 @@ stable_color <- "#4393c3"
 #lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.12.1_ch1_m1_diettest/"
 #lf_tempo <- "Z:/Goulden/mbbs-analysis/model/2025.11.25_ch1_m1_temponly/"
 
-
-#####################################
-#
-# Plot kappa effect sizes
-#
-###################################
-
-  c1m1 <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
-    filter(str_detect(.$rownames, "kappa")) %>%
-    mutate(model = "m1", 
-           color = "black",
-           id = row_number(),
-           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           pch = ifelse(significant == TRUE, 16, 1),
-           ylab = case_when(
-             rownames == "kappa_regional" ~ "Regional Trend",
-             rownames == "kappa_habitat_selection" ~ "Habitat Selectivity",
-             rownames == "kappa_temp_pos" ~ "Temp. Niche Position",
-             rownames == "kappa_diet" ~ "Percent Insectivory"
-           )
-    )
-  
-  c1mNR <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
-    filter(str_detect(.$rownames, "kappa")) %>%
-    mutate(model = "m1", 
-           color = "azure2",
-           id = row_number(),
-           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           pch = ifelse(significant == TRUE, 16, 1))
-  
-  ch1NOBO <- read.csv(paste0(lf_ch1NOBO, "fit_summary.csv")) |>
-    filter(str_detect(rownames, "kappa")) |>
-    mutate(model = "msens",
-           color = "orange",
-           id = row_number(),
-           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           pch = ifelse(significant == TRUE, 16, 1),
-           ylab = case_when(
-             rownames == "kappa_regional" ~ "Regional Trend",
-             rownames == "kappa_habitat_selection" ~ "Habitat Selectivity",
-             rownames == "kappa_temp_pos" ~ "Temp. Niche Position",
-             rownames == "kappa_diet" ~ "Percent Insectivory"
-           )
-           )
-  
-  ch1NOBO_nR <- read.csv(paste0(lf_ch1NOBO_nR, "fit_summary.csv")) |>
-    filter(str_detect(rownames, "kappa")) |>
-    mutate(model = "mNRsens",
-           color = "pink",
-           id = row_number(),
-           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           pch = ifelse(significant == TRUE, 16, 1))
-  
-  rt_model_color = "black"
-  wo_model_color = "black"
-  
-  
-  ###!!!!!!!!!!!!!!!!Make a new plotting function for plotting these effects. Have an option where it makes a new plot or not. rmNOBO models should be the main ones.
-  png(filename = "figures/ch1_model_CI_comparison.png", 
-      width = 420, # 620 for larger
-      height = 440, # 640 for larger
-      units = "px", 
-      type = "windows")
-  #honestly, might want to think about increasing the width and height and text sizes.
-  {
-    par(mar = c(4, 10, 2, 1),
-        cex = 1.1) # 1.5 for larger
-    plot(x = ch1NOBO$mean,
-         y = ch1NOBO$id, 
-         pch = ch1NOBO$pch,
-         cex = 2,
-         xlim = c(-.02,.04),
-         xlab = "Effect Size",
-         xaxt = "n",
-         yaxt = "n",
-         ylab = "",
-         col = rt_model_color,
-         ylim = c(.5, 4)) 
-    abline(v = 0, lty = "dashed") 
-    axis(side = 1, at = seq(-0.04, 0.04, by = 0.01), 
-         labels = TRUE) 
-    segments(x0 = ch1NOBO$conf_2.5,
-             x1 = ch1NOBO$conf_97.5,
-             y0 = ch1NOBO$id,
-             lwd = 4.5,
-             col = rt_model_color) 
-    axis(side = 2,           # Side 2 is the left side (y-axis)
-         at = ch1NOBO$id,     # Specify the locations of the tick marks
-         labels =  ch1NOBO$ylab, # Specify the labels for those locations
-         las = 2
-    ) 
-    #add the second model without regional trend
-    points(x = ch1NOBO_nR$mean,
-           y = ch1NOBO_nR$id+.75,
-           pch = ch1NOBO_nR$pch,
-           cex = 2,
-           col = wo_model_color) +
-      segments(x0 = ch1NOBO_nR$conf_2.5,
-               x1 = ch1NOBO_nR$conf_97.5,
-               y0 = ch1NOBO_nR$id+.75,
-               lwd = 4.5,
-               col = wo_model_color,
-               lty = "dotted")
-  }
-  legend("right",
-         bty = "n",
-         legend = c("Full Model", "Model without \nRegional Trend\n"), 
-         #fill = c(rt_model_color, wo_model_color
-         lty = c("solid", "dotted"),
-         lwd = c(4.5, 4.5)
-         #scientific name is Colinus virginianus, if I want to change text to reflect that.
-  )
-  #}
-  dev.off()
-  
-  #Supplemental version with all four models
-  png(filename = "figures/ch1_model_CI_comparison_SUP.png", 
-      width = 620,
-      height = 640,
-      units = "px", 
-      type = "windows")
-  #honestly, might want to think about increasing the width and height and text sizes.
-  {
-  par(mar = c(4, 10, 2, 1),
-      cex = 1.5)
-  plot(x = c1m1$mean,
-       y = c1m1$id, 
-       pch = c1m1$pch,
-       cex = 2,
-       xlim = c(-.02,.04),
-       xlab = "Effect Size",
-       xaxt = "n",
-       yaxt = "n",
-       ylab = "",
-       col = rt_model_color,
-       ylim = c(.5, 4)) 
-    abline(v = 0, lty = "dashed") 
-    axis(side = 1, at = seq(-0.04, 0.04, by = 0.01), 
-         labels = TRUE) 
-    segments(x0 = c1m1$conf_2.5,
-             x1 = c1m1$conf_97.5,
-             y0 = c1m1$id,
-             lwd = 4.5,
-             col = rt_model_color) 
-    axis(side = 2,           # Side 2 is the left side (y-axis)
-         at = c1m1$id,     # Specify the locations of the tick marks
-         labels =  c1m1$ylab, # Specify the labels for those locations
-         las = 2
-    ) 
-    #add the second model without regional trend
-    points(x = c1mNR$mean,
-           y = c1mNR$id+.5, 
-           pch = c1mNR$pch,
-           cex = 2,
-           col = wo_model_color) +
-    segments(x0 = c1mNR$conf_2.5,
-             x1 = c1mNR$conf_97.5,
-             y0 = c1mNR$id+.5,
-             lwd = 4.5,
-             col = wo_model_color)
-    #add the third model with the sensitivity analysis
-    points(x = ch1NOBO$mean,
-           y = ch1NOBO$id-.25,
-           pch = ch1NOBO$pch,
-           cex = 2,
-           col = ch1NOBO$color) +
-      segments(x0 = ch1NOBO$conf_2.5,
-               x1 = ch1NOBO$conf_97.5,
-               y0 = ch1NOBO$id-.25,
-               lwd = 4.5,
-               col = ch1NOBO$color)
-    #add the fourth model with no RT and sensitivity analysis
-    points(x = ch1NOBO_nR$mean,
-           y = ch1NOBO_nR$id+.3,
-           pch = ch1NOBO_nR$pch,
-           cex = 2,
-           col = ch1NOBO_nR$color) +
-      segments(x0 = ch1NOBO_nR$conf_2.5,
-               x1 = ch1NOBO_nR$conf_97.5,
-               y0 = ch1NOBO_nR$id+.3,
-               lwd = 4.5,
-               col = ch1NOBO_nR$color)
-  }
-  legend("right",
-         bty = "n",
-         legend = c("Full Model,\nWith Bobwhite\n", "Full Model\n", "No Regional Trend, \nWith Bobwhite\n", "No Regional Trend\n"), 
-         fill = c(rt_model_color, "orange", wo_model_color, "pink")
-         #scientific name is Colinus virginianus, if I want to change text to reflect that.
-  )
-  #}
-  dev.off()
   
 ######################
 #
@@ -518,25 +327,27 @@ stable_color <- "#4393c3"
   #figure for main publication
   #make 1 row. move panels closer together. only need y axis on first one.
   png(filename = "figures/ch1_linear_effects_3panel.png", 
-      width = 800,
-      height = 800,
+      width = 900,
+      height = 300,
       units = "px", 
       type = "windows")
   {
-    par(mar =c(5.1, 6.1, 4.1, 2.1), 
-        cex = 1.3,
-        cex.axis = 1.3,
-        cex.lab = 1.6,
-        cex.main = 1.6,
-        cex.sub = 1.4,
-        mfrow = c(2,2), #SHOULD BE 1,3
-        bg = NA)
+    par(mar =c(5.1, 6.5, 1.1, 1.1), 
+        cex = 1.5,
+        cex.axis = 1.5,
+        cex.lab = 2,
+        cex.main = 2,
+        cex.sub = 1.5,
+        mfrow = c(1,3) #SHOULD BE 1,3
+        #bg = NA
+        )
     
     #Habitat selectivity
     plot_linear_effects(load_from = lf_ch1m1,
                         variable_of_interest = "scale_habitat_ssi",
                         variable_kappa = "kappa_habitat_selection",
                         xlab = "Scaled Habitat Selectivity",
+                        ylab = "Local Population Trend",
                         maxColorValue = 100,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         trendline_lty = "dashed",
@@ -548,13 +359,14 @@ stable_color <- "#4393c3"
                         xlab = "Scaled Percent Insectivory",
                         trendline_lty = "solid",
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        plot_ylab = FALSE,
                         new_plot = FALSE#,
                         #polygon_color = "orange"
     )
-    add_outlier(df = ch1lineareffects,
-                variable_of_interest = "scale_habitat_ssi",
-                add_legend = FALSE,
-                outlier_color = "grey20") #might end up removing the outlier completely in the end, and would rescale the axes..
+    #add_outlier(df = ch1lineareffects,
+    #            variable_of_interest = "scale_habitat_ssi",
+    #            add_legend = FALSE,
+    #            outlier_color = "grey20") #might end up removing the outlier completely in the end, and would rescale the axes.. - DONE
 
     #Percent Insectivory
     plot_linear_effects(load_from = lf_ch1m1,
@@ -577,9 +389,9 @@ stable_color <- "#4393c3"
                         new_plot = FALSE,#,
                         #polygon_color = "orange"
                         plot_ylab = FALSE)
-    add_outlier(df = ch1lineareffects,
-                variable_of_interest = "scale_insect_perc",
-                add_legend = FALSE)
+    #add_outlier(df = ch1lineareffects,
+    #            variable_of_interest = "scale_insect_perc",
+    #            add_legend = FALSE)
     
     #Temperature Niche
     plot_linear_effects(load_from = lf_ch1m1,
@@ -587,15 +399,16 @@ stable_color <- "#4393c3"
                         variable_kappa = "kappa_temp_pos",
                         xlab = "Scaled Temperature Niche Position",
                         trendline_lty = "dashed",
+                        plot_ylab = FALSE,
                         plot_slope = FALSE)
-    legend("bottomleft",
-           legend = c("NC Colder"),
-           fill = c("blue"),
-           bty = "n")
-    legend("bottomright",
-           legend = c("NC Warmer"),
-           fill = c("red"),
-           bty = "n")
+    #legend("bottomleft",
+    #       legend = c("NC Colder"),
+    #       fill = c("blue"),
+    #       bty = "n")
+    #legend("bottomright",
+    #       legend = c("NC Warmer"),
+    #       fill = c("red"),
+    #       bty = "n")
     #and now if I want to add the sensitivity analysis on top.... I want to be able to plot JUST the line without starting a new plot.
     #and I want to re-print the segments and cex with issues.
     plot_linear_effects(load_from = lf_ch1NOBO,
@@ -604,17 +417,27 @@ stable_color <- "#4393c3"
                         variable_kappa = "kappa_temp_pos",
                         xlab = "Scaled Temperature Niche Position",
                         trendline_lty = "solid",
+                        plot_ylab = FALSE,
                         new_plot = FALSE#,
                         #polygon_color = "orange"
     )
-    add_outlier(df = ch1lineareffects,
-                variable_of_interest = "scale_ztempwq",
-                add_legend = FALSE)
+    #add_outlier(df = ch1lineareffects,
+    #            variable_of_interest = "scale_ztempwq",
+    #            add_legend = FALSE)
     
     #SO when I do the final plot now, I'll JUST plot the orange bar from the sensitivity analysis.
   }
   dev.off()
-
+  
+# plot the legend for temperature niche position
+# Create color gradient
+colors <- colorRampPalette(c("blue","red"))(maxColorValue)
+legend_image <- as.raster(matrix(colors, ncol = 1))
+plot(c(1,10), c(1,10))
+rasterImage(legend_image, xleft = 4, ybottom = 2, xright = 5, ytop = 8)
+mtext("NC colder")
+mtext("NC warmer", side = 4)
+#and then snip to get the images from the box, already in the ch1_figures.ppt
   
   
   #And, for plotting regional trend seperate, I want an unscaled version so it's easy to show the 1:1 lines.
@@ -640,10 +463,10 @@ stable_color <- "#4393c3"
       units = "px", 
       type = "windows")
   {
-    par(mar =c(5.1, 6.1, 3.1, 2.1), 
+    par(mar =c(5.1, 7.1, 3.1, 2.1), 
         cex = 1.3,
         cex.axis = 1.3,
-        cex.lab = 1.6,
+        cex.lab = 1.3,
         cex.main = 1.6,
         cex.sub = 1.4,
         bg = NA)
@@ -661,7 +484,10 @@ stable_color <- "#4393c3"
                         rt_colors_variable = rt_colors_variable,
                         plot_ylab = TRUE,
                         ylab_distance = -0.03,
-                        plot_slope = FALSE)
+                        plot_slope = FALSE,
+                        color_segments_differently = TRUE,
+                        segments_color = "grey10",
+                        ylab_cex = 1.4)
     #add triangles
     #above the 1:1 line above zero
     polygon(c(0, 0.08, 0), 
@@ -677,6 +503,12 @@ stable_color <- "#4393c3"
     abline(h = 0, lty = "dashed", col = "grey")
     abline(a = 0, b = 1, lty = "dashed", col = "grey")
     
+    #add error bars in x direction from regional trend
+    segments(x0 = ch1lineareffects$usgs_2.5CI[!is.na(ch1lineareffects$common_name_standard)]*.01,
+             x1 = ch1lineareffects$usgs_97.5CI[!is.na(ch1lineareffects$common_name_standard)]*.01,
+             y0 = ch1lineareffects$mean[!is.na(ch1lineareffects$common_name_standard)],
+             lwd = 3,
+             col = "grey15")
     
     plot_linear_effects(load_from = lf_ch1NOBO,
                         fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
@@ -690,6 +522,9 @@ stable_color <- "#4393c3"
                         unscale_regional_trend = TRUE,
                         all_rt_sd = all_rt_sd, 
                         all_rt_mean = all_rt_mean,
+                        color_segments_differently = TRUE,
+                        segments_color = "grey15",
+                        ylab_cex = 1.4,
                         base_rt_kappa = ch1NOBOlinear$mean[ch1NOBOlinear$rownames == "kappa_regional"]#,
                         #polygon_color = "orange"
                         )
@@ -697,9 +532,9 @@ stable_color <- "#4393c3"
     #       legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
     #       fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
     #       bty = "n")
-    add_outlier(df = ch1lineareffects,
-                variable_of_interest = "usgs_trend_estimate",
-                add_legend = FALSE)
+    #add_outlier(df = ch1lineareffects,
+    #            variable_of_interest = "usgs_trend_estimate",
+    #            add_legend = FALSE)
     legend("topleft",
            legend = c("Local Trends More Extreme"),
            fill = c(adjustcolor("grey", alpha.f = 0.8)
@@ -753,7 +588,7 @@ stable_color <- "#4393c3"
       units = "px", 
       type = "windows")
   {
-    par(mar =c(5.1, 6.1, 4.1, 2.1), 
+    par(mar =c(5.1, 7.1, 4.1, 2.1), 
         cex = 1.3,
         cex.axis = 1.3,
         cex.lab = 1.6,
@@ -1003,6 +838,202 @@ stable_color <- "#4393c3"
 
   #hum. idk that I really need to plot this so much.
   #alright yeah, let me just report the effect size without doing anything else
+  
+  
+
+  
+  #####################################
+  #
+  # Plot kappa effect sizes
+  #
+  ###################################
+  
+  c1m1 <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
+    filter(str_detect(.$rownames, "kappa")) %>%
+    mutate(model = "m1", 
+           color = "black",
+           id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1),
+           ylab = case_when(
+             rownames == "kappa_regional" ~ "Regional Trend",
+             rownames == "kappa_habitat_selection" ~ "Habitat Selectivity",
+             rownames == "kappa_temp_pos" ~ "Temp. Niche Position",
+             rownames == "kappa_diet" ~ "Percent Insectivory"
+           )
+    )
+  
+  c1mNR <- read.csv(paste0(lf_ch1nR, "fit_summary.csv")) %>%
+    filter(str_detect(.$rownames, "kappa")) %>%
+    mutate(model = "m1", 
+           color = "azure2",
+           id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1))
+  
+  ch1NOBO <- read.csv(paste0(lf_ch1NOBO, "fit_summary.csv")) |>
+    filter(str_detect(rownames, "kappa")) |>
+    mutate(model = "msens",
+           color = "orange",
+           id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1),
+           ylab = case_when(
+             rownames == "kappa_regional" ~ "Regional Trend",
+             rownames == "kappa_habitat_selection" ~ "Habitat Selectivity",
+             rownames == "kappa_temp_pos" ~ "Temp. Niche Position",
+             rownames == "kappa_diet" ~ "Percent Insectivory"
+           )
+    )
+  
+  ch1NOBO_nR <- read.csv(paste0(lf_ch1NOBO_nR, "fit_summary.csv")) |>
+    filter(str_detect(rownames, "kappa")) |>
+    mutate(model = "mNRsens",
+           color = "pink",
+           id = row_number(),
+           significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
+           pch = ifelse(significant == TRUE, 16, 1))
+  
+  rt_model_color = "black"
+  wo_model_color = "black"
+  
+  
+  ###!!!!!!!!!!!!!!!!Make a new plotting function for plotting these effects. Have an option where it makes a new plot or not. rmNOBO models should be the main ones.
+  png(filename = "figures/ch1_model_CI_comparison.png", 
+      width = 420, # 620 for larger
+      height = 440, # 640 for larger
+      units = "px", 
+      type = "windows")
+  #honestly, might want to think about increasing the width and height and text sizes.
+  {
+    par(mar = c(4, 10, 2, 1),
+        cex = 1.1) # 1.5 for larger
+    plot(x = ch1NOBO$mean,
+         y = ch1NOBO$id, 
+         pch = ch1NOBO$pch,
+         cex = 2,
+         xlim = c(-.02,.04),
+         xlab = "Effect Size",
+         xaxt = "n",
+         yaxt = "n",
+         ylab = "",
+         col = rt_model_color,
+         ylim = c(.5, 4)) 
+    abline(v = 0, lty = "dashed") 
+    axis(side = 1, at = seq(-0.04, 0.04, by = 0.01), 
+         labels = TRUE) 
+    segments(x0 = ch1NOBO$conf_2.5,
+             x1 = ch1NOBO$conf_97.5,
+             y0 = ch1NOBO$id,
+             lwd = 4.5,
+             col = rt_model_color) 
+    axis(side = 2,           # Side 2 is the left side (y-axis)
+         at = ch1NOBO$id,     # Specify the locations of the tick marks
+         labels =  ch1NOBO$ylab, # Specify the labels for those locations
+         las = 2
+    ) 
+    #add the second model without regional trend
+    points(x = ch1NOBO_nR$mean,
+           y = ch1NOBO_nR$id+.75,
+           pch = ch1NOBO_nR$pch,
+           cex = 2,
+           col = wo_model_color) +
+      segments(x0 = ch1NOBO_nR$conf_2.5,
+               x1 = ch1NOBO_nR$conf_97.5,
+               y0 = ch1NOBO_nR$id+.75,
+               lwd = 4.5,
+               col = wo_model_color,
+               lty = "dotted")
+  }
+  legend("right",
+         bty = "n",
+         legend = c("Full Model", "Model without \nRegional Trend\n"), 
+         #fill = c(rt_model_color, wo_model_color
+         lty = c("solid", "dotted"),
+         lwd = c(4.5, 4.5)
+         #scientific name is Colinus virginianus, if I want to change text to reflect that.
+  )
+  #}
+  dev.off()
+  
+  #Supplemental version with all four models
+  png(filename = "figures/ch1_model_CI_comparison_SUP.png", 
+      width = 620,
+      height = 640,
+      units = "px", 
+      type = "windows")
+  #honestly, might want to think about increasing the width and height and text sizes.
+  {
+    par(mar = c(4, 10, 2, 1),
+        cex = 1.5)
+    plot(x = c1m1$mean,
+         y = c1m1$id, 
+         pch = c1m1$pch,
+         cex = 2,
+         xlim = c(-.02,.04),
+         xlab = "Effect Size",
+         xaxt = "n",
+         yaxt = "n",
+         ylab = "",
+         col = rt_model_color,
+         ylim = c(.5, 4)) 
+    abline(v = 0, lty = "dashed") 
+    axis(side = 1, at = seq(-0.04, 0.04, by = 0.01), 
+         labels = TRUE) 
+    segments(x0 = c1m1$conf_2.5,
+             x1 = c1m1$conf_97.5,
+             y0 = c1m1$id,
+             lwd = 4.5,
+             col = rt_model_color) 
+    axis(side = 2,           # Side 2 is the left side (y-axis)
+         at = c1m1$id,     # Specify the locations of the tick marks
+         labels =  c1m1$ylab, # Specify the labels for those locations
+         las = 2
+    ) 
+    #add the second model without regional trend
+    points(x = c1mNR$mean,
+           y = c1mNR$id+.5, 
+           pch = c1mNR$pch,
+           cex = 2,
+           col = wo_model_color) +
+      segments(x0 = c1mNR$conf_2.5,
+               x1 = c1mNR$conf_97.5,
+               y0 = c1mNR$id+.5,
+               lwd = 4.5,
+               col = wo_model_color)
+    #add the third model with the sensitivity analysis
+    points(x = ch1NOBO$mean,
+           y = ch1NOBO$id-.25,
+           pch = ch1NOBO$pch,
+           cex = 2,
+           col = ch1NOBO$color) +
+      segments(x0 = ch1NOBO$conf_2.5,
+               x1 = ch1NOBO$conf_97.5,
+               y0 = ch1NOBO$id-.25,
+               lwd = 4.5,
+               col = ch1NOBO$color)
+    #add the fourth model with no RT and sensitivity analysis
+    points(x = ch1NOBO_nR$mean,
+           y = ch1NOBO_nR$id+.3,
+           pch = ch1NOBO_nR$pch,
+           cex = 2,
+           col = ch1NOBO_nR$color) +
+      segments(x0 = ch1NOBO_nR$conf_2.5,
+               x1 = ch1NOBO_nR$conf_97.5,
+               y0 = ch1NOBO_nR$id+.3,
+               lwd = 4.5,
+               col = ch1NOBO_nR$color)
+  }
+  legend("right",
+         bty = "n",
+         legend = c("Full Model,\nWith Bobwhite\n", "Full Model\n", "No Regional Trend, \nWith Bobwhite\n", "No Regional Trend\n"), 
+         fill = c(rt_model_color, "orange", wo_model_color, "pink")
+         #scientific name is Colinus virginianus, if I want to change text to reflect that.
+  )
+  #}
+  dev.off()
+  
+  
   
 #------------------------------------
 #

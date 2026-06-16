@@ -208,7 +208,10 @@
     all_rt_sd = NA,
     all_rt_mean = NA,
     base_rt_kappa = NA,
-    rm_species = NA
+    rm_species = NA,
+    color_segments_differently = FALSE,
+    segments_color = "grey10",
+    ylab_cex = 2
   ) {
     
     posterior_draws = read.csv(paste0(load_from, "posterior_draws.csv"))
@@ -231,10 +234,10 @@
     if(plot_ylab == TRUE) {
       text(x = par("usr")[1] + ylab_distance,  # Position left of plot region
            y = mean(par("usr")[3:4]), # Center vertically within plot region
-           labels = "Population Trend",
+           labels = ylab,
            srt = 90,                  # Rotate 90 degrees for vertical orientation
            xpd = NA,                  # Allow plotting outside plot region
-           cex = 1.6) 
+           cex = ylab_cex) 
     }
     #abline at 0
     if(abline_at_zero == TRUE) {
@@ -247,6 +250,14 @@
              lwd = 3, 
              col = palette[cut(fit_summary[,variable_of_interest], maxColorValue)]
              )
+    if (color_segments_differently == TRUE) {
+      segments(x0 = fit_summary[,variable_of_interest],
+               y0 = fit_summary$conf_2.5,
+               y1 = fit_summary$conf_97.5,
+               lwd = 3, 
+               col = segments_color
+      )
+    }
     #re-add the axes
     #y
     axis(2,          
@@ -256,7 +267,6 @@
          las = 2,
          #cex.axis = 1.25
          ) 
-    #x
     #axis(1,
     #     at = c(-3, -2, -1, 0, 1, 2, 3),
     #     labels = TRUE)
