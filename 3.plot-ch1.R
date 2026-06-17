@@ -64,6 +64,16 @@ stable_color <- "#4393c3"
              TRUE ~ "unaccounted"
            ))
 
+  #from 5,000 posterior draws..
+  prop_posterior <- read.csv(paste0(lf_ch1m1, "posterior_draws.csv")) |>
+    summarize(across(everything(),
+                     (prop_gt_0 = ~sum(. > 0)/5000))) |>
+    tidyr::pivot_longer(cols = b.1:b.60, 
+                        names_to = "variable") |>
+    dplyr::select(variable, value) |>
+    rename(prop_posterior_gt_0 = value) |>
+    mutate(common_name_standard = as.integer(str_extract(variable, "[0-9]([0-9])?"))) |>
+    dplyr::select(-variable) 
   
   
   #n sigifnicantly increasing/decreasing species:
@@ -80,53 +90,61 @@ stable_color <- "#4393c3"
     )) %>%
     arrange(mean) %>%
     mutate(sp_id = cur_group_rows()) %>%
-    ungroup()
+    ungroup() |>
+    left_join(prop_posterior, by = c("common_name_standard")) |>
+    mutate(prop_posterior_color = case_when(
+      prop_posterior_gt_0 == 1 | prop_posterior_gt_0 == 0 ~ "black",
+      prop_posterior_gt_0 >= 0.8 & prop_posterior_gt_0 <= 0.6 | prop_posterior_gt_0 >= 0.0 & prop_posterior_gt_0 <= 0.2 ~ "grey40",
+      prop_posterior_gt_0 > 0.6 | prop_posterior_gt_0 < 0.2 ~ "grey80" 
+    ))
   #no species are in the "decline supported at the 87% CI and mean greater than .01 
   
-  png(filename = "figures/ch1_horiz_pop_change.png", 
-    width = 1200,
-    height = 600,
-    units = "px", 
-    type = "windows")
-  {
-  par(mar = c(13.5, 5, 2, 2), 
-      cex = 1.1,
-      cex.axis = 1.3,
-      cex.lab = 1.2,
-      cex.main = 1.6,
-      cex.sub = 1.4,
-      bg = NA)
-  plot_intervals(plot_df = plot_horiz,
-                 species_axis = "x",
-                 ylim_select = c(-.15, .07),
-                 xlim_select = c(0, 61),
-                 title = "North Carolina Mini Breeding Bird Survey Species Population Trends",
-                 yaxt = "n") 
-  axis(side = 2, 
-       #at = seq(-.14, .08, by = 0.02), 
-       #labels = TRUE,
-       at = c(-.14, -.12, -.10, -.08, -.06, -.04, -.02, 0, .02, .04, .06, .08),
-       labels = c("-14%", "-12%", "-10%", "-8%", "-6%", "-4%", 
-                  "-2%", "0", "2%", "4%", "6%", "8%"),
-       las = 1) 
-  axis(side = 2, at = seq(-.13, 0.05, by = 0.02),
-       labels = FALSE,
-       tck = -0.01) 
-  mtext(text = "Percent Population Change per Year", side = 2, line = 4, cex = 1.3) 
-  legend("topleft",
-         legend = c("Decreasing", 
-                    #"Likely Decreasing [87% CI]", 
-                    "Stable", 
-                    #"Likely Increasing [87% CI]",
-                    "Increasing"),
-         fill = c("#762a83",
-                  #"#c2a5cf", 
-                  stable_color,
-                  #"#5aae61",
-                  "#1b7837"),
-         bty = "n")
-  }
-  dev.off()
+  plot_horiz$color <- plot_horiz$prop_posterior_color
+  
+#  png(filename = "figures/ch1_horiz_pop_change.png", 
+#    width = 1200,
+#    height = 600,
+#    units = "px", 
+#    type = "windows")
+#  {
+#  par(mar = c(13.5, 5, 2, 2), 
+#      cex = 1.1,
+#      cex.axis = 1.3,
+#      cex.lab = 1.2,
+#      cex.main = 1.6,
+#      cex.sub = 1.4,
+#      bg = NA)
+#  plot_intervals(plot_df = plot_horiz,
+#                 species_axis = "x",
+#                 ylim_select = c(-.15, .07),
+#                 xlim_select = c(0, 61),
+#                 title = "North Carolina Mini Breeding Bird Survey Species Population Trends",
+#                 yaxt = "n") 
+#  axis(side = 2, 
+#      #at = seq(-.14, .08, by = 0.02), 
+#       #labels = TRUE,
+#       at = c(-.14, -.12, -.10, -.08, -.06, -.04, -.02, 0, .02, .04, .06, .08),
+#       labels = c("-14%", "-12%", "-10%", "-8%", "-6%", "-4%", 
+#                  "-2%", "0", "2%", "4%", "6%", "8%"),
+#       las = 1) 
+#  axis(side = 2, at = seq(-.13, 0.05, by = 0.02),
+#       labels = FALSE,
+#       tck = -0.01) 
+#  mtext(text = "Percent Population Change per Year", side = 2, line = 4, cex = 1.3) 
+#  legend("topleft",
+#         legend = c("Decreasing", 
+#                   #"Likely Decreasing [87% CI]", 
+#                    "Stable", 
+#                    #"Likely Increasing [87% CI]",
+#                    "Increasing"),
+#         fill = c("#762a83",
+#                  #"#c2a5cf", 
+#                  stable_color,
+#                  #"#5aae61",
+#                  "#1b7837"),
+#         bty = "n")
+#  }
+#  dev.off()
   
   ##try a two-panel version
   png(filename = "figures/ch1_horiz_pop_change_twopanel.png", 
