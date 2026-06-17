@@ -342,6 +342,38 @@ stable_color <- "#4393c3"
         #bg = NA
         )
     
+    #Temperature Niche
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_ztempwq",
+                        variable_kappa = "kappa_temp_pos",
+                        xlab = "Scaled Temperature Niche Position",
+                        trendline_lty = "dashed",
+                        plot_ylab = FALSE,
+                        plot_slope = FALSE)
+    #legend("bottomleft",
+    #       legend = c("NC Colder"),
+    #       fill = c("blue"),
+    #       bty = "n")
+    #legend("bottomright",
+    #       legend = c("NC Warmer"),
+    #       fill = c("red"),
+    #       bty = "n")
+    #and now if I want to add the sensitivity analysis on top.... I want to be able to plot JUST the line without starting a new plot.
+    #and I want to re-print the segments and cex with issues.
+    plot_linear_effects(load_from = lf_ch1NOBO,
+                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
+                        variable_of_interest = "scale_ztempwq",
+                        variable_kappa = "kappa_temp_pos",
+                        xlab = "Scaled Temperature Niche Position",
+                        trendline_lty = "solid",
+                        plot_ylab = FALSE,
+                        new_plot = FALSE#,
+                        #polygon_color = "orange"
+    )
+    #add_outlier(df = ch1lineareffects,
+    #            variable_of_interest = "scale_ztempwq",
+    #            add_legend = FALSE)
+    
     #Habitat selectivity
     plot_linear_effects(load_from = lf_ch1m1,
                         variable_of_interest = "scale_habitat_ssi",
@@ -392,40 +424,7 @@ stable_color <- "#4393c3"
     #add_outlier(df = ch1lineareffects,
     #            variable_of_interest = "scale_insect_perc",
     #            add_legend = FALSE)
-    
-    #Temperature Niche
-    plot_linear_effects(load_from = lf_ch1m1,
-                        variable_of_interest = "scale_ztempwq",
-                        variable_kappa = "kappa_temp_pos",
-                        xlab = "Scaled Temperature Niche Position",
-                        trendline_lty = "dashed",
-                        plot_ylab = FALSE,
-                        plot_slope = FALSE)
-    #legend("bottomleft",
-    #       legend = c("NC Colder"),
-    #       fill = c("blue"),
-    #       bty = "n")
-    #legend("bottomright",
-    #       legend = c("NC Warmer"),
-    #       fill = c("red"),
-    #       bty = "n")
-    #and now if I want to add the sensitivity analysis on top.... I want to be able to plot JUST the line without starting a new plot.
-    #and I want to re-print the segments and cex with issues.
-    plot_linear_effects(load_from = lf_ch1NOBO,
-                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
-                        variable_of_interest = "scale_ztempwq",
-                        variable_kappa = "kappa_temp_pos",
-                        xlab = "Scaled Temperature Niche Position",
-                        trendline_lty = "solid",
-                        plot_ylab = FALSE,
-                        new_plot = FALSE#,
-                        #polygon_color = "orange"
-    )
-    #add_outlier(df = ch1lineareffects,
-    #            variable_of_interest = "scale_ztempwq",
-    #            add_legend = FALSE)
-    
-    #SO when I do the final plot now, I'll JUST plot the orange bar from the sensitivity analysis.
+
   }
   dev.off()
   
