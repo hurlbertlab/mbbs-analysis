@@ -93,13 +93,15 @@ stable_color <- "#4393c3"
     ungroup() |>
     left_join(prop_posterior, by = c("common_name_standard")) |>
     mutate(prop_posterior_color = case_when(
-      prop_posterior_gt_0 == 1 | prop_posterior_gt_0 == 0 ~ "black",
-      prop_posterior_gt_0 >= 0.8 & prop_posterior_gt_0 <= 0.6 | prop_posterior_gt_0 >= 0.0 & prop_posterior_gt_0 <= 0.2 ~ "grey40",
-      prop_posterior_gt_0 > 0.6 | prop_posterior_gt_0 < 0.2 ~ "grey80" 
+      prop_posterior_gt_0 > .95 | prop_posterior_gt_0 < .05 ~ "black",
+      (prop_posterior_gt_0 > 0.8) | (prop_posterior_gt_0 < 0.2) ~ "grey80",
+      (prop_posterior_gt_0 > 0.6) | (prop_posterior_gt_0 < 0.4) ~ "gold",
+      prop_posterior_gt_0 >= 0.4 | prop_posterior_gt_0 <= 0.6 ~ stable_color
     ))
   #no species are in the "decline supported at the 87% CI and mean greater than .01 
   
   plot_horiz$color <- plot_horiz$prop_posterior_color
+  #hm uh. looking at this plot tho like. Blue-grey Gnatcatcher has been colored w grey80 even though it's posterior distribution 
   
 #  png(filename = "figures/ch1_horiz_pop_change.png", 
 #    width = 1200,
