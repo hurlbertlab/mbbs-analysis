@@ -79,6 +79,15 @@ stable_color <- "#4393c3"
   #n sigifnicantly increasing/decreasing species:
   statuser::table2(ch1sp$trend_direction)
   
+  maxColorValue = 100
+  palette_blue = colorRampPalette(c("#762a83", "#c2a5cf", "#92c5de", "#a6dba0", "#5aae61"))(maxColorValue)
+  palette_white = colorRampPalette(c("#762a83", "white", "#68f273"))(maxColorValue)
+  #"#62e36c" #backup, slightly darker color.
+  continous_colors <- data.frame(palette_blue, 
+                                 palette_white, 
+                                 palette_percent = seq(from = 0, to = 1, length.out = 100)) |>
+    mutate(palette_percent = round(palette_percent, digits = 2))
+  
   plot_horiz <- ch1sp %>%
     mutate(color = case_when(
       trend_direction == "negative" ~ "#762a83", #decreasing
@@ -92,15 +101,27 @@ stable_color <- "#4393c3"
     mutate(sp_id = cur_group_rows()) %>%
     ungroup() |>
     left_join(prop_posterior, by = c("common_name_standard")) |>
-    mutate(prop_posterior_color = case_when(
-      prop_posterior_gt_0 > .95 | prop_posterior_gt_0 < .05 ~ "black",
-      (prop_posterior_gt_0 > 0.8) | (prop_posterior_gt_0 < 0.2) ~ "grey80",
-      (prop_posterior_gt_0 > 0.6) | (prop_posterior_gt_0 < 0.4) ~ "gold",
+    mutate(prop_posterior_color_onetone = case_when(
+      prop_posterior_gt_0 > .97 | prop_posterior_gt_0 < .03 ~ "#1b7837",
+      (prop_posterior_gt_0 > 0.8) | (prop_posterior_gt_0 < 0.2) ~ "#5aae61",
+      (prop_posterior_gt_0 > 0.6) | (prop_posterior_gt_0 < 0.4) ~ "#92c5de",
       prop_posterior_gt_0 >= 0.4 | prop_posterior_gt_0 <= 0.6 ~ stable_color
-    ))
+    ),
+    prop_posterior_color_twotone = case_when(
+      prop_posterior_gt_0 > .97 ~ "#1b7837",
+      prop_posterior_gt_0 < .03 ~ "#762a83",
+      (prop_posterior_gt_0 > 0.8) ~ "#5aae61",
+      (prop_posterior_gt_0 < 0.2) ~ "#c2a5cf",
+      (prop_posterior_gt_0 > 0.6) ~ "#92c5de",
+      (prop_posterior_gt_0 < 0.4) ~ "#92c5de",
+      prop_posterior_gt_0 >= 0.4 | prop_posterior_gt_0 <= 0.6 ~ stable_color  
+    )) |>
+    mutate(rounded_prop_posterior = round(prop_posterior_gt_0, digits = 2)) |>
+    #put on a continous color ramp
+    left_join(continous_colors, by = c("rounded_prop_posterior" = "palette_percent"))
   #no species are in the "decline supported at the 87% CI and mean greater than .01 
   
-  plot_horiz$color <- plot_horiz$prop_posterior_color
+  plot_horiz$color <- plot_horiz$palette_blue
   #hm uh. looking at this plot tho like. Blue-grey Gnatcatcher has been colored w grey80 even though it's posterior distribution 
   
 #  png(filename = "figures/ch1_horiz_pop_change.png", 
@@ -148,8 +169,10 @@ stable_color <- "#4393c3"
 #  }
 #  dev.off()
   
+  label_colorful = TRUE
+  
   ##try a two-panel version
-  png(filename = "figures/ch1_horiz_pop_change_twopanel.png", 
+  png(filename = "figures/ch1_horiz_pop_change_twopanel_thrublue.png", 
       width = 900,
       height = 800,
       units = "px", 
@@ -161,15 +184,17 @@ stable_color <- "#4393c3"
         cex.lab = 1.2,
         cex.main = 1.6,
         cex.sub = 1.4,
-        mfrow = c(2,1),
-        bg = NA)
+        mfrow = c(2,1)
+        #bg = NA
+        )
     {
     plot_intervals(plot_df = plot_horiz[1:30,],
                    species_axis = "x",
                    ylim_select = c(-.15, .01),
                    xlim_select = c(0, 30.5),
                    title = "North Carolina Mini Breeding Bird Survey Species Population Trends",
-                   yaxt = "n") 
+                   yaxt = "n",
+                   label_colorful = label_colorful) 
     axis(side = 2, 
          #at = seq(-.14, .08, by = 0.02), 
          #labels = TRUE,
@@ -181,19 +206,8 @@ stable_color <- "#4393c3"
          labels = FALSE,
          tck = -0.01) 
     mtext(text = "Population Change per Year", side = 2, line = 4, cex = 1.3) 
-    legend("bottomright",
-           legend = c("Declining", 
-                      #"Likely Decreasing [87% CI]", 
-                      "Stable", 
-                      #"Likely Increasing [87% CI]",
-                      "Increasing"),
-           fill = c("#762a83", 
-                    #"#c2a5cf",
-                    stable_color,
-                    #"#5aae61", 
-                    "#1b7837"),
-           bty = "n")
-    }
+    plot_intervals_legend("continuous")
+    
     par(mar = c(11, 6, .5, 1))
     {
     plot_intervals(plot_df = plot_horiz[31:60,],
@@ -201,7 +215,8 @@ stable_color <- "#4393c3"
                    ylim_select = c(-.08, .08),
                    xlim_select = c(30, 60.5),
                    title = "",
-                   yaxt = "n") 
+                   yaxt = "n",
+                   label_colorful = label_colorful) 
       axis(side = 2, 
            #at = seq(-.14, .08, by = 0.02), 
            #labels = TRUE,
@@ -213,20 +228,26 @@ stable_color <- "#4393c3"
            labels = FALSE,
            tck = -0.01) 
       mtext(text = "Population Change per Year", side = 2, line = 4, cex = 1.3)
-      legend("bottomright",
-             legend = c("Declining", 
-                        #"Likely Decreasing [87% CI]",
-                        "Stable",
-                        #"Likely Increasing [87% CI]",
-                        "Increasing"),
-             fill = c("#762a83", 
-                      #"#c2a5cf", 
-                      stable_color,
-                      #"#5aae61", 
-                      "#1b7837"),
-             bty = "n")
+      plot_intervals_legend("continuous")
+    }
     }
   }
+  dev.off()
+  
+  
+  #make a color ramp for the figure legend
+  png(filename = "figures/ch1_horiz_pop_change_LEGEND_continous.png", 
+      width = 900,
+      height = 800,
+      units = "px", 
+      type = "windows") 
+  colors <- palette_blue
+  legend_image <- as.raster(matrix(colors, ncol = 1))
+  plot(c(1,10), c(1,10))
+  rasterImage(legend_image, xleft = 4, ybottom = 2, xright = 5, ytop = 8)
+  #text("okay",
+  #     x= 5.5,
+  #     y = 8.2)
   dev.off()
   
 ######################

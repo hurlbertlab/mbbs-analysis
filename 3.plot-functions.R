@@ -36,7 +36,8 @@
                              ylim_select = c(1, 66), 
                              title = NA, 
                              xaxt = "s", 
-                             yaxt = "s") {
+                             yaxt = "s",
+                             label_colorful = FALSE) {
   if(species_axis == "y") { #species ID on the y axis
     plot(y = plot_df$sp_id,
          x = plot_df$mean,
@@ -130,6 +131,7 @@
            labels = FALSE,
            las = 2,
            cex.axis = 1.25) 
+      if(label_colorful == FALSE) {
         text(x = seq(round(min(plot_df$sp_id)),
                      round(max(plot_df$sp_id)), by = 1),
              y = par("usr")[3] - 0.05 * diff(par("usr")[3:4]),  # Position below x-axis
@@ -138,10 +140,50 @@
              adj = 1,   # Adjust alignment (1 = right-aligned)
              xpd = TRUE,  # Allow plotting outside plot region
              cex = 1.25,
-             col = plot_df$color)
+             col = "black" #no color on labels
+        )
+      } else if(label_colorful == TRUE) {
+        text(x = seq(round(min(plot_df$sp_id)),
+                     round(max(plot_df$sp_id)), by = 1),
+             y = par("usr")[3] - 0.05 * diff(par("usr")[3:4]),  # Position below x-axis
+             labels = plot_df$common_name,
+             srt = 50,  # 45-degree rotation
+             adj = 1,   # Adjust alignment (1 = right-aligned)
+             xpd = TRUE,  # Allow plotting outside plot region
+             cex = 1.25,
+             col = plot_df$color #colorful labels matching ramp
+        ) 
+      }
   }
   }
   
+#
+#
+# Legend plotting options for the intervals graph.
+#
+  plot_intervals_legend <- function(legend_type) {
+    if(legend_type == "three color") {
+      legend("bottomright",
+             legend = c("Declining", 
+                        #"Likely Decreasing [87% CI]", 
+                        "Stable", 
+                        #"Likely Increasing [87% CI]",
+                        "Increasing"),
+             fill = c("#762a83", 
+                      #"#c2a5cf",
+                      stable_color,
+                      #"#5aae61", 
+                      "#1b7837"),
+             bty = "n")
+    } else if(legend_type == "continuous") {
+      legend("bottomright",
+             legend = c("1", "0.5", "0"),
+             fill = c("black", "black", "black"),
+             bty = "n",
+             title = "Proportion of \n Posterior >0",
+             cex = 1.2)
+    }
+  }
   
 # plot only significant results, plots with segments
   plot_only_sig <- function(plot_df, xlim_sig = c(-0.4, 0.2), point_cex = 2, segment_lwd = 6){
