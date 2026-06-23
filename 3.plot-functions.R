@@ -37,7 +37,8 @@
                              title = NA, 
                              xaxt = "s", 
                              yaxt = "s",
-                             label_colorful = FALSE) {
+                             label_colorful = FALSE,
+                             symbol_size = 2.8) {
   if(species_axis == "y") { #species ID on the y axis
     plot(y = plot_df$sp_id,
          x = plot_df$mean,
@@ -47,7 +48,7 @@
          yaxt = "n",
          xlab = xlab,
          ylab = ylab,
-         pch = 16, 
+         pch = plot_df$pch, 
          cex = 2,
          yaxs = "i",
          main = title,
@@ -93,8 +94,8 @@
          xaxt = "n",
          xlab = xlab,
          ylab = ylab,
-         pch = 16, 
-         cex = 2,
+         pch = plot_df$pch, 
+         cex = symbol_size,
          xaxs = "i",
          main = title,
          yaxt = yaxt
@@ -111,7 +112,8 @@
                x0 = plot_df$sp_id,
                x1 = plot_df$sp_id,
                col = plot_df$color,
-               lwd = 5) 
+               lwd = 7,
+               lty = plot_df$lty) 
                 #plot a slightly wider border around any white segments
                 border_segments <- plot_df |>
                   filter(color == "white")

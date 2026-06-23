@@ -62,7 +62,15 @@ stable_color <- "#4393c3"
              conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == FALSE ~ "stable",
              conf_6.5 < 0 & conf_93.5 > 0 ~ "stable",
              TRUE ~ "unaccounted"
-           ))
+           ),
+          pch = case_when(
+            trend_direction == "stable" ~ 15,
+            TRUE ~ 16
+          ),
+          lty = case_when(
+            trend_direction == "stable" ~ "solid",
+            TRUE ~ "solid"
+          ))
 
   #from 5,000 posterior draws..
   prop_posterior <- read.csv(paste0(lf_ch1m1, "posterior_draws.csv")) |>
@@ -169,10 +177,11 @@ stable_color <- "#4393c3"
 #  }
 #  dev.off()
   
+  #turn label coloing on/off
   label_colorful = TRUE
   
   ##try a two-panel version
-  png(filename = "figures/ch1_horiz_pop_change_twopanel_thrublue.png", 
+  png(filename = "figures/ch1_horiz_pop_change_twopanel_thrublue_stable.png", 
       width = 900,
       height = 800,
       units = "px", 

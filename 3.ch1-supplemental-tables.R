@@ -34,7 +34,7 @@ species_trends <- read.csv(paste0(final_data_location, "fit_summary.csv")) |>
          trend_direction = ifelse(conf_2.5 > 0, "positive", "negative")) |>
   mutate(trend_direction = case_when(
     significant == TRUE & trend_direction == "negative" ~ "Declining", #decreasing
-    significant == FALSE & sig_87 == TRUE & mean_gt01 == TRUE ~ "Likely Declining [87% CI, |mean| > 0.01]", #decline supported at 87% confidence interval
+    significant == FALSE & sig_87 == TRUE & mean_gt01 == TRUE ~ "Declining", #Likely Declining [87% CI, |mean| > 0.01]", #decline supported at 87% confidence interval
     significant == FALSE & sig_87 == TRUE & mean_gt01 == FALSE ~ "Stable", #stable
     significant == FALSE & sig_87 == FALSE ~ "Stable", #stable
     significant == TRUE & trend_direction == "positive" ~ "Increasing" #increasing
@@ -54,6 +54,20 @@ species_trends <- read.csv(paste0(final_data_location, "fit_summary.csv")) |>
   dplyr::relocate(trend_direction, .after = scientific_name) |>
   #ah, and you know what, it would be pretty nice to include abundance here as well.
   left_join(mbbs, by = c("common_name")) |>
-  dplyr::relocate(total_abundance, .after = scientific_name)
+  dplyr::relocate(total_abundance, .after = scientific_name) |>
+  #add in traits
+  left_join(read.csv(paste0(final_data_location,"beta_to_common_name.csv")), by = c("common_name")) |>
+  left_join(read.csv(paste0(final_data_location,"species_traits.csv")), by = c("common_name_standard")) |>
+  dplyr::select(-common_name_standard, -avonet_diet, -diet_category_standard)
 
 write.csv(species_trends, "data/ch1-supplemental-tables/species_trends.csv", row.names = FALSE)  
+
+effects_of_traits <- read.csv("model/2026.04.09_ch1_rmNOBO_final/fit_summary.csv") |>
+  filter(str_detect(rownames, "kappa")) |>
+  mutate(model = "Regional Trend") |>
+  add_row((read.csv("model/2026.04.09_ch1_rmNOBO_woRegional_final/fit_summary.csv") |>
+               filter(str_detect(rownames, "kappa")) |>
+               mutate(model = "Without Regional Trend"))) |>
+  dplyr::relocate(model, .before = rownames)
+
+write.csv(effects_of_traits, "data/ch1-supplemental-tables/effects_of_traits.csv", row.names = FALSE)
