@@ -132,7 +132,7 @@ stable_color <- "#4393c3"
   plot_horiz$color <- plot_horiz$palette_blue
   #hm uh. looking at this plot tho like. Blue-grey Gnatcatcher has been colored w grey80 even though it's posterior distribution 
   
-#  png(filename = "figures/ch1_horiz_pop_change.png", 
+#  png(filename = "figures/ch1/ch1_horiz_pop_change.png", 
 #    width = 1200,
 #    height = 600,
 #    units = "px", 
@@ -181,7 +181,7 @@ stable_color <- "#4393c3"
   label_colorful = TRUE
   
   ##try a two-panel version
-  png(filename = "figures/ch1_horiz_pop_change_twopanel_thrublue_stable.png", 
+  png(filename = "figures/ch1/ch1_horiz_pop_change_twopanel_thrublue_stable.png", 
       width = 900,
       height = 800,
       units = "px", 
@@ -245,7 +245,7 @@ stable_color <- "#4393c3"
   
   
   #make a color ramp for the figure legend
-  png(filename = "figures/ch1_horiz_pop_change_LEGEND_continous.png", 
+  png(filename = "figures/ch1/ch1_horiz_pop_change_LEGEND_continous.png", 
       width = 900,
       height = 800,
       units = "px", 
@@ -376,7 +376,7 @@ stable_color <- "#4393c3"
   
   #figure for main publication
   #make 1 row. move panels closer together. only need y axis on first one.
-  png(filename = "figures/ch1_linear_effects_3panel.png", 
+  png(filename = "figures/ch1/ch1_linear_effects_3panel.png", 
       width = 900,
       height = 300,
       units = "px", 
@@ -506,7 +506,7 @@ mtext("NC warmer", side = 4)
   all_rt_sd = sd(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE)
   all_rt_mean = (mean(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE))
   
-  png(filename = "figures/ch1_linear_effects_RT_black.png", #black, tacol, trendcol
+  png(filename = "figures/ch1/ch1_linear_effects_RT_black.png", #black, tacol, trendcol
       width = 500,
       height = 500,
       units = "px", 
@@ -631,7 +631,7 @@ mtext("NC warmer", side = 4)
   dev.off()
   
   
-  png(filename = "figures/ch1_linear_effects.png", 
+  png(filename = "figures/ch1/ch1_linear_effects.png", 
       width = 800,
       height = 800,
       units = "px", 
@@ -772,7 +772,7 @@ mtext("NC warmer", side = 4)
                                mean < 0 & mean > usgs_trend_estimate ~ "less negative"))
   
   #supplemental figure
-  png(filename = "figures/ch1_SUPPLEMENTAL_linear_effects.png", 
+  png(filename = "figures/ch1/ch1_SUPPLEMENTAL_linear_effects.png", 
       width = 1100,
       height = 600,
       units = "px", 
@@ -948,7 +948,7 @@ mtext("NC warmer", side = 4)
   
   
   ###!!!!!!!!!!!!!!!!Make a new plotting function for plotting these effects. Have an option where it makes a new plot or not. rmNOBO models should be the main ones.
-  png(filename = "figures/ch1_model_CI_comparison.png", 
+  png(filename = "figures/ch1/ch1_model_CI_comparison.png", 
       width = 420, # 620 for larger
       height = 440, # 640 for larger
       units = "px", 
@@ -1006,7 +1006,7 @@ mtext("NC warmer", side = 4)
   dev.off()
   
   #Supplemental version with all four models
-  png(filename = "figures/ch1_model_CI_comparison_SUP.png", 
+  png(filename = "figures/ch1/ch1_model_CI_comparison_SUP.png", 
       width = 620,
       height = 640,
       units = "px", 

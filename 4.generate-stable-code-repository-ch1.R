@@ -7,8 +7,15 @@
 
 #list of files that should be copied
 files.list <- c(
-  "data/"
+  list.files(path = "data/bbs-regional/", full.names = TRUE),
+  list.files(path = "data/ch1-supplemental-tables/", full.names = TRUE),
+  list.files(path = "data/mbbs/", full.names = TRUE),
+  list.files(path = "data/species-traits/", recursive = TRUE, full.names = TRUE),
+  list.files(path = "data/", full.names = TRUE, pattern = ".csv"),
+  list.files(path = "figures/ch1/", full.names = TRUE)
 )
+
+
 
 #copy files to new repository location
 
