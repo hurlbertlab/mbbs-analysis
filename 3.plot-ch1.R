@@ -22,9 +22,9 @@ library(scales) #for some color selection from ggplot
 source("3.plot-functions.R")
 
 #where are we pulling data from?
-lf_ch1m1 <- "model/2026.03.12_ch1_m1_final/"
+lf_ch1m1 <- "model/2026.03.12_ch1_m1_final/" #NEED TO UPDATE TO USE 2024 REGIONAL VERSION
 lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
-lf_ch1NOBO <- "model/2026.04.09_ch1_rmNOBO_final/"
+lf_ch1NOBO <- "model/2026.06.26_ch1_rmNOBO_2024rt/" #updated to use version with 2024 regional trend information
 lf_ch1NOBO_nR <- "model/2026.04.09_ch1_rmNOBO_woRegional_final/"
 stable_color <- "#4393c3"
 #lf_dieto <- "Z:/Goulden/mbbs-analysis/model/2025.12.1_ch1_m1_diettest/"
@@ -506,7 +506,7 @@ mtext("NC warmer", side = 4)
   all_rt_sd = sd(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE)
   all_rt_mean = (mean(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE))
   
-  png(filename = "figures/ch1/ch1_linear_effects_RT_black.png", #black, tacol, trendcol
+  png(filename = "figures/ch1/ch1_linear_effects_RT.png", #black, tacol, trendcol
       width = 500,
       height = 500,
       units = "px", 

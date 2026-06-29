@@ -7,7 +7,7 @@
 library(dplyr)
 library(stringr)
 
-final_data_location <- "model/2026.03.12_ch1_m1_final/"
+final_data_location <- "model/2026.06.29_ch1_m1_2024rt/"
 
 z <- qnorm((1+0.87)/2) #confidence interval 87%
 
@@ -62,7 +62,9 @@ species_trends <- read.csv(paste0(final_data_location, "fit_summary.csv")) |>
 
 write.csv(species_trends, "data/ch1-supplemental-tables/species_trends.csv", row.names = FALSE)  
 
-effects_of_traits <- read.csv("model/2026.04.09_ch1_rmNOBO_final/fit_summary.csv") |>
+
+# Make table for species traits
+effects_of_traits <- read.csv("model/2026.06.26_ch1_rmNOBO_2024rt/fit_summary.csv") |>
   filter(str_detect(rownames, "kappa")) |>
   mutate(model = "Regional Trend") |>
   add_row((read.csv("model/2026.04.09_ch1_rmNOBO_woRegional_final/fit_summary.csv") |>

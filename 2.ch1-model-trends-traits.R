@@ -75,7 +75,7 @@ mbbs <- read.csv("data/analysis.df.csv", header = TRUE) %>%
                               dplyr::select(common_name, Final_Fraction_Diet_Wt)),
               by = c("common_name")) %>%
     #regional trend
-    left_join(read.csv("data/bbs-regional/species-list-usgs-regional-trend.csv"), by = "common_name") %>%
+    left_join(read.csv("data/bbs-regional/species-list-usgs-regional-trend-2024.csv"), by = "common_name") %>%
     dplyr::mutate(usgs_sd = (.$usgs_97.5CI - .$usgs_2.5CI)/(2 * qnorm(0.95))) %>%
     #regional trend is on a different scale from our result, so we'll re-scale by dividing by 100 (current 2.01 = 2% change, want .02 = 2% change in pop per year)
     dplyr::mutate(usgs_trend_estimate = usgs_trend_estimate/100,
