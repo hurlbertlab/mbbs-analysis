@@ -7,7 +7,7 @@
 library(dplyr)
 library(stringr)
 
-final_data_location <- "model/2026.06.29_ch1_m1_2024rt/"
+final_data_location <- "model/2026.06.27_ch1_m1_2024rt/"
 
 z <- qnorm((1+0.87)/2) #confidence interval 87%
 

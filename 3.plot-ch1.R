@@ -22,7 +22,7 @@ library(scales) #for some color selection from ggplot
 source("3.plot-functions.R")
 
 #where are we pulling data from?
-lf_ch1m1 <- "model/2026.03.12_ch1_m1_final/" #NEED TO UPDATE TO USE 2024 REGIONAL VERSION
+lf_ch1m1 <- "model/2026.06.27_ch1_m1_2024rt/" #updated to use version with 2024 regional trend information
 lf_ch1nR <- "model/2026.03.12_ch1_withoutregional_final/"
 lf_ch1NOBO <- "model/2026.06.26_ch1_rmNOBO_2024rt/" #updated to use version with 2024 regional trend information
 lf_ch1NOBO_nR <- "model/2026.04.09_ch1_rmNOBO_woRegional_final/"
@@ -61,10 +61,16 @@ stable_color <- "#4393c3"
              conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == TRUE ~ "slightly_negative",
              conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == FALSE ~ "stable",
              conf_6.5 < 0 & conf_93.5 > 0 ~ "stable",
-             TRUE ~ "unaccounted"
-           ),
+             TRUE ~ "unaccounted"),
+          trend_direction_nps = case_when(
+              conf_2.5 > 0 ~ "positive",
+              conf_97.5 < 0 ~ "negative",
+              conf_6.5 > 0 ~ "positive",
+              conf_93.5 < 0 ~ "negative",
+              TRUE ~ "stable"
+          ),
           pch = case_when(
-            trend_direction == "stable" ~ 15,
+            trend_direction == "stable" ~ 0,
             TRUE ~ 16
           ),
           lty = case_when(
@@ -86,9 +92,11 @@ stable_color <- "#4393c3"
   
   #n sigifnicantly increasing/decreasing species:
   statuser::table2(ch1sp$trend_direction)
+  statuser::table2(ch1sp$trend_direction_nps)
   
   maxColorValue = 100
   palette_blue = colorRampPalette(c("#762a83", "#c2a5cf", "#92c5de", "#a6dba0", "#5aae61"))(maxColorValue)
+  #palette_blue = colorRampPalette(c("#762a83", "#c2a5cf", stable_color, "#a6dba0", "#5aae61"))(maxColorValue)
   palette_white = colorRampPalette(c("#762a83", "white", "#68f273"))(maxColorValue)
   #"#62e36c" #backup, slightly darker color.
   continous_colors <- data.frame(palette_blue, 
@@ -128,6 +136,10 @@ stable_color <- "#4393c3"
     #put on a continous color ramp
     left_join(continous_colors, by = c("rounded_prop_posterior" = "palette_percent"))
   #no species are in the "decline supported at the 87% CI and mean greater than .01 
+  
+  table2(plot_horiz$prop_posterior_gt_0 < .065,
+         plot_horiz$prop_posterior_gt_0 > .935,
+         plot_horiz$trend_direction_nps) #ya, same as trend_direction_nps.
   
   plot_horiz$color <- plot_horiz$palette_blue
   #hm uh. looking at this plot tho like. Blue-grey Gnatcatcher has been colored w grey80 even though it's posterior distribution 
@@ -398,7 +410,8 @@ stable_color <- "#4393c3"
                         variable_kappa = "kappa_temp_pos",
                         xlab = "Scaled Temperature Niche Position",
                         trendline_lty = "dashed",
-                        plot_ylab = FALSE,
+                        #palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        plot_ylab = TRUE,
                         plot_slope = FALSE)
     #legend("bottomleft",
     #       legend = c("NC Colder"),
@@ -417,6 +430,7 @@ stable_color <- "#4393c3"
                         xlab = "Scaled Temperature Niche Position",
                         trendline_lty = "solid",
                         plot_ylab = FALSE,
+                        #palette = colorRampPalette(c("black","black"))(maxColorValue),
                         new_plot = FALSE#,
                         #polygon_color = "orange"
     )
@@ -433,7 +447,8 @@ stable_color <- "#4393c3"
                         maxColorValue = 100,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         trendline_lty = "dashed",
-                        plot_slope = FALSE)
+                        plot_slope = FALSE,
+                        plot_ylab = FALSE)
     plot_linear_effects(load_from = lf_ch1NOBO,
                         fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
                         variable_of_interest = "scale_habitat_ssi",
@@ -458,6 +473,8 @@ stable_color <- "#4393c3"
                         maxColorValue = 100,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         plot_ylab = FALSE,
+                        xlabels = c("-2", "-1.5", "-1", "-0.5", "0", "0.5", "1", "1.5", "2", "2.5"),
+                        xlabels_location = c(-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5),
                         #plot_ylab = TRUE,
                         #ylab_distance = - .7,
                         plot_slope = FALSE)
@@ -507,7 +524,7 @@ mtext("NC warmer", side = 4)
   all_rt_mean = (mean(ch1lineareffects$usgs_trend_estimate, na.rm = TRUE))
   
   png(filename = "figures/ch1/ch1_linear_effects_RT.png", #black, tacol, trendcol
-      width = 500,
+      width = 550,
       height = 500,
       units = "px", 
       type = "windows")
@@ -536,7 +553,10 @@ mtext("NC warmer", side = 4)
                         plot_slope = FALSE,
                         color_segments_differently = TRUE,
                         segments_color = "grey10",
-                        ylab_cex = 1.4)
+                        ylab_cex = 1.4,
+                        choose_xlim = c(-0.055, 0.055),
+                        xlabels = c('-0.06','-0.04', '-0.02', '0.00', '0.02', '0.04', '0.06'),
+                        xlabels_location = c(-0.06, -0.04, -0.02, 0.00, 0.02, 0.04, 0.06))
     #add triangles
     #above the 1:1 line above zero
     polygon(c(0, 0.08, 0), 
@@ -564,6 +584,9 @@ mtext("NC warmer", side = 4)
                         variable_of_interest = "usgs_trend_estimate",
                         variable_kappa = "kappa_regional",
                         xlab = "Regional Trend",
+                        xaxt = "n",
+                        xlabels = NA,
+                        choose_xlim = NA,
                         trendline_lty = "solid",
                         regional_trend_colors = TRUE,
                         rt_colors_variable = rt_colors_variable,
@@ -631,7 +654,7 @@ mtext("NC warmer", side = 4)
   dev.off()
   
   
-  png(filename = "figures/ch1/ch1_linear_effects.png", 
+  png(filename = "figures/ch1/ch1_linear_effects_S1.png", 
       width = 800,
       height = 800,
       units = "px", 
@@ -645,6 +668,44 @@ mtext("NC warmer", side = 4)
         cex.sub = 1.4,
         mfrow = c(2,2))
     
+    outlier_df <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
+      filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
+      mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
+      left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
+      left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv"))) |>
+      filter(common_name == "Northern Bobwhite")
+    
+    #Temperature Niche
+    plot_linear_effects(load_from = lf_ch1m1,
+                        variable_of_interest = "scale_ztempwq",
+                        variable_kappa = "kappa_temp_pos",
+                        xlab = "Scaled Temperature Niche Position",
+                        trendline_lty = "dashed",
+                        ylim = c(-.15, 0.07),
+                        plot_slope = FALSE)
+    #legend("bottomleft",
+    #       legend = c("NC Colder"),
+    #       fill = c("blue"),
+    #       bty = "n")
+    #legend("bottomright",
+    #       legend = c("NC Warmer"),
+    #       fill = c("red"),
+    #       bty = "n")
+    #and now if I want to add the sensitivity analysis on top.... I want to be able to plot JUST the line without starting a new plot.
+    #and I want to re-print the segments and cex with issues.
+    plot_linear_effects(load_from = lf_ch1NOBO,
+                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
+                        variable_of_interest = "scale_ztempwq",
+                        variable_kappa = "kappa_temp_pos",
+                        xlab = "Scaled Temperature Niche Position",
+                        trendline_lty = "solid",
+                        new_plot = FALSE#,
+                        #polygon_color = "orange"
+    )
+    add_outlier(df = outlier_df,
+                variable_of_interest = "scale_ztempwq",
+                add_legend = FALSE)
+    
     #Habitat selectivity
     plot_linear_effects(load_from = lf_ch1m1,
                         variable_of_interest = "scale_habitat_ssi",
@@ -653,7 +714,8 @@ mtext("NC warmer", side = 4)
                         maxColorValue = 100,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         trendline_lty = "dashed",
-                        plot_slope = FALSE)
+                        plot_slope = FALSE,
+                        ylim = c(-.15, 0.07))
     plot_linear_effects(load_from = lf_ch1NOBO,
                         fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
                         variable_of_interest = "scale_habitat_ssi",
@@ -664,7 +726,7 @@ mtext("NC warmer", side = 4)
                         new_plot = FALSE#,
                         #polygon_color = "orange"
     )
-    add_outlier(df = ch1lineareffects,
+    add_outlier(df = outlier_df,
                 variable_of_interest = "scale_habitat_ssi",
                 add_legend = FALSE)
     
@@ -676,6 +738,7 @@ mtext("NC warmer", side = 4)
                         maxColorValue = 100,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         plot_ylab = TRUE,
+                        ylim = c(-.15, 0.07),
                         plot_slope = FALSE,
                         ylab_distance = - .7)
     plot_linear_effects(load_from = lf_ch1NOBO,
@@ -688,38 +751,8 @@ mtext("NC warmer", side = 4)
                         new_plot = FALSE,#,
                         #polygon_color = "orange"
                         plot_ylab = FALSE)
-    add_outlier(df = ch1lineareffects,
+    add_outlier(df = outlier_df,
                 variable_of_interest = "scale_insect_perc",
-                add_legend = FALSE)
-    
-    #Temperature Niche
-    plot_linear_effects(load_from = lf_ch1m1,
-                        variable_of_interest = "scale_ztempwq",
-                        variable_kappa = "kappa_temp_pos",
-                        xlab = "Scaled Temperature Niche Position",
-                        trendline_lty = "dashed",
-                        plot_slope = FALSE)
-    legend("bottomleft",
-           legend = c("NC Colder"),
-           fill = c("blue"),
-           bty = "n")
-    legend("bottomright",
-           legend = c("NC Warmer"),
-           fill = c("red"),
-           bty = "n")
-    #and now if I want to add the sensitivity analysis on top.... I want to be able to plot JUST the line without starting a new plot.
-    #and I want to re-print the segments and cex with issues.
-    plot_linear_effects(load_from = lf_ch1NOBO,
-                        fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
-                        variable_of_interest = "scale_ztempwq",
-                        variable_kappa = "kappa_temp_pos",
-                        xlab = "Scaled Temperature Niche Position",
-                        trendline_lty = "solid",
-                        new_plot = FALSE#,
-                        #polygon_color = "orange"
-    )
-    add_outlier(df = ch1lineareffects,
-                variable_of_interest = "scale_ztempwq",
                 add_legend = FALSE)
     
     #Regional Trend
@@ -730,6 +763,8 @@ mtext("NC warmer", side = 4)
                         #regional_trend_colors = TRUE,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         plot_ylab = FALSE,
+                        ylim = c(-.15, 0.07),
+                        choose_xlim = c(-3.5, 2),
                         plot_slope = FALSE)
     plot_linear_effects(load_from = lf_ch1NOBO,
                         fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
@@ -748,7 +783,7 @@ mtext("NC warmer", side = 4)
     #       legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
     #       fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
     #       bty = "n")
-    add_outlier(df = ch1lineareffects,
+    add_outlier(df = outlier_df,
                 variable_of_interest = "scale_usgs_trend",
                 add_legend = TRUE)
     
@@ -765,99 +800,103 @@ mtext("NC warmer", side = 4)
   
   #rt more or less extreme
   extremeness <- ch1lineareffects |>
-    dplyr::select(common_name, mean, trend_direction, usgs_trend_estimate, rt_direction, trend_agreement) |>
+    dplyr::select(common_name, mean, trend_direction, usgs_trend_estimate, rt_direction, trend_agreement) |> 
+    filter(!is.na(common_name)) |>
     mutate(extreme = case_when(mean > 0 & mean > usgs_trend_estimate ~ "more positive",
                                mean > 0 & mean < usgs_trend_estimate ~ "less positive", 
                                mean < 0 & mean < usgs_trend_estimate ~ "more negative",
                                mean < 0 & mean > usgs_trend_estimate ~ "less negative"))
+  table(extremeness$extreme)
+  (length(extremeness$extreme[extremeness$extreme == "more positive"]) +
+   length(extremeness$extreme[extremeness$extreme == "more negative"])) / nrow(extremeness)
   
-  #supplemental figure
-  png(filename = "figures/ch1/ch1_SUPPLEMENTAL_linear_effects.png", 
-      width = 1100,
-      height = 600,
-      units = "px", 
-      type = "windows")
-  {
-    par(mar =c(5.1, 6.1, 4.1, 2.1), 
-      cex = 1.3,
-      cex.axis = 1.3,
-      cex.lab = 1.6,
-      cex.main = 1.6,
-      cex.sub = 1.4,
-      mfrow = c(2,4))
-    
-    new_ylab_distance = -1.6
-  
-  #Temperature Niche
-  plot_linear_effects(load_from = lf_ch1m1,
-                      variable_of_interest = "scale_ztempwq",
-                      variable_kappa = "kappa_temp_pos",
-                      xlab = "Scaled Temperature Niche Position",
-                      trendline_lty = "dashed",
-                      ylab_distance = new_ylab_distance)
-  #should add a color bar legend
-  #or text just above x axis with "colder" in blue and "warmer" in red
-  #Percent Insectivory
-  plot_linear_effects(load_from = lf_ch1m1,
-                      variable_of_interest = "scale_insect_perc",
-                      variable_kappa = "kappa_diet",
-                      xlab = "Scaled Percent Insectivory",
-                      maxColorValue = 100,
-                      palette = colorRampPalette(c("black","black"))(maxColorValue),
-                      plot_ylab = FALSE)
-  
-  #Habitat selectivity
-  plot_linear_effects(load_from = lf_ch1m1,
-                      variable_of_interest = "scale_habitat_ssi",
-                      variable_kappa = "kappa_habitat_selection",
-                      xlab = "Scaled Habitat Selectivity",
-                      maxColorValue = 100,
-                      palette = colorRampPalette(c("black","black"))(maxColorValue),
-                      trendline_lty = "dashed",
-                      plot_ylab = FALSE)
-  #Regional Trend
-  plot_linear_effects(load_from = lf_ch1m1,
-                      variable_of_interest = "scale_usgs_trend",
-                      variable_kappa = "kappa_regional",
-                      xlab = "Scaled Regional Trend",
-                      regional_trend_colors = TRUE,
-                      plot_ylab = FALSE)
-  #should add a color bar legend
-  
-  
-  #Now, plot without regional trends.
-  #temp niche
-  plot_linear_effects(fit_summary = ch1noregionaleffects,
-                      load_from = lf_ch1nR,
-                      variable_of_interest = "scale_ztempwq",
-                      variable_kappa = "kappa_temp_pos",
-                      xlab = "Scaled Temperature Niche Position",
-                      ylab_distance = new_ylab_distance)
-  
-  #Percent Insectivory
-  plot_linear_effects(fit_summary = ch1noregionaleffects,
-                      load_from = lf_ch1nR,
-                      variable_of_interest = "scale_insect_perc",
-                      variable_kappa = "kappa_diet",
-                      xlab = "Scaled Percent Insectivory",
-                      maxColorValue = 100,
-                      palette = colorRampPalette(c("black","black"))(maxColorValue),
-                      plot_ylab = FALSE)
-  
-  #Habitat selectivity
-  plot_linear_effects(fit_summary = ch1noregionaleffects,
-                      load_from = lf_ch1nR,
-                      variable_of_interest = "scale_habitat_ssi",
-                      variable_kappa = "kappa_habitat_selection",
-                      xlab = "Scaled Habitat Selectivity",
-                      maxColorValue = 100,
-                      palette = colorRampPalette(c("black","black"))(maxColorValue),
-                      trendline_lty = "dashed",
-                      plot_ylab = FALSE)
-  }
-  
-  dev.off()
-  
+  # #supplemental figure
+  # png(filename = "figures/ch1/ch1_SUPPLEMENTAL_linear_effects.png", 
+  #     width = 1100,
+  #     height = 600,
+  #     units = "px", 
+  #     type = "windows")
+  # {
+  #   par(mar =c(5.1, 6.1, 4.1, 2.1), 
+  #     cex = 1.3,
+  #     cex.axis = 1.3,
+  #     cex.lab = 1.6,
+  #     cex.main = 1.6,
+  #     cex.sub = 1.4,
+  #     mfrow = c(2,4))
+  #   
+  #   new_ylab_distance = -1.6
+  # 
+  # #Temperature Niche
+  # plot_linear_effects(load_from = lf_ch1m1,
+  #                     variable_of_interest = "scale_ztempwq",
+  #                     variable_kappa = "kappa_temp_pos",
+  #                     xlab = "Scaled Temperature Niche Position",
+  #                     trendline_lty = "dashed",
+  #                     ylab_distance = new_ylab_distance)
+  # #should add a color bar legend
+  # #or text just above x axis with "colder" in blue and "warmer" in red
+  # #Percent Insectivory
+  # plot_linear_effects(load_from = lf_ch1m1,
+  #                     variable_of_interest = "scale_insect_perc",
+  #                     variable_kappa = "kappa_diet",
+  #                     xlab = "Scaled Percent Insectivory",
+  #                     maxColorValue = 100,
+  #                     palette = colorRampPalette(c("black","black"))(maxColorValue),
+  #                     plot_ylab = FALSE)
+  # 
+  # #Habitat selectivity
+  # plot_linear_effects(load_from = lf_ch1m1,
+  #                     variable_of_interest = "scale_habitat_ssi",
+  #                     variable_kappa = "kappa_habitat_selection",
+  #                     xlab = "Scaled Habitat Selectivity",
+  #                     maxColorValue = 100,
+  #                     palette = colorRampPalette(c("black","black"))(maxColorValue),
+  #                     trendline_lty = "dashed",
+  #                     plot_ylab = FALSE)
+  # #Regional Trend
+  # plot_linear_effects(load_from = lf_ch1m1,
+  #                     variable_of_interest = "scale_usgs_trend",
+  #                     variable_kappa = "kappa_regional",
+  #                     xlab = "Scaled Regional Trend",
+  #                     regional_trend_colors = TRUE,
+  #                     plot_ylab = FALSE)
+  # #should add a color bar legend
+  # 
+  # 
+  # #Now, plot without regional trends.
+  # #temp niche
+  # plot_linear_effects(fit_summary = ch1noregionaleffects,
+  #                     load_from = lf_ch1nR,
+  #                     variable_of_interest = "scale_ztempwq",
+  #                     variable_kappa = "kappa_temp_pos",
+  #                     xlab = "Scaled Temperature Niche Position",
+  #                     ylab_distance = new_ylab_distance)
+  # 
+  # #Percent Insectivory
+  # plot_linear_effects(fit_summary = ch1noregionaleffects,
+  #                     load_from = lf_ch1nR,
+  #                     variable_of_interest = "scale_insect_perc",
+  #                     variable_kappa = "kappa_diet",
+  #                     xlab = "Scaled Percent Insectivory",
+  #                     maxColorValue = 100,
+  #                     palette = colorRampPalette(c("black","black"))(maxColorValue),
+  #                     plot_ylab = FALSE)
+  # 
+  # #Habitat selectivity
+  # plot_linear_effects(fit_summary = ch1noregionaleffects,
+  #                     load_from = lf_ch1nR,
+  #                     variable_of_interest = "scale_habitat_ssi",
+  #                     variable_kappa = "kappa_habitat_selection",
+  #                     xlab = "Scaled Habitat Selectivity",
+  #                     maxColorValue = 100,
+  #                     palette = colorRampPalette(c("black","black"))(maxColorValue),
+  #                     trendline_lty = "dashed",
+  #                     plot_ylab = FALSE)
+  # }
+  # 
+  # dev.off()
+  # 
   
   
 ###################################
@@ -949,7 +988,7 @@ mtext("NC warmer", side = 4)
   
   ###!!!!!!!!!!!!!!!!Make a new plotting function for plotting these effects. Have an option where it makes a new plot or not. rmNOBO models should be the main ones.
   png(filename = "figures/ch1/ch1_model_CI_comparison.png", 
-      width = 420, # 620 for larger
+      width = 440, # 620 for larger
       height = 440, # 640 for larger
       units = "px", 
       type = "windows")

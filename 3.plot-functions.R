@@ -98,7 +98,8 @@
          cex = symbol_size,
          xaxs = "i",
          main = title,
-         yaxt = yaxt
+         yaxt = yaxt,
+         lwd = 2
     ) 
       abline(h = c(seq(-.14,0.08, by = .02)),
              col = "grey",
@@ -230,13 +231,16 @@
     new_plot = TRUE,
     variable_of_interest,
     variable_kappa,
-    xaxt = "s",
+    xaxt = "n",
+    xlabels = c("-3", "-2", "-1", "0", "1", "2", "3"),
+    xlabels_location = c(-3, -2, -1, 0, 1, 2, 3),
     abline_at_zero = FALSE,
     ylim = c(-.1, 0.065), #with bobwhite, ylim = c(-.15, 0.07)
+    choose_xlim = NA,
     xlab = "",
     ylab = "Local Population Trend",
     plot_ylab = TRUE,
-    ylab_distance = - 1.2,
+    ylab_distance = - 1.4,
     maxColorValue = 100,
     palette = colorRampPalette(c("blue","red"))(maxColorValue),
     regional_trend_colors = FALSE,
@@ -261,7 +265,7 @@
     posterior_draws = read.csv(paste0(load_from, "posterior_draws.csv"))
     
     #scatterplot the variable of interest
-    if(new_plot == TRUE) {
+    if(new_plot == TRUE & is.na(choose_xlim[1])) {
     plot(x = fit_summary[,variable_of_interest],
          y = fit_summary$mean,
          yaxt = "n",
@@ -273,7 +277,20 @@
          xlab = xlab,
          ylab = "",
          )
-    } 
+    } else if(new_plot == TRUE & !is.na(choose_xlim[1])) {
+          plot(x = fit_summary[,variable_of_interest],
+         y = fit_summary$mean,
+         yaxt = "n",
+         xaxt = xaxt,
+         xlim = choose_xlim,
+         ylim = ylim,
+         col = palette[cut(fit_summary[,variable_of_interest], maxColorValue)],
+         pch = 16,
+         cex = 2,
+         xlab = xlab,
+         ylab = "",
+         )
+    }
     #plot ylab or not
     if(plot_ylab == TRUE) {
       text(x = par("usr")[1] + ylab_distance,  # Position left of plot region
@@ -311,6 +328,15 @@
          las = 2,
          #cex.axis = 1.25
          ) 
+    #x
+    #plot xlab or not
+    if(xaxt == "n") {
+      axis(1, 
+           at = xlabels_location,
+           labels = xlabels,
+           las = 0 #parallel to the axis
+           )
+    }
     #axis(1,
     #     at = c(-3, -2, -1, 0, 1, 2, 3),
     #     labels = TRUE)
