@@ -53,16 +53,16 @@ stable_color <- "#4393c3"
            #significant = case_when(significant == TRUE ~ significant,
           #                         sig_87 == TRUE & mean_gt01 == TRUE ~ TRUE,
           #                         TRUE ~ FALSE),
-           trend_direction = case_when(
-             conf_2.5 > 0 ~ "positive",
-             conf_97.5 < 0 ~ "negative",
-             conf_2.5 < 0 & conf_6.5 > 0 & mean_gt01 == TRUE ~ "slightly_positive",
-             conf_2.5 < 0 & conf_6.5 > 0 & mean_gt01 == FALSE ~ "stable",
-             conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == TRUE ~ "slightly_negative",
-             conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == FALSE ~ "stable",
-             conf_6.5 < 0 & conf_93.5 > 0 ~ "stable",
-             TRUE ~ "unaccounted"),
-          trend_direction_nps = case_when(
+           #trend_direction = case_when(
+             #conf_2.5 > 0 ~ "positive",
+             #conf_97.5 < 0 ~ "negative",
+             #conf_2.5 < 0 & conf_6.5 > 0 & mean_gt01 == TRUE ~ "slightly_positive",
+             #conf_2.5 < 0 & conf_6.5 > 0 & mean_gt01 == FALSE ~ "stable",
+             #conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == TRUE ~ "slightly_negative",
+             #conf_97.5 > 0 & conf_93.5 < 0 & mean_gt01 == FALSE ~ "stable",
+             #conf_6.5 < 0 & conf_93.5 > 0 ~ "stable",
+             #TRUE ~ "unaccounted"), #got feedback that this was too arbitrary a boundary, and I should just use the credible interval rather than credible interval + mean >.01
+          trend_direction = case_when(
               conf_2.5 > 0 ~ "positive",
               conf_97.5 < 0 ~ "negative",
               conf_6.5 > 0 ~ "positive",
@@ -92,7 +92,6 @@ stable_color <- "#4393c3"
   
   #n sigifnicantly increasing/decreasing species:
   statuser::table2(ch1sp$trend_direction)
-  statuser::table2(ch1sp$trend_direction_nps)
   
   maxColorValue = 100
   palette_blue = colorRampPalette(c("#762a83", "#c2a5cf", "#92c5de", "#a6dba0", "#5aae61"))(maxColorValue)
@@ -142,7 +141,6 @@ stable_color <- "#4393c3"
          plot_horiz$trend_direction_nps) #ya, same as trend_direction_nps.
   
   plot_horiz$color <- plot_horiz$palette_blue
-  #hm uh. looking at this plot tho like. Blue-grey Gnatcatcher has been colored w grey80 even though it's posterior distribution 
   
 #  png(filename = "figures/ch1/ch1_horiz_pop_change.png", 
 #    width = 1200,
@@ -668,20 +666,12 @@ mtext("NC warmer", side = 4)
         cex.sub = 1.4,
         mfrow = c(2,2))
     
-    outlier_df <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
-      filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
-      mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
-      left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
-      left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv"))) |>
-      filter(common_name == "Northern Bobwhite")
-    
     #Temperature Niche
     plot_linear_effects(load_from = lf_ch1m1,
                         variable_of_interest = "scale_ztempwq",
                         variable_kappa = "kappa_temp_pos",
                         xlab = "Scaled Temperature Niche Position",
                         trendline_lty = "dashed",
-                        ylim = c(-.15, 0.07),
                         plot_slope = FALSE)
     #legend("bottomleft",
     #       legend = c("NC Colder"),
@@ -702,9 +692,6 @@ mtext("NC warmer", side = 4)
                         new_plot = FALSE#,
                         #polygon_color = "orange"
     )
-    add_outlier(df = outlier_df,
-                variable_of_interest = "scale_ztempwq",
-                add_legend = FALSE)
     
     #Habitat selectivity
     plot_linear_effects(load_from = lf_ch1m1,
@@ -714,8 +701,7 @@ mtext("NC warmer", side = 4)
                         maxColorValue = 100,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         trendline_lty = "dashed",
-                        plot_slope = FALSE,
-                        ylim = c(-.15, 0.07))
+                        plot_slope = FALSE)
     plot_linear_effects(load_from = lf_ch1NOBO,
                         fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
                         variable_of_interest = "scale_habitat_ssi",
@@ -726,9 +712,6 @@ mtext("NC warmer", side = 4)
                         new_plot = FALSE#,
                         #polygon_color = "orange"
     )
-    add_outlier(df = outlier_df,
-                variable_of_interest = "scale_habitat_ssi",
-                add_legend = FALSE)
     
     #Percent Insectivory
     plot_linear_effects(load_from = lf_ch1m1,
@@ -738,7 +721,6 @@ mtext("NC warmer", side = 4)
                         maxColorValue = 100,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         plot_ylab = TRUE,
-                        ylim = c(-.15, 0.07),
                         plot_slope = FALSE,
                         ylab_distance = - .7)
     plot_linear_effects(load_from = lf_ch1NOBO,
@@ -751,9 +733,6 @@ mtext("NC warmer", side = 4)
                         new_plot = FALSE,#,
                         #polygon_color = "orange"
                         plot_ylab = FALSE)
-    add_outlier(df = outlier_df,
-                variable_of_interest = "scale_insect_perc",
-                add_legend = FALSE)
     
     #Regional Trend
     plot_linear_effects(load_from = lf_ch1m1,
@@ -763,8 +742,6 @@ mtext("NC warmer", side = 4)
                         #regional_trend_colors = TRUE,
                         palette = colorRampPalette(c("black","black"))(maxColorValue),
                         plot_ylab = FALSE,
-                        ylim = c(-.15, 0.07),
-                        choose_xlim = c(-3.5, 2),
                         plot_slope = FALSE)
     plot_linear_effects(load_from = lf_ch1NOBO,
                         fit_summary = ch1lineareffects, #still plots everything but the line off ch1lineareffects
@@ -783,14 +760,105 @@ mtext("NC warmer", side = 4)
     #       legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
     #       fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
     #       bty = "n")
-    add_outlier(df = outlier_df,
-                variable_of_interest = "scale_usgs_trend",
-                add_legend = TRUE)
     
   }
   dev.off()
   
   
+  #supplemental figure 3, model with the Bobwhite included, still highlighting Bobwhite in yellow
+  #SF3
+  png(filename = "figures/ch1/ch1_linear_effects_S3_wBobwhite.png", 
+      width = 800,
+      height = 800,
+      units = "px", 
+      type = "windows")
+  {
+    par(mar =c(5.1, 7.1, 4.1, 2.1), 
+        cex = 1.3,
+        cex.axis = 1.3,
+        cex.lab = 1.6,
+        cex.main = 1.6,
+        cex.sub = 1.4,
+        mfrow = c(2,2))
+    
+    
+    wBobwhite <- read.csv(paste0(lf_ch1m1, "fit_summary.csv")) %>%
+      filter(str_detect(.$rownames, "b|gamma|kappa_")) %>%
+      mutate(common_name_standard = as.integer(str_extract(.$rownames, "[0-9]([0-9])?"))) %>%
+      left_join(read.csv(paste0(lf_ch1m1, "species_traits.csv")), by = "common_name_standard") %>%
+      left_join(read.csv(paste0(lf_ch1m1, "beta_to_common_name.csv"))) 
+    
+    outlier_df <- wBobwhite |>
+      filter(common_name == "Northern Bobwhite")
+    
+    #Temperature Niche
+    plot_linear_effects(load_from = lf_ch1m1,
+                        fit_summary = wBobwhite,
+                        variable_of_interest = "scale_ztempwq",
+                        variable_kappa = "kappa_temp_pos",
+                        xlab = "Scaled Temperature Niche Position",
+                        trendline_lty = "dashed",
+                        ylim = c(-.15, 0.07),
+                        plot_slope = TRUE)
+    add_outlier(df = outlier_df,
+                variable_of_interest = "scale_ztempwq",
+                add_legend = FALSE)
+    
+    #Habitat selectivity
+    plot_linear_effects(load_from = lf_ch1m1,
+                        fit_summary = wBobwhite,
+                        variable_of_interest = "scale_habitat_ssi",
+                        variable_kappa = "kappa_habitat_selection",
+                        xlab = "Scaled Habitat Selectivity",
+                        maxColorValue = 100,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        trendline_lty = "solid",
+                        plot_slope = TRUE,
+                        ylim = c(-.15, 0.07))
+    add_outlier(df = outlier_df,
+                variable_of_interest = "scale_habitat_ssi",
+                add_legend = FALSE)
+    
+    #Percent Insectivory
+    plot_linear_effects(load_from = lf_ch1m1,
+                        fit_summary = wBobwhite,
+                        variable_of_interest = "scale_insect_perc",
+                        variable_kappa = "kappa_diet",
+                        xlab = "Scaled Percent Insectivory",
+                        maxColorValue = 100,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        plot_ylab = TRUE,
+                        ylim = c(-.15, 0.07),
+                        plot_slope = TRUE,
+                        ylab_distance = - .7)
+    add_outlier(df = outlier_df,
+                variable_of_interest = "scale_insect_perc",
+                add_legend = FALSE)
+    
+    #Regional Trend
+    plot_linear_effects(load_from = lf_ch1m1,
+                        fit_summary = wBobwhite,
+                        variable_of_interest = "scale_usgs_trend",
+                        variable_kappa = "kappa_regional",
+                        xlab = "Scaled Regional Trend",
+                        #regional_trend_colors = TRUE,
+                        palette = colorRampPalette(c("black","black"))(maxColorValue),
+                        plot_ylab = FALSE,
+                        ylim = c(-.15, 0.07),
+                        choose_xlim = c(-3.5, 2.5),
+                        plot_slope = TRUE)
+    abline(v = 0, lty = "dashed", col = "grey")
+    abline(h = 0, lty = "dashed", col = "grey")
+    #legend("topleft",
+    #       legend = c("RT Decreasing", "RT Decreasing [87% CI]", "RT Stable", "RT Increasing [87% CI]", "RT Increasing"),
+    #       fill = c("#762a83", "#c2a5cf", stable_color, "#5aae61", "#1b7837"),
+    #       bty = "n")
+    add_outlier(df = outlier_df,
+                variable_of_interest = "scale_usgs_trend",
+                add_legend = FALSE)
+    
+  }
+  dev.off()
   
   
   #which ones do and don't agree between regional and local trend?
