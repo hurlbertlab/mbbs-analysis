@@ -49,6 +49,9 @@ file.copy(files.list,
           overwrite = TRUE,
           copy.date = TRUE)
 
+#this will just have to be like, make.folder() then list.files everything in that folder then file.copy to that same folder. Can definetely make a function to do that that takes just the folder name. Then for the things NOT in a folder I can just, as above, add to the files.list directly.
+#can get a list using a stringr r for after a / [A-Z]+.csv
+
 #create and make some testing file to ensure everything is needed in that repository to run the code
 
 #run the testing code

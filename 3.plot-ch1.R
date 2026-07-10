@@ -138,7 +138,7 @@ stable_color <- "#4393c3"
   
   table2(plot_horiz$prop_posterior_gt_0 < .065,
          plot_horiz$prop_posterior_gt_0 > .935,
-         plot_horiz$trend_direction_nps) #ya, same as trend_direction_nps.
+         plot_horiz$trend_direction) #ya, same as trend_direction_nps.
   
   plot_horiz$color <- plot_horiz$palette_blue
   
@@ -188,10 +188,10 @@ stable_color <- "#4393c3"
 #  dev.off()
   
   #turn label coloing on/off
-  label_colorful = TRUE
+  label_colorful = FALSE
   
   ##try a two-panel version
-  png(filename = "figures/ch1/ch1_horiz_pop_change_twopanel_thrublue_stable.png", 
+  png(filename = "figures/ch1/ch1_horiz_pop_change_twopanel_thrublue_stable_black.png", 
       width = 900,
       height = 800,
       units = "px", 
