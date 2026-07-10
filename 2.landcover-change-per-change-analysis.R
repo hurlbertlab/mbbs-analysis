@@ -71,6 +71,12 @@ load("data/mbbs/mbbs_survey_events.rda")
 obs <- mbbs_survey_events %>%
   dplyr::select(route, primary_observer, observer_ID, year, observer_quality)
 
+#to stopdata we need to:
+# - filter to just the 1:1 year changes
+# - filter to the 5 year change groups, based on the first year of surveys available. 
+# - do just the full time period group.
+# - also hey um, some of these years between are wack. There should not be a quarter-route that has '21' years between?? so there's some amount of problem solving to be done here. 
+
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   ##########
   # testing
@@ -109,7 +115,7 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   left_join(forest, by = c("route", "quarter" = "quarter_route", "year")) %>%
   left_join(grassland, by = c("route", "quarter" = "quarter_route", "year")) %>%
   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  #time for the new stuff. For a change for change analysis, rather than each data point being the count and the urbanization%, each datapoint needs to be a lag count and lab urbanization percent. let's also have a years_btwn variable thats how long the latest lag is. let's sort the data first.
+  #time for the new stuff unique to each time period. For a change for change analysis, rather than each data point being the count and the urbanization%, each datapoint needs to be a lag count and lab urbanization percent. let's also have a years_btwn variable thats how long the latest lag is. let's sort the data first.
   group_by(common_name, quarter_route) %>%
   arrange(year, .by_group = TRUE) %>%
   mutate(
