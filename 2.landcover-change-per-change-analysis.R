@@ -74,8 +74,9 @@ obs <- mbbs_survey_events %>%
 #to stopdata we need to:
 # - filter to just the 1:1 year changes
 # - filter to the 5 year change groups, based on the first year of surveys available. 
+#         - actually, for the 5 year change groups, can I pick a different group of 5 years for each route? Like pick the 5 year gap starting in a place that maximizes the number of 5 year gaps for that route? I think that could be okay?..
 # - do just the full time period group.
-# - also hey um, some of these years between are wack. There should not be a quarter-route that has '21' years between?? so there's some amount of problem solving to be done here. 
+# - also hey um, some of these years between are wack. There should not be a quarter-route that has '21' years between?? so there's some amount of problem solving to be done here. AH. Okay there could be a 21 year lag because I'm depending on the availability of stop-level data, of which there is no guarantee there is one. 
 
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   ##########
@@ -113,9 +114,48 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   #let's left_join in the landcover data
   left_join(dev, by = c("route", "quarter" = "quarter_route", "year")) %>%
   left_join(forest, by = c("route", "quarter" = "quarter_route", "year")) %>%
-  left_join(grassland, by = c("route", "quarter" = "quarter_route", "year")) %>%
-  #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  #time for the new stuff unique to each time period. For a change for change analysis, rather than each data point being the count and the urbanization%, each datapoint needs to be a lag count and lab urbanization percent. let's also have a years_btwn variable thats how long the latest lag is. let's sort the data first.
+  left_join(grassland, by = c("route", "quarter" = "quarter_route", "year"))
+  
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#time for the new stuff unique to each time period. For a change for change analysis, rather than each data point being the count and the urbanization%, each datapoint needs to be a lag count and lab urbanization percent. let's also have a years_btwn variable thats how long the latest lag is. let's sort the data first.
+one_year <- stopdata |>
+  ##testing
+  filter(route == "cthm-01" | route == "cthm-04") |>
+  filter(common_name == "Acadian Flycatcher") |>
+  ##alright, and this is a dataset where one of the routes has some gaps in it. 
+  group_by(common_name, quarter_route) |>
+  arrange(year, .by_group = TRUE) |>
+  mutate(change_count = q_rt_count - lag(q_rt_count), #okay, that worked as expected actually, and only calculated lags within each quarter_route
+         years_btwn = year - lag(year)) #|>
+  #filter(years_btwn == 1)
+
+#so, function that calculates the maximum number of 5 years gaps based on each starting year.
+years_list <- c(1999, 2000, 2002, 2003, 2004, 2005, 2010) #so here, it's best to start in 2000 (3 matches) rather than 1999 (2 matches)
+years_list = data.frame(year = years_list)
+  for(i in 1:nrow(years_list)) {
+    starting_value = years_list$year[i]
+    matches <- seq(from = starting_value, to = max(years_list$year), by = 5)
+    
+    years_list$n_matches[i] = sum(years_list$year %in% matches == TRUE)
+  }
+
+years_list <- years_list |>
+  filter(n_matches == 2)
+
+#pick the starting year with the most matches 
+#and if there's a tie in n_matches then pick the earliest start year.
+  #so like
+starting_year <- years_list |>
+  filter(n_matches == max(n_matches))
+starting_year <- starting_year |>
+  mutate(earliest = case_when(
+    n() == 1 ~ NA,
+    n() > 1 ~ min(year))) |>
+  filter(year == earliest)
+#you'll have to check out some edge cases here where like, due to data availability there's good data earlier and good data later but on seperate 5 yr schedules that don't otherwise overlap but I think that sounds fine..
+#for my longer time frame, it's not going to be 27 years bc not all routes have that amount of time. BUT BUT BUT I could do my last round based off the longest possible lag time for year route-quarter, and add that lag length as a predictor variable or like, check the distribution of it? Check the distribution of it to decide what to do there. 
+
+
   group_by(common_name, quarter_route) %>%
   arrange(year, .by_group = TRUE) %>%
   mutate(
