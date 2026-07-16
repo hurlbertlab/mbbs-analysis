@@ -213,7 +213,8 @@ stable_color <- "#4393c3"
                    xlim_select = c(0, 30.5),
                    title = "North Carolina Mini Breeding Bird Survey Species Population Trends",
                    yaxt = "n",
-                   label_colorful = label_colorful) 
+                   label_colorful = label_colorful, 
+                   conf = 87) 
     axis(side = 2, 
          #at = seq(-.14, .08, by = 0.02), 
          #labels = TRUE,
@@ -235,7 +236,8 @@ stable_color <- "#4393c3"
                    xlim_select = c(30, 60.5),
                    title = "",
                    yaxt = "n",
-                   label_colorful = label_colorful) 
+                   label_colorful = label_colorful,
+                   conf = 87) 
       axis(side = 2, 
            #at = seq(-.14, .08, by = 0.02), 
            #labels = TRUE,

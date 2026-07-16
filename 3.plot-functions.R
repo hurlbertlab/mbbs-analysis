@@ -38,7 +38,8 @@
                              xaxt = "s", 
                              yaxt = "s",
                              label_colorful = FALSE,
-                             symbol_size = 2.8) {
+                             symbol_size = 2.8,
+                             conf = 95) {
   if(species_axis == "y") { #species ID on the y axis
     plot(y = plot_df$sp_id,
          x = plot_df$mean,
@@ -105,6 +106,7 @@
              col = "grey",
              lty = "dashed") 
       abline(h = 0, lty = "dashed") 
+      if (conf == 95) {
       points(y = plot_df$mean,
              x = plot_df$sp_id,
              col = plot_df$color)
@@ -115,19 +117,18 @@
                col = plot_df$color,
                lwd = 7,
                lty = plot_df$lty) 
-                #plot a slightly wider border around any white segments
-                border_segments <- plot_df |>
-                  filter(color == "white")
-                segments(y0 = border_segments$conf_2.5,
-                         y1 = border_segments$conf_97.5,
-                         x0 = border_segments$sp_id,
-                         col = "black",
-                         lwd = 5.5)
-                segments(y0 = border_segments$conf_2.5,
-                         y1 = border_segments$conf_97.5,
-                         x0= border_segments$sp_id,
-                         col = border_segments$color,
-                         lwd = 4.5)
+      } else if (conf == 87) {
+        points(y = plot_df$mean,
+               x = plot_df$sp_id,
+               col = plot_df$color)
+        segments(y0 = plot_df$conf_6.5,
+                 y1 = plot_df$conf_93.5,
+                 x0 = plot_df$sp_id,
+                 x1 = plot_df$sp_id,
+                 col = plot_df$color,
+                 lwd = 7,
+                 lty = plot_df$lty) 
+      }
       axis(1, at = seq(round(min(plot_df$sp_id)),
                        round(max(plot_df$sp_id)), by = 1),
            #labels = plot_df$common_name,
