@@ -81,7 +81,7 @@ obs <- mbbs_survey_events %>%
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   ##########
   # testing
-  #filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
+  filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
   ############
   #make unique quarter route identifier
   mutate(quarter = case_when(stop_num > 15 ~ 4,
@@ -120,54 +120,21 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
 #time for the new stuff unique to each time period. For a change for change analysis, rather than each data point being the count and the urbanization%, each datapoint needs to be a lag count and lab urbanization percent. let's also have a years_btwn variable thats how long the latest lag is. let's sort the data first.
 one_year <- stopdata |>
   ##testing
-  filter(route == "cthm-01" | route == "cthm-04") |>
-  filter(common_name == "Acadian Flycatcher") |>
+  #filter(route == "cthm-01" | route == "cthm-04") |>
+  #filter(common_name == "Acadian Flycatcher") |>
   ##alright, and this is a dataset where one of the routes has some gaps in it. 
   group_by(common_name, quarter_route) |>
   arrange(year, .by_group = TRUE) |>
   mutate(change_count = q_rt_count - lag(q_rt_count), #okay, that worked as expected actually, and only calculated lags within each quarter_route
-         years_btwn = year - lag(year)) #|>
-  #filter(years_btwn == 1)
-
-#so, function that calculates the maximum number of 5 years gaps based on each starting year.
-years_list <- c(1999, 2000, 2002, 2003, 2004, 2005, 2010) #so here, it's best to start in 2000 (3 matches) rather than 1999 (2 matches)
-years_list = data.frame(year = years_list)
-  for(i in 1:nrow(years_list)) {
-    starting_value = years_list$year[i]
-    matches <- seq(from = starting_value, to = max(years_list$year), by = 5)
-    
-    years_list$n_matches[i] = sum(years_list$year %in% matches == TRUE)
-  }
-
-years_list <- years_list |>
-  filter(n_matches == 2)
-
-#pick the starting year with the most matches 
-#and if there's a tie in n_matches then pick the earliest start year.
-  #so like
-starting_year <- years_list |>
-  filter(n_matches == max(n_matches))
-starting_year <- starting_year |>
-  mutate(earliest = case_when(
-    n() == 1 ~ NA,
-    n() > 1 ~ min(year))) |>
-  filter(year == earliest)
-#you'll have to check out some edge cases here where like, due to data availability there's good data earlier and good data later but on seperate 5 yr schedules that don't otherwise overlap but I think that sounds fine..
-#for my longer time frame, it's not going to be 27 years bc not all routes have that amount of time. BUT BUT BUT I could do my last round based off the longest possible lag time for year route-quarter, and add that lag length as a predictor variable or like, check the distribution of it? Check the distribution of it to decide what to do there. 
-
-
-  group_by(common_name, quarter_route) %>%
-  arrange(year, .by_group = TRUE) %>%
+         years_btwn = year - lag(year)) |>
   mutate(
-    change_count = q_rt_count - lag(q_rt_count),
     #when the count is 0 two years in a row, we assume species is not present on the quarter route and need to remove that data point from consideration, as theres no chance for the population to change. If species returns, eg, time series is 0,0,1 - that 0,1 datapoint is still fine. species 'came back' to the quarter route.
-    #flag_0_to_0 = pmax(q_rt_count, lag(q_rt_count)), #DEPRECIATED
+    flag_0_to_0 = pmax(q_rt_count, lag(q_rt_count)), #DEPRECIATED
     #change_dev = rmax_dev_quarter - lag(rmax_dev_quarter),
     change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
     #also take change forest
     change_forest = perc_forest_quarter - lag(perc_forest_quarter),
     change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter),
-    years_btwn = year - lag(year),
     #calculate if observer changed as well
     change_obs = case_when(observer_ID == lag(observer_ID) ~ 0,
                            observer_ID != lag(observer_ID) ~ 1),
@@ -189,9 +156,45 @@ starting_year <- starting_year |>
          flag = ifelse(pvalue_changecount_by_year > .05, NA, "FLAG")) %>%
   ungroup() %>%
   #remove the NA years (first record of each quarter route) 
-  filter(is.na(change_count) == FALSE) #%>%
-  #DEPRECIATED: remove the years where the population had no chance to change in response to any underlying landcover change (population was 0 both years, so these 0 population changes are different from when species is present eg. count = 2 and count = 2 and population doesn't change between years). 
-  #filter(flag_0_to_0 != 0) #67584 before, 29280 after.
+  filter(is.na(change_count) == FALSE) %>%
+#UN-DEPRECIATED: remove the years where the population had no chance to change in response to any underlying landcover change (population was 0 both years, so these 0 population changes are different from when species is present eg. count = 2 and count = 2 and population doesn't change between years). 
+filter(flag_0_to_0 != 0) |>
+  filter(years_btwn == 1) #filter to the one year changes #27,990.
+  #the least represented species has only 39 observations
+
+representation <- one_year |>
+  group_by(common_name) |>
+  summarize(n = n())
+
+hist(representation$n)
+min(representation$n)
+max(representation$n)
+
+#so, function that calculates the maximum number of 5 years gaps based on each starting year.
+#years_list <- c(1999, 2000, 2002, 2003, 2004, 2005, 2010) #so here, it's best to start in 2000 (3 #matches) rather than 1999 (2 matches)
+#years_list = data.frame(year = years_list)
+#  for(i in 1:nrow(years_list)) {
+#    starting_value = years_list$year[i]
+#    matches <- seq(from = starting_value, to = max(years_list$year), by = 5)
+#    
+#    years_list$n_matches[i] = sum(years_list$year %in% matches == TRUE)
+#  }
+#
+#years_list <- years_list |>
+#  filter(n_matches == 2)
+#
+#pick the starting year with the most matches 
+#and if there's a tie in n_matches then pick the earliest start year.
+  #so like
+#starting_year <- years_list |>
+#  filter(n_matches == max(n_matches))
+#starting_year <- starting_year |>
+#  mutate(earliest = case_when(
+#    n() == 1 ~ NA,
+#    n() > 1 ~ min(year))) |>
+#  filter(year == earliest)
+#you'll have to check out some edge cases here where like, due to data availability there's good data earlier and good data later but on seperate 5 yr schedules that don't otherwise overlap but I think that sounds fine..
+#for my longer time frame, it's not going to be 27 years bc not all routes have that amount of time. BUT BUT BUT I could do my last round based off the longest possible lag time for year route-quarter, and add that lag length as a predictor variable or like, check the distribution of it? Check the distribution of it to decide what to do there. 
 
   #quick calculation of how often the mean count of a sp. at a quarter route is each number
   n_q_rt_count = stopdata %>%
@@ -200,6 +203,10 @@ starting_year <- starting_year |>
     filter(!q_rt_count == 0) %>% #remove the 0 counts
     mutate(percent = n/sum(n),
            cum_percent = cumsum(percent))
+  
+  
+#working with just the one_year, so here one_year becomes stopdata
+stopdata <- one_year
 
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
   flagged_sp <- stopdata %>% 
@@ -213,12 +220,13 @@ starting_year <- starting_year |>
     dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year)
   
   #if we wanted to remove routes where a species is never seen, but keep the other routes..
-  stopdata_0sprts_removed <- stopdata %>%
-    group_by(common_name, q_rt_standard) %>%
-    filter(sum(q_rt_count) > 0) %>%
-    ungroup() #44733 observations
+  #btw pretty sure this is broken. seems to just remove 0 counts even though they have a change in count from the previous year.
+  #stopdata_0sprts_removed <- stopdata %>%
+  #  group_by(common_name, q_rt_standard) %>%
+  #  filter(sum(q_rt_count) > 0) %>% <- probably broken here.
+  #  ungroup() #44733 observations
   #!!!!!!!!!!!!for this run
-  stopdata <- stopdata_0sprts_removed
+  #stopdata <- stopdata_0sprts_removed
   
   #want to have something that tells us how many samples we have from each species as well, since they're no longer equal
   sample_size <- stopdata %>% 
@@ -247,14 +255,16 @@ starting_year <- starting_year |>
   #stopdata <- subsampled_stopdata
   
   #we're going to run the same model for both our urban (dev + barren) and for our forest variables - breaking out the various effects of change in the amount of urbanization, positive increases in forest cover, and negative decreases in forest cover. Forest cover and urbanization change are not 1:1 correlated so these are indeed different from each other. 
-  landcover <- c("dev+barren", "forest_positive", "forest_negative", "grassland_positive", "grassland_negative")
+  landcover <- c("dev+barren", "forest_positive", "forest_negative"
+                 #"grassland_positive", "grassland_negative"
+                 ) #for now, let's just focus on the dev + forests like we need to for ESA
   #for testing
-  #landcover <- c("dev+barren")
+  landcover <- c("dev+barren")
   #for running the grassland model only
   #landcover <- c("grassland_positive", "grassland_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.18_cpc_rm0sprt_alllandcovers/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.07.20.cpc+dev_barren/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
@@ -350,8 +360,8 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 10000, #should be 10k in a full model
-                    warmup = 2000) #2k in a full model
+                    iter = 2000, #should be 10k in a full model
+                    warmup = 500) #2k in a full model
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
     timestamp()
