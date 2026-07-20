@@ -35,7 +35,7 @@
     
     real c_obs; //effect of if the observer changed
     
-    vector<lower=0>[Nsp] sigma;
+    real<lower=0> sigma;
   
   }
   
@@ -55,7 +55,7 @@
       a_sp[sp[n]] +
       b_landcover_change[sp[n]]*change_landcover[n] + 
       c_obs*change_obs[n], 
-      sigma[sp[n]]);
+      sigma);
     }
   
 
