@@ -1,6 +1,7 @@
 # mbbs-analysis
 
 file organization:
+
 0. = dataset setup and generation
 1. = generating species traits 
 2. = modeling
