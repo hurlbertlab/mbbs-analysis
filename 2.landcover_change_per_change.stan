@@ -12,8 +12,8 @@
   data {
   int<lower=0> N; //number of observations
   int<lower=1> Nqrt; //number of quarter routes
-  array[N] int<lower=1, upper=Nqrt> qrt; //quarter route for each observation
   int<lower=1> Nsp; //number of species
+  array[N] int<lower=1, upper=Nqrt> qrt; //quarter route for each observation
   array[N] int<lower=1, upper=Nsp> sp; //species for each observation
   vector[N] change_landcover; //change in development or forest since the last year
   vector[N] change_obs; //0 or 1 for if the observer changed between the two surveys
@@ -22,10 +22,14 @@
   
   parameters {
     real a; //universal intercept, taking the mean out of the intercept distribution and treating it as a constant plus a gaussian distribution centered on zero
-    vector[Nqrt] a_qrt_raw; //intercept for each unique qrt
-    real<lower=0> sig_qrt; //variance in a_qrt
-    vector[Nsp] a_sp_raw; //intercept for each unique sp
-    real<lower=0> sig_sp; //variange in a_sp
+    matrix[Nsp, Nqrt] a_spqrt_raw; //intercept for each spqrt combo
+    real<lower = 0> sig_spqrt; //variance in intercepts across species-qroute combinations
+    
+//    vector[Nqrt] a_qrt_raw; //intercept for each unique qrt
+//    real<lower=0> sig_qrt; //variance in a_qrt
+//    vector[Nsp] a_sp_raw; //intercept for each unique sp
+//    real<lower=0> sig_sp; //variange in a_sp
+
     vector[Nsp] b_landcover_change_raw; //effect of change in development or forest, across routes. Fit one for each species
     //let's test this out, BUT it might make the most sense to take out the mean treat it as a distribution of values
     real<lower=0> sig_lcc; //variance in b_landcover_change
@@ -40,9 +44,20 @@
   }
   
   transformed parameters {
-  vector[Nqrt] a_qrt = a_qrt_raw * sig_qrt;
-  vector[Nsp] a_sp = a_sp_raw * sig_sp;
+    
+  //transform z-score easy-to-fit alphas
+  matrix[Nsp, Nqrt] a_spqrt = a_spqrt_raw * sig_spqrt; //but I'll note. This still isn't partial pooling. To partial pool this would need to be not here, like I'd skip this raw etc. transformation.
+  //vector[Nqrt] a_qrt = a_qrt_raw * sig_qrt;
+  //vector[Nsp] a_sp = a_sp_raw * sig_sp;
+  
   vector[Nsp] b_landcover_change = b_landcover_change_raw * sig_lcc;
+  
+    //vectorize intercept matrix
+  vector[N] spqrt_intercept;
+  for(n in 1:N) {
+    spqrt_intercept[n] = a_spqrt[sp[n], qrt[n]];
+  }
+  
 }
   
   
@@ -51,8 +66,9 @@
     for (n in 1:N) {
     change_C[n] ~ normal(
       a +
-      a_qrt[qrt[n]] +
-      a_sp[sp[n]] +
+      spqrt_intercept[n] + 
+//      a_qrt[qrt[n]] +
+//      a_sp[sp[n]] +
       b_landcover_change[sp[n]]*change_landcover[n] + 
       c_obs*change_obs[n], 
       sigma);
@@ -61,11 +77,12 @@
 
 
     a ~ normal(0,2); //universal intercept, trying not to constrain the prior too tightly so using 10 instead of 1
-    a_qrt_raw ~ std_normal(); //centered on zero, use a hyperparam to set the distribution param. 
-    a_sp_raw ~ std_normal(); //centered on zero, use a hyperparam to set the distribution param.
+    to_vector(a_spqrt_raw) ~ std_normal();
+    //a_qrt_raw ~ std_normal(); //centered on zero, use a hyperparam to set the distribution param. 
+    //a_sp_raw ~ std_normal(); //centered on zero, use a hyperparam to set the distribution param.
     //use the half cauchy (lower bound = 0 set above) bc thats what stat rethinking uses, pg 371. Gives more credence to extreme tails than a normal distribution does
-    sig_qrt ~ exponential(1); //ok reduce credence to extreme tails on sig_qrt, routes should b p similar to each other.
-    sig_sp ~ normal(0, 0.5); //half normal, species can be more variable from one another than exp(1) suggests
+    sig_spqrt ~ normal(0, 0.5); //half normal, species can be more variable from one another than exp(1) suggests
+    //sig_sp ~ normal(0, 0.5); //half normal, species can be more variable from one another than exp(1) suggests
     // okay so, with interpretation...
     // take a (global mean) and add a_sp*sig_sp(variance in sp)
 

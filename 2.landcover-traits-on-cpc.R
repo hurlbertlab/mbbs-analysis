@@ -108,6 +108,18 @@ rm(bdev, bforest_pos, bforest_neg, bgrassland_neg, bgrassland_pos)
   cor(traits$scale_eagrassland, traits$scale_UAI) #not cor, 0.06
   cor(traits$scale_z_tempwq, traits$scale_UAI) #fine cor, 0.3
   cor(traits$scale_z_tempwq, traits$scale_eaforest) #fine cor, -0.02
+  
+  #so, let's pca grassland and forest.
+  pca_result <- prcomp(traits[, c("ebirdst_association_forest", "ebirdst_association_grassland")], center = TRUE, scale. = TRUE)
+  traits$PCA1 <- pca_result$x[, 1]
+  
+  plot(pca_result$x[, 1], pca_result$x[, 2],
+         +      xlab = "Forest Assocation", 
+         +      ylab = "Grassland Association",
+         +      main = "PCA of Two Traits",
+         +      pch = 16,           # Solid circles
+         +      col = "steelblue")  # Color
+  abline(h = 0, v = 0, lty = 2, col = "gray50")
 
 #where to save
 save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.12.03_tcpc_newmethod2/"

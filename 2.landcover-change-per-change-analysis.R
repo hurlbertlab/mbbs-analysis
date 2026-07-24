@@ -22,6 +22,9 @@ options(mc.cores = parallel::detectCores())
 
 source("2.analysis-functions.R")
 
+#set model fun, options = one_year OR full_lag
+model_run = "full_lag"
+
 #read in data we need
 barren <- read.csv("data/nlcd-landcover/nlcd_annual_barren.csv") 
 dev <- read.csv("data/nlcd-landcover/nlcd_annual_running_max_developed.csv") %>%
@@ -203,10 +206,50 @@ max(representation$n)
     filter(!q_rt_count == 0) %>% #remove the 0 counts
     mutate(percent = n/sum(n),
            cum_percent = cumsum(percent))
+
+##### calculate the dataframe for the full lag model
+full_lag <- stopdata |>
+  ##testing
+  #filter(route == "cthm-01" | route == "cthm-04") |>
+  #filter(common_name == "Acadian Flycatcher") |>
+  ##alright, and this is a dataset where one of the routes has some gaps in it. 
+  group_by(common_name, quarter_route) |>
+  arrange(year, .by_group = TRUE) |>
+  mutate(earliest_year = case_when(year == min(year) ~ "earliest",
+                                   year == max(year) ~ "latest",
+                                   TRUE ~ "0")) |>
+  filter(earliest_year != "0") |>
+  mutate(change_count = q_rt_count - lag(q_rt_count),
+         years_btwn = year - lag(year)) |> #should subtract earliest from latest - tested and works as expected.
+  # now do all the landscape changes
+  mutate(
+    #change_dev = rmax_dev_quarter - lag(rmax_dev_quarter),
+    change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
+    #also take change forest
+    change_forest = perc_forest_quarter - lag(perc_forest_quarter),
+    change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter),
+    #calculate if observer changed as well
+    change_obs = case_when(observer_ID == lag(observer_ID) ~ 0,
+                           observer_ID != lag(observer_ID) ~ 1),
+    #calculate change in observer quality
+    change_obs_qual = observer_quality - lag(observer_quality)
+  ) %>%
+  #remove the NA years (first record of each quarter route) 
+  filter(is.na(change_count) == FALSE) |>
+  #and, we should also remove full lags that are just too short to be the long-term effects that we're trying to get at. let's cut out quarter routes with less than a 10 year lag.
+  filter(years_btwn >= 10)
   
+  hist(full_lag$change_count)
+  table(full_lag$years_btwn)
+  hist(full_lag$change_dev)
+  table(full_lag$common_name)
   
 #working with just the one_year, so here one_year becomes stopdata
-stopdata <- one_year
+  if(model_run == "one_year") {
+    stopdata <- one_year
+  } else if(model_run == "full_lag") {
+    stopdata <- full_lag
+  }
 
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
   flagged_sp <- stopdata %>% 
@@ -264,7 +307,7 @@ stopdata <- one_year
   #landcover <- c("grassland_positive", "grassland_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.07.20.cpc+dev_barren/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.07.20.cpc+dev_barren_spqrt_pooled/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
@@ -273,7 +316,11 @@ if (!dir.exists(save_to)) {dir.create(save_to)}
 write.csv(sample_size, paste0(save_to, "sample_size.csv"), row.names = FALSE)
 
 #stan model specified in landcover_qrt_trends.stan, let R know where to find it
-stan_model_file <- "2.landcover_change_per_change.stan"
+if(model_run == "one_year") {
+  stan_model_file <- "2.landcover_change_per_change.stan"
+} else if(model_run == "full_lag") {
+  stan_model_file <- "2.landcover_cpc_full_lag.stan"
+}
 #compile the stan model
 stan_model <- stan_model(file = stan_model_file)
 beepr::beep()
@@ -339,6 +386,7 @@ for(a in 1:length(landcover)) {
     
     
     #set up the data to feed into the model
+  if(model_run == "one_year") {
     datstan <- list(
       N = nrow(loopdata), #number of observations
       Nqrt = length(unique(loopdata$q_rt_standard)), #number of unique quarter routes
@@ -348,10 +396,14 @@ for(a in 1:length(landcover)) {
       change_landcover = change_selected_land, #change in percent developed or forest for each observation since the last year
       #base_landcover = base_selected_land, #running max developed or perc forest,
       change_obs = loopdata$change_obs, #if the observer changed between years
-  #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
-  #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
+      #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
+      #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
       change_C = loopdata$change_count #count data for each observation, change since the last year
     )
+  } else if(model_run == "full_lag") {
+
+  }
+    
     print("datstan set")
     
     timestamp()
@@ -372,6 +424,8 @@ for(a in 1:length(landcover)) {
       relocate(rownames, .before = mean) %>%
       #filter out the z-score intercept calculations
       filter(str_detect(rownames, "a_z") == FALSE) %>%
+      #filter out this if present
+      filter(!str_detect(rownames, "spqrt_intercept")) %>%
       #exponentiate (not sure we need this!)
       #need new things in this, don't need the exp do need to extract the sp_id and the q_rt_standard and to left_join in the species_list to get the common names.
       mutate(
@@ -409,6 +463,7 @@ for(a in 1:length(landcover)) {
     temp_posterior <- as.data.frame(fit) %>%
       select(starts_with("b_")) %>%
       select(!contains("raw")) %>%
+      select(!contains("spqrt_intercept")) %>%
       mutate(row_id = row_number(),
              landcover = landcover[a]) 
     #bind rows
