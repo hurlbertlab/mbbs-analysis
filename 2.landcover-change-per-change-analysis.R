@@ -84,7 +84,7 @@ obs <- mbbs_survey_events %>%
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   ##########
   # testing
-  filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
+  #filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
   ############
   #make unique quarter route identifier
   mutate(quarter = case_when(stop_num > 15 ~ 4,
@@ -169,9 +169,9 @@ representation <- one_year |>
   group_by(common_name) |>
   summarize(n = n())
 
-hist(representation$n)
-min(representation$n)
-max(representation$n)
+#hist(representation$n)
+#min(representation$n)
+#max(representation$n)
 
 #so, function that calculates the maximum number of 5 years gaps based on each starting year.
 #years_list <- c(1999, 2000, 2002, 2003, 2004, 2005, 2010) #so here, it's best to start in 2000 (3 #matches) rather than 1999 (2 matches)
@@ -232,17 +232,21 @@ full_lag <- stopdata |>
     change_obs = case_when(observer_ID == lag(observer_ID) ~ 0,
                            observer_ID != lag(observer_ID) ~ 1),
     #calculate change in observer quality
-    change_obs_qual = observer_quality - lag(observer_quality)
+    change_obs_qual = observer_quality - lag(observer_quality),
+    flag_0_to_0 = ifelse((q_rt_count + lag(q_rt_count) == 0), TRUE, FALSE)
   ) %>%
   #remove the NA years (first record of each quarter route) 
   filter(is.na(change_count) == FALSE) |>
   #and, we should also remove full lags that are just too short to be the long-term effects that we're trying to get at. let's cut out quarter routes with less than a 10 year lag.
-  filter(years_btwn >= 10)
+  #filter(years_btwn >= 10) |>
+  #remove routes where the species is not present in the start or the end
+  #filter(flag_0_to_0 == FALSE) |>
+  ungroup()
   
-  hist(full_lag$change_count)
-  table(full_lag$years_btwn)
-  hist(full_lag$change_dev)
-  table(full_lag$common_name)
+  #hist(full_lag$change_count)
+  #table(full_lag$years_btwn)
+  #hist(full_lag$change_dev)
+  #table(full_lag$common_name)
   
 #working with just the one_year, so here one_year becomes stopdata
   if(model_run == "one_year") {
@@ -250,17 +254,58 @@ full_lag <- stopdata |>
   } else if(model_run == "full_lag") {
     stopdata <- full_lag
   }
-
+  
+#add species traits to stopdata as they might be needed
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!not on longleaf yet
+  #UAI
+  uai <- read.csv("data/species-traits/UAI-NateCleg-etall.csv") %>%
+    dplyr::filter(City == "Charlotte_US") %>%
+    #fix House Wren -> Northern House Wren which has had a taxonomy change since this data was published
+    dplyr::mutate(Species = 
+                    case_when(
+                      Species == "House Wren" ~ "Northern House Wren",
+                      TRUE ~ Species
+                    )) %>%
+    dplyr::select(-X, -SE)
+  
+  #ebird-habitat data
+  #habitat_select <- read.csv("data/species-traits/ebird-habitat-association/forest-grass-habitat-associations.csv")
+  habitat_select <- read.csv("data/species-traits/species_list.csv") %>%
+    dplyr::select(common_name, ebird_code, ebirdst_association_forest, ebirdst_association_grassland)
+  
+  
+  #want to have something that tells us how many samples we have from each species as well, since they're no longer equal
+  sample_size <- stopdata %>% 
+    group_by(common_name, sp_id) %>%
+    summarize(sample_size = n()) %>%
+    mutate(pch_scale = log(sample_size)+.5) %>%
+    ungroup()
+  
+  #add all to species_list
+  traits <- sample_size |>
+    left_join(habitat_select, by = "common_name") |>
+    left_join(uai, by = c("common_name" = "Species")) |>
+    #scale all the variables so we can compare across them
+    mutate(
+      scale_UAI = ((UAI - mean(UAI))/sd(UAI)),
+      scale_eaforest = ((ebirdst_association_forest - mean(ebirdst_association_forest))/sd(ebirdst_association_forest)),
+      scale_eagrassland = ((ebirdst_association_grassland - mean(ebirdst_association_grassland))/sd(ebirdst_association_grassland))
+    ) |>
+    ungroup()
+#!!!!!!!!!!!!!!!!!!!!!!!!not on longleaf yet
+  
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
-  flagged_sp <- stopdata %>% 
-    filter(flag == "FLAG", #was it flagged for a significant change_count ~ year relationship?
-           r_sq > 0.01) #if it was flagged, did it actually explain ANY variation in the data?
+#  flagged_sp <- stopdata %>% 
+#    filter(flag == "FLAG", #was it flagged for a significant change_count ~ year relationship?
+#           r_sq > 0.01) #if it was flagged, did it actually explain ANY variation in the data?
   
   #assert that no species are flagged.
-  assertthat::assert_that(nrow(flagged_sp) == 0)
+#  assertthat::assert_that(nrow(flagged_sp) == 0)
   #great, if it passes we can move on :)
-  stopdata <- stopdata %>% 
-    dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year)
+#  stopdata <- stopdata %>% 
+#    dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year)
+  #Always passes :)
+  
   
   #if we wanted to remove routes where a species is never seen, but keep the other routes..
   #btw pretty sure this is broken. seems to just remove 0 counts even though they have a change in count from the previous year.
@@ -270,13 +315,7 @@ full_lag <- stopdata |>
   #  ungroup() #44733 observations
   #!!!!!!!!!!!!for this run
   #stopdata <- stopdata_0sprts_removed
-  
-  #want to have something that tells us how many samples we have from each species as well, since they're no longer equal
-  sample_size <- stopdata %>% 
-    group_by(common_name, sp_id) %>%
-    summarize(sample_size = n()) %>%
-    mutate(pch_scale = log(sample_size)+.5) %>%
-    ungroup()
+
   
   #if we want to randomly subsample a given number of observations from each species based on the number of samples we take in the rm0to0 group...
   #sample_size <- read.csv("Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/sample_size.csv")
@@ -308,6 +347,7 @@ full_lag <- stopdata |>
   
 #where to save stan code and fit
 save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.07.20.cpc+dev_barren_spqrt_pooled/"
+save_to <- "model/ch2/2026.07.28_full_lag_uaiONLY_fixbetas_keep00/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
@@ -332,6 +372,7 @@ print("model saved")
 #save a species list
 species_list <- stopdata %>% dplyr::distinct(common_name, sp_id)
 write.csv(species_list, paste0(save_to, "species_list.csv"), row.names = FALSE)
+write.csv(traits, paste0(save_to, "traits.csv"), row.names = FALSE)
 
 ####LOOP through forest and developed landcover change models
 for(a in 1:length(landcover)) {
@@ -341,7 +382,8 @@ for(a in 1:length(landcover)) {
   posterior_samples <-  as.data.frame(NULL)
   
   #set up data for use in this loop w/o affecting our background stopdata df
-  loopdata <- stopdata
+  loopdata <- stopdata |>
+    ungroup()
     
     #pick the relevant landcover variables depending on the model running this time
     if(landcover[a] == "forest_all") {
@@ -355,7 +397,7 @@ for(a in 1:length(landcover)) {
         filter(change_forest >= 0) %>%
         group_by(q_rt_standard) %>%
         mutate(q_rt_standard = cur_group_id()) %>%
-        ungroup()
+        ungroup() 
       change_selected_land <- loopdata$change_forest
       base_selected_land <- loopdata$perc_forest_quarter
     } else if (landcover[a] == "forest_negative") {
@@ -401,6 +443,19 @@ for(a in 1:length(landcover)) {
       change_C = loopdata$change_count #count data for each observation, change since the last year
     )
   } else if(model_run == "full_lag") {
+    datstan <- list(
+      N = nrow(loopdata), #number of observations
+      Nsp = length(unique(loopdata$sp_id)), 
+      sp = loopdata$sp_id,
+      change_landcover = (change_selected_land/100), #change in percent developed or forest for each observation since the last year. Divide by 100 because it's on a pretty different scale from everything else right now, and at heart it is a percentage.
+      #base_landcover = base_selected_land, #running max developed or perc forest,
+      change_obs = loopdata$change_obs, #if the observer changed between years
+      #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
+      #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
+      change_C = loopdata$change_count, #count data for each observation, change since the last year
+      #forest_association = traits$scale_eaforest,
+      uai = traits$scale_UAI
+    )
 
   }
     
@@ -412,8 +467,8 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 2000, #should be 10k in a full model
-                    warmup = 500) #2k in a full model
+                    iter = 1000, #should be 10k in a full model
+                    warmup = 200) #2k in a full model
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
     timestamp()
@@ -461,11 +516,14 @@ for(a in 1:length(landcover)) {
     
     #extract posterior samples and save those also
     temp_posterior <- as.data.frame(fit) %>%
-      select(starts_with("b_")) %>%
+      select(!starts_with("a")) %>%
       select(!contains("raw")) %>%
-      select(!contains("spqrt_intercept")) %>%
-      mutate(row_id = row_number(),
-             landcover = landcover[a]) 
+      #select(!contains("spqrt_intercept")) %>%
+      mutate(row_id = row_number()) |>
+      mutate(landcover = landcover[a]) |>
+      #and we don't need 32,000 samples. let's take the first 5k
+      dplyr::filter(row_id < 5001)
+ 
     #bind rows
     posterior_samples <- bind_rows(posterior_samples, temp_posterior) #%>%
     #  dplyr::select(b_landcover_change, 

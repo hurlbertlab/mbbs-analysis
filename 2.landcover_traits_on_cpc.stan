@@ -9,9 +9,9 @@
 
 data {
   int<lower=0> N; //number of observations/species
-  vector[N] z_score_tempwq; //x variable, eg. climate position
+//vector[N] z_score_tempwq; //x variable, eg. climate position
   vector[N] forest_association;
-  vector[N] grassland_association;
+//vector[N] grassland_association;
   vector[N] uai; //urban assocation index
   vector[N] cpc_mean; //mean effect of a change in landcover (eg. development or forest) on the change in species counts at each quarter route
   vector[N] cpc_sd; //standard deviation in the slopes passed from the previous model
@@ -20,9 +20,9 @@ data {
 
 parameters {
   real a; //intercept
-  real b_tempwq;
+//real b_tempwq;
   real b_forest;
-  real b_grassland;
+//real b_grassland;
   real b_uai;
   vector[N] cpc; //each species has one effect of change in landcover on change in count, sampled form the mean,sd distribution provided in the data block
   real<lower=0> sig_cpc; //hyperparam for our estimated cpc
@@ -33,9 +33,9 @@ parameters {
 transformed parameters {
   
   vector[N] mu_cpc = a + 
-  b_tempwq*z_score_tempwq +
+//b_tempwq*z_score_tempwq +
   b_forest*forest_association +
-  b_grassland*grassland_association +
+//b_grassland*grassland_association +
   b_uai*uai;
   
   //will need to transform to z-score things to make them fit better I think.
@@ -49,9 +49,9 @@ model {
   
   //priors, start off simple
   a ~ normal(0,1);
-  b_tempwq ~ normal(0,1); 
+//b_tempwq ~ normal(0,1); 
   b_forest ~ normal(0,1);
-  b_grassland ~ normal(0,1);
+//b_grassland ~ normal(0,1);
   b_uai ~ normal(0,1);
   
   //calculation of cpc from the mean,sd provided in data block

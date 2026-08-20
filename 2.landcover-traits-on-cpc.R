@@ -24,6 +24,7 @@ unloadNamespace("rethinking") #just in case, can interfere
 ###################################
 #Get the b_dev data from the last run of the first step of the landcover modeling
 load_from <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.09.18_cpc_rm0sprt_alllandcovers/"
+load_from <- "model/ch2/2026.07.27_cpc_one_year_keep00_mean/"
 species_list <- read.csv(paste0(load_from, "species_list.csv")) 
 
 #climate 
@@ -123,6 +124,7 @@ rm(bdev, bforest_pos, bforest_neg, bgrassland_neg, bgrassland_pos)
 
 #where to save
 save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2025.12.03_tcpc_newmethod2/"
+save_to <- "model/ch2/2026.07.27_cpc_one_year_keep00_mean/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #load the stan file, compile stan file, save stan file
@@ -142,15 +144,16 @@ fit_summaries <- as.data.frame(NULL)
 posterior_results <-  as.data.frame(NULL)
 #set our dataframe
 standf <- fit_sums %>%
-  filter(landcover == landtypes[b])
+  filter(landcover == landtypes[b]) %>%
+  filter(!is.na(sp_id))
 #print the landtype we're currently working with
 print(landtypes[b])
   
 datstan <- list(
   N = nrow(standf),
-  z_score_tempwq = standf$scale_z_tempwq,
+  #z_score_tempwq = standf$scale_z_tempwq,
   forest_association = standf$scale_eaforest,
-  grassland_association = standf$scale_eagrassland,
+  #grassland_association = standf$scale_eagrassland,
   uai = standf$scale_UAI,
   cpc_mean = standf$mean,
   cpc_sd = standf$sd
@@ -160,8 +163,8 @@ fit <- sampling(stan_model,
                 data = datstan,
                 chains = 4,
                 cores = 4, 
-                iter = 2000,
-                warmup = 1000)
+                iter = 7000,
+                warmup = 2000)
 
 fit_temp <- as.data.frame(summary(fit)$summary) %>%
   mutate(rownames = rownames(.)) %>%
@@ -183,7 +186,7 @@ timestamp()
 print(paste0("landcover ", b," completed"))
 
 #write only at end bc really long
-write.csv(posterior_results, paste0(save_to, landtypes[b], "posterior_samples.csv"), row.names = FALSE)
-write.csv(fit_summaries, paste0(save_to, landtypes[b], "_fit_summaries.csv"), row.names = FALSE)
+write.csv(posterior_results, paste0(save_to, landtypes[b], "traits_posterior_samples.csv"), row.names = FALSE)
+write.csv(fit_summaries, paste0(save_to, landtypes[b], "traits_fit_summaries.csv"), row.names = FALSE)
 print(paste0("landcover ", b," results saved"))
 }
