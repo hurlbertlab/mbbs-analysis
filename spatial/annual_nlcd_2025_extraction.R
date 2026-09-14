@@ -113,4 +113,4 @@ twofive <- read.csv("data/nlcd-landcover/nlcd_annual_summarized_2025.csv")
 new <- bind_rows(all, twofive) |>
   arrange(ID, year)
 
-write.csv(new, "data/nlcd-landcover/nlcd")
+write.csv(new, "data/nlcd-landcover/nlcd_annual_landtype_bystop.csv", row.names = FALSE)
