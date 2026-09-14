@@ -17,9 +17,10 @@ species_list <- read.csv("data/species-traits/species_list.csv")
 pis <- read.csv("data/species-traits/ebird-habitat-association/ebirdst_predictors.csv") 
 #filter only to predictors that are forest and grassland
 pis <- pis[59:84,] %>%
-  filter(!label %in% c("Evergreen Broadleaf Forests (% cover)", "Evergreen Broadleaf Forests (edge density)", "Deciduous Needleleaf Forests (% cover)", "Deciduous Needleleaf Forests (edge density)", "Mixed Broadleaf Evergreen/Deciduous Forests (% cover)", "Mixed Broadleaf Evergreen/Deciduous Forests (edge density)"))
-#filter only to those that are relevant, eg: evergreen needleleaf (pine), mixed forests, and deciduous broadleaf, and then all the shrubland variable
+  filter(!label %in% c("Evergreen Broadleaf Forests (% cover)", "Evergreen Broadleaf Forests (edge density)", "Deciduous Needleleaf Forests (% cover)", "Deciduous Needleleaf Forests (edge density)", "Mixed Broadleaf Evergreen/Deciduous Forests (% cover)", "Mixed Broadleaf Evergreen/Deciduous Forests (edge density)", "Dense Shrublands (% cover)", "Dense Shrublands (edge density)"))
+#filter only to those that are relevant, eg: evergreen needleleaf (pine), mixed forests, and deciduous broadleaf, and then all herbaceous, grassland mosaic, and sparse shrubland
 #going to ignore the open forests (tree cover 30-60%) and spare forests
+#we also assume that dense shrubland is basically transitional habitat in eastern north america and therefore not really a reflection of bird responses to 'grassland' to include it.
 
 setpath = "Z:/Goulden/mbbs-analysis/ebird-habitat-predictor-importance/"
 
@@ -41,7 +42,7 @@ ebirdst_download_status(species = species_list$ebird_code[i],
                         download_ppms = FALSE)
 }
 #all downloaded successfully
-
+beepr::beep()
 #okay, yay, now loop through the species and calculate the means for the available pis we're interested in during the breeding season
   #make blank datasets to add to
   all_pis <- data.frame(NULL)
@@ -138,7 +139,9 @@ associations <- read.csv("data/species-traits/ebird-habitat-association/pis_summ
   #yeah and it looks like already with table(all_pis$label) that's already true even w/o filtering
   filter(str_detect(.$label, "% cover") == TRUE) %>%
   #cut out open and sparse forest, we're not concerned about those
-  filter(!str_detect(.$label, "Open Forests|Sparse Forests")) %>%
+  #also cut shrubland
+  filter(!str_detect(.$label, "Open Forests|Sparse Forests|Dense Shrublands")) %>%
+  #cool, and there's only one species that responses to sparse shrublands. (logerhead shrike) Also looks like no species were responding to dense shrublands, so filtering that out was essentially already done. 
   mutate(landtype = case_when(
     str_detect(.$label, "Forests") ~ "forest",
     TRUE ~ "grassland")) %>%
@@ -163,6 +166,8 @@ assertthat::assert_that(!any(is.na(associations[,2:3]))) #awesome, asserts true,
   plot(associations$ebirdst_association_forest, associations$ebirdst_association_grassland, xlim = c(0, .5)) + 
     text(associations$ebirdst_association_forest+.01, associations$ebirdst_association_grassland-.002, labels = associations$species_code, cex = .75) +
     abline(a=0,b=1)
+  
+  cor(associations$ebirdst_association_forest, associations$ebirdst_association_grassland)
   
 #quick correlation check  
 uai <- read.csv("data/species-traits/UAI-NateCleg-etall.csv") %>%
