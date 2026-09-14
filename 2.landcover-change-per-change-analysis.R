@@ -22,7 +22,7 @@ options(mc.cores = parallel::detectCores())
 
 source("2.analysis-functions.R")
 
-#set model fun, options = one_year OR full_lag
+#set model fun, options = one_year OR full_lag OR two_year OR three_year
 model_run = "full_lag"
 
 #read in data we need
@@ -84,7 +84,7 @@ obs <- mbbs_survey_events %>%
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   ##########
   # testing
-  #filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
+  filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
   ############
   #make unique quarter route identifier
   mutate(quarter = case_when(stop_num > 15 ~ 4,
