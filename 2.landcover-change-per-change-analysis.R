@@ -15,6 +15,7 @@
 
 library(dplyr)
 library(rstan)
+rstan_options(auto_write = TRUE)
 library(stringr)
 unloadNamespace("rethinking")
 options(scipen=999)
@@ -23,7 +24,8 @@ options(mc.cores = parallel::detectCores())
 source("2.analysis-functions.R")
 
 #set model fun, options = one_year OR full_lag OR two_year OR three_year
-model_run = "full_lag"
+model_run = "two_year" #we'll use full lag bc it includes trait calculations. Why did I need a different model for the full lag vs 1 year anyway? Not clear to me those needed to be handled any differently.
+#ope, it's because of quarter routes. The full lag doesn't need a control for quarter routes b/c each qr was represented only once. So... now I do want to modify the one-year model to inlcude species traits directly rather than then passing to a second model. hokay!
 
 #read in data we need
 barren <- read.csv("data/nlcd-landcover/nlcd_annual_barren.csv") 
@@ -118,6 +120,40 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   left_join(dev, by = c("route", "quarter" = "quarter_route", "year")) %>%
   left_join(forest, by = c("route", "quarter" = "quarter_route", "year")) %>%
   left_join(grassland, by = c("route", "quarter" = "quarter_route", "year"))
+
+
+add_lags <- stopdata |>
+  group_by(common_name, quarter_route) |>
+  arrange(year, .by_group = TRUE) |>
+  mutate(mean_t0tm1 = (q_rt_count + lag(q_rt_count))/2,
+         mean_t0tm1tm2 = (q_rt_count + lag(q_rt_count) + lag(q_rt_count, 2))/3,
+         mean_t1t2 = (lead(q_rt_count) + lead(q_rt_count, 2))/2,
+         mean_t1t2t3 = (lead(q_rt_count) + lead(q_rt_count, 2) + lead(q_rt_count, 3))/3,
+         y_0m1 = year - lag(year), #needs to be 1 for two-year analysis
+         y_0m1m2 = year - lag(year, 2), #needs to be 2 for three-year analysis
+         y_12 = lead(year) - year, #needs to be 1 for two year analysis
+         y_123 = lead(year, 2) - year, #needs to be 2 for three-year analysis
+         #regardless of the lag in my calculations of abundances.... so it's changes in abundances to changes in landcover of a single year, then what's the response of birds over the next 2/3 years, that landcover change is always going to be t1 - t0. 
+         change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
+         #also take change forest
+         change_forest = perc_forest_quarter - lag(perc_forest_quarter),
+         change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter),
+         #calculate if observer changed as well
+         change_obs = case_when(observer_ID == lag(observer_ID) ~ 0,
+                                observer_ID != lag(observer_ID) ~ 1),
+         #calculate change in observer quality
+         change_obs_qual = observer_quality - lag(observer_quality)
+  )
+
+two_year <- add_lags |>
+  filter(y_0m1 == 1, 
+         y_12 == 1) |>
+  mutate(change_count = y_12 - y_0m1)
+
+three_year <- add_lags |>
+  filter(y_0m1m2 == 2,
+         y_123 == 2) |>
+  mutate(change_count = y_123 - y_0m1m2)
   
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #time for the new stuff unique to each time period. For a change for change analysis, rather than each data point being the count and the urbanization%, each datapoint needs to be a lag count and lab urbanization percent. let's also have a years_btwn variable thats how long the latest lag is. let's sort the data first.
@@ -253,6 +289,10 @@ full_lag <- stopdata |>
     stopdata <- one_year
   } else if(model_run == "full_lag") {
     stopdata <- full_lag
+  } else if(model_run == "two_year") {
+    stopdata <- two_year
+  } else if(model_run == "three_year") {
+    stopdata <- three_year
   }
   
 #add species traits to stopdata as they might be needed
@@ -346,8 +386,8 @@ full_lag <- stopdata |>
   #landcover <- c("grassland_positive", "grassland_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.07.20.cpc+dev_barren_spqrt_pooled/"
-save_to <- "model/ch2/2026.07.28_full_lag_uaiONLY_fixbetas_keep00/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.09.16.two-year-test/"
+#save_to <- "model/ch2/2026.07.28_full_lag_uaiONLY_fixbetas_keep00/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
 #for use in descriptive plots, also save the df there
@@ -356,13 +396,13 @@ if (!dir.exists(save_to)) {dir.create(save_to)}
 write.csv(sample_size, paste0(save_to, "sample_size.csv"), row.names = FALSE)
 
 #stan model specified in landcover_qrt_trends.stan, let R know where to find it
-if(model_run == "one_year") {
+if(model_run %in% c("one_year", "two_year", "three_year")) {
   stan_model_file <- "2.landcover_change_per_change.stan"
 } else if(model_run == "full_lag") {
   stan_model_file <- "2.landcover_cpc_full_lag.stan"
 }
 #compile the stan model
-stan_model <- stan_model(file = stan_model_file)
+stan_model <- rstan::stan_model(file = stan_model_file)
 beepr::beep()
 print("model compiled")
 
@@ -428,7 +468,7 @@ for(a in 1:length(landcover)) {
     
     
     #set up the data to feed into the model
-  if(model_run == "one_year") {
+  if(model_run %in% c("one_year", "two_year", "three_year")) {
     datstan <- list(
       N = nrow(loopdata), #number of observations
       Nqrt = length(unique(loopdata$q_rt_standard)), #number of unique quarter routes
@@ -440,7 +480,9 @@ for(a in 1:length(landcover)) {
       change_obs = loopdata$change_obs, #if the observer changed between years
       #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
       #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
-      change_C = loopdata$change_count #count data for each observation, change since the last year
+      change_C = loopdata$change_count, #count data for each observation, change since the last year
+      #forest_association = traits$scale_eaforest,
+      uai = traits$scale_UAI
     )
   } else if(model_run == "full_lag") {
     datstan <- list(
