@@ -44,14 +44,16 @@ filter_to_min_sightings <- function(mbbs, min_sightings_per_route = 9, min_num_r
 
 
 ###filter to min sightings but for quarter route observations
-filter_to_min_qrts <- function(mbbs, min_quarter_routes) {
+filter_to_min_qrts <- function(mbbs, 
+                               min_quarter_routes, 
+                               min_obs_per_route = 2) {
   
   species_select <- mbbs %>%
     group_by(common_name, quarter_route) %>% 
     summarize(nyears = sum(q_rt_count > 0)) %>% #mid step that can be examined if interested
     ungroup() %>% 
     group_by(common_name) %>% 
-    filter(quarter_route > 0) %>% 
+    filter(nyears >= min_obs_per_route) %>% #filter to quarter routes with at 2 times the bird has been seen. So like, it's been observed there
     summarize(nqr = sum(nyears > 0)) %>%
     #filter to species with the minimum number of quarter routes where they've been observed at least once
     filter(nqr >= min_quarter_routes)

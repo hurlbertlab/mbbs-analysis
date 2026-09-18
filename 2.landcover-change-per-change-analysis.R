@@ -24,7 +24,7 @@ options(mc.cores = parallel::detectCores())
 source("2.analysis-functions.R")
 
 #set model fun, options = one_year OR full_lag OR two_year OR three_year
-model_run = "two_year" #we'll use full lag bc it includes trait calculations. Why did I need a different model for the full lag vs 1 year anyway? Not clear to me those needed to be handled any differently.
+model_run = "three_year" #we'll use full lag bc it includes trait calculations. Why did I need a different model for the full lag vs 1 year anyway? Not clear to me those needed to be handled any differently.
 #ope, it's because of quarter routes. The full lag doesn't need a control for quarter routes b/c each qr was represented only once. So... now I do want to modify the one-year model to inlcude species traits directly rather than then passing to a second model. hokay!
 
 #read in data we need
@@ -86,7 +86,7 @@ obs <- mbbs_survey_events %>%
 stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   ##########
   # testing
-  filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
+  #filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
   ############
   #make unique quarter route identifier
   mutate(quarter = case_when(stop_num > 15 ~ 4,
@@ -108,10 +108,11 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   #let's pull out the species that are unscientific, waterbirds, etc.
   filter(!common_name %in% excluded_species) %>%
   #let's also remove species that don't meet our minimum bound observations 
-  #set right now at 20 quarter routes
+  #set right now at 10 quarter routes with at least 2 observations
   #this excludes species that are not seen enough to make any sort of confident estimate on their trends, although one benefit of the bayes model is that the number of datapoints you need is 0, the slopes we fit are also going to SPAN 0 and be insigificant. 
   #this represents species that just do not commonly breed in the area and that we ought not make assumptions about anyway bc this isn't their usual breeding location.
-  filter_to_min_qrts(min_quarter_routes = 20) %>%
+  filter_to_min_qrts(min_quarter_routes = 10,
+                     min_obs_per_route = 2) %>%
   #now we only have species of interest, create a species_id 
   group_by(common_name) %>%
   mutate(sp_id = cur_group_id()) %>%
@@ -119,8 +120,20 @@ stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
   #let's left_join in the landcover data
   left_join(dev, by = c("route", "quarter" = "quarter_route", "year")) %>%
   left_join(forest, by = c("route", "quarter" = "quarter_route", "year")) %>%
-  left_join(grassland, by = c("route", "quarter" = "quarter_route", "year"))
-
+  left_join(grassland, by = c("route", "quarter" = "quarter_route", "year")) |>
+#and, we know there are quarter routes where a species is just never seen across the whole dataset. These are quarter routes where like, we just can't say anything about this species. They're not there and are never there. We want to remove those sp-qrt combinations from consideration
+  (\(x) {
+    x |>
+      anti_join(
+        #remove sp-qrt combinations where a species is never present
+       ( x |>
+          group_by(common_name, quarter_route) |>
+          summarize(n_observations = sum(q_rt_count), .groups = "drop") |>
+          filter(n_observations == 0)
+         ),
+        by = c("common_name", "quarter_route")
+      )
+  })()
 
 add_lags <- stopdata |>
   group_by(common_name, quarter_route) |>
@@ -148,12 +161,27 @@ add_lags <- stopdata |>
 two_year <- add_lags |>
   filter(y_0m1 == 1, 
          y_12 == 1) |>
-  mutate(change_count = y_12 - y_0m1)
+  mutate(change_count = mean_t1t2 - mean_t0tm1) |>
+  filter(!is.na(change_count)) |>
+  group_by(quarter_route) |>
+  mutate(q_rt_standard = cur_group_id()) |>
+  ungroup() |>
+  group_by(common_name, quarter_route) |>
+  mutate(spqrt_standard = cur_group_id()) |>
+  ungroup()
 
 three_year <- add_lags |>
   filter(y_0m1m2 == 2,
          y_123 == 2) |>
-  mutate(change_count = y_123 - y_0m1m2)
+  mutate(change_count = mean_t1t2t3 - mean_t0tm1tm2) |>
+  filter(!is.na(change_count)) |>
+  group_by(quarter_route) |>
+  mutate(q_rt_standard = cur_group_id()) |>
+  ungroup() |>
+  group_by(common_name, quarter_route) |>
+  mutate(spqrt_standard = cur_group_id()) |>
+  ungroup()
+
   
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #time for the new stuff unique to each time period. For a change for change analysis, rather than each data point being the count and the urbanization%, each datapoint needs to be a lag count and lab urbanization percent. let's also have a years_btwn variable thats how long the latest lag is. let's sort the data first.
@@ -334,6 +362,10 @@ full_lag <- stopdata |>
     ungroup()
 #!!!!!!!!!!!!!!!!!!!!!!!!not on longleaf yet
   
+  #also need to save the species id and spqrt conversion
+  spqrt_info <- stopdata |>
+    distinct(common_name, sp_id, spqrt_standard)
+  
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
 #  flagged_sp <- stopdata %>% 
 #    filter(flag == "FLAG", #was it flagged for a significant change_count ~ year relationship?
@@ -381,12 +413,12 @@ full_lag <- stopdata |>
                  #"grassland_positive", "grassland_negative"
                  ) #for now, let's just focus on the dev + forests like we need to for ESA
   #for testing
-  landcover <- c("dev+barren")
+  #landcover <- c("dev+barren")
   #for running the grassland model only
   #landcover <- c("grassland_positive", "grassland_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.09.16.two-year-test/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.09.17.three-year-rm0spqrts/"
 #save_to <- "model/ch2/2026.07.28_full_lag_uaiONLY_fixbetas_keep00/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
@@ -410,9 +442,11 @@ print("model compiled")
 file.copy(stan_model_file, save_to, overwrite = TRUE)
 print("model saved")
 #save a species list
-species_list <- stopdata %>% dplyr::distinct(common_name, sp_id)
+species_list <- stopdata %>% dplyr::distinct(common_name, sp_id, spqrt_standard)
 write.csv(species_list, paste0(save_to, "species_list.csv"), row.names = FALSE)
 write.csv(traits, paste0(save_to, "traits.csv"), row.names = FALSE)
+#save the spqrt conversion
+write.csv(spqrt_info, paste0(save_to, "sprqt_info.csv"), row.names = FALSE)
 
 ####LOOP through forest and developed landcover change models
 for(a in 1:length(landcover)) {
@@ -471,17 +505,19 @@ for(a in 1:length(landcover)) {
   if(model_run %in% c("one_year", "two_year", "three_year")) {
     datstan <- list(
       N = nrow(loopdata), #number of observations
-      Nqrt = length(unique(loopdata$q_rt_standard)), #number of unique quarter routes
-      qrt = loopdata$q_rt_standard, #qrt index for each observation
+      Nspqrt = length(unique(loopdata$spqrt_standard)),
+      spqrt = loopdata$spqrt_standard,
+      #Nqrt = length(unique(loopdata$q_rt_standard)), #number of unique quarter routes
+      #qrt = loopdata$q_rt_standard, #qrt index for each observation
       Nsp = length(unique(loopdata$sp_id)), 
       sp = loopdata$sp_id,
-      change_landcover = change_selected_land, #change in percent developed or forest for each observation since the last year
+      change_landcover = (change_selected_land/100), #change in percent developed or forest for each observation since the last year
       #base_landcover = base_selected_land, #running max developed or perc forest,
       change_obs = loopdata$change_obs, #if the observer changed between years
       #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
       #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
       change_C = loopdata$change_count, #count data for each observation, change since the last year
-      #forest_association = traits$scale_eaforest,
+      forest_association = traits$scale_eaforest,
       uai = traits$scale_UAI
     )
   } else if(model_run == "full_lag") {
@@ -495,7 +531,7 @@ for(a in 1:length(landcover)) {
       #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
       #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
       change_C = loopdata$change_count, #count data for each observation, change since the last year
-      #forest_association = traits$scale_eaforest,
+      forest_association = traits$scale_eaforest,
       uai = traits$scale_UAI
     )
 
@@ -509,7 +545,7 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 1000, #should be 10k in a full model
+                    iter = 2000, #should be 10k in a full model
                     warmup = 200) #2k in a full model
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
@@ -527,12 +563,12 @@ for(a in 1:length(landcover)) {
       #need new things in this, don't need the exp do need to extract the sp_id and the q_rt_standard and to left_join in the species_list to get the common names.
       mutate(
              sp_id = as.numeric(ifelse(
-               str_detect(.$rownames, "a_sp|b_landcover_change"),
+               str_detect(.$rownames, "b_landcover_change"),
                str_extract(.$rownames, "[0-9]([0-9])?"),
                NA)),
-             q_rt_standard = as.numeric(ifelse(
-               str_detect(.$rownames, "a_qrt"),
-               str_extract(.$rownames, "[0-9]([0-9])?([0-9])?"),
+             spqrt_standard = as.numeric(ifelse(
+               str_detect(.$rownames, "a_spqrt"),
+               str_extract(.$rownames, "[0-9]([0-9])?([0-9])?([0-9])?"),
                NA)),
              slope = ifelse(str_detect(rownames, "b_"), 
                             paste0(str_extract(rownames, "year|dev|forest|landcover"),", ", landcover[a]),
@@ -541,7 +577,7 @@ for(a in 1:length(landcover)) {
              flag_rhat = ifelse(round(.$Rhat, 2) == 1, FALSE, TRUE),
              flag_neff = ifelse(.$n_eff > 2000, FALSE, TRUE)
              ) %>%
-      left_join(species_list, by = "sp_id") %>%
+      #left_join(species_list, by = "sp_id") %>%
       #remove the intermediate step data
       filter(is.na(raw))  %>%
       #rename numeric columns
@@ -557,24 +593,40 @@ for(a in 1:length(landcover)) {
     
     
     #extract posterior samples and save those also
+    # let's not bother with this atm while testing.
     temp_posterior <- as.data.frame(fit) %>%
       select(!starts_with("a")) %>%
       select(!contains("raw")) %>%
-      #select(!contains("spqrt_intercept")) %>%
+      select(!contains("spqrt")) %>%
+      select(!contains("lp_")) |>
       mutate(row_id = row_number()) |>
       mutate(landcover = landcover[a]) |>
       #and we don't need 32,000 samples. let's take the first 5k
       dplyr::filter(row_id < 5001)
  
-    #bind rows
+   # bind rows
     posterior_samples <- bind_rows(posterior_samples, temp_posterior) #%>%
-    #  dplyr::select(b_landcover_change, 
-    #                #b_landcover_base,
-    #                row_id, 
-    #                landcover)
+      #dplyr::select(b_landcover_change, 
+      #              #b_landcover_base,
+      #              row_id, 
+      #              landcover)
     #save
     write.csv(posterior_samples, paste0(save_to, landcover[a], "_posterior_samples.csv"), row.names = FALSE)
     print("datasets saved")
+    
+    #calculate prop posterior >0
+    nrow_posterior <- nrow(temp_posterior)
+    prop_posterior <- temp_posterior |>
+      summarize(across(everything(),
+                       (prop_gt_0 = ~sum(. > 0)/nrow_posterior))) |>
+      tidyr::pivot_longer(cols = c(contains("b_landcover"), contains("kappa")), 
+                          names_to = "variable") |>
+      dplyr::select(variable, value) |>
+      rename(prop_posterior_gt_0 = value) |>
+      mutate(common_name_standard = as.integer(str_extract(variable, "[0-9]([0-9])?")),
+             kappa = str_extract(variable, "_[a-z]+")) |>
+      dplyr::select(-variable) 
+    write.csv(prop_posterior, paste0(save_to, landcover[a], "_prop_posterior_gt0.csv"), row.names = FALSE)
     timestamp()
   } #end landcover loop
 
