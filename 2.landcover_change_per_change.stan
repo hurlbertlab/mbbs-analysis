@@ -7,22 +7,29 @@
 //    http://mc-stan.org/users/interfaces/rstan.html
 //    https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started
 //
-//Stan model for a change per change analysis
+//Stan model for a change per change analysis. Adding in the effects of species traits here so everything can run in just one model.
 
   data {
   int<lower=0> N; //number of observations
-  int<lower=1> Nqrt; //number of quarter routes
+//  int<lower=1> Nqrt; //number of quarter routes
   int<lower=1> Nsp; //number of species
-  array[N] int<lower=1, upper=Nqrt> qrt; //quarter route for each observation
+  int<lower=1> Nspqrt; //number of species quarter route combinations
+  array[N] int<lower=1, upper= Nspqrt> spqrt; //species quarter route for each observation
+//  array[N] int<lower=1, upper=Nqrt> qrt; //quarter route for each observation
   array[N] int<lower=1, upper=Nsp> sp; //species for each observation
   vector[N] change_landcover; //change in development or forest since the last year
   vector[N] change_obs; //0 or 1 for if the observer changed between the two surveys
   vector[N] change_C; //change in count since the last survey for each row, vector bc it doesn't have bounds like an array does
+  
+  // add in species traits.
+  vector[Nsp] forest_association;
+  //vector[Nsp] grassland_association;
+  vector[Nsp] uai; //urban association index
   }
   
   parameters {
     real a; //universal intercept, taking the mean out of the intercept distribution and treating it as a constant plus a gaussian distribution centered on zero
-    matrix[Nsp, Nqrt] a_spqrt_raw; //intercept for each spqrt combo
+    vector[Nspqrt] a_spqrt_raw; //intercept for each spqrt combo
     real<lower = 0> sig_spqrt; //variance in intercepts across species-qroute combinations
     
 //    vector[Nqrt] a_qrt_raw; //intercept for each unique qrt
@@ -32,7 +39,12 @@
 
     vector[Nsp] b_landcover_change_raw; //effect of change in development or forest, across routes. Fit one for each species
     //let's test this out, BUT it might make the most sense to take out the mean treat it as a distribution of values
-    real<lower=0> sig_lcc; //variance in b_landcover_change
+    real gamma_b; //mean effect of landcover across species
+    real <lower = 0> sig_b; //variance in b_landcover_change.
+    
+    real kappa_uai; //species-trait effect of uai
+    real kappa_forest; //species-trait effect of forest
+   // real kappa_grassland; //species-trait effect of grassland
     
 //   real b_year; //effect of year, across routes.
 //    real b_landcover_base; //effect of development or forest, across routes
@@ -46,17 +58,16 @@
   transformed parameters {
     
   //transform z-score easy-to-fit alphas
-  matrix[Nsp, Nqrt] a_spqrt = a_spqrt_raw * sig_spqrt; //but I'll note. This still isn't partial pooling. To partial pool this would need to be not here, like I'd skip this raw etc. transformation.
+  vector[Nspqrt] a_spqrt = a_spqrt_raw * sig_spqrt; //but I'll note. This still isn't partial pooling. To partial pool this would need to be not here, like I'd skip this raw etc. transformation.
   //vector[Nqrt] a_qrt = a_qrt_raw * sig_qrt;
   //vector[Nsp] a_sp = a_sp_raw * sig_sp;
   
-  vector[Nsp] b_landcover_change = b_landcover_change_raw * sig_lcc;
-  
-    //vectorize intercept matrix
-  vector[N] spqrt_intercept;
-  for(n in 1:N) {
-    spqrt_intercept[n] = a_spqrt[sp[n], qrt[n]];
-  }
+  //transform landcover.... blegh.
+  vector[Nsp] b_landcover_change = gamma_b +
+  kappa_uai * uai +
+  kappa_forest * forest_association + 
+ // kappa_grassland * grassland_association + 
+  b_landcover_change_raw * sig_b;
   
 }
   
@@ -66,7 +77,7 @@
     for (n in 1:N) {
     change_C[n] ~ normal(
       a +
-      spqrt_intercept[n] + 
+      a_spqrt[spqrt[n]] + 
 //      a_qrt[qrt[n]] +
 //      a_sp[sp[n]] +
       b_landcover_change[sp[n]]*change_landcover[n] + 
@@ -74,7 +85,21 @@
       sigma);
     }
   
-
+    b_landcover_change_raw ~ normal(0,1);
+    //b_landcover_change ~ normal(gamma_b +
+    //kappa_forest * forest_association +
+    //kappa_uai * uai,
+    //sig_b);
+    
+    gamma_b ~ normal(0, 1); //prior on the group mean effect of b_landcover_change
+    kappa_uai ~ normal(0, 1);
+    sig_b ~ normal(0, 1); //easier to fit than exponential, might as well bump from 0.5 b/c we kinda do expect species to be different from each other.
+    
+        //there's one effect of changing observers across routes, and I don't expect it to be a large effect so I constrain it a bit more than the other variables (0,0.5)
+    c_obs ~ normal(0, 0.5); 
+    
+    //just a normal distribution, so we'll model sigma with exponential
+    sigma ~ exponential(1);
 
     a ~ normal(0,2); //universal intercept, trying not to constrain the prior too tightly so using 10 instead of 1
     to_vector(a_spqrt_raw) ~ std_normal();
@@ -87,25 +112,9 @@
     // take a (global mean) and add a_sp*sig_sp(variance in sp)
 
     
-    
-    //there is one effect of change in urbanization across routes
-    b_landcover_change_raw ~ std_normal();
-    sig_lcc ~ exponential(1);
-    //there is one effect of year across routes
-//    b_year ~ normal(0,1);
-    //there is one effect of baseline urbanization across routes
-//    b_landcover_base ~ normal(0,1);
-    
-    //there's one effect of changing observers across routes, and I don't expect it to be a large effect so I constrain it a bit more than the other variables (0,0.5)
-    c_obs ~ normal(0, 0.5); 
-    
-    //just a normal distribution, so we'll model sigma with exponential
-    sigma ~ exponential(1);
-    
 }
 
 //  generated quantities {
 //  vector[Nsp] b_landcover_check = b_landcover_change_raw * sig_lcc;
 //  // Compare with b_landcover_change; should match exactly
 //}
-

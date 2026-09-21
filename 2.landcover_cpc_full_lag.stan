@@ -16,7 +16,7 @@
   vector[N] change_C; //change in count since the last survey for each row, vector bc it doesn't have bounds like an array does
   
   //species-traits
-  //vector[Nsp] forest_association; 
+  vector[Nsp] forest_association; 
   vector[Nsp] uai; //urban association index
   }
   
@@ -29,7 +29,7 @@
     real gamma_b; //mean effect of landcover across species
     real<lower = 0> sig_b; //variance in b_landcover_change
     
-    //real kappa_forest; //species-trait effect of forest
+    real kappa_forest; //species-trait effect of forest
     real kappa_uai; //species-trait effect of uai
 
     real c_obs; //effect of if the observer changed
@@ -58,7 +58,7 @@
     }
   
     b_landcover_change ~ normal(gamma_b +
-      //kappa_forest * forest_association +
+      kappa_forest * forest_association +
       kappa_uai * uai, 
       sig_b);
 
@@ -68,7 +68,7 @@
     
     //there is one effect of change in urbanization across routes
     gamma_b ~ normal(0, 1);  // NEW: prior on the group mean
-    //kappa_forest ~ normal(0, 1);
+    kappa_forest ~ normal(0, 1);
     kappa_uai ~ normal(0, 1);
     sig_b ~ normal(0, 0.5); //easier to fit than exponential
     
