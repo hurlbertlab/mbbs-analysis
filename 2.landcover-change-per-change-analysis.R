@@ -128,7 +128,8 @@ one_year <- stopdata |>
   ##alright, and this is a dataset where one of the routes has some gaps in it. 
   group_by(common_name, quarter_route) |>
   arrange(year, .by_group = TRUE) |>
-  mutate(change_count = q_rt_count - lag(q_rt_count), #okay, that worked as expected actually, and only calculated lags within each quarter_route
+  mutate(change_count = q_rt_count - lag(q_rt_count), #okay, that worked as expected actually, and only calculated lags within each quarter_route. However, now, for the 2 year and three year lags I actually want to calculate ROLLING LAGS. Should be able to do this with just new columns for the 2 year and three year.
+         #Hm. And, Ivara, we also need to do the averaging for the preceeding years before lagging them... this will require some more thought. 
          years_btwn = year - lag(year)) |>
   mutate(
     #when the count is 0 two years in a row, we assume species is not present on the quarter route and need to remove that data point from consideration, as theres no chance for the population to change. If species returns, eg, time series is 0,0,1 - that 0,1 datapoint is still fine. species 'came back' to the quarter route.

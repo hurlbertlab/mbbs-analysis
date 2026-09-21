@@ -9,77 +9,111 @@ library(vioplot) #for violin plots
 source("3.plot-functions.R")
 
 #load-from:
-load_from_full_lag <- "model/ch2/2026.07.27_full_lag_uai_fixbetas_keep00/"
+load_from_full_lag <- "model/ch2/2026.09.21.full-lag-rm0spqrts-uaiforest/"
 
-load_from_short_term <- "model/ch2/2026.07.27_cpc_one_year_keep00_mean/"
+load_from_short_term <- "model/ch2/2026.09.21.three-year-rm0spqrts/"
 
 #dev-long-term 
-{
-maxColorValue = 100
-color = colorRampPalette(c("black", "grey80", "#92c5de", "#a6dba0", "#5aae61"))(maxColorValue)
-continous_colors <- data.frame(color, 
-                               palette_percent = seq(from = -2.7, to = 2.3, length.out = 100)) |>
-  mutate(palette_percent = round(palette_percent, digits = 2))
-
-
-#from 5,000 posterior draws..
-prop_posterior <- read.csv(paste0(load_from_full_lag, "dev+barren_posterior_samples.csv")) |>
-  select(starts_with("b_landcover_change")) |>
-  summarize(across(everything(),
-                   (prop_gt_0 = ~sum(. > 0)/5000))) |>
-  tidyr::pivot_longer(cols = b_landcover_change.1.:b_landcover_change.67., 
-                      names_to = "variable") |>
-  dplyr::select(variable, value) |>
-  rename(prop_posterior_gt_0 = value) |>
-  mutate(sp_id = as.integer(str_extract(variable, "[0-9]([0-9])?"))) |>
-  dplyr::select(-variable) |>
-  left_join(read.csv(paste0(load_from_full_lag, "traits.csv")), by = 'sp_id') |>
-  mutate(palette_percent = round(prop_posterior_gt_0, digits = 2)) |>
-  left_join(continous_colors, by = c("palette_percent")) |>
-  dplyr::select(-sp_id)
-
-
-z <- qnorm((1+0.87)/2) #confidence interval 87%
-
-full_lag_dev <- read.csv(paste0(load_from_full_lag, "dev+barren_fit_summaries.csv")) %>%
-  #filter out the individual quarter route a[] fits, just keep the variables we're most interested in.
-  # filter(rownames %in% c("a_bar", "sig_a", "b_landcover_change", "b_landcover_base", "c_obs", "sigma")) %>%
-  #and really.. all we want is b_landcover_change here in plotting
-  # filter(rownames %in% c("b_landcover_change")) %>%
-  filter(!is.na(common_name),
-         !is.na(slope)) %>%
-  mutate(rm = ifelse(str_detect(.$rownames, "raw"), FALSE, TRUE)) %>%
-  filter(rm == TRUE) %>%
-  group_by(mean, common_name) %>%
-  arrange(desc(mean)) %>% #
-  mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
-  ungroup() %>%
-  left_join(prop_posterior, by = c("common_name")) |>
-  mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-         pch = ifelse(palette_percent < .07, 19, 19)) 
-
-full_lag_dev$scalecolor <- viridisLite::viridis(option = "viridis", n = length(full_lag_dev$scale_eaforest))[as.numeric(cut(full_lag_dev$scale_eaforest, breaks = length(full_lag_dev$scale_eaforest)))]
-
-full_lag_dev$color <- full_lag_dev$scalecolor
-
-
-png(filename = "figures/ch2/esa_full_lag_dev_forest.png", 
-    width = 1200,
-    height = 600,
-    units = "px", 
-    type = "windows")
-par(mar = c(4, 16, 1, 1), cex.axis = 1, mfrow = c(1,2))
-plot_intervals(plot_df = full_lag_dev[34:67,],
-               xlab = "Change in species count with change in % urban", 
-               ylim_select = c(33.5,66.5),
-               xlim_select = c(-6, 5.5))
-plot_intervals(plot_df = full_lag_dev[1:33,], 
-               xlab = "", 
-               ylim_select = c(.5,33.5),
-               xlim_select = c(-6, 5.5))
-dev.off()
+landcover <- c("dev+barren", "forest_positive", "forest_negative")
+for(a in 1:2) {
+  
+  if(a == 1) {
+    load_from = load_from_full_lag
+    run_type = "full_lag"
+  } else if (a == 2) {
+    load_from = load_from_short_term
+    run_type = "3yr"
+  }
+  
+  for (i in 1:length(landcover)) {
+  maxColorValue = 101
+  color = colorRampPalette(c("black", "grey80", "#92c5de", "#a6dba0", "#5aae61"))(maxColorValue)
+  continous_colors <- data.frame(color, 
+                                 palette_percent = seq(from = 0, to = 1, length.out = 101)) |>
+    mutate(palette_percent = round(palette_percent, digits = 2))
+  if(landcover[i] == "forest_negative") {
+    continous_colors <- data.frame(color, 
+                                   palette_percent = seq(from = 1, to = 0, length.out = 101)) |>
+      mutate(palette_percent = round(palette_percent, digits = 2))
+  }
+  
+  
+  #from 5,000 posterior draws..
+  #prop_posterior <- read.csv(paste0(load_from_full_lag, "dev+barren_posterior_samples.csv")) |>
+  #  select(starts_with("b_landcover_change")) |>
+  #  summarize(across(everything(),
+  #                   (prop_gt_0 = ~sum(. > 0)/5000))) |>
+  #  tidyr::pivot_longer(cols = b_landcover_change.1.:b_landcover_change.67., 
+  #                      names_to = "variable") |>
+  #  dplyr::select(variable, value) |>
+  #  rename(prop_posterior_gt_0 = value) |>
+  #  mutate(sp_id = as.integer(str_extract(variable, "[0-9]([0-9])?"))) |>
+  #  dplyr::select(-variable) |>
+  #  left_join(read.csv(paste0(load_from_full_lag, "traits.csv")), by = 'sp_id') |>
+  #  mutate(palette_percent = round(prop_posterior_gt_0, digits = 2)) |>
+  #  left_join(continous_colors, by = c("palette_percent")) |>
+  #  dplyr::select(-sp_id)
+  
+  prop_posterior <- read.csv(paste0(load_from, landcover[i], "_prop_posterior_gt0.csv")) |>
+    filter(kappa == "_landcover") |>
+    rename(sp_id = common_name_standard)  |>
+      left_join(read.csv(paste0(load_from, "traits.csv")), by = 'sp_id') |>
+      mutate(palette_percent = round(prop_posterior_gt_0, digits = 2)) |>
+      left_join(continous_colors, by = c("palette_percent")) 
+  
+  
+  #z <- qnorm((1+0.87)/2) #confidence interval 87%
+  
+  full_lag_dev <- read.csv(paste0(load_from, landcover[i], "_fit_summaries.csv")) %>%
+    #filter out the individual quarter route a[] fits, just keep the variables we're most interested in.
+    # filter(rownames %in% c("a_bar", "sig_a", "b_landcover_change", "b_landcover_base", "c_obs", "sigma")) %>%
+    #and really.. all we want is b_landcover_change here in plotting
+    # filter(rownames %in% c("b_landcover_change")) %>%
+    filter(!is.na(slope)) %>%
+    left_join(prop_posterior, by = c("sp_id")) |>
+    group_by(mean, sp_id) %>%
+    arrange(desc(mean)) %>% 
+    #redo sp_id to rank by mean
+    mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1. 
+    ungroup() |>
+    mutate(pch = 19)
+  
+  if(landcover[i] == "forest_negative") {
+    # we want to reverse the plotting order b/c we still want species that are declining to be plotted on the other side.
+    full_lag_dev <- full_lag_dev |>
+      group_by(mean, sp_id) |>
+      arrange(mean) |>
+      mutate(sp_id = cur_group_rows())
+  }
+  
+  #set plotting label
+  if(landcover[i] == "dev+barren"){
+    lab = "Change in species count with change in % urban"
+  } else if (landcover[i] == "forest_negative") {
+    lab = "Change in species count with forest loss"
+  } else if(landcover[i] == "forest_positive") {
+    lab = "Change in species count with forest gain"
+  }
+  
+  png(filename = paste0("figures/ch2/BOU_", run_type, "_", landcover[i], ".png"), 
+      width = 1200,
+      height = 600,
+      units = "px", 
+      type = "windows")
+  par(mar = c(4, 16, 1, 1), cex.axis = 1, mfrow = c(1,2))
+  plot_intervals(plot_df = full_lag_dev[34:63,],
+                 xlab = lab, 
+                 ylim_select = c(33.5,63.5),
+                 xlim_select = c(-8, 8.5),
+                 xaxt = "n")
+  plot_intervals(plot_df = full_lag_dev[1:33,], 
+                 xlab = "", 
+                 ylim_select = c(.5,33.5),
+                 xlim_select = c(-8, 8.5),
+                 xaxt = "n")
+  dev.off()
+  }
 }
-
 
 #dev short-term
 {

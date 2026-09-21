@@ -454,7 +454,7 @@ matrix[is.na(matrix)] <- maximum_n_colors+1 #for missing values
 matrix_final <- as.matrix(matrix[,2:28])
 rownames(matrix_final) <- matrix$route
 
-png(filename = "figures/datapaper/observermatrix.png", 
+png(filename = "figures/datapaper/observermatrix_white.png", 
     width = 540,
     height = 530,
     units = "px", 

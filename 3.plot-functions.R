@@ -47,6 +47,7 @@
          col = plot_df$color,
          ylim = ylim_select,
          yaxt = "n",
+         xaxt = xaxt,
          xlab = xlab,
          ylab = ylab,
          pch = plot_df$pch, 
@@ -64,6 +65,11 @@
       axis(2, at = seq(round(min(plot_df$sp_id)),
                        round(max(plot_df$sp_id)), by = 1),
            labels = plot_df$common_name,
+           las = 1,
+           cex.axis = 1.25)
+      
+      axis(1, at = seq(round(min(xlim_select)),
+                       round(max(xlim_select)), by = 1),
            las = 1,
            cex.axis = 1.25)
     
