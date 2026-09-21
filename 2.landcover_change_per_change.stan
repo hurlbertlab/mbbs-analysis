@@ -44,6 +44,7 @@
     
     real kappa_uai; //species-trait effect of uai
     real kappa_forest; //species-trait effect of forest
+   // real kappa_grassland; //species-trait effect of grassland
     
 //   real b_year; //effect of year, across routes.
 //    real b_landcover_base; //effect of development or forest, across routes
@@ -65,6 +66,7 @@
   vector[Nsp] b_landcover_change = gamma_b +
   kappa_uai * uai +
   kappa_forest * forest_association + 
+ // kappa_grassland * grassland_association + 
   b_landcover_change_raw * sig_b;
   
 }

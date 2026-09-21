@@ -24,7 +24,7 @@ options(mc.cores = parallel::detectCores())
 source("2.analysis-functions.R")
 
 #set model fun, options = one_year OR full_lag OR two_year OR three_year
-model_run = "three_year" #we'll use full lag bc it includes trait calculations. Why did I need a different model for the full lag vs 1 year anyway? Not clear to me those needed to be handled any differently.
+model_run = "full_lag" #we'll use full lag bc it includes trait calculations. Why did I need a different model for the full lag vs 1 year anyway? Not clear to me those needed to be handled any differently.
 #ope, it's because of quarter routes. The full lag doesn't need a control for quarter routes b/c each qr was represented only once. So... now I do want to modify the one-year model to inlcude species traits directly rather than then passing to a second model. hokay!
 
 #read in data we need
@@ -281,9 +281,13 @@ full_lag <- stopdata |>
   arrange(year, .by_group = TRUE) |>
   mutate(earliest_year = case_when(year == min(year) ~ "earliest",
                                    year == max(year) ~ "latest",
-                                   TRUE ~ "0")) |>
+                                   TRUE ~ "0"),
+         mean_0m1 = (q_rt_count + lag(q_rt_count))/2) |>
+  mutate(mean_0m1 = case_when(
+    earliest_year == "earliest" ~ q_rt_count, #earliest year just gets that count of that year, b/c of data availability we can't always have two starting years next to each other
+    TRUE ~ mean_0m1)) |> #but for the latest year we average the count of the two latest years.
   filter(earliest_year != "0") |>
-  mutate(change_count = q_rt_count - lag(q_rt_count),
+  mutate(change_count = mean_0m1 - lag(mean_0m1),
          years_btwn = year - lag(year)) |> #should subtract earliest from latest - tested and works as expected.
   # now do all the landscape changes
   mutate(
@@ -302,9 +306,9 @@ full_lag <- stopdata |>
   #remove the NA years (first record of each quarter route) 
   filter(is.na(change_count) == FALSE) |>
   #and, we should also remove full lags that are just too short to be the long-term effects that we're trying to get at. let's cut out quarter routes with less than a 10 year lag.
-  #filter(years_btwn >= 10) |>
+  filter(years_btwn >= 10) |>
   #remove routes where the species is not present in the start or the end
-  #filter(flag_0_to_0 == FALSE) |>
+  filter(flag_0_to_0 == FALSE) |>
   ungroup()
   
   #hist(full_lag$change_count)
@@ -418,7 +422,7 @@ full_lag <- stopdata |>
   #landcover <- c("grassland_positive", "grassland_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.09.17.three-year-rm0spqrts/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.09.21.full-lag-rm0spqrts-uaiforest/"
 #save_to <- "model/ch2/2026.07.28_full_lag_uaiONLY_fixbetas_keep00/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
@@ -442,7 +446,11 @@ print("model compiled")
 file.copy(stan_model_file, save_to, overwrite = TRUE)
 print("model saved")
 #save a species list
-species_list <- stopdata %>% dplyr::distinct(common_name, sp_id, spqrt_standard)
+if(model_run == "full_lag") {
+  species_list <- stopdata |> dplyr::distinct(common_name, sp_id) 
+} else {
+  species_list <- stopdata %>% dplyr::distinct(common_name, sp_id, spqrt_standard) 
+}
 write.csv(species_list, paste0(save_to, "species_list.csv"), row.names = FALSE)
 write.csv(traits, paste0(save_to, "traits.csv"), row.names = FALSE)
 #save the spqrt conversion
@@ -467,19 +475,41 @@ for(a in 1:length(landcover)) {
       change_selected_land <- loopdata$change_dev
       base_selected_land <- loopdata$rmax_dev_plus_barren
     } else if (landcover[a] == "forest_positive") {
-      loopdata <- loopdata %>%
-        filter(change_forest >= 0) %>%
-        group_by(q_rt_standard) %>%
-        mutate(q_rt_standard = cur_group_id()) %>%
-        ungroup() 
+      if(model_run == "full_lag") {
+        loopdata <- loopdata %>%
+          filter(change_forest >= 0) %>%
+          group_by(q_rt_standard) %>%
+          mutate(q_rt_standard = cur_group_id()) %>%
+          ungroup()
+      } else {
+        loopdata <- loopdata %>%
+          filter(change_forest >= 0) %>%
+          group_by(spqrt_standard) %>%
+          mutate(spqrt_standard = cur_group_id()) %>%
+          ungroup() 
+        spqrt_info <- loopdata |>
+          distinct(common_name, sp_id, spqrt_standard)
+        write.csv(spqrt_info, paste0(save_to, "forest_positive_sprqt_info.csv"), row.names = FALSE)
+      }
       change_selected_land <- loopdata$change_forest
       base_selected_land <- loopdata$perc_forest_quarter
     } else if (landcover[a] == "forest_negative") {
+      if(model_run == "full_lag") {
+        loopdata <- loopdata %>%
+          filter(change_forest >= 0) %>%
+          group_by(q_rt_standard) %>%
+          mutate(q_rt_standard = cur_group_id()) %>%
+          ungroup()
+      } else {
       loopdata <- loopdata %>%
         filter(change_forest <= 0)  %>%
-        group_by(q_rt_standard) %>%
-        mutate(q_rt_standard = cur_group_id()) %>%
+        group_by(spqrt_standard) %>%
+        mutate(spqrt_standard = cur_group_id()) %>%
         ungroup()
+      spqrt_info <- loopdata |>
+        distinct(common_name, sp_id, spqrt_standard)
+      write.csv(spqrt_info, paste0(save_to, "forest_negative_sprqt_info.csv"), row.names = FALSE)
+      }
       change_selected_land <- loopdata$change_forest
       base_selected_land <- loopdata$perc_forest_quarter
     } else if (landcover[a] == "grassland_positive") {
@@ -518,6 +548,7 @@ for(a in 1:length(landcover)) {
       #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
       change_C = loopdata$change_count, #count data for each observation, change since the last year
       forest_association = traits$scale_eaforest,
+      #grassland_association = traits$scale_eagrassland,
       uai = traits$scale_UAI
     )
   } else if(model_run == "full_lag") {
@@ -545,7 +576,7 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 2000, #should be 10k in a full model
+                    iter = 1000, #should be 10k in a full model
                     warmup = 200) #2k in a full model
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
