@@ -3,10 +3,10 @@
 #filter out species that haven't been seen more than the min number of times on the min number of routes.
 #
 #
-filter_to_min_sightings <- function(mbbs, min_sightings_per_route = 9, min_num_routes = 5) {
+filter_to_min_sightings <- function(df, min_sightings_per_route = 9, min_num_routes = 5) {
   
   #filter mbbs so we only have records where count is not 0
-  mbbs <- mbbs %>%
+  mbbs <- df %>%
     dplyr::filter(count > 0)
   
   #set up for for loop
@@ -37,8 +37,12 @@ filter_to_min_sightings <- function(mbbs, min_sightings_per_route = 9, min_num_r
     }
   }
   
+  #remove the species that haven't been seen enough from the starting df
+  df <- df |>
+    filter(common_name %in% mbbs$common_name)
+  
   beepr::beep()
-  return(mbbs)
+  return(df)
   
 }
 
