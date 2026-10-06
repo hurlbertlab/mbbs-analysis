@@ -542,7 +542,7 @@ for(a in 1:length(landcover)) {
       #qrt = loopdata$q_rt_standard, #qrt index for each observation
       Nsp = length(unique(loopdata$sp_id)), 
       sp = loopdata$sp_id,
-      change_landcover = (change_selected_land/100), #change in percent developed or forest for each observation since the last year
+      change_landcover = (change_selected_land), #change in percent developed or forest for each observation since the last year
       #base_landcover = base_selected_land, #running max developed or perc forest,
       change_obs = loopdata$change_obs, #if the observer changed between years
       #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
@@ -557,7 +557,7 @@ for(a in 1:length(landcover)) {
       N = nrow(loopdata), #number of observations
       Nsp = length(unique(loopdata$sp_id)), 
       sp = loopdata$sp_id,
-      change_landcover = (change_selected_land/100), #change in percent developed or forest for each observation since the last year. Divide by 100 because it's on a pretty different scale from everything else right now, and at heart it is a percentage.
+      change_landcover = (change_selected_land), #change in percent developed or forest for each observation since the last year. Divide by 100 because it's on a pretty different scale from everything else right now, and at heart it is a percentage.
       #base_landcover = base_selected_land, #running max developed or perc forest,
       change_obs = loopdata$change_obs, #if the observer changed between years
       #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years

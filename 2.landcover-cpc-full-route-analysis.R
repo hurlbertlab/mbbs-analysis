@@ -78,72 +78,55 @@ load("data/mbbs/mbbs_survey_events.rda")
 obs <- mbbs_survey_events %>%
   dplyr::select(route, primary_observer, observer_ID, year, observer_quality)
 
-#to stopdata we need to:
-# - filter to just the 1:1 year changes
-# - filter to the 5 year change groups, based on the first year of surveys available. 
-#         - actually, for the 5 year change groups, can I pick a different group of 5 years for each route? Like pick the 5 year gap starting in a place that maximizes the number of 5 year gaps for that route? I think that could be okay?..
-# - do just the full time period group.
-# - also hey um, some of these years between are wack. There should not be a quarter-route that has '21' years between?? so there's some amount of problem solving to be done here. AH. Okay there could be a 21 year lag because I'm depending on the availability of stop-level data, of which there is no guarantee there is one. 
-
-stopdata <- read.csv("data/mbbs/mbbs_stops_counts.csv") %>%
-  ##########
-  # testing
-  #filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) %>%
-  ############
-  #make unique quarter route identifier
-  mutate(quarter = case_when(stop_num > 15 ~ 4,
-                             stop_num > 10 ~ 3,
-                             stop_num > 5 ~ 2,
-                             stop_num > 0 ~ 1),
-         quarter_route = paste0(route,"-",quarter)) %>%
-  group_by(quarter_route) %>%
-  mutate(q_rt_standard = cur_group_id()) %>%
-  ungroup() %>%
-  #need to sum the counts to the quarter-route, right now by each individual stop, which is a different analysis unit from the quarter-route
-  group_by(year, quarter_route, common_name, sci_name, q_rt_standard, route, quarter) %>%
-  summarize(q_rt_count = sum(count)) %>%
-  ungroup() %>%
+# rather than stopdata we can use the full route information..
+routedata <- read.csv("data/mbbs/mbbs_route_counts.csv") |>
+  #testing
+  filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) |>
+  #make a route standard
+  group_by(route) |>
+  mutate(rt_standard = cur_group_id()) |>
+  ungroup() |>
   #keep only the data that's up to the year we have nlcd data for
-  filter(year <= max_nlcd_year) %>%
+  #actually we don't need to do that! if we have later years than nlcd, it doesn't have to b a problem FOR RUNNING 2/3 YEAR lags because we have plenty of data still 
+  #filter(year <= max_nlcd_year) %>%
   #add observer information
   left_join(obs, by = c("year", "route")) %>%
   #let's pull out the species that are unscientific, waterbirds, etc.
   filter(!common_name %in% excluded_species) %>%
   #let's also remove species that don't meet our minimum bound observations 
-  #set right now at 10 quarter routes with at least 2 observations
+  filter_to_min_sightings() |> #default = 9 routes, 5 times.
   #this excludes species that are not seen enough to make any sort of confident estimate on their trends, although one benefit of the bayes model is that the number of datapoints you need is 0, the slopes we fit are also going to SPAN 0 and be insigificant. 
   #this represents species that just do not commonly breed in the area and that we ought not make assumptions about anyway bc this isn't their usual breeding location.
-  filter_to_min_qrts(min_quarter_routes = 10,
-                     min_obs_per_route = 2) %>%
   #now we only have species of interest, create a species_id 
   group_by(common_name) %>%
   mutate(sp_id = cur_group_id()) %>%
   ungroup() %>%
   #let's left_join in the landcover data
-  left_join(dev, by = c("route", "quarter" = "quarter_route", "year")) %>%
-  left_join(forest, by = c("route", "quarter" = "quarter_route", "year")) %>%
-  left_join(grassland, by = c("route", "quarter" = "quarter_route", "year")) |>
-#and, we know there are quarter routes where a species is just never seen across the whole dataset. These are quarter routes where like, we just can't say anything about this species. They're not there and are never there. We want to remove those sp-qrt combinations from consideration
+  left_join(dev, by = c("route", "year")) %>%
+  left_join(forest, by = c("route", "year")) %>%
+  left_join(grassland, by = c("route", "year")) |>
+#and, we know there are routes where a species is just never seen across the whole dataset. These are routes where like, we just can't say anything about this species. They're not there and are never there. We want to remove those sp-rt combinations from consideration
   (\(x) {
     x |>
       anti_join(
         #remove sp-qrt combinations where a species is never present
        ( x |>
-          group_by(common_name, quarter_route) |>
-          summarize(n_observations = sum(q_rt_count), .groups = "drop") |>
+          group_by(common_name, route) |>
+          summarize(n_observations = sum(count), .groups = "drop") |>
           filter(n_observations == 0)
          ),
-        by = c("common_name", "quarter_route")
+        by = c("common_name", "route")
       )
   })()
 
-add_lags <- stopdata |>
-  group_by(common_name, quarter_route) |>
+# Now, calculate the time lags.
+add_lags <- routedata |>
+  group_by(common_name, route) |>
   arrange(year, .by_group = TRUE) |>
-  mutate(mean_t0tm1 = (q_rt_count + lag(q_rt_count))/2,
-         mean_t0tm1tm2 = (q_rt_count + lag(q_rt_count) + lag(q_rt_count, 2))/3,
-         mean_t1t2 = (lead(q_rt_count) + lead(q_rt_count, 2))/2,
-         mean_t1t2t3 = (lead(q_rt_count) + lead(q_rt_count, 2) + lead(q_rt_count, 3))/3,
+  mutate(mean_t0tm1 = (count + lag(count))/2,
+         mean_t0tm1tm2 = (count + lag(count) + lag(count, 2))/3,
+         mean_t1t2 = (lead(count) + lead(count, 2))/2,
+         mean_t1t2t3 = (lead(count) + lead(count, 2) + lead(count, 3))/3,
          y_0m1 = year - lag(year), #needs to be 1 for two-year analysis
          y_0m1m2 = year - lag(year, 2), #needs to be 2 for three-year analysis
          y_12 = lead(year) - year, #needs to be 1 for two year analysis
@@ -151,8 +134,8 @@ add_lags <- stopdata |>
          #regardless of the lag in my calculations of abundances.... so it's changes in abundances to changes in landcover of a single year, then what's the response of birds over the next 2/3 years, that landcover change is always going to be t1 - t0. 
          change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
          #also take change forest
-         change_forest = perc_forest_quarter - lag(perc_forest_quarter),
-         change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter),
+         change_forest = perc_forest - lag(perc_forest),
+         change_grassland = perc_grassland - lag(perc_grassland),
          #calculate if observer changed as well
          change_obs = case_when(observer_ID == lag(observer_ID) ~ 0,
                                 observer_ID != lag(observer_ID) ~ 1),
@@ -165,11 +148,11 @@ two_year <- add_lags |>
          y_12 == 1) |>
   mutate(change_count = mean_t1t2 - mean_t0tm1) |>
   filter(!is.na(change_count)) |>
-  group_by(quarter_route) |>
-  mutate(q_rt_standard = cur_group_id()) |>
+  group_by(route) |>
+  mutate(rt_standard = cur_group_id()) |>
   ungroup() |>
-  group_by(common_name, quarter_route) |>
-  mutate(spqrt_standard = cur_group_id()) |>
+  group_by(common_name, route) |>
+  mutate(sprt_standard = cur_group_id()) |>
   ungroup()
 
 three_year <- add_lags |>
@@ -177,34 +160,34 @@ three_year <- add_lags |>
          y_123 == 2) |>
   mutate(change_count = mean_t1t2t3 - mean_t0tm1tm2) |>
   filter(!is.na(change_count)) |>
-  group_by(quarter_route) |>
-  mutate(q_rt_standard = cur_group_id()) |>
+  group_by(route) |>
+  mutate(rt_standard = cur_group_id()) |>
   ungroup() |>
-  group_by(common_name, quarter_route) |>
-  mutate(spqrt_standard = cur_group_id()) |>
+  group_by(common_name, route) |>
+  mutate(sprt_standard = cur_group_id()) |>
   ungroup()
 
   
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #time for the new stuff unique to each time period. For a change for change analysis, rather than each data point being the count and the urbanization%, each datapoint needs to be a lag count and lab urbanization percent. let's also have a years_btwn variable thats how long the latest lag is. let's sort the data first.
-one_year <- stopdata |>
+one_year <- routedata |>
   ##testing
   #filter(route == "cthm-01" | route == "cthm-04") |>
   #filter(common_name == "Acadian Flycatcher") |>
   ##alright, and this is a dataset where one of the routes has some gaps in it. 
-  group_by(common_name, quarter_route) |>
+  group_by(common_name, route) |>
   arrange(year, .by_group = TRUE) |>
-  mutate(change_count = q_rt_count - lag(q_rt_count), #okay, that worked as expected actually, and only calculated lags within each quarter_route. However, now, for the 2 year and three year lags I actually want to calculate ROLLING LAGS. Should be able to do this with just new columns for the 2 year and three year.
+  mutate(change_count = count - lag(count), #okay, that worked as expected actually, and only calculated lags within each quarter_route. However, now, for the 2 year and three year lags I actually want to calculate ROLLING LAGS. Should be able to do this with just new columns for the 2 year and three year.
          #Hm. And, Ivara, we also need to do the averaging for the preceeding years before lagging them... this will require some more thought. 
          years_btwn = year - lag(year)) |>
   mutate(
     #when the count is 0 two years in a row, we assume species is not present on the quarter route and need to remove that data point from consideration, as theres no chance for the population to change. If species returns, eg, time series is 0,0,1 - that 0,1 datapoint is still fine. species 'came back' to the quarter route.
-    flag_0_to_0 = pmax(q_rt_count, lag(q_rt_count)), #DEPRECIATED
+    flag_0_to_0 = pmax(count, lag(count)), #DEPRECIATED
     #change_dev = rmax_dev_quarter - lag(rmax_dev_quarter),
     change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
     #also take change forest
-    change_forest = perc_forest_quarter - lag(perc_forest_quarter),
-    change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter),
+    change_forest = perc_forest - lag(perc_forest),
+    change_grassland = perc_grassland - lag(perc_grassland),
     #calculate if observer changed as well
     change_obs = case_when(observer_ID == lag(observer_ID) ~ 0,
                            observer_ID != lag(observer_ID) ~ 1),
@@ -240,54 +223,31 @@ representation <- one_year |>
 #min(representation$n)
 #max(representation$n)
 
-#so, function that calculates the maximum number of 5 years gaps based on each starting year.
-#years_list <- c(1999, 2000, 2002, 2003, 2004, 2005, 2010) #so here, it's best to start in 2000 (3 #matches) rather than 1999 (2 matches)
-#years_list = data.frame(year = years_list)
-#  for(i in 1:nrow(years_list)) {
-#    starting_value = years_list$year[i]
-#    matches <- seq(from = starting_value, to = max(years_list$year), by = 5)
-#    
-#    years_list$n_matches[i] = sum(years_list$year %in% matches == TRUE)
-#  }
-#
-#years_list <- years_list |>
-#  filter(n_matches == 2)
-#
-#pick the starting year with the most matches 
-#and if there's a tie in n_matches then pick the earliest start year.
-  #so like
-#starting_year <- years_list |>
-#  filter(n_matches == max(n_matches))
-#starting_year <- starting_year |>
-#  mutate(earliest = case_when(
-#    n() == 1 ~ NA,
-#    n() > 1 ~ min(year))) |>
-#  filter(year == earliest)
-#you'll have to check out some edge cases here where like, due to data availability there's good data earlier and good data later but on seperate 5 yr schedules that don't otherwise overlap but I think that sounds fine..
-#for my longer time frame, it's not going to be 27 years bc not all routes have that amount of time. BUT BUT BUT I could do my last round based off the longest possible lag time for year route-quarter, and add that lag length as a predictor variable or like, check the distribution of it? Check the distribution of it to decide what to do there. 
 
-  #quick calculation of how often the mean count of a sp. at a quarter route is each number
-  n_q_rt_count = stopdata %>%
-    group_by(q_rt_count) %>%
+  #quick calculation of how often the mean count of a sp. at a route is each number
+  n_q_rt_count = routedata %>%
+    group_by(count) %>%
     summarize(n = n()) %>%
-    filter(!q_rt_count == 0) %>% #remove the 0 counts
+    filter(!count == 0) %>% #remove the 0 counts
     mutate(percent = n/sum(n),
            cum_percent = cumsum(percent))
 
 ##### calculate the dataframe for the full lag model
-full_lag <- stopdata |>
+full_lag <- routedata |>
   ##testing
   #filter(route == "cthm-01" | route == "cthm-04") |>
   #filter(common_name == "Acadian Flycatcher") |>
   ##alright, and this is a dataset where one of the routes has some gaps in it. 
-  group_by(common_name, quarter_route) |>
+  group_by(common_name, route) |>
+  #okay, here we DO need to filter to only have the max nlcd year.
+  filter(year <= max_nlcd_year) |>
   arrange(year, .by_group = TRUE) |>
   mutate(earliest_year = case_when(year == min(year) ~ "earliest",
                                    year == max(year) ~ "latest",
                                    TRUE ~ "0"),
-         mean_0m1 = (q_rt_count + lag(q_rt_count))/2) |>
+         mean_0m1 = (count + lag(count))/2) |>
   mutate(mean_0m1 = case_when(
-    earliest_year == "earliest" ~ q_rt_count, #earliest year just gets that count of that year, b/c of data availability we can't always have two starting years next to each other
+    earliest_year == "earliest" ~ count, #earliest year just gets that count of that year, b/c of data availability we can't always have two starting years next to each other
     TRUE ~ mean_0m1)) |> #but for the latest year we average the count of the two latest years.
   filter(earliest_year != "0") |>
   mutate(change_count = mean_0m1 - lag(mean_0m1),
@@ -297,14 +257,14 @@ full_lag <- stopdata |>
     #change_dev = rmax_dev_quarter - lag(rmax_dev_quarter),
     change_dev = rmax_dev_plus_barren - lag(rmax_dev_plus_barren),
     #also take change forest
-    change_forest = perc_forest_quarter - lag(perc_forest_quarter),
-    change_grassland = perc_grassland_quarter - lag(perc_grassland_quarter),
+    change_forest = perc_forest - lag(perc_forest),
+    change_grassland = perc_grassland - lag(perc_grassland),
     #calculate if observer changed as well
     change_obs = case_when(observer_ID == lag(observer_ID) ~ 0,
                            observer_ID != lag(observer_ID) ~ 1),
     #calculate change in observer quality
     change_obs_qual = observer_quality - lag(observer_quality),
-    flag_0_to_0 = ifelse((q_rt_count + lag(q_rt_count) == 0), TRUE, FALSE)
+    flag_0_to_0 = ifelse((count + lag(count) == 0), TRUE, FALSE)
   ) %>%
   #remove the NA years (first record of each quarter route) 
   filter(is.na(change_count) == FALSE) |>
@@ -321,13 +281,13 @@ full_lag <- stopdata |>
   
 #working with just the one_year, so here one_year becomes stopdata
   if(model_run == "one_year") {
-    stopdata <- one_year
+    routedata <- one_year
   } else if(model_run == "full_lag") {
-    stopdata <- full_lag
+    routedata <- full_lag
   } else if(model_run == "two_year") {
-    stopdata <- two_year
+    routedata <- two_year
   } else if(model_run == "three_year") {
-    stopdata <- three_year
+    routedata <- three_year
   }
   
 #add species traits to stopdata as they might be needed
@@ -350,7 +310,7 @@ full_lag <- stopdata |>
   
   
   #want to have something that tells us how many samples we have from each species as well, since they're no longer equal
-  sample_size <- stopdata %>% 
+  sample_size <- routedata %>% 
     group_by(common_name, sp_id) %>%
     summarize(sample_size = n()) %>%
     mutate(pch_scale = log(sample_size)+.5) %>%
@@ -370,8 +330,8 @@ full_lag <- stopdata |>
 #!!!!!!!!!!!!!!!!!!!!!!!!not on longleaf yet
   
   #also need to save the species id and spqrt conversion
-  spqrt_info <- stopdata |>
-    distinct(common_name, sp_id, spqrt_standard)
+  sprt_info <- routedata |>
+    distinct(common_name, sp_id, sprt_standard)
   
   #check for species where we should be hesitant to work with the data because there IS an effect of year on the change in count eg. there's exponential declines to the degree it affects the scale of change in counts at the quarter route level
 #  flagged_sp <- stopdata %>% 
@@ -385,47 +345,17 @@ full_lag <- stopdata |>
 #    dplyr::select(-flag, -r_sq, -pvalue_changecount_by_year)
   #Always passes :)
   
-  
-  #if we wanted to remove routes where a species is never seen, but keep the other routes..
-  #btw pretty sure this is broken. seems to just remove 0 counts even though they have a change in count from the previous year.
-  #stopdata_0sprts_removed <- stopdata %>%
-  #  group_by(common_name, q_rt_standard) %>%
-  #  filter(sum(q_rt_count) > 0) %>% <- probably broken here.
-  #  ungroup() #44733 observations
-  #!!!!!!!!!!!!for this run
-  #stopdata <- stopdata_0sprts_removed
-
-  
-  #if we want to randomly subsample a given number of observations from each species based on the number of samples we take in the rm0to0 group...
-  #sample_size <- read.csv("Z:/Goulden/mbbs-analysis/model_landcover/2025.09.09_cpc_allspin1_rm0to0_halfnormalsig_sp/sample_size.csv")
-  #subsampled_stopdata <- NULL
-  #for(n in 1:nrow(sample_size)) {
-  #  sp <- sample_size$common_name[n]
-  #  temp <- stopdata %>%
-  #    #filter to one species
-  #    filter(common_name == sample_size$common_name[n]) %>%
-  #    #randomly subsample
-  #    slice_sample(n = sample_size$sample_size[n])
-  #  
-  #  #add back to df
-  #  subsampled_stopdata <- bind_rows(subsampled_stopdata, temp)
-  #}
-  ##assert that the sizes of the subsample match for a test species.
-  #assertthat::assert_that(nrow(subsampled_stopdata %>% filter(common_name == "Northern Bobwhite")) == sample_size$sample_size[sample_size$common_name == "Northern Bobwhite"])
-  ##!!!!!!!!!!!!for this run
-  #stopdata <- subsampled_stopdata
-  
   #we're going to run the same model for both our urban (dev + barren) and for our forest variables - breaking out the various effects of change in the amount of urbanization, positive increases in forest cover, and negative decreases in forest cover. Forest cover and urbanization change are not 1:1 correlated so these are indeed different from each other. 
   landcover <- c("dev+barren", "forest_positive", "forest_negative"
                  #"grassland_positive", "grassland_negative"
                  ) #for now, let's just focus on the dev + forests like we need to for ESA
   #for testing
-  #landcover <- c("dev+barren")
+  landcover <- c("dev+barren")
   #for running the grassland model only
   #landcover <- c("grassland_positive", "grassland_negative")
   
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.09.21.full-lag-rm0spqrts-uaiforest/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.10.06.full-rt-test-3yr/"
 #save_to <- "model/ch2/2026.07.28_full_lag_uaiONLY_fixbetas_keep00/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
@@ -450,14 +380,14 @@ file.copy(stan_model_file, save_to, overwrite = TRUE)
 print("model saved")
 #save a species list
 if(model_run == "full_lag") {
-  species_list <- stopdata |> dplyr::distinct(common_name, sp_id) 
+  species_list <- routedata |> dplyr::distinct(common_name, sp_id) 
 } else {
-  species_list <- stopdata %>% dplyr::distinct(common_name, sp_id, spqrt_standard) 
+  species_list <- routedata %>% dplyr::distinct(common_name, sp_id, sprt_standard) 
 }
 write.csv(species_list, paste0(save_to, "species_list.csv"), row.names = FALSE)
 write.csv(traits, paste0(save_to, "traits.csv"), row.names = FALSE)
 #save the spqrt conversion
-write.csv(spqrt_info, paste0(save_to, "sprqt_info.csv"), row.names = FALSE)
+write.csv(sprt_info, paste0(save_to, "sprqt_info.csv"), row.names = FALSE)
 
 ####LOOP through forest and developed landcover change models
 for(a in 1:length(landcover)) {
@@ -467,13 +397,13 @@ for(a in 1:length(landcover)) {
   posterior_samples <-  as.data.frame(NULL)
   
   #set up data for use in this loop w/o affecting our background stopdata df
-  loopdata <- stopdata |>
+  loopdata <- routedata |>
     ungroup()
     
     #pick the relevant landcover variables depending on the model running this time
     if(landcover[a] == "forest_all") {
       change_selected_land <- loopdata$change_forest
-      base_selected_land <- loopdata$perc_forest_quarter
+      base_selected_land <- loopdata$perc_forest
     } else if (landcover[a] == "dev+barren") {
       change_selected_land <- loopdata$change_dev
       base_selected_land <- loopdata$rmax_dev_plus_barren
@@ -481,18 +411,18 @@ for(a in 1:length(landcover)) {
       if(model_run == "full_lag") {
         loopdata <- loopdata %>%
           filter(change_forest >= 0) %>%
-          group_by(q_rt_standard) %>%
-          mutate(q_rt_standard = cur_group_id()) %>%
+          group_by(rt_standard) %>%
+          mutate(rt_standard = cur_group_id()) %>%
           ungroup()
       } else {
         loopdata <- loopdata %>%
           filter(change_forest >= 0) %>%
-          group_by(spqrt_standard) %>%
-          mutate(spqrt_standard = cur_group_id()) %>%
+          group_by(sprt_standard) %>%
+          mutate(sprt_standard = cur_group_id()) %>%
           ungroup() 
-        spqrt_info <- loopdata |>
-          distinct(common_name, sp_id, spqrt_standard)
-        write.csv(spqrt_info, paste0(save_to, "forest_positive_sprqt_info.csv"), row.names = FALSE)
+        sprt_info <- loopdata |>
+          distinct(common_name, sp_id, sprt_standard)
+        write.csv(sprt_info, paste0(save_to, "forest_positive_sprt_info.csv"), row.names = FALSE)
       }
       change_selected_land <- loopdata$change_forest
       base_selected_land <- loopdata$perc_forest_quarter
@@ -500,51 +430,52 @@ for(a in 1:length(landcover)) {
       if(model_run == "full_lag") {
         loopdata <- loopdata %>%
           filter(change_forest >= 0) %>%
-          group_by(q_rt_standard) %>%
-          mutate(q_rt_standard = cur_group_id()) %>%
+          group_by(rt_standard) %>%
+          mutate(rt_standard = cur_group_id()) %>%
           ungroup()
       } else {
       loopdata <- loopdata %>%
         filter(change_forest <= 0)  %>%
-        group_by(spqrt_standard) %>%
-        mutate(spqrt_standard = cur_group_id()) %>%
+        group_by(sprt_standard) %>%
+        mutate(sprt_standard = cur_group_id()) %>%
         ungroup()
-      spqrt_info <- loopdata |>
-        distinct(common_name, sp_id, spqrt_standard)
-      write.csv(spqrt_info, paste0(save_to, "forest_negative_sprqt_info.csv"), row.names = FALSE)
+      sprt_info <- loopdata |>
+        distinct(common_name, sp_id, sprt_standard)
+      write.csv(sprt_info, paste0(save_to, "forest_negative_sprt_info.csv"), row.names = FALSE)
       }
       change_selected_land <- loopdata$change_forest
-      base_selected_land <- loopdata$perc_forest_quarter
+      base_selected_land <- loopdata$perc_forest
     } else if (landcover[a] == "grassland_positive") {
       loopdata <- loopdata %>%
         filter(change_grassland >= 0) %>%
-        group_by(q_rt_standard) %>%
-        mutate(q_rt_standard = cur_group_id()) %>%
+        group_by(rt_standard) %>%
+        mutate(rt_standard = cur_group_id()) %>%
         ungroup()
       change_selected_land <- loopdata$change_grassland
-      base_selected_land <- loopdata$perc_grassland_quarter
+      base_selected_land <- loopdata$perc_grassland
     } else if (landcover[a] == "grassland_negative") {
       loopdata <- loopdata %>%
         filter(change_grassland <= 0) %>%
-        group_by(q_rt_standard) %>%
-        mutate(q_rt_standard = cur_group_id()) %>%
+        group_by(rt_standard) %>%
+        mutate(rt_standard = cur_group_id()) %>%
         ungroup()
       change_selected_land <- loopdata$change_grassland
-      base_selected_land <- loopdata$perc_grassland_quarter
+      base_selected_land <- loopdata$perc_grassland
     }
     
     
     #set up the data to feed into the model
+  #in order to run on the same stan code as the quarter route change per change model, yes, where you see qrt it should be rt. I will rename variables after the model finishes running.
   if(model_run %in% c("one_year", "two_year", "three_year")) {
     datstan <- list(
       N = nrow(loopdata), #number of observations
-      Nspqrt = length(unique(loopdata$spqrt_standard)),
-      spqrt = loopdata$spqrt_standard,
+      Nspqrt = length(unique(loopdata$sprt_standard)),
+      spqrt = loopdata$sprt_standard,
       #Nqrt = length(unique(loopdata$q_rt_standard)), #number of unique quarter routes
       #qrt = loopdata$q_rt_standard, #qrt index for each observation
       Nsp = length(unique(loopdata$sp_id)), 
       sp = loopdata$sp_id,
-      change_landcover = (change_selected_land/100), #change in percent developed or forest for each observation since the last year
+      change_landcover = (change_selected_land), #change in percent developed or forest for each observation since the last year
       #base_landcover = base_selected_land, #running max developed or perc forest,
       change_obs = loopdata$change_obs, #if the observer changed between years
       #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
@@ -559,7 +490,7 @@ for(a in 1:length(landcover)) {
       N = nrow(loopdata), #number of observations
       Nsp = length(unique(loopdata$sp_id)), 
       sp = loopdata$sp_id,
-      change_landcover = (change_selected_land/100), #change in percent developed or forest for each observation since the last year. Divide by 100 because it's on a pretty different scale from everything else right now, and at heart it is a percentage.
+      change_landcover = (change_selected_land), #change in percent developed or forest for each observation since the last year. 
       #base_landcover = base_selected_land, #running max developed or perc forest,
       change_obs = loopdata$change_obs, #if the observer changed between years
       #    R = loopdata$log_rc_div_yb #log transformed ratio of counts incorporating gap length between survey years
