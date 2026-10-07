@@ -81,7 +81,7 @@ obs <- mbbs_survey_events %>%
 # rather than stopdata we can use the full route information..
 routedata <- read.csv("data/mbbs/mbbs_route_counts.csv") |>
   #testing
-  filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) |>
+  #filter(common_name %in% c("Acadian Flycatcher", "Wood Thrush", "Northern Bobwhite", "Indigo Bunting", "Northern Cardinal")) |>
   #make a route standard
   group_by(route) |>
   mutate(rt_standard = cur_group_id()) |>
@@ -350,7 +350,7 @@ full_lag <- routedata |>
                  #"grassland_positive", "grassland_negative"
                  ) #for now, let's just focus on the dev + forests like we need to for ESA
   #for testing
-  landcover <- c("dev+barren")
+  #landcover <- c("dev+barren")
   #for running the grassland model only
   #landcover <- c("grassland_positive", "grassland_negative")
   
@@ -425,7 +425,7 @@ for(a in 1:length(landcover)) {
         write.csv(sprt_info, paste0(save_to, "forest_positive_sprt_info.csv"), row.names = FALSE)
       }
       change_selected_land <- loopdata$change_forest
-      base_selected_land <- loopdata$perc_forest_quarter
+      base_selected_land <- loopdata$perc_forest
     } else if (landcover[a] == "forest_negative") {
       if(model_run == "full_lag") {
         loopdata <- loopdata %>%
@@ -510,8 +510,8 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 1000, #should be 10k in a full model
-                    warmup = 200) #2k in a full model
+                    iter = 2000, #should be 10k in a full model
+                    warmup = 500) #2k in a full model
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
     timestamp()
@@ -535,6 +535,7 @@ for(a in 1:length(landcover)) {
                str_detect(.$rownames, "a_spqrt"),
                str_extract(.$rownames, "[0-9]([0-9])?([0-9])?([0-9])?"),
                NA)),
+             rownames = str_replace(rownames, "spqrt", "sprt"),
              slope = ifelse(str_detect(rownames, "b_"), 
                             paste0(str_extract(rownames, "year|dev|forest|landcover"),", ", landcover[a]),
                             NA),
@@ -548,7 +549,11 @@ for(a in 1:length(landcover)) {
       #rename numeric columns
       rename_with(~ paste0("conf_", .), .cols = matches("^[0-9]")) %>%
       #remove %s in column names
-      rename_with(~ str_remove(., "%"), .cols = everything())
+      rename_with(~ str_remove(., "%"), .cols = everything()) |>
+      #arrange
+      arrange(desc(rownames)) |>
+      #rm lp row
+      filter(rownames != "lp__")
     
     #bind rows
     fit_summaries <- bind_rows(fit_summaries, fit_temp)
@@ -595,5 +600,5 @@ for(a in 1:length(landcover)) {
     timestamp()
   } #end landcover loop
 
-
+#perhaps for another time, but consider automating the creation of plots? Would make quick-look analysis really easy to have the plots automatically generated..
 

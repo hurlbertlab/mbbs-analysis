@@ -6,17 +6,21 @@ library(ggplot2)
 library(bayesplot)
 library(cowplot) #used to make multi-panel figures
 library(reshape2) #for the correlation matrix heatmap
-library(vioplot) #for violin plots
 #load functions
 source("3.plot-functions.R")
 
 #load-from:
 load_from_full_lag <- "model/ch2/2026.09.21.full-lag-rm0spqrts-uaiforest/"
 
-load_from_short_term <- "model/ch2/2026.09.21.three-year-rm0spqrts/"
+load_from_short_term <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.10.06.full-rt-test-3yr/"
+
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.10.06.full-rt-test-3yr/"
 
 #dev-long-term 
 landcover <- c("dev+barren", "forest_positive", "forest_negative")
+landcover <- c("dev+barren", "forest_positive")
+
+run_type = "3yr"
 for(a in 1:2) {
   
   if(a == 1) {
@@ -32,11 +36,11 @@ for(a in 1:2) {
   color = colorRampPalette(c("black", "grey80", "#92c5de", "#a6dba0", "#5aae61"))(maxColorValue)
   continous_colors <- data.frame(color, 
                                  palette_percent = seq(from = 0, to = 1, length.out = 101)) |>
-    mutate(palette_percent = round(palette_percent, digits = 2))
+    mutate(palette_percent = base::round(palette_percent, digits = 2))
   if(landcover[i] == "forest_negative") {
     continous_colors <- data.frame(color, 
                                    palette_percent = seq(from = 1, to = 0, length.out = 101)) |>
-      mutate(palette_percent = round(palette_percent, digits = 2))
+      mutate(palette_percent = base::round(palette_percent, digits = 2))
   }
   
   
@@ -79,6 +83,9 @@ for(a in 1:2) {
     mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1. 
     ungroup() |>
     mutate(pch = 19)
+  
+  n_sp <- n_distinct(full_lag_dev$sp_id)
+  half_sp <- round(n_sp/2)
   
   # if(a == 1 & landcover[i] == "dev+barren") {
   #   
@@ -123,21 +130,21 @@ for(a in 1:2) {
     lab = "Change in species count with forest gain"
   }
   
-  png(filename = paste0("figures/ch2/BOU_", run_type, "_", landcover[i], ".png"), 
+  png(filename = paste0(save_to, run_type, "_", landcover[i], ".png"), 
       width = 1200,
       height = 600,
       units = "px", 
       type = "windows")
   par(mar = c(4, 16, 1, 1), cex.axis = 1, mfrow = c(1,2))
-  plot_intervals(plot_df = full_lag_dev[34:63,],
+  plot_intervals(plot_df = full_lag_dev[half_sp:n_sp,],
                  xlab = lab, 
-                 ylim_select = c(33.5,63.5),
-                 xlim_select = c(-8, 8.5),
+                 ylim_select = c(half_sp + .5, n_sp + .5),
+                 xlim_select = c(-2, 2.5),
                  xaxt = "n")
-  plot_intervals(plot_df = full_lag_dev[1:33,], 
+  plot_intervals(plot_df = full_lag_dev[1:half_sp,], 
                  xlab = "", 
-                 ylim_select = c(.5,33.5),
-                 xlim_select = c(-8, 8.5),
+                 ylim_select = c(.5,half_sp + .5),
+                 xlim_select = c(-2, 2.5),
                  xaxt = "n")
   dev.off()
   }
@@ -166,8 +173,8 @@ le <- read.csv(paste0(load_from_full_lag, "dev+barren_fit_summaries.csv")) |>
   mutate(model = "full_lag",
          color = "black",
          rownames = case_when(
-         rownames == "kappa_forest" ~ "Forest\n Association\n (20+ years)",
-         rownames == "kappa_uai" ~ "Urban\n Association\n (20+ years)")) |>
+         rownames == "kappa_forest" ~ "Forest\n Association\n (2-year)",
+         rownames == "kappa_uai" ~ "Urban\n Association\n (2-year)")) |>
   mutate(id = row_number())
 
 le2 <- read.csv(paste0(load_from_short_term, "dev+barren_fit_summaries.csv")) |>
@@ -191,7 +198,7 @@ ledf <- bind_rows(le, le2) |>
 
 color = "black"
 
-png(filename = "figures/ch2/BOU_full_lag_le.png", 
+png(filename = paste0(save_to, "BOU_full_lag_le.png"), 
     width = 440, # 620 for larger
     height = 440, # 640 for larger
     units = "px", 
@@ -228,7 +235,7 @@ png(filename = "figures/ch2/BOU_full_lag_le.png",
 dev.off()
 
 
-png(filename = "figures/ch2/BOU_short_lag_le.png", 
+png(filename = paste0(save_to, "BOU_short_lag_le.png"), 
     width = 440, # 620 for larger
     height = 440, # 640 for larger
     units = "px", 
@@ -241,7 +248,7 @@ png(filename = "figures/ch2/BOU_short_lag_le.png",
        y = le2$id, 
        pch = le2$pch,
        cex = 2,
-       xlim = c(-2.5,8),
+       xlim = c(-1,1),
        xlab = "Effect Size",
        xaxt = "s",
        yaxt = "n",

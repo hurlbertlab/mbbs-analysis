@@ -62,14 +62,14 @@
                col = plot_df$color,
                lwd = 5) 
       abline(v = 0, lty = "dashed") 
-      axis(2, at = seq(round(min(plot_df$sp_id)),
-                       round(max(plot_df$sp_id)), by = 1),
+      axis(2, at = seq(round(min(plot_df$sp_id, na.rm = TRUE)),
+                       round(max(plot_df$sp_id, na.rm = TRUE)), by = 1),
            labels = plot_df$common_name,
            las = 1,
            cex.axis = 1.25)
       
-      axis(1, at = seq(round(min(xlim_select)),
-                       round(max(xlim_select)), by = 1),
+      axis(1, at = seq(round(min(xlim_select, na.rm = TRUE)),
+                       round(max(xlim_select, na.rm = TRUE)), by = 1),
            las = 1,
            cex.axis = 1.25)
     
@@ -135,15 +135,15 @@
                  lwd = 7,
                  lty = plot_df$lty) 
       }
-      axis(1, at = seq(round(min(plot_df$sp_id)),
-                       round(max(plot_df$sp_id)), by = 1),
+      axis(1, at = seq(round(min(plot_df$sp_id, na.rm = TRUE)),
+                       round(max(plot_df$sp_id, na.rm = TRUE)), by = 1),
            #labels = plot_df$common_name,
            labels = FALSE,
            las = 2,
            cex.axis = 1.25) 
       if(label_colorful == FALSE) {
-        text(x = seq(round(min(plot_df$sp_id)),
-                     round(max(plot_df$sp_id)), by = 1),
+        text(x = seq(round(min(plot_df$sp_id, na.rm = TRUE)),
+                     round(max(plot_df$sp_id, na.rm = TRUE)), by = 1),
              y = par("usr")[3] - 0.05 * diff(par("usr")[3:4]),  # Position below x-axis
              labels = plot_df$common_name,
              srt = 50,  # 45-degree rotation
@@ -153,8 +153,8 @@
              col = "black" #no color on labels
         )
       } else if(label_colorful == TRUE) {
-        text(x = seq(round(min(plot_df$sp_id)),
-                     round(max(plot_df$sp_id)), by = 1),
+        text(x = seq(round(min(plot_df$sp_id, na.rm = TRUE)),
+                     round(max(plot_df$sp_id, na.rm = TRUE)), by = 1),
              y = par("usr")[3] - 0.05 * diff(par("usr")[3:4]),  # Position below x-axis
              labels = plot_df$common_name,
              srt = 50,  # 45-degree rotation
@@ -223,8 +223,8 @@
                col = plot_df$color,
                lwd = segment_lwd) +
       abline(v = 0, lty = "dashed") + 
-      axis(2, at = seq(round(min(plot_df$sp_id)),
-                       round(max(plot_df$sp_id)), by = 1),
+      axis(2, at = seq(round(min(plot_df$sp_id, na.rm = TRUE)),
+                       round(max(plot_df$sp_id, na.rm = TRUE)), by = 1),
            labels = plot_df$common_name,
            las = 1,
            cex.axis = 1)
