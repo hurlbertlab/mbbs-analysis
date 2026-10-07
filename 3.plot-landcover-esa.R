@@ -1,3 +1,5 @@
+## actually now plots for BOU plots
+
 library(dplyr)
 library(stringr)
 library(ggplot2)
@@ -78,6 +80,32 @@ for(a in 1:2) {
     ungroup() |>
     mutate(pch = 19)
   
+  # if(a == 1 & landcover[i] == "dev+barren") {
+  #   
+  #   color = colorRampPalette(c("red", "blue"))(maxColorValue)
+  #   continous_colors <- data.frame(color, 
+  #                                  palette_percent = seq(from = -2.8, to = 2.8, length.out = 560)) |>
+  #     mutate(palette_percent = round(palette_percent, digits = 2))
+  #   
+  #   full_lag_dev$palette_percent <- round(full_lag_dev$scale_UAI, digits = 1)
+  #   
+  #   full_lag_dev <- full_lag_dev |>
+  #     left_join(continous_colors,
+  #              by = c("palette_percent"))
+  # 
+  #   plot(x = full_lag_dev$scale_UAI,
+  #        y = full_lag_dev$mean,
+  #        ylim = c(-6, 6),
+  #        pch = 16,
+  #        col = full_lag_dev$color.y)
+  #   segments(y0 = full_lag_dev$conf_2.5,
+  #            y1 = full_lag_dev$conf_97.5,
+  #            x0 = full_lag_dev$scale_UAI,
+  #            x1 = full_lag_dev$scale_UAI,
+  #            lwd = 2,
+  #            col = full_lag_dev$color.y)
+  # }
+  
   if(landcover[i] == "forest_negative") {
     # we want to reverse the plotting order b/c we still want species that are declining to be plotted on the other side.
     full_lag_dev <- full_lag_dev |>
@@ -115,69 +143,6 @@ for(a in 1:2) {
   }
 }
 
-#dev short-term
-{
-  maxColorValue = 100
-  color = colorRampPalette(c("black", "grey80", "#92c5de", "#a6dba0", "#5aae61"))(maxColorValue)
-  continous_colors <- data.frame(color, 
-                                 palette_percent = seq(from = 0, to = 1, length.out = 100)) |>
-    mutate(palette_percent = round(palette_percent, digits = 2))
-  
-  
-  #from 5,000 posterior draws..
-  prop_posterior <- read.csv(paste0(load_from_short_term, "dev+barren_posterior_samples.csv")) |>
-    select(starts_with("b_landcover_change")) |>
-    summarize(across(everything(),
-                     (prop_gt_0 = ~sum(. > 0)/24000))) |>
-    tidyr::pivot_longer(cols = b_landcover_change.1.:b_landcover_change.67., 
-                        names_to = "variable") |>
-    dplyr::select(variable, value) |>
-    rename(prop_posterior_gt_0 = value) |>
-    mutate(sp_id = as.integer(str_extract(variable, "[0-9]([0-9])?"))) |>
-    dplyr::select(-variable) |>
-    left_join(read.csv(paste0(load_from_full_lag, "traits.csv")), by = 'sp_id') |>
-    mutate(palette_percent = round(prop_posterior_gt_0, digits = 2)) |>
-    left_join(continous_colors, by = c("palette_percent")) |>
-    dplyr::select(-sp_id)
-  
-  
-  z <- qnorm((1+0.87)/2) #confidence interval 87%
-  
-  short_lag_dev <- read.csv(paste0(load_from_short_term, "dev+barren_fit_summaries.csv")) %>%
-    #filter out the individual quarter route a[] fits, just keep the variables we're most interested in.
-    # filter(rownames %in% c("a_bar", "sig_a", "b_landcover_change", "b_landcover_base", "c_obs", "sigma")) %>%
-    #and really.. all we want is b_landcover_change here in plotting
-    # filter(rownames %in% c("b_landcover_change")) %>%
-    filter(!is.na(common_name),
-           !is.na(slope)) %>%
-    mutate(rm = ifelse(str_detect(.$rownames, "raw"), FALSE, TRUE)) %>%
-    filter(rm == TRUE) %>%
-    group_by(mean, common_name) %>%
-    arrange(desc(mean)) %>% #
-    mutate(sp_id = cur_group_rows()) %>% #sweet, indigio bunting with the most negative mean effect is at ID 66, Carolina Wren with the least negative effect is at ID 1.
-    ungroup() %>%
-    left_join(prop_posterior, by = c("common_name")) |>
-    mutate(significant = ifelse(conf_2.5 < 0 & conf_97.5 > 0, FALSE, TRUE),
-           pch = ifelse(palette_percent < .07, 19, 1)) 
-  
-  png(filename = "figures/ch2/esa_short_lag_dev.png", 
-      width = 1200,
-      height = 600,
-      units = "px", 
-      type = "windows")
-  par(mar = c(4, 16, 1, 1), cex.axis = 1, mfrow = c(1,2))
-  plot_intervals(plot_df = short_lag_dev[34:67,],
-                 xlab = "Change in species count with change % urban", 
-                 ylim_select = c(33.5,66.5),
-                 xlim_select = c(-.06, .065))
-  plot_intervals(plot_df = short_lag_dev[1:33,], 
-                 xlab = "", 
-                 ylim_select = c(.5,33.5),
-                 xlim_select = c(-.06, .065))
-  dev.off()
-}
-
-
 png(filename = "figures/ch2/dev_LEGEND_continous.png", 
     width = 900,
     height = 800,
@@ -192,6 +157,8 @@ rasterImage(legend_image, xleft = 4, ybottom = 2, xright = 5, ytop = 8)
 #     y = 8.2)
 dev.off()
 
+
+
 #plot the effects of uai and landcover change
 
 le <- read.csv(paste0(load_from_full_lag, "dev+barren_fit_summaries.csv")) |>
@@ -203,24 +170,28 @@ le <- read.csv(paste0(load_from_full_lag, "dev+barren_fit_summaries.csv")) |>
          rownames == "kappa_uai" ~ "Urban\n Association\n (20+ years)")) |>
   mutate(id = row_number())
 
-le2 <- read.csv(paste0(load_from_short_term, "dev+barrentraits_fit_summaries.csv")) |>
-  filter(str_detect(rownames, "b")) |>
+le2 <- read.csv(paste0(load_from_short_term, "dev+barren_fit_summaries.csv")) |>
+  filter(str_detect(rownames, "kappa")) |>
   mutate(model = "one_year_lag",
          color = "grey") |>
   distinct() |>
   mutate(rownames = case_when(
-    rownames == "b_forest" ~ "Forest\n Association\n (1-year)",
-    rownames == "b_uai" ~ "Urban\n Association\n (1-year)"
-  ),
-  mean = mean*100,
-  conf_2.5 = conf_2.5*100,
-  conf_97.5 = conf_97.5*100) |>
-  mutate(id = row_number())
+    rownames == "kappa_forest" ~ "Forest\n Association\n (3-year)",
+    rownames == "kappa_uai" ~ "Urban\n Association\n (3-year)"
+  )
+  #mean = mean*100,
+  #conf_2.5 = conf_2.5*100,
+  #conf_97.5 = conf_97.5*100
+  ) |>
+  mutate(id = c(2,1)) |>
+  arrange(id)
 
 ledf <- bind_rows(le, le2) |>
   mutate(id = row_number())
 
-png(filename = "figures/ch2/full_lag_le.png", 
+color = "black"
+
+png(filename = "figures/ch2/BOU_full_lag_le.png", 
     width = 440, # 620 for larger
     height = 440, # 640 for larger
     units = "px", 
@@ -238,7 +209,7 @@ png(filename = "figures/ch2/full_lag_le.png",
        xaxt = "s",
        yaxt = "n",
        ylab = "",
-       col = color,
+       col = le$color,
        ylim = c(.5, 2.5)) 
   abline(v = 0, lty = "dashed") 
   #axis(side = 1, at = seq(-0.04, 0.04, by = 0.01), 
@@ -257,7 +228,7 @@ png(filename = "figures/ch2/full_lag_le.png",
 dev.off()
 
 
-png(filename = "figures/ch2/short_lag_le.png", 
+png(filename = "figures/ch2/BOU_short_lag_le.png", 
     width = 440, # 620 for larger
     height = 440, # 640 for larger
     units = "px", 
@@ -270,7 +241,7 @@ png(filename = "figures/ch2/short_lag_le.png",
        y = le2$id, 
        pch = le2$pch,
        cex = 2,
-       xlim = c(-2.5,2),
+       xlim = c(-2.5,8),
        xlab = "Effect Size",
        xaxt = "s",
        yaxt = "n",
