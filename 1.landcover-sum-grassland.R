@@ -14,7 +14,7 @@
 
 library(dplyr)
 
-grassland <- read.csv("data/nlcd-landcover/nlcd_annual_landtype_bystop.csv") %>%
+grassland <- read.csv("data/nlcd-landcover/200m_nlcd_annual_landtype_bystop.csv") %>%
   group_by(route, stop_num, year) %>%
   filter(ijbg_class %in% 
            c("cultivated crops", "herbaceous", "pasture")) %>%

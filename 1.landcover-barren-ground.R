@@ -12,7 +12,7 @@
 
 library(dplyr)
 
-barren <- read.csv("data/nlcd-landcover/nlcd_annual_landtype_bystop.csv") %>%
+barren <- read.csv("data/nlcd-landcover/200m_nlcd_annual_landtype_bystop.csv") %>%
   group_by(route, stop_num, year) %>%
   filter(ijbg_class == "barren") %>%
   mutate(perc_barren = sum(percent)) %>%

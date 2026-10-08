@@ -11,10 +11,12 @@ library(dplyr)
 library(stringr)
 
 #read in the three buffers
-files <- list.files("spatial/nlcd/", pattern = ".csv$", full.names = TRUE)
-frac_impervious_surface <- read.csv(files[1]) 
-landcover <- read.csv(files[2])
-landcover_change <- read.csv(files[3])
+#actually, just concerned about the 200m buffer landcover rn.
+files <- list.files("spatial/nlcd/", pattern = c("200", ".csv$"), full.names = TRUE)
+landcover <- read.csv(files[1])
+#frac_impervious_surface <- read.csv(files[1]) 
+#landcover <- read.csv(files[2])
+#landcover_change <- read.csv(files[3])
 
 #let's start with landcover, bc it's most similar to what we already know
   #get a count of how many pixels are in each buffer
@@ -46,5 +48,5 @@ landtype_bystop <- landcover %>%
     )
 
   #save .csv
-write.csv(landtype_bystop, "data/nlcd-landcover/nlcd_annual_landtype_bystop.csv", row.names = FALSE)
+write.csv(landtype_bystop, "data/nlcd-landcover/200m_nlcd_annual_landtype_bystop.csv", row.names = FALSE)
 
