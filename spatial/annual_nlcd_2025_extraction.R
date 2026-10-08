@@ -10,6 +10,15 @@
 #
 ####################
 
+#breaking in here to edit the 2025 for the 200m buffer where I extracted everything together...
+#twofive <- read.csv("spatial/nlcd/200m_nlcd_annual_extracted_buffers_landcover.csv")[28] |>
+#  left_join(nlcd_classifications, by = c("Annual_NLCD_LndCov_2025_CU_C2V1" = "description")) |>
+#  mutate(Annual_NLCD_LndCov_2025_CU_C2V1 = code) |>
+#  select(-class, -ijbg_class, -code, -color)
+#all <- read.csv("spatial/nlcd/200m_nlcd_annual_extracted_buffers_landcover.csv") |>
+#  mutate(Annual_NLCD_LndCov_2025_CU_C2V1 = twofive$Annual_NLCD_LndCov_2025_CU_C2V1)
+#write.csv(all, "spatial/nlcd/200m_nlcd_annual_extracted_buffers_landcover.csv", row.names = FALSE)
+
 
 #libraries
 library(dplyr)

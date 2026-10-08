@@ -28,9 +28,15 @@ options(scipen=999)
 options(mc.cores = parallel::detectCores())
 
 source("2.analysis-functions.R")
+source("3.plot-functions.R")
 
 #set model fun, options = one_year OR full_lag OR two_year OR three_year
 model_run = "three_year" 
+#where to save stan code and fit
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.10.08.full-rt-3yr-wgrass/"
+
+#if everything's good, just run it all:
+{
 
 #read in data we need
 barren <- read.csv("data/nlcd-landcover/nlcd_annual_barren.csv") 
@@ -346,16 +352,15 @@ full_lag <- routedata |>
   #Always passes :)
   
   #we're going to run the same model for both our urban (dev + barren) and for our forest variables - breaking out the various effects of change in the amount of urbanization, positive increases in forest cover, and negative decreases in forest cover. Forest cover and urbanization change are not 1:1 correlated so these are indeed different from each other. 
-  landcover <- c("dev+barren", "forest_positive", "forest_negative"
-                 #"grassland_positive", "grassland_negative"
+  landcover <- c("dev+barren", "forest_positive", "forest_negative",
+                 "grassland_positive", "grassland_negative"
                  ) #for now, let's just focus on the dev + forests like we need to for ESA
   #for testing
   #landcover <- c("dev+barren")
   #for running the grassland model only
   #landcover <- c("grassland_positive", "grassland_negative")
   
-#where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.10.06.full-rt-test-3yr/"
+
 #save_to <- "model/ch2/2026.07.28_full_lag_uaiONLY_fixbetas_keep00/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
@@ -482,7 +487,7 @@ for(a in 1:length(landcover)) {
       #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
       change_C = loopdata$change_count, #count data for each observation, change since the last year
       forest_association = traits$scale_eaforest,
-      #grassland_association = traits$scale_eagrassland,
+      grassland_association = traits$scale_eagrassland,
       uai = traits$scale_UAI
     )
   } else if(model_run == "full_lag") {
@@ -497,7 +502,8 @@ for(a in 1:length(landcover)) {
       #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
       change_C = loopdata$change_count, #count data for each observation, change since the last year
       forest_association = traits$scale_eaforest,
-      uai = traits$scale_UAI
+      uai = traits$scale_UAI,
+      grassland_association = traits$scale_eagrassland
     )
 
   }
@@ -510,8 +516,8 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 2000, #should be 10k in a full model
-                    warmup = 500) #2k in a full model
+                    iter = 1000, #should be 10k in a full model
+                    warmup = 200) #2k in a full model
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
     timestamp()
@@ -600,5 +606,9 @@ for(a in 1:length(landcover)) {
     timestamp()
   } #end landcover loop
 
-#perhaps for another time, but consider automating the creation of plots? Would make quick-look analysis really easy to have the plots automatically generated..
+  #automatic plotting of results :)
+  plot_landcover_results(load_from = save_to,
+                         run_type_title = model_run,
+                         landcover = landcover)
 
+} #end brackets that run everything ^u^
