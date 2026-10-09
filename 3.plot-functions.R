@@ -621,13 +621,13 @@ plot_landcover_results <- function(load_from = "NA",
              y = le$id, 
              pch = le$pch,
              cex = 2,
-             xlim = c(-2.5,2),
+             xlim = c(-1,1),
              xlab = "Effect Size",
              xaxt = "s",
              yaxt = "n",
              ylab = "",
              col = le$color,
-             ylim = c(.5, 2.5)) 
+             ylim = c(.5, 3.5)) 
         abline(v = 0, lty = "dashed") 
         #axis(side = 1, at = seq(-0.04, 0.04, by = 0.01), 
         #     labels = TRUE) 

@@ -24,9 +24,12 @@ options(mc.cores = parallel::detectCores())
 source("2.analysis-functions.R")
 
 #set model fun, options = one_year OR full_lag OR two_year OR three_year
-model_run = "full_lag" #we'll use full lag bc it includes trait calculations. Why did I need a different model for the full lag vs 1 year anyway? Not clear to me those needed to be handled any differently.
+model_run = "two_year" #we'll use full lag bc it includes trait calculations. Why did I need a different model for the full lag vs 1 year anyway? Not clear to me those needed to be handled any differently.
 #ope, it's because of quarter routes. The full lag doesn't need a control for quarter routes b/c each qr was represented only once. So... now I do want to modify the one-year model to inlcude species traits directly rather than then passing to a second model. hokay!
+#where to save stan code and fit
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.10.09.qrt_2yr_200m/"
 
+{
 #read in data we need
 barren <- read.csv("data/nlcd-landcover/nlcd_annual_barren.csv") 
 dev <- read.csv("data/nlcd-landcover/nlcd_annual_running_max_developed.csv") %>%
@@ -414,16 +417,15 @@ full_lag <- stopdata |>
   #stopdata <- subsampled_stopdata
   
   #we're going to run the same model for both our urban (dev + barren) and for our forest variables - breaking out the various effects of change in the amount of urbanization, positive increases in forest cover, and negative decreases in forest cover. Forest cover and urbanization change are not 1:1 correlated so these are indeed different from each other. 
-  landcover <- c("dev+barren", "forest_positive", "forest_negative"
-                 #"grassland_positive", "grassland_negative"
+  landcover <- c("dev+barren", "forest_positive", "forest_negative",
+                 "grassland_positive", "grassland_negative"
                  ) #for now, let's just focus on the dev + forests like we need to for ESA
   #for testing
   #landcover <- c("dev+barren")
   #for running the grassland model only
   #landcover <- c("grassland_positive", "grassland_negative")
   
-#where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.09.21.full-lag-rm0spqrts-uaiforest/"
+
 #save_to <- "model/ch2/2026.07.28_full_lag_uaiONLY_fixbetas_keep00/"
 #if the output folder doesn't exist, create it
 if (!dir.exists(save_to)) {dir.create(save_to)}
@@ -549,7 +551,7 @@ for(a in 1:length(landcover)) {
       #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
       change_C = loopdata$change_count, #count data for each observation, change since the last year
       forest_association = traits$scale_eaforest,
-      #grassland_association = traits$scale_eagrassland,
+      grassland_association = traits$scale_eagrassland,
       uai = traits$scale_UAI
     )
   } else if(model_run == "full_lag") {
@@ -564,7 +566,8 @@ for(a in 1:length(landcover)) {
       #    year = loopdata$year_standard, #year for each observation, standard year = 2012. Implicitly captures the years_btwn variable so we won't worry about like, adding that. 
       change_C = loopdata$change_count, #count data for each observation, change since the last year
       forest_association = traits$scale_eaforest,
-      uai = traits$scale_UAI
+      uai = traits$scale_UAI,
+      grassland_association = traits$scale_eagrassland
     )
 
   }
@@ -662,5 +665,8 @@ for(a in 1:length(landcover)) {
     timestamp()
   } #end landcover loop
 
-
-
+#automatic plotting of results :)
+plot_landcover_results(load_from = save_to,
+                       run_type_title = model_run,
+                       landcover = landcover[1:3])
+}

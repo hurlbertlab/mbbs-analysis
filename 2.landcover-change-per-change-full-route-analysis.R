@@ -31,9 +31,9 @@ source("2.analysis-functions.R")
 source("3.plot-functions.R")
 
 #set model fun, options = one_year OR full_lag OR two_year OR three_year
-model_run = "three_year" 
+model_run = "two_year" 
 #where to save stan code and fit
-save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.10.08.full-rt-3yr-wgrass/"
+save_to <- "Z:/Goulden/mbbs-analysis/model_landcover/2026.10.08.full-rt-2yr-200m/"
 
 #if everything's good, just run it all:
 {
@@ -516,8 +516,8 @@ for(a in 1:length(landcover)) {
                     data = datstan,
                     chains = 4,
                     cores = 4, 
-                    iter = 1000, #should be 10k in a full model
-                    warmup = 200) #2k in a full model
+                    iter = 2000, #should be 10k in a full model
+                    warmup = 500) #2k in a full model
     beepr::beep()
     print(paste0("model fit for: ", landcover[a]))
     timestamp()
